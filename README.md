@@ -28,50 +28,61 @@ Available as a **Databricks App** (web UI) or a **notebook** for quick one-off d
 
 ## Deploy the App to Your Workspace
 
-### Prerequisites
+### Step 1: Get the repo URL
 
-- [Databricks CLI](https://docs.databricks.com/dev-tools/cli/install.html) installed and authenticated
-- A Databricks CLI profile configured for your target workspace
-- Workspace admin permissions (needed for SP grants)
+Go to the GitHub repo and copy the URL:
 
-### Step 1: Clone the repo
+```
+https://github.com/macumberc/mfg-genie-factory
+```
+
+<p align="center">
+  <img src="assets/screenshots/deploy-01-github-repo.png" width="720" alt="GitHub repo page">
+</p>
+
+### Step 2: Create the app in Databricks
+
+1. In your Databricks workspace, go to **Compute** > **Apps** and click **Create app**
+
+<p align="center">
+  <img src="assets/screenshots/deploy-03-create-app.png" width="720" alt="Create new app page">
+</p>
+
+2. Select **Create a custom app**, then enter a name (e.g. `genie-factory`) and click **Next: Configure Git**
+
+<p align="center">
+  <img src="assets/screenshots/deploy-04-create-custom-app.png" width="720" alt="Name the app">
+</p>
+
+3. Paste the GitHub repo URL and select **GitHub** as the provider, then click **Create app**
+
+<p align="center">
+  <img src="assets/screenshots/deploy-05-configure-git.png" width="720" alt="Configure Git repository">
+</p>
+
+### Step 3: Deploy
+
+Once the app is created, click **Deploy** from the app detail page. Databricks will pull the code from GitHub and start the app.
+
+<p align="center">
+  <img src="assets/screenshots/deploy-06-app-deployed.png" width="720" alt="App deployed and running">
+</p>
+
+The first deploy takes ~2 minutes. When the status shows **Running**, click the app URL to open it.
+
+### Step 4: Grant permissions
+
+The app's Service Principal needs permissions to create schemas, tables, and Genie spaces. The easiest way is with the included deploy script:
 
 ```bash
 git clone https://github.com/macumberc/mfg-genie-factory.git
 cd mfg-genie-factory
-```
-
-### Step 2: Run the deploy script
-
-The deploy script handles everything — backend tables, service principal permissions, admin bootstrap, and app deployment.
-
-```bash
 ./scripts/deploy_app.sh --profile <your-cli-profile>
 ```
 
-Replace `<your-cli-profile>` with the name of your [Databricks CLI profile](https://docs.databricks.com/dev-tools/cli/profiles.html) for the target workspace.
+The script creates backend metadata tables, grants the SP catalog/warehouse/workspace permissions, and adds you as the first admin. It's safe to re-run.
 
-**What the script does:**
-
-| Step | What Happens |
-|:-----|:-------------|
-| 1 | Finds a running SQL warehouse on the workspace |
-| 2 | Creates the `genie_factory` metadata schema and 4 backend tables |
-| 3 | Grants the app's Service Principal: `USE CATALOG`, `ALL PRIVILEGES` on the schema, `CAN_MANAGE` on SQL warehouses |
-| 4 | Adds you as the first app admin |
-| 5 | Deploys the app to your workspace |
-
-When the script finishes, it prints the app URL.
-
-### Step 3: Open the app
-
-Navigate to the URL printed by the deploy script. It will look like:
-
-```
-https://genie-factory-<workspace-id>.aws.databricksapps.com
-```
-
-You can also find it in your workspace under **Apps** in the left sidebar.
+> **Note:** If you skip this step, the app will still load but deployments may fail with permission errors. The app's Admin tab will show which permissions are missing.
 
 ---
 
