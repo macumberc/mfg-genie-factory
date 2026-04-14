@@ -1,0 +1,1018 @@
+{
+  "company_name": "TraceFood Systems",
+  "industry": "Food & Beverage",
+  "use_case": "Food product traceability and recall management",
+  "space_title": "TraceFood Systems - Product Traceability & Recall 📋",
+  "space_description": "Food traceability analytics for TraceFood Systems. Ask about lot tracking, chain of custody, recall readiness, and supply chain visibility across 20 food products.",
+  "schema_basename": "fb_traceability_recall",
+  "tables": [
+    {
+      "table_name": "products",
+      "description": "Daily lot tracking events with origin, processing timestamps, and chain of custody status.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Tracking event ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.product_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Event date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Line",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lot_number",
+          "sql_type": "STRING",
+          "comment": "Lot/batch number",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LOT-', LPAD(CAST(FLOOR({qty_noise} * 9999) AS STRING), 5, '0'))"
+        },
+        {
+          "name": "supplier_id",
+          "sql_type": "STRING",
+          "comment": "Supplier ID",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'SUP-001' WHEN {status_noise} < 0.40 THEN 'SUP-002' WHEN {status_noise} < 0.60 THEN 'SUP-003' WHEN {status_noise} < 0.80 THEN 'SUP-004' ELSE 'SUP-005' END"
+        },
+        {
+          "name": "units_in_lot",
+          "sql_type": "INT",
+          "comment": "Units in lot",
+          "is_dimension": false,
+          "generation_expr": "CAST(100 + FLOOR({qty_noise} * 9900) AS INT)"
+        },
+        {
+          "name": "traceability_status",
+          "sql_type": "STRING",
+          "comment": "Status: Full Trace, Partial, Gap, Pending",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Gap' WHEN {status_noise} < 0.10 THEN 'Pending' WHEN {status_noise} < 0.22 THEN 'Partial' ELSE 'Full Trace' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "FP-001",
+          "product_name": "Whole Wheat Bread 24oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-002",
+          "product_name": "Sourdough Loaf 20oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-003",
+          "product_name": "Cinnamon Rolls 6pk",
+          "product_category": "Bakery",
+          "production_line": "Line B"
+        },
+        {
+          "product_id": "FP-004",
+          "product_name": "2% Milk Gallon",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-005",
+          "product_name": "Greek Yogurt 32oz",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-006",
+          "product_name": "Cheddar Cheese Block 16oz",
+          "product_category": "Dairy",
+          "production_line": "Line D"
+        },
+        {
+          "product_id": "FP-007",
+          "product_name": "Orange Juice 64oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-008",
+          "product_name": "Apple Juice 48oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-009",
+          "product_name": "Deli Turkey Breast 8oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-010",
+          "product_name": "Roast Beef Sliced 6oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-011",
+          "product_name": "Ham Off-the-Bone 10oz",
+          "product_category": "Deli",
+          "production_line": "Line G"
+        },
+        {
+          "product_id": "FP-012",
+          "product_name": "Mixed Salad Greens 10oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-013",
+          "product_name": "Baby Carrots 16oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-014",
+          "product_name": "Fresh Strawberries 1lb",
+          "product_category": "Produce",
+          "production_line": "Line I"
+        },
+        {
+          "product_id": "FP-015",
+          "product_name": "Ground Beef 80/20 1lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-016",
+          "product_name": "Chicken Breast Boneless 1.5lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-017",
+          "product_name": "Atlantic Salmon Fillet 8oz",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-018",
+          "product_name": "Shrimp 21-25ct 1lb",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-019",
+          "product_name": "Frozen Pizza Pepperoni 12in",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        },
+        {
+          "product_id": "FP-020",
+          "product_name": "Ice Cream Vanilla 48oz",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.04,
+        "Protein": 0.032,
+        "Seafood": 0.022,
+        "Frozen": 0.025
+      }
+    },
+    {
+      "table_name": "lot_tracking_events",
+      "description": "Weekly chain of custody snapshots with location, handler, and temperature compliance.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CC-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.product_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Line",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "location",
+          "sql_type": "STRING",
+          "comment": "Current location",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Production Floor' WHEN {status_noise} < 0.40 THEN 'Cold Storage' WHEN {status_noise} < 0.55 THEN 'Shipping Dock' WHEN {status_noise} < 0.70 THEN 'Distribution Center' WHEN {status_noise} < 0.85 THEN 'Retail Store' ELSE 'In Transit' END"
+        },
+        {
+          "name": "temp_recorded_f",
+          "sql_type": "DOUBLE",
+          "comment": "Recorded temperature F",
+          "is_dimension": false,
+          "generation_expr": "ROUND(28.0 + ({qty_noise} * 50.0), 1)"
+        },
+        {
+          "name": "temp_compliant",
+          "sql_type": "STRING",
+          "comment": "Temp compliant: Yes, No",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'No' ELSE 'Yes' END"
+        },
+        {
+          "name": "custody_transfers",
+          "sql_type": "INT",
+          "comment": "Number of custody transfers",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 7) AS INT)"
+        },
+        {
+          "name": "recall_readiness_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours to complete mock recall",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 23.5), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "FP-001",
+          "product_name": "Whole Wheat Bread 24oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-002",
+          "product_name": "Sourdough Loaf 20oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-003",
+          "product_name": "Cinnamon Rolls 6pk",
+          "product_category": "Bakery",
+          "production_line": "Line B"
+        },
+        {
+          "product_id": "FP-004",
+          "product_name": "2% Milk Gallon",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-005",
+          "product_name": "Greek Yogurt 32oz",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-006",
+          "product_name": "Cheddar Cheese Block 16oz",
+          "product_category": "Dairy",
+          "production_line": "Line D"
+        },
+        {
+          "product_id": "FP-007",
+          "product_name": "Orange Juice 64oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-008",
+          "product_name": "Apple Juice 48oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-009",
+          "product_name": "Deli Turkey Breast 8oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-010",
+          "product_name": "Roast Beef Sliced 6oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-011",
+          "product_name": "Ham Off-the-Bone 10oz",
+          "product_category": "Deli",
+          "production_line": "Line G"
+        },
+        {
+          "product_id": "FP-012",
+          "product_name": "Mixed Salad Greens 10oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-013",
+          "product_name": "Baby Carrots 16oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-014",
+          "product_name": "Fresh Strawberries 1lb",
+          "product_category": "Produce",
+          "production_line": "Line I"
+        },
+        {
+          "product_id": "FP-015",
+          "product_name": "Ground Beef 80/20 1lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-016",
+          "product_name": "Chicken Breast Boneless 1.5lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-017",
+          "product_name": "Atlantic Salmon Fillet 8oz",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-018",
+          "product_name": "Shrimp 21-25ct 1lb",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-019",
+          "product_name": "Frozen Pizza Pepperoni 12in",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        },
+        {
+          "product_id": "FP-020",
+          "product_name": "Ice Cream Vanilla 48oz",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.04,
+        "Protein": 0.032,
+        "Seafood": 0.022,
+        "Frozen": 0.025
+      }
+    },
+    {
+      "table_name": "chain_of_custody_snapshots",
+      "description": "Monthly traceability performance with recall simulation results and compliance metrics.",
+      "columns": [
+        {
+          "name": "perf_id",
+          "sql_type": "STRING",
+          "comment": "Performance ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TP-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.product_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "perf_month",
+          "sql_type": "DATE",
+          "comment": "Performance month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Line",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lots_traced",
+          "sql_type": "INT",
+          "comment": "Lots successfully traced",
+          "is_dimension": false,
+          "generation_expr": "CAST(50 + FLOOR({qty_noise} * 450) AS INT)"
+        },
+        {
+          "name": "trace_success_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Trace success rate 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(85.0 + ({qty_noise} * 14.0), 2)"
+        },
+        {
+          "name": "avg_trace_time_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Average trace completion hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 11.0), 1)"
+        },
+        {
+          "name": "recall_sim_result",
+          "sql_type": "STRING",
+          "comment": "Recall sim: Pass, Conditional, Fail",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional' ELSE 'Pass' END"
+        },
+        {
+          "name": "fda_compliance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "FDA FSMA compliance 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80.0 + ({qty_noise} * 20.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "FP-001",
+          "product_name": "Whole Wheat Bread 24oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-002",
+          "product_name": "Sourdough Loaf 20oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-003",
+          "product_name": "Cinnamon Rolls 6pk",
+          "product_category": "Bakery",
+          "production_line": "Line B"
+        },
+        {
+          "product_id": "FP-004",
+          "product_name": "2% Milk Gallon",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-005",
+          "product_name": "Greek Yogurt 32oz",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-006",
+          "product_name": "Cheddar Cheese Block 16oz",
+          "product_category": "Dairy",
+          "production_line": "Line D"
+        },
+        {
+          "product_id": "FP-007",
+          "product_name": "Orange Juice 64oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-008",
+          "product_name": "Apple Juice 48oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-009",
+          "product_name": "Deli Turkey Breast 8oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-010",
+          "product_name": "Roast Beef Sliced 6oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-011",
+          "product_name": "Ham Off-the-Bone 10oz",
+          "product_category": "Deli",
+          "production_line": "Line G"
+        },
+        {
+          "product_id": "FP-012",
+          "product_name": "Mixed Salad Greens 10oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-013",
+          "product_name": "Baby Carrots 16oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-014",
+          "product_name": "Fresh Strawberries 1lb",
+          "product_category": "Produce",
+          "production_line": "Line I"
+        },
+        {
+          "product_id": "FP-015",
+          "product_name": "Ground Beef 80/20 1lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-016",
+          "product_name": "Chicken Breast Boneless 1.5lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-017",
+          "product_name": "Atlantic Salmon Fillet 8oz",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-018",
+          "product_name": "Shrimp 21-25ct 1lb",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-019",
+          "product_name": "Frozen Pizza Pepperoni 12in",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        },
+        {
+          "product_id": "FP-020",
+          "product_name": "Ice Cream Vanilla 48oz",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.04,
+        "Protein": 0.032,
+        "Seafood": 0.022,
+        "Frozen": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "traceability_monthly",
+      "source_table": "products",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "traceability_status",
+          "expr": "traceability_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_lots",
+          "expr": "COUNT(DISTINCT lot_number)",
+          "comment": "Total lots tracked"
+        },
+        {
+          "name": "total_units",
+          "expr": "SUM(units_in_lot)",
+          "comment": "Total units tracked"
+        },
+        {
+          "name": "full_trace_count",
+          "expr": "COUNT(DISTINCT CASE WHEN traceability_status = 'Full Trace' THEN event_id END)",
+          "comment": "Full trace count"
+        },
+        {
+          "name": "gap_count",
+          "expr": "COUNT(DISTINCT CASE WHEN traceability_status = 'Gap' THEN event_id END)",
+          "comment": "Traceability gap count"
+        },
+        {
+          "name": "event_count",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total tracking events"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "unique_supplier_count",
+          "expr": "COUNT(DISTINCT supplier_id)",
+          "comment": "Number of distinct suppliers"
+        },
+        {
+          "name": "max_units_in_lot",
+          "expr": "MAX(units_in_lot)",
+          "comment": "Maximum units in lot"
+        }
+      ]
+    },
+    {
+      "view_name": "recall_readiness_monthly",
+      "source_table": "chain_of_custody_snapshots",
+      "dimensions": [
+        {
+          "name": "perf_month",
+          "expr": "perf_month"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "recall_sim_result",
+          "expr": "recall_sim_result"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_lots_traced",
+          "expr": "SUM(lots_traced)",
+          "comment": "Total lots traced"
+        },
+        {
+          "name": "avg_trace_success",
+          "expr": "AVG(trace_success_rate_pct)",
+          "comment": "Avg trace success rate"
+        },
+        {
+          "name": "avg_trace_time",
+          "expr": "AVG(avg_trace_time_hours)",
+          "comment": "Avg trace time hours"
+        },
+        {
+          "name": "avg_fda_compliance",
+          "expr": "AVG(fda_compliance_pct)",
+          "comment": "Avg FDA compliance"
+        },
+        {
+          "name": "fail_sim_count",
+          "expr": "COUNT(DISTINCT CASE WHEN recall_sim_result = 'Fail' THEN perf_id END)",
+          "comment": "Failed recall sims"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_lots_traced",
+          "expr": "MAX(lots_traced)",
+          "comment": "Maximum lots traced"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The traceability_monthly view (source: products) has dimensions: event_date, product_category, traceability_status. Measures: total_lots, total_units, full_trace_count, gap_count, event_count. The recall_readiness_monthly view (source: chain_of_custody_snapshots) has dimensions: perf_month, product_category, recall_sim_result. Measures: total_lots_traced, avg_trace_success, avg_trace_time, avg_fda_compliance, fail_sim_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name, production_line).",
+  "sample_questions": [
+    "What is the monthly trend in full trace count?",
+    "How has gap count changed over time?",
+    "What is the monthly trend in unique total lotss?",
+    "How has unique events changed over time?",
+    "What is the monthly trend in fail sim count?",
+    "How has unique products changed over time?",
+    "What is the monthly trend in highest lots traced?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total lotss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_lots) AS total_lots",
+        "FROM {fqn}.traceability_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique events changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(event_count) AS event_count",
+        "FROM {fqn}.traceability_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest lots traced?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(max_lots_traced) AS max_lots_traced",
+        "FROM {fqn}.recall_readiness_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "Rank product categories by avg fda compliance",
+      "sql_lines": [
+        "SELECT product_category, MEASURE(avg_fda_compliance) AS avg_fda_compliance",
+        "FROM {fqn}.recall_readiness_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_fda_compliance DESC"
+      ]
+    },
+    {
+      "question": "How does total units in lot break down by product id for 'Gap' records?",
+      "sql_lines": [
+        "SELECT product_id, COUNT(*) AS record_count, SUM(units_in_lot) AS total_units_in_lot",
+        "FROM {fqn}.products",
+        "WHERE traceability_status = 'Gap' GROUP BY product_id ORDER BY total_units_in_lot DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total recorded temperature f over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(temp_recorded_f) AS total_temp_recorded_f",
+        "FROM {fqn}.lot_tracking_events",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average trace success rate 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, AVG(trace_success_rate_pct) AS avg_trace_success_rate_pct",
+        "FROM {fqn}.chain_of_custody_snapshots",
+        "GROUP BY perf_month ORDER BY perf_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "products.traceability_status = 'Gap'",
+        "display_name": "traceability gaps",
+        "synonyms": [
+          "missing trace"
+        ],
+        "instruction": "Filter gaps."
+      },
+      {
+        "sql": "lot_tracking_events.temp_compliant = 'No'",
+        "display_name": "temp violations",
+        "synonyms": [
+          "cold chain break"
+        ],
+        "instruction": "Filter temp non-compliant."
+      },
+      {
+        "sql": "chain_of_custody_snapshots.recall_sim_result = 'Fail'",
+        "display_name": "failed recalls",
+        "synonyms": [
+          "recall failure"
+        ],
+        "instruction": "Filter failed recall sims."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', products.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "temp_deviation",
+        "sql": "ABS(lot_tracking_events.temp_recorded_f - 38.0)",
+        "display_name": "temp deviation from target",
+        "synonyms": [
+          "temp variance"
+        ]
+      },
+      {
+        "alias": "trace_gap_rate",
+        "sql": "100.0 - chain_of_custody_snapshots.trace_success_rate_pct",
+        "display_name": "trace gap rate",
+        "synonyms": [
+          "failure rate"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_lots",
+        "sql": "COUNT(DISTINCT products.lot_number)",
+        "display_name": "total lots",
+        "synonyms": [
+          "batches"
+        ]
+      },
+      {
+        "alias": "avg_trace_success",
+        "sql": "AVG(chain_of_custody_snapshots.trace_success_rate_pct)",
+        "display_name": "avg trace success",
+        "synonyms": [
+          "traceability rate"
+        ]
+      },
+      {
+        "alias": "avg_recall_time",
+        "sql": "AVG(lot_tracking_events.recall_readiness_hours)",
+        "display_name": "avg recall time",
+        "synonyms": [
+          "mock recall time"
+        ]
+      },
+      {
+        "alias": "avg_fda",
+        "sql": "AVG(chain_of_custody_snapshots.fda_compliance_pct)",
+        "display_name": "avg FDA compliance",
+        "synonyms": [
+          "FSMA score"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in full trace count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(full_trace_count) AS full_trace_count",
+        "FROM {fqn}.traceability_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has gap count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(gap_count) AS gap_count",
+        "FROM {fqn}.traceability_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in fail sim count?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(fail_sim_count) AS fail_sim_count",
+        "FROM {fqn}.recall_readiness_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "How has unique products changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(unique_product_count) AS unique_product_count",
+        "FROM {fqn}.recall_readiness_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "What are the top product id by total units in lot?",
+      "sql_lines": [
+        "SELECT product_id, SUM(units_in_lot) AS total_units_in_lot",
+        "FROM {fqn}.products",
+        "GROUP BY product_id ORDER BY total_units_in_lot DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.lot_tracking_events",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per performance month?",
+      "sql_lines": [
+        "SELECT perf_month, COUNT(*) AS record_count",
+        "FROM {fqn}.chain_of_custody_snapshots",
+        "GROUP BY perf_month ORDER BY perf_month"
+      ]
+    }
+  ]
+}

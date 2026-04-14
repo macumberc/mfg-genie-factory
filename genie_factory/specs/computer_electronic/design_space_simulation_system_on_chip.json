@@ -1,0 +1,977 @@
+{
+  "company_name": "ChipArchitect Labs",
+  "industry": "Computer & Electronic",
+  "use_case": "System-on-chip design space simulation and optimization",
+  "space_title": "ChipArchitect Labs - SoC Design Space Simulation 🧪",
+  "space_description": "SoC design analytics for ChipArchitect Labs. Ask about simulation convergence, parameter sweep results, power-performance tradeoffs, and optimization KPIs across 20 SoC designs.",
+  "schema_basename": "ce_design_sim_soc",
+  "tables": [
+    {
+      "table_name": "simulation_runs",
+      "description": "Individual SoC simulation run records with performance, power, and area results.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Unique simulation run identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SIM-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Date the simulation was executed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "soc_design",
+          "sql_type": "STRING",
+          "comment": "SoC design identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_family",
+          "sql_type": "STRING",
+          "comment": "Design family category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_node",
+          "sql_type": "STRING",
+          "comment": "Fabrication process node: 3nm, 5nm, 7nm, 14nm",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN '3nm' WHEN {status_noise} < 0.60 THEN '5nm' WHEN {status_noise} < 0.85 THEN '7nm' ELSE '14nm' END"
+        },
+        {
+          "name": "clock_freq_ghz",
+          "sql_type": "DOUBLE",
+          "comment": "Simulated clock frequency in GHz",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 4.0), 2)"
+        },
+        {
+          "name": "power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Dynamic power consumption in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 4800.0), 1)"
+        },
+        {
+          "name": "area_mm2",
+          "sql_type": "DOUBLE",
+          "comment": "Die area in square millimeters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 190.0), 2)"
+        },
+        {
+          "name": "timing_slack_ns",
+          "sql_type": "DOUBLE",
+          "comment": "Timing slack in nanoseconds (positive = met, negative = violated)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-2.0 + ({qty_noise} * 5.0), 3)"
+        },
+        {
+          "name": "convergence_status",
+          "sql_type": "STRING",
+          "comment": "Simulation convergence: Converged, Partial, Failed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Converged' WHEN {status_noise} < 0.90 THEN 'Partial' ELSE 'Failed' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Mobile SoC": {
+          "1,2,3": 0.06,
+          "9,10": 0.055
+        },
+        "Server SoC": {
+          "4,5": 0.05,
+          "10,11": 0.06
+        },
+        "IoT SoC": {
+          "3,4": 0.045,
+          "7,8": 0.05
+        },
+        "Automotive SoC": {
+          "6,7": 0.055,
+          "11,12": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "soc_design": "CA-MOB-A17X",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 5.0
+        },
+        {
+          "soc_design": "CA-MOB-A18",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 4.5
+        },
+        {
+          "soc_design": "CA-MOB-A19P",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 6.0
+        },
+        {
+          "soc_design": "CA-MOB-M3",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 8.0
+        },
+        {
+          "soc_design": "CA-MOB-M4P",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 10.0
+        },
+        {
+          "soc_design": "CA-SRV-X200",
+          "design_family": "Server SoC",
+          "target_tdp_w": 250.0
+        },
+        {
+          "soc_design": "CA-SRV-X300",
+          "design_family": "Server SoC",
+          "target_tdp_w": 350.0
+        },
+        {
+          "soc_design": "CA-SRV-X400E",
+          "design_family": "Server SoC",
+          "target_tdp_w": 400.0
+        },
+        {
+          "soc_design": "CA-SRV-Z100",
+          "design_family": "Server SoC",
+          "target_tdp_w": 180.0
+        },
+        {
+          "soc_design": "CA-SRV-Z200A",
+          "design_family": "Server SoC",
+          "target_tdp_w": 280.0
+        },
+        {
+          "soc_design": "CA-IOT-EDGE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.5
+        },
+        {
+          "soc_design": "CA-IOT-EDGE-2",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.8
+        },
+        {
+          "soc_design": "CA-IOT-SENS-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.2
+        },
+        {
+          "soc_design": "CA-IOT-GATE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 1.5
+        },
+        {
+          "soc_design": "CA-IOT-WLSE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.3
+        },
+        {
+          "soc_design": "CA-AUT-ADAS-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 35.0
+        },
+        {
+          "soc_design": "CA-AUT-ADAS-2",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 50.0
+        },
+        {
+          "soc_design": "CA-AUT-CABIN-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 15.0
+        },
+        {
+          "soc_design": "CA-AUT-ZONAL-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 20.0
+        },
+        {
+          "soc_design": "CA-AUT-VCU-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 25.0
+        }
+      ],
+      "category_distribution": {
+        "Mobile SoC": 0.035,
+        "Server SoC": 0.03,
+        "IoT SoC": 0.025,
+        "Automotive SoC": 0.028
+      }
+    },
+    {
+      "table_name": "parameter_sweeps",
+      "description": "Parameter sweep snapshot records showing design space exploration results across voltage, frequency, and configuration variants.",
+      "columns": [
+        {
+          "name": "sweep_id",
+          "sql_type": "STRING",
+          "comment": "Unique parameter sweep identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PSW-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "sweep_date",
+          "sql_type": "DATE",
+          "comment": "Date of the parameter sweep",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "soc_design",
+          "sql_type": "STRING",
+          "comment": "SoC design identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_family",
+          "sql_type": "STRING",
+          "comment": "Design family category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "voltage_v",
+          "sql_type": "DOUBLE",
+          "comment": "Supply voltage in volts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.6 + ({qty_noise} * 0.6), 3)"
+        },
+        {
+          "name": "frequency_ghz",
+          "sql_type": "DOUBLE",
+          "comment": "Target frequency in GHz",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.8 + ({qty_noise} * 4.2), 2)"
+        },
+        {
+          "name": "leakage_power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Leakage power in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 950.0), 1)"
+        },
+        {
+          "name": "throughput_gops",
+          "sql_type": "DOUBLE",
+          "comment": "Throughput in giga-operations per second",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 990.0), 1)"
+        },
+        {
+          "name": "thermal_margin_c",
+          "sql_type": "DOUBLE",
+          "comment": "Thermal margin in degrees Celsius (distance to Tjmax)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "pareto_optimal",
+          "sql_type": "BOOLEAN",
+          "comment": "Whether this point is on the Pareto frontier",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN true ELSE false END"
+        },
+        {
+          "name": "sweep_status",
+          "sql_type": "STRING",
+          "comment": "Sweep status: Complete, In Progress, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Complete' WHEN {status_noise} < 0.95 THEN 'In Progress' ELSE 'Cancelled' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Mobile SoC": {
+          "1,2,3": 0.06,
+          "9,10": 0.055
+        },
+        "Server SoC": {
+          "4,5": 0.05,
+          "10,11": 0.06
+        },
+        "IoT SoC": {
+          "3,4": 0.045,
+          "7,8": 0.05
+        },
+        "Automotive SoC": {
+          "6,7": 0.055,
+          "11,12": 0.06
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "soc_design": "CA-MOB-A17X",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 5.0
+        },
+        {
+          "soc_design": "CA-MOB-A18",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 4.5
+        },
+        {
+          "soc_design": "CA-MOB-A19P",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 6.0
+        },
+        {
+          "soc_design": "CA-MOB-M3",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 8.0
+        },
+        {
+          "soc_design": "CA-MOB-M4P",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 10.0
+        },
+        {
+          "soc_design": "CA-SRV-X200",
+          "design_family": "Server SoC",
+          "target_tdp_w": 250.0
+        },
+        {
+          "soc_design": "CA-SRV-X300",
+          "design_family": "Server SoC",
+          "target_tdp_w": 350.0
+        },
+        {
+          "soc_design": "CA-SRV-X400E",
+          "design_family": "Server SoC",
+          "target_tdp_w": 400.0
+        },
+        {
+          "soc_design": "CA-SRV-Z100",
+          "design_family": "Server SoC",
+          "target_tdp_w": 180.0
+        },
+        {
+          "soc_design": "CA-SRV-Z200A",
+          "design_family": "Server SoC",
+          "target_tdp_w": 280.0
+        },
+        {
+          "soc_design": "CA-IOT-EDGE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.5
+        },
+        {
+          "soc_design": "CA-IOT-EDGE-2",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.8
+        },
+        {
+          "soc_design": "CA-IOT-SENS-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.2
+        },
+        {
+          "soc_design": "CA-IOT-GATE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 1.5
+        },
+        {
+          "soc_design": "CA-IOT-WLSE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.3
+        },
+        {
+          "soc_design": "CA-AUT-ADAS-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 35.0
+        },
+        {
+          "soc_design": "CA-AUT-ADAS-2",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 50.0
+        },
+        {
+          "soc_design": "CA-AUT-CABIN-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 15.0
+        },
+        {
+          "soc_design": "CA-AUT-ZONAL-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 20.0
+        },
+        {
+          "soc_design": "CA-AUT-VCU-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 25.0
+        }
+      ],
+      "category_distribution": {
+        "Mobile SoC": 0.035,
+        "Server SoC": 0.03,
+        "IoT SoC": 0.025,
+        "Automotive SoC": 0.028
+      }
+    },
+    {
+      "table_name": "optimization_monthly",
+      "description": "Monthly optimization KPIs tracking design convergence rates, PPA improvements, and simulation throughput.",
+      "columns": [
+        {
+          "name": "opt_id",
+          "sql_type": "STRING",
+          "comment": "Unique optimization record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OPT-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "opt_month",
+          "sql_type": "DATE",
+          "comment": "Month of the optimization record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "soc_design",
+          "sql_type": "STRING",
+          "comment": "SoC design identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_family",
+          "sql_type": "STRING",
+          "comment": "Design family category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "convergence_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of simulations that converged",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60.0 + ({qty_noise} * 38.0), 2)"
+        },
+        {
+          "name": "best_power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Best achieved dynamic power in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(150.0 + ({qty_noise} * 3850.0), 1)"
+        },
+        {
+          "name": "best_frequency_ghz",
+          "sql_type": "DOUBLE",
+          "comment": "Best achieved clock frequency in GHz",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.5 + ({qty_noise} * 3.5), 2)"
+        },
+        {
+          "name": "pareto_points_found",
+          "sql_type": "INT",
+          "comment": "Number of Pareto-optimal points discovered",
+          "is_dimension": false,
+          "generation_expr": "CAST(2 + FLOOR({qty_noise} * 48) AS INT)"
+        },
+        {
+          "name": "total_sim_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Total simulation compute hours consumed",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 4900.0), 1)"
+        },
+        {
+          "name": "target_met",
+          "sql_type": "BOOLEAN",
+          "comment": "Whether PPA targets were met this month",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN true ELSE false END"
+        },
+        {
+          "name": "ppa_improvement_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Month-over-month PPA improvement percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-2.0 + ({qty_noise} * 12.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Mobile SoC": {
+          "1,2,3": 0.06,
+          "9,10": 0.055
+        },
+        "Server SoC": {
+          "4,5": 0.05,
+          "10,11": 0.06
+        },
+        "IoT SoC": {
+          "3,4": 0.045,
+          "7,8": 0.05
+        },
+        "Automotive SoC": {
+          "6,7": 0.055,
+          "11,12": 0.06
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "soc_design": "CA-MOB-A17X",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 5.0
+        },
+        {
+          "soc_design": "CA-MOB-A18",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 4.5
+        },
+        {
+          "soc_design": "CA-MOB-A19P",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 6.0
+        },
+        {
+          "soc_design": "CA-MOB-M3",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 8.0
+        },
+        {
+          "soc_design": "CA-MOB-M4P",
+          "design_family": "Mobile SoC",
+          "target_tdp_w": 10.0
+        },
+        {
+          "soc_design": "CA-SRV-X200",
+          "design_family": "Server SoC",
+          "target_tdp_w": 250.0
+        },
+        {
+          "soc_design": "CA-SRV-X300",
+          "design_family": "Server SoC",
+          "target_tdp_w": 350.0
+        },
+        {
+          "soc_design": "CA-SRV-X400E",
+          "design_family": "Server SoC",
+          "target_tdp_w": 400.0
+        },
+        {
+          "soc_design": "CA-SRV-Z100",
+          "design_family": "Server SoC",
+          "target_tdp_w": 180.0
+        },
+        {
+          "soc_design": "CA-SRV-Z200A",
+          "design_family": "Server SoC",
+          "target_tdp_w": 280.0
+        },
+        {
+          "soc_design": "CA-IOT-EDGE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.5
+        },
+        {
+          "soc_design": "CA-IOT-EDGE-2",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.8
+        },
+        {
+          "soc_design": "CA-IOT-SENS-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.2
+        },
+        {
+          "soc_design": "CA-IOT-GATE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 1.5
+        },
+        {
+          "soc_design": "CA-IOT-WLSE-1",
+          "design_family": "IoT SoC",
+          "target_tdp_w": 0.3
+        },
+        {
+          "soc_design": "CA-AUT-ADAS-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 35.0
+        },
+        {
+          "soc_design": "CA-AUT-ADAS-2",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 50.0
+        },
+        {
+          "soc_design": "CA-AUT-CABIN-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 15.0
+        },
+        {
+          "soc_design": "CA-AUT-ZONAL-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 20.0
+        },
+        {
+          "soc_design": "CA-AUT-VCU-1",
+          "design_family": "Automotive SoC",
+          "target_tdp_w": 25.0
+        }
+      ],
+      "category_distribution": {
+        "Mobile SoC": 0.035,
+        "Server SoC": 0.03,
+        "IoT SoC": 0.025,
+        "Automotive SoC": 0.028
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "simulation_runs_metrics",
+      "source_table": "simulation_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "design_family",
+          "expr": "design_family"
+        },
+        {
+          "name": "process_node",
+          "expr": "process_node"
+        },
+        {
+          "name": "convergence_status",
+          "expr": "convergence_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_simulations",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total number of simulation runs"
+        },
+        {
+          "name": "avg_clock_freq_ghz",
+          "expr": "AVG(clock_freq_ghz)",
+          "comment": "Average simulated clock frequency in GHz"
+        },
+        {
+          "name": "avg_power_mw",
+          "expr": "AVG(power_mw)",
+          "comment": "Average dynamic power in milliwatts"
+        },
+        {
+          "name": "converged_count",
+          "expr": "COUNT(DISTINCT CASE WHEN convergence_status = 'Converged' THEN run_id END)",
+          "comment": "Number of converged simulations"
+        },
+        {
+          "name": "total_area_mm2",
+          "expr": "SUM(area_mm2)",
+          "comment": "Total area mm2"
+        },
+        {
+          "name": "total_timing_slack_ns",
+          "expr": "SUM(timing_slack_ns)",
+          "comment": "Total timing slack ns"
+        },
+        {
+          "name": "max_clock_freq_ghz",
+          "expr": "MAX(clock_freq_ghz)",
+          "comment": "Maximum clock freq ghz"
+        }
+      ]
+    },
+    {
+      "view_name": "optimization_metrics",
+      "source_table": "optimization_monthly",
+      "dimensions": [
+        {
+          "name": "opt_month",
+          "expr": "opt_month"
+        },
+        {
+          "name": "design_family",
+          "expr": "design_family"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_convergence_rate",
+          "expr": "AVG(convergence_rate_pct)",
+          "comment": "Average convergence rate percentage"
+        },
+        {
+          "name": "total_pareto_points",
+          "expr": "SUM(pareto_points_found)",
+          "comment": "Total Pareto-optimal points discovered"
+        },
+        {
+          "name": "total_sim_hours",
+          "expr": "SUM(total_sim_hours)",
+          "comment": "Total simulation compute hours"
+        },
+        {
+          "name": "avg_ppa_improvement",
+          "expr": "AVG(ppa_improvement_pct)",
+          "comment": "Average PPA improvement percentage"
+        },
+        {
+          "name": "total_best_power_mw",
+          "expr": "SUM(best_power_mw)",
+          "comment": "Total best power mw"
+        },
+        {
+          "name": "total_best_frequency_ghz",
+          "expr": "SUM(best_frequency_ghz)",
+          "comment": "Total best frequency ghz"
+        },
+        {
+          "name": "max_convergence_rate_percent",
+          "expr": "MAX(convergence_rate_pct)",
+          "comment": "Maximum convergence rate pct"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, design_family, process_node, convergence_status. Measures: total_simulations, avg_clock_freq_ghz, avg_power_mw, converged_count. The optimization_metrics view (source: optimization_monthly) has dimensions: opt_month, design_family. Measures: avg_convergence_rate, total_pareto_points, total_sim_hours, avg_ppa_improvement. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. soc_design).",
+  "sample_questions": [
+    "What is the monthly trend in converged count?",
+    "How has unique total simulationss changed over time?",
+    "What is the monthly trend in highest clock freq ghz?",
+    "How has total area mm2 changed over time?",
+    "What is the monthly trend in highest convergence rate percent?",
+    "How has total pareto-optimal points discovered changed over time?",
+    "What is the monthly trend in total simulation compute hours?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest clock freq ghz?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_clock_freq_ghz) AS max_clock_freq_ghz",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has total area mm2 changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_area_mm2) AS total_area_mm2",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total simulation compute hours?",
+      "sql_lines": [
+        "SELECT opt_month, MEASURE(total_sim_hours) AS total_sim_hours",
+        "FROM {fqn}.optimization_metrics",
+        "GROUP BY ALL",
+        "ORDER BY opt_month"
+      ]
+    },
+    {
+      "question": "How has total best power mw changed over time?",
+      "sql_lines": [
+        "SELECT opt_month, MEASURE(total_best_power_mw) AS total_best_power_mw",
+        "FROM {fqn}.optimization_metrics",
+        "GROUP BY ALL",
+        "ORDER BY opt_month"
+      ]
+    },
+    {
+      "question": "How does total simulated clock frequency in ghz break down by soc design identifier for 'Converged' records?",
+      "sql_lines": [
+        "SELECT soc_design, COUNT(*) AS record_count, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
+        "FROM {fqn}.simulation_runs",
+        "WHERE convergence_status = 'Converged' GROUP BY soc_design ORDER BY total_clock_freq_ghz DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total supply voltage in volts over time?",
+      "sql_lines": [
+        "SELECT sweep_date, SUM(voltage_v) AS total_voltage_v",
+        "FROM {fqn}.parameter_sweeps",
+        "GROUP BY sweep_date ORDER BY sweep_date"
+      ]
+    },
+    {
+      "question": "How has the average percentage of simulations that converged changed over time?",
+      "sql_lines": [
+        "SELECT opt_month, AVG(convergence_rate_pct) AS avg_convergence_rate_pct",
+        "FROM {fqn}.optimization_monthly",
+        "GROUP BY opt_month ORDER BY opt_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "simulation_runs.convergence_status = 'Converged'",
+        "display_name": "converged simulations",
+        "synonyms": [
+          "successful sims",
+          "completed simulations"
+        ],
+        "instruction": "Use when analyzing only successfully converged simulation runs."
+      },
+      {
+        "sql": "parameter_sweeps.pareto_optimal = true",
+        "display_name": "Pareto-optimal points",
+        "synonyms": [
+          "Pareto frontier",
+          "optimal tradeoff points"
+        ],
+        "instruction": "Use when analyzing the best power-performance tradeoff configurations."
+      },
+      {
+        "sql": "simulation_runs.timing_slack_ns < 0",
+        "display_name": "timing violations",
+        "synonyms": [
+          "negative slack",
+          "timing failures"
+        ],
+        "instruction": "Use when identifying simulations that failed timing closure."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
+        "display_name": "simulation month",
+        "synonyms": [
+          "month of simulation",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "power_per_ghz",
+        "sql": "simulation_runs.power_mw / NULLIF(simulation_runs.clock_freq_ghz, 0)",
+        "display_name": "power per GHz",
+        "synonyms": [
+          "power efficiency",
+          "mW per GHz"
+        ]
+      },
+      {
+        "alias": "energy_efficiency",
+        "sql": "parameter_sweeps.throughput_gops / NULLIF(parameter_sweeps.leakage_power_mw + 500, 0)",
+        "display_name": "energy efficiency GOPS/W",
+        "synonyms": [
+          "efficiency",
+          "performance per watt"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_simulations",
+        "sql": "COUNT(DISTINCT simulation_runs.run_id)",
+        "display_name": "total simulations",
+        "synonyms": [
+          "sim count",
+          "number of runs"
+        ]
+      },
+      {
+        "alias": "avg_power",
+        "sql": "AVG(simulation_runs.power_mw)",
+        "display_name": "average power",
+        "synonyms": [
+          "power consumption",
+          "dynamic power"
+        ]
+      },
+      {
+        "alias": "total_sim_hours",
+        "sql": "SUM(optimization_monthly.total_sim_hours)",
+        "display_name": "total compute hours",
+        "synonyms": [
+          "simulation hours",
+          "compute cost"
+        ]
+      },
+      {
+        "alias": "avg_convergence_rate",
+        "sql": "AVG(optimization_monthly.convergence_rate_pct)",
+        "display_name": "average convergence rate",
+        "synonyms": [
+          "convergence",
+          "success rate"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in converged count?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(converged_count) AS converged_count",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique total simulationss changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_simulations) AS total_simulations",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest convergence rate percent?",
+      "sql_lines": [
+        "SELECT opt_month, MEASURE(max_convergence_rate_percent) AS max_convergence_rate_percent",
+        "FROM {fqn}.optimization_metrics",
+        "GROUP BY ALL",
+        "ORDER BY opt_month"
+      ]
+    },
+    {
+      "question": "How has total pareto-optimal points discovered changed over time?",
+      "sql_lines": [
+        "SELECT opt_month, MEASURE(total_pareto_points) AS total_pareto_points",
+        "FROM {fqn}.optimization_metrics",
+        "GROUP BY ALL",
+        "ORDER BY opt_month"
+      ]
+    },
+    {
+      "question": "What are the top soc design identifier by total simulated clock frequency in ghz?",
+      "sql_lines": [
+        "SELECT soc_design, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY soc_design ORDER BY total_clock_freq_ghz DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of the parameter sweep?",
+      "sql_lines": [
+        "SELECT sweep_date, COUNT(*) AS record_count",
+        "FROM {fqn}.parameter_sweeps",
+        "GROUP BY sweep_date ORDER BY sweep_date"
+      ]
+    },
+    {
+      "question": "How many records are there per month of the optimization record?",
+      "sql_lines": [
+        "SELECT opt_month, COUNT(*) AS record_count",
+        "FROM {fqn}.optimization_monthly",
+        "GROUP BY opt_month ORDER BY opt_month"
+      ]
+    }
+  ]
+}

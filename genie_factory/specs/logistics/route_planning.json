@@ -1,0 +1,1160 @@
+{
+  "company_name": "TransRoute Logistics",
+  "industry": "Logistics",
+  "use_case": "Route planning, fuel optimization, and delivery efficiency",
+  "space_title": "TransRoute Logistics - Route Planning & Delivery Efficiency 🗺️",
+  "space_description": "Route analytics for TransRoute Logistics. Ask about route segments, fuel costs, load utilization, traffic delays, on-time delivery rates, and CO2 emissions across 28 vehicles and regional depots.",
+  "schema_basename": "route_planning",
+  "tables": [
+    {
+      "table_name": "vehicles",
+      "description": "Fleet vehicle master data with type, capacity, fuel configuration, home depot assignment, and operational status.",
+      "columns": [
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_type",
+          "sql_type": "STRING",
+          "comment": "Vehicle class: Semi, Truck, or Van",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "capacity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Maximum load capacity in kilograms",
+          "is_dimension": false,
+          "generation_expr": ""
+        },
+        {
+          "name": "fuel_type",
+          "sql_type": "STRING",
+          "comment": "Fuel type: Diesel, CNG, Gasoline, or Electric",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "fuel_efficiency_km_per_l",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel efficiency in km per liter (null for Electric)",
+          "is_dimension": false,
+          "generation_expr": ""
+        },
+        {
+          "name": "home_depot",
+          "sql_type": "STRING",
+          "comment": "Home depot location for the vehicle",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Operational status: Active, Maintenance, or Retired",
+          "is_dimension": true,
+          "generation_expr": ""
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "vehicle_id": "VH-001",
+          "vehicle_name": "Alpha Hauler",
+          "vehicle_type": "Semi",
+          "capacity_kg": 22000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 3.2,
+          "home_depot": "Chicago",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-002",
+          "vehicle_name": "Beta Cruiser",
+          "vehicle_type": "Semi",
+          "capacity_kg": 24000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 3.0,
+          "home_depot": "Dallas",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-003",
+          "vehicle_name": "Gamma Express",
+          "vehicle_type": "Semi",
+          "capacity_kg": 21000.0,
+          "fuel_type": "CNG",
+          "fuel_efficiency_km_per_l": 2.8,
+          "home_depot": "Atlanta",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-004",
+          "vehicle_name": "Delta Runner",
+          "vehicle_type": "Semi",
+          "capacity_kg": 23000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 3.1,
+          "home_depot": "Los Angeles",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-005",
+          "vehicle_name": "Epsilon Mover",
+          "vehicle_type": "Semi",
+          "capacity_kg": 25000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 2.9,
+          "home_depot": "Chicago",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-006",
+          "vehicle_name": "Zeta Carrier",
+          "vehicle_type": "Semi",
+          "capacity_kg": 22500.0,
+          "fuel_type": "CNG",
+          "fuel_efficiency_km_per_l": 2.7,
+          "home_depot": "Seattle",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-007",
+          "vehicle_name": "Eta Freighter",
+          "vehicle_type": "Semi",
+          "capacity_kg": 24500.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 3.3,
+          "home_depot": "Denver",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-008",
+          "vehicle_name": "Theta Prime",
+          "vehicle_type": "Semi",
+          "capacity_kg": 23500.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 3.0,
+          "home_depot": "Miami",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-009",
+          "vehicle_name": "Iota Transit",
+          "vehicle_type": "Semi",
+          "capacity_kg": 22000.0,
+          "fuel_type": "CNG",
+          "fuel_efficiency_km_per_l": 2.6,
+          "home_depot": "New York",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-010",
+          "vehicle_name": "Kappa Liner",
+          "vehicle_type": "Semi",
+          "capacity_kg": 26000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 2.8,
+          "home_depot": "Dallas",
+          "status": "Maintenance"
+        },
+        {
+          "vehicle_id": "VH-011",
+          "vehicle_name": "Lambda Swift",
+          "vehicle_type": "Truck",
+          "capacity_kg": 12000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 5.5,
+          "home_depot": "Chicago",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-012",
+          "vehicle_name": "Mu Ranger",
+          "vehicle_type": "Truck",
+          "capacity_kg": 10000.0,
+          "fuel_type": "CNG",
+          "fuel_efficiency_km_per_l": 4.8,
+          "home_depot": "Atlanta",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-013",
+          "vehicle_name": "Nu Dash",
+          "vehicle_type": "Truck",
+          "capacity_kg": 11000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 5.2,
+          "home_depot": "Los Angeles",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-014",
+          "vehicle_name": "Xi Bolt",
+          "vehicle_type": "Truck",
+          "capacity_kg": 13000.0,
+          "fuel_type": "Gasoline",
+          "fuel_efficiency_km_per_l": 4.5,
+          "home_depot": "Denver",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-015",
+          "vehicle_name": "Omicron Flex",
+          "vehicle_type": "Truck",
+          "capacity_kg": 10500.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 5.0,
+          "home_depot": "Seattle",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-016",
+          "vehicle_name": "Pi Shuttle",
+          "vehicle_type": "Truck",
+          "capacity_kg": 11500.0,
+          "fuel_type": "Gasoline",
+          "fuel_efficiency_km_per_l": 4.3,
+          "home_depot": "Miami",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-017",
+          "vehicle_name": "Rho Blazer",
+          "vehicle_type": "Truck",
+          "capacity_kg": 12500.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 5.1,
+          "home_depot": "New York",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-018",
+          "vehicle_name": "Sigma Courier",
+          "vehicle_type": "Truck",
+          "capacity_kg": 9500.0,
+          "fuel_type": "Electric",
+          "fuel_efficiency_km_per_l": null,
+          "home_depot": "Chicago",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-019",
+          "vehicle_name": "Tau Glider",
+          "vehicle_type": "Van",
+          "capacity_kg": 3500.0,
+          "fuel_type": "Gasoline",
+          "fuel_efficiency_km_per_l": 8.5,
+          "home_depot": "Dallas",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-020",
+          "vehicle_name": "Upsilon Metro",
+          "vehicle_type": "Van",
+          "capacity_kg": 3000.0,
+          "fuel_type": "Electric",
+          "fuel_efficiency_km_per_l": null,
+          "home_depot": "Los Angeles",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-021",
+          "vehicle_name": "Phi Sprinter",
+          "vehicle_type": "Van",
+          "capacity_kg": 4000.0,
+          "fuel_type": "Gasoline",
+          "fuel_efficiency_km_per_l": 7.8,
+          "home_depot": "New York",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-022",
+          "vehicle_name": "Chi Zippy",
+          "vehicle_type": "Van",
+          "capacity_kg": 3200.0,
+          "fuel_type": "Electric",
+          "fuel_efficiency_km_per_l": null,
+          "home_depot": "Seattle",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-023",
+          "vehicle_name": "Psi Nimble",
+          "vehicle_type": "Van",
+          "capacity_kg": 3800.0,
+          "fuel_type": "Gasoline",
+          "fuel_efficiency_km_per_l": 8.0,
+          "home_depot": "Atlanta",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-024",
+          "vehicle_name": "Omega Dash",
+          "vehicle_type": "Van",
+          "capacity_kg": 2800.0,
+          "fuel_type": "Electric",
+          "fuel_efficiency_km_per_l": null,
+          "home_depot": "Denver",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-025",
+          "vehicle_name": "Nova Titan",
+          "vehicle_type": "Semi",
+          "capacity_kg": 27000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 2.7,
+          "home_depot": "Chicago",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-026",
+          "vehicle_name": "Apex Hauler",
+          "vehicle_type": "Semi",
+          "capacity_kg": 23000.0,
+          "fuel_type": "CNG",
+          "fuel_efficiency_km_per_l": 2.9,
+          "home_depot": "Miami",
+          "status": "Active"
+        },
+        {
+          "vehicle_id": "VH-027",
+          "vehicle_name": "Zenith Cargo",
+          "vehicle_type": "Truck",
+          "capacity_kg": 14000.0,
+          "fuel_type": "Diesel",
+          "fuel_efficiency_km_per_l": 4.9,
+          "home_depot": "Dallas",
+          "status": "Retired"
+        },
+        {
+          "vehicle_id": "VH-028",
+          "vehicle_name": "Pinnacle Van",
+          "vehicle_type": "Van",
+          "capacity_kg": 3500.0,
+          "fuel_type": "Gasoline",
+          "fuel_efficiency_km_per_l": 8.2,
+          "home_depot": "Atlanta",
+          "status": "Active"
+        }
+      ],
+      "category_distribution": {
+        "Semi": 0.04,
+        "Truck": 0.035,
+        "Van": 0.025
+      }
+    },
+    {
+      "table_name": "route_segments",
+      "description": "Individual route segment records with origin, destination, distance, fuel consumption, load weight, utilization, traffic delays, and weather conditions.",
+      "columns": [
+        {
+          "name": "segment_id",
+          "sql_type": "STRING",
+          "comment": "Unique route segment identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SEG-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "segment_date",
+          "sql_type": "DATE",
+          "comment": "Date the segment was driven",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle that drove the segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_type",
+          "sql_type": "STRING",
+          "comment": "Vehicle class: Semi, Truck, or Van",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "route_id",
+          "sql_type": "STRING",
+          "comment": "Route identifier grouping segments",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RT-', LPAD(CAST(FLOOR({qty_noise} * 500) AS STRING), 4, '0'))"
+        },
+        {
+          "name": "origin_location",
+          "sql_type": "STRING",
+          "comment": "Segment origin city",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Chicago' WHEN {status_noise} < 0.2 THEN 'Dallas' WHEN {status_noise} < 0.3 THEN 'Atlanta' WHEN {status_noise} < 0.4 THEN 'Los Angeles' WHEN {status_noise} < 0.5 THEN 'New York' WHEN {status_noise} < 0.6 THEN 'Seattle' WHEN {status_noise} < 0.7 THEN 'Denver' WHEN {status_noise} < 0.8 THEN 'Miami' WHEN {status_noise} < 0.9 THEN 'Houston' ELSE 'Phoenix' END"
+        },
+        {
+          "name": "destination_location",
+          "sql_type": "STRING",
+          "comment": "Segment destination city",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Denver' WHEN {status_noise} < 0.2 THEN 'Miami' WHEN {status_noise} < 0.3 THEN 'Chicago' WHEN {status_noise} < 0.4 THEN 'New York' WHEN {status_noise} < 0.5 THEN 'Dallas' WHEN {status_noise} < 0.6 THEN 'Atlanta' WHEN {status_noise} < 0.7 THEN 'Los Angeles' WHEN {status_noise} < 0.8 THEN 'Phoenix' WHEN {status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END"
+        },
+        {
+          "name": "distance_km",
+          "sql_type": "DOUBLE",
+          "comment": "Segment distance in kilometers",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50 + {qty_noise} * 1450, 1)"
+        },
+        {
+          "name": "fuel_consumed_liters",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel consumed on this segment in liters",
+          "is_dimension": false,
+          "generation_expr": "ROUND((50 + {qty_noise} * 1450) / (3.0 + {qty_noise} * 5.0), 2)"
+        },
+        {
+          "name": "fuel_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel cost for this segment in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((50 + {qty_noise} * 1450) / (3.0 + {qty_noise} * 5.0) * (1.10 + {qty_noise} * 0.50), 2)"
+        },
+        {
+          "name": "load_weight_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Cargo weight on this segment in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500 + {qty_noise} * 24500, 1)"
+        },
+        {
+          "name": "load_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Load weight as percent of vehicle capacity",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30 + {qty_noise} * 65, 2)"
+        },
+        {
+          "name": "traffic_delay_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Delay due to traffic in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 120, 1)"
+        },
+        {
+          "name": "weather_condition",
+          "sql_type": "STRING",
+          "comment": "Weather during segment: Clear, Rain, Snow, Fog",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Clear' WHEN {status_noise} < 0.80 THEN 'Rain' WHEN {status_noise} < 0.93 THEN 'Snow' ELSE 'Fog' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Semi": {
+          "11,12": 0.055,
+          "6,7": 0.045
+        },
+        "Truck": {
+          "3,4,5": 0.05,
+          "11,12": 0.045
+        },
+        "Van": {
+          "11,12": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "vehicle_id": "VH-001",
+          "vehicle_name": "Alpha Hauler",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-002",
+          "vehicle_name": "Beta Cruiser",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-003",
+          "vehicle_name": "Gamma Express",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-004",
+          "vehicle_name": "Delta Runner",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-005",
+          "vehicle_name": "Epsilon Mover",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-006",
+          "vehicle_name": "Zeta Carrier",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-007",
+          "vehicle_name": "Eta Freighter",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-008",
+          "vehicle_name": "Theta Prime",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-009",
+          "vehicle_name": "Iota Transit",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-010",
+          "vehicle_name": "Kappa Liner",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-011",
+          "vehicle_name": "Lambda Swift",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-012",
+          "vehicle_name": "Mu Ranger",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-013",
+          "vehicle_name": "Nu Dash",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-014",
+          "vehicle_name": "Xi Bolt",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-015",
+          "vehicle_name": "Omicron Flex",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-016",
+          "vehicle_name": "Pi Shuttle",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-017",
+          "vehicle_name": "Rho Blazer",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-018",
+          "vehicle_name": "Sigma Courier",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-019",
+          "vehicle_name": "Tau Glider",
+          "vehicle_type": "Van"
+        },
+        {
+          "vehicle_id": "VH-020",
+          "vehicle_name": "Upsilon Metro",
+          "vehicle_type": "Van"
+        }
+      ],
+      "category_distribution": {
+        "Semi": 0.045,
+        "Truck": 0.035,
+        "Van": 0.02
+      }
+    },
+    {
+      "table_name": "route_efficiency_metrics",
+      "description": "Weekly aggregated route efficiency metrics per vehicle including total distance, fuel, on-time delivery rate, cost per delivery, and CO2 emissions.",
+      "columns": [
+        {
+          "name": "metric_id",
+          "sql_type": "STRING",
+          "comment": "Unique weekly metric record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('MET-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "week_start",
+          "sql_type": "DATE",
+          "comment": "Start of reporting week",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_type",
+          "sql_type": "STRING",
+          "comment": "Vehicle class: Semi, Truck, or Van",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "total_distance_km",
+          "sql_type": "DOUBLE",
+          "comment": "Total distance driven in the week in km",
+          "is_dimension": false,
+          "generation_expr": "ROUND(800 + {qty_noise} * 4200, 1)"
+        },
+        {
+          "name": "total_fuel_liters",
+          "sql_type": "DOUBLE",
+          "comment": "Total fuel consumed in the week in liters",
+          "is_dimension": false,
+          "generation_expr": "ROUND((800 + {qty_noise} * 4200) / (3.0 + {qty_noise} * 5.0), 2)"
+        },
+        {
+          "name": "on_time_delivery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of deliveries completed on time",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75 + {qty_noise} * 24, 2)"
+        },
+        {
+          "name": "deliveries_completed",
+          "sql_type": "INT",
+          "comment": "Number of deliveries completed in the week",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 25) AS INT)"
+        },
+        {
+          "name": "cost_per_delivery_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Average fuel cost per delivery in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40 + {qty_noise} * 160, 2)"
+        },
+        {
+          "name": "co2_emissions_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated CO2 emissions in kg for the week",
+          "is_dimension": false,
+          "generation_expr": "ROUND((800 + {qty_noise} * 4200) / (3.0 + {qty_noise} * 5.0) * 2.68, 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "vehicle_id": "VH-001",
+          "vehicle_name": "Alpha Hauler",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-002",
+          "vehicle_name": "Beta Cruiser",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-003",
+          "vehicle_name": "Gamma Express",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-004",
+          "vehicle_name": "Delta Runner",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-005",
+          "vehicle_name": "Epsilon Mover",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-006",
+          "vehicle_name": "Zeta Carrier",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-007",
+          "vehicle_name": "Eta Freighter",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-008",
+          "vehicle_name": "Theta Prime",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-009",
+          "vehicle_name": "Iota Transit",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-010",
+          "vehicle_name": "Kappa Liner",
+          "vehicle_type": "Semi"
+        },
+        {
+          "vehicle_id": "VH-011",
+          "vehicle_name": "Lambda Swift",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-012",
+          "vehicle_name": "Mu Ranger",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-013",
+          "vehicle_name": "Nu Dash",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-014",
+          "vehicle_name": "Xi Bolt",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-015",
+          "vehicle_name": "Omicron Flex",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-016",
+          "vehicle_name": "Pi Shuttle",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-017",
+          "vehicle_name": "Rho Blazer",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-018",
+          "vehicle_name": "Sigma Courier",
+          "vehicle_type": "Truck"
+        },
+        {
+          "vehicle_id": "VH-019",
+          "vehicle_name": "Tau Glider",
+          "vehicle_type": "Van"
+        },
+        {
+          "vehicle_id": "VH-020",
+          "vehicle_name": "Upsilon Metro",
+          "vehicle_type": "Van"
+        }
+      ],
+      "category_distribution": {
+        "Semi": 0.045,
+        "Truck": 0.035,
+        "Van": 0.02
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "route_segments_metrics",
+      "source_table": "route_segments",
+      "dimensions": [
+        {
+          "name": "segment_date",
+          "expr": "segment_date"
+        },
+        {
+          "name": "vehicle_type",
+          "expr": "vehicle_type"
+        },
+        {
+          "name": "origin_location",
+          "expr": "origin_location"
+        },
+        {
+          "name": "destination_location",
+          "expr": "destination_location"
+        },
+        {
+          "name": "weather_condition",
+          "expr": "weather_condition"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_distance_km",
+          "expr": "SUM(distance_km)",
+          "comment": "Total distance driven across all segments in km"
+        },
+        {
+          "name": "total_fuel_consumed_liters",
+          "expr": "SUM(fuel_consumed_liters)",
+          "comment": "Total fuel consumed across all segments in liters"
+        },
+        {
+          "name": "total_fuel_cost_usd",
+          "expr": "SUM(fuel_cost_usd)",
+          "comment": "Total fuel cost across all segments in USD"
+        },
+        {
+          "name": "avg_load_utilization_pct",
+          "expr": "AVG(load_utilization_pct)",
+          "comment": "Average load utilization percentage"
+        },
+        {
+          "name": "avg_traffic_delay_minutes",
+          "expr": "AVG(traffic_delay_minutes)",
+          "comment": "Average traffic delay per segment in minutes"
+        },
+        {
+          "name": "segment_count",
+          "expr": "COUNT(DISTINCT segment_id)",
+          "comment": "Total number of route segments"
+        },
+        {
+          "name": "total_load_weight_kg",
+          "expr": "SUM(load_weight_kg)",
+          "comment": "Total load weight kg"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "unique_route_count",
+          "expr": "COUNT(DISTINCT route_id)",
+          "comment": "Number of distinct routes"
+        },
+        {
+          "name": "max_distance_km",
+          "expr": "MAX(distance_km)",
+          "comment": "Maximum distance km"
+        }
+      ]
+    },
+    {
+      "view_name": "route_efficiency_metrics_mv",
+      "source_table": "route_efficiency_metrics",
+      "dimensions": [
+        {
+          "name": "week_start",
+          "expr": "week_start"
+        },
+        {
+          "name": "vehicle_type",
+          "expr": "vehicle_type"
+        },
+        {
+          "name": "vehicle_id",
+          "expr": "vehicle_id"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_weekly_distance_km",
+          "expr": "SUM(total_distance_km)",
+          "comment": "Sum of weekly distances in km"
+        },
+        {
+          "name": "total_weekly_fuel_liters",
+          "expr": "SUM(total_fuel_liters)",
+          "comment": "Sum of weekly fuel consumption in liters"
+        },
+        {
+          "name": "avg_on_time_delivery_pct",
+          "expr": "AVG(on_time_delivery_pct)",
+          "comment": "Average on-time delivery percentage"
+        },
+        {
+          "name": "total_deliveries_completed",
+          "expr": "SUM(deliveries_completed)",
+          "comment": "Total deliveries completed"
+        },
+        {
+          "name": "avg_cost_per_delivery_usd",
+          "expr": "AVG(cost_per_delivery_usd)",
+          "comment": "Average cost per delivery in USD"
+        },
+        {
+          "name": "total_co2_emissions_kg",
+          "expr": "SUM(co2_emissions_kg)",
+          "comment": "Total CO2 emissions in kg"
+        },
+        {
+          "name": "max_total_distance_km",
+          "expr": "MAX(total_distance_km)",
+          "comment": "Maximum total distance km"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The route_segments_metrics view (source: route_segments) has dimensions: segment_date, vehicle_type, origin_location, destination_location, weather_condition. Measures: total_distance_km, total_fuel_consumed_liters, total_fuel_cost_usd, avg_load_utilization_pct, avg_traffic_delay_minutes, segment_count. The route_efficiency_metrics_mv view (source: route_efficiency_metrics) has dimensions: week_start, vehicle_type, vehicle_id. Measures: total_weekly_distance_km, total_weekly_fuel_liters, avg_on_time_delivery_pct, total_deliveries_completed, avg_cost_per_delivery_usd, total_co2_emissions_kg. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. fuel_type, home_depot, status, vehicle_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique segments?",
+    "How has unique vehicles changed over time?",
+    "What is the monthly trend in unique routes?",
+    "How has highest distance km changed over time?",
+    "What is the highest total distance km for each week start?",
+    "What is the weekly distances in km for each week start?",
+    "How does weekly fuel consumption in liters vary by week start?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique routes?",
+      "sql_lines": [
+        "SELECT segment_date, MEASURE(unique_route_count) AS unique_route_count",
+        "FROM {fqn}.route_segments_metrics",
+        "GROUP BY ALL",
+        "ORDER BY segment_date"
+      ]
+    },
+    {
+      "question": "How has highest distance km changed over time?",
+      "sql_lines": [
+        "SELECT segment_date, MEASURE(max_distance_km) AS max_distance_km",
+        "FROM {fqn}.route_segments_metrics",
+        "GROUP BY ALL",
+        "ORDER BY segment_date"
+      ]
+    },
+    {
+      "question": "How does weekly fuel consumption in liters vary by week start?",
+      "sql_lines": [
+        "SELECT week_start, MEASURE(total_weekly_fuel_liters) AS total_weekly_fuel_liters",
+        "FROM {fqn}.route_efficiency_metrics_mv",
+        "GROUP BY ALL",
+        "ORDER BY total_weekly_fuel_liters DESC"
+      ]
+    },
+    {
+      "question": "Show the distribution of records by unique vehicle identifier",
+      "sql_lines": [
+        "SELECT vehicle_id, COUNT(*) AS record_count",
+        "FROM {fqn}.vehicles",
+        "GROUP BY vehicle_id ORDER BY record_count DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total segment distance in kilometers over time?",
+      "sql_lines": [
+        "SELECT segment_date, SUM(distance_km) AS total_distance_km",
+        "FROM {fqn}.route_segments",
+        "GROUP BY segment_date ORDER BY segment_date"
+      ]
+    },
+    {
+      "question": "How has the average percentage of deliveries completed on time changed over time?",
+      "sql_lines": [
+        "SELECT week_start, AVG(on_time_delivery_pct) AS avg_on_time_delivery_pct",
+        "FROM {fqn}.route_efficiency_metrics",
+        "GROUP BY week_start ORDER BY week_start"
+      ]
+    },
+    {
+      "question": "Which vehicle types have the highest total load weight kg?",
+      "sql_lines": [
+        "SELECT vehicle_type, MEASURE(total_load_weight_kg) AS total_load_weight_kg",
+        "FROM {fqn}.route_segments_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_load_weight_kg DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "vehicle_type = 'Semi'",
+        "display_name": "semi trucks",
+        "synonyms": [
+          "long-haul",
+          "semis",
+          "tractor trailers"
+        ],
+        "instruction": "Use when filtering to long-haul semi truck routes only."
+      },
+      {
+        "sql": "weather_condition = 'Clear'",
+        "display_name": "clear weather",
+        "synonyms": [
+          "good weather",
+          "no weather delays",
+          "fair conditions"
+        ],
+        "instruction": "Use when analyzing routes with no adverse weather conditions."
+      },
+      {
+        "sql": "fuel_type = 'Electric'",
+        "display_name": "electric vehicles",
+        "synonyms": [
+          "EVs",
+          "zero-emission",
+          "electric fleet"
+        ],
+        "instruction": "Use when filtering to electric vehicles only. Note fuel_efficiency_km_per_l is null for EVs."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "segment_month",
+        "sql": "DATE_TRUNC('month', segment_date)",
+        "display_name": "segment month",
+        "synonyms": [
+          "month",
+          "reporting month"
+        ]
+      },
+      {
+        "alias": "fuel_efficiency",
+        "sql": "distance_km / NULLIF(fuel_consumed_liters, 0)",
+        "display_name": "fuel efficiency km/l",
+        "synonyms": [
+          "km per liter",
+          "mileage",
+          "fuel economy"
+        ]
+      },
+      {
+        "alias": "cost_per_km",
+        "sql": "fuel_cost_usd / NULLIF(distance_km, 0)",
+        "display_name": "fuel cost per km",
+        "synonyms": [
+          "cost per kilometer",
+          "unit fuel cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_fuel_cost",
+        "sql": "SUM(fuel_cost_usd)",
+        "display_name": "total fuel cost",
+        "synonyms": [
+          "fuel spend",
+          "fuel expense",
+          "total fuel"
+        ]
+      },
+      {
+        "alias": "avg_load_utilization",
+        "sql": "AVG(load_utilization_pct)",
+        "display_name": "average load utilization",
+        "synonyms": [
+          "utilization rate",
+          "capacity usage",
+          "fill rate"
+        ]
+      },
+      {
+        "alias": "total_co2_emissions",
+        "sql": "SUM(co2_emissions_kg)",
+        "display_name": "total CO2 emissions",
+        "synonyms": [
+          "carbon emissions",
+          "emissions",
+          "carbon footprint"
+        ]
+      },
+      {
+        "alias": "avg_on_time_rate",
+        "sql": "AVG(on_time_delivery_pct)",
+        "display_name": "average on-time delivery rate",
+        "synonyms": [
+          "OTD rate",
+          "delivery rate",
+          "on-time percentage"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique segments?",
+      "sql_lines": [
+        "SELECT segment_date, MEASURE(segment_count) AS segment_count",
+        "FROM {fqn}.route_segments_metrics",
+        "GROUP BY ALL",
+        "ORDER BY segment_date"
+      ]
+    },
+    {
+      "question": "How has unique vehicles changed over time?",
+      "sql_lines": [
+        "SELECT segment_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "FROM {fqn}.route_segments_metrics",
+        "GROUP BY ALL",
+        "ORDER BY segment_date"
+      ]
+    },
+    {
+      "question": "What is the highest total distance km for each week start?",
+      "sql_lines": [
+        "SELECT week_start, MEASURE(max_total_distance_km) AS max_total_distance_km",
+        "FROM {fqn}.route_efficiency_metrics_mv",
+        "GROUP BY ALL",
+        "ORDER BY max_total_distance_km DESC"
+      ]
+    },
+    {
+      "question": "What is the weekly distances in km for each week start?",
+      "sql_lines": [
+        "SELECT week_start, MEASURE(total_weekly_distance_km) AS total_weekly_distance_km",
+        "FROM {fqn}.route_efficiency_metrics_mv",
+        "GROUP BY ALL",
+        "ORDER BY total_weekly_distance_km DESC"
+      ]
+    },
+    {
+      "question": "What are the top unique vehicle identifier by total maximum load capacity in kilograms?",
+      "sql_lines": [
+        "SELECT vehicle_id, SUM(capacity_kg) AS total_capacity_kg",
+        "FROM {fqn}.vehicles",
+        "GROUP BY vehicle_id ORDER BY total_capacity_kg DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average load weight as percent of vehicle capacity by human-readable vehicle name?",
+      "sql_lines": [
+        "SELECT vehicle_name, AVG(load_utilization_pct) AS avg_load_utilization_pct",
+        "FROM {fqn}.route_segments",
+        "GROUP BY vehicle_name ORDER BY avg_load_utilization_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per start of reporting week?",
+      "sql_lines": [
+        "SELECT week_start, COUNT(*) AS record_count",
+        "FROM {fqn}.route_efficiency_metrics",
+        "GROUP BY week_start ORDER BY week_start"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,893 @@
+{
+  "company_name": "CompliFlow Systems",
+  "industry": "Oil & Gas Midstream",
+  "use_case": "Regulatory compliance monitoring and audit management for midstream operations",
+  "space_title": "CompliFlow Systems - Regulation & Compliance 📋",
+  "space_description": "Compliance analytics for CompliFlow Systems. Ask questions about regulatory compliance status, audit findings, compliance events, and KPIs across 20 regulations from PHMSA, EPA, OSHA, FERC, and state agencies.",
+  "schema_basename": "og_midstream_compliance",
+  "tables": [
+    {
+      "table_name": "compliance_events",
+      "description": "Compliance events including violations, inspections, and corrective actions.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Event ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.reg_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Event date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "reg_id",
+          "sql_type": "STRING",
+          "comment": "Regulation ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "regulation_name",
+          "sql_type": "STRING",
+          "comment": "Regulation name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "regulatory_body",
+          "sql_type": "STRING",
+          "comment": "Regulatory body",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "compliance_area",
+          "sql_type": "STRING",
+          "comment": "Area: Pipeline Integrity, Environmental, Safety, Commercial, Permitting, Transportation, Operations, Financial",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "event_type",
+          "sql_type": "STRING",
+          "comment": "Type: Violation, Inspection, Audit, Corrective Action, Self-Report, Near Miss",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Violation' WHEN {status_noise} < 0.35 THEN 'Inspection' WHEN {status_noise} < 0.50 THEN 'Audit' WHEN {status_noise} < 0.70 THEN 'Corrective Action' WHEN {status_noise} < 0.85 THEN 'Self-Report' ELSE 'Near Miss' END"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Low, Medium, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+        },
+        {
+          "name": "fine_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Fine/penalty amount USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 500000.0), 2)"
+        },
+        {
+          "name": "resolution_days",
+          "sql_type": "INT",
+          "comment": "Days to resolution",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(1, FLOOR({qty_noise} * 180)) AS INT)"
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Status: Open, In Progress, Closed, Overdue",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Open' WHEN {status_noise} < 0.45 THEN 'In Progress' WHEN {status_noise} < 0.85 THEN 'Closed' ELSE 'Overdue' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "reg_id": "CF-REG-001",
+          "regulation_name": "PHMSA Pipeline Safety",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Pipeline Integrity"
+        },
+        {
+          "reg_id": "CF-REG-002",
+          "regulation_name": "EPA Air Emissions",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-003",
+          "regulation_name": "OSHA Process Safety",
+          "regulatory_body": "OSHA",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-004",
+          "regulation_name": "FERC Tariff Filing",
+          "regulatory_body": "FERC",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-005",
+          "regulation_name": "State Pipeline Permits",
+          "regulatory_body": "State Commission",
+          "compliance_area": "Permitting"
+        },
+        {
+          "reg_id": "CF-REG-006",
+          "regulation_name": "DOT Hazmat Transport",
+          "regulatory_body": "DOT",
+          "compliance_area": "Transportation"
+        },
+        {
+          "reg_id": "CF-REG-007",
+          "regulation_name": "EPA Water Discharge",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-008",
+          "regulation_name": "PHMSA Integrity Mgmt",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Pipeline Integrity"
+        },
+        {
+          "reg_id": "CF-REG-009",
+          "regulation_name": "OSHA PSM Audit",
+          "regulatory_body": "OSHA",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-010",
+          "regulation_name": "FERC Open Access",
+          "regulatory_body": "FERC",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-011",
+          "regulation_name": "State Air Quality",
+          "regulatory_body": "State DEQ",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-012",
+          "regulation_name": "EPA Spill Prevention",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-013",
+          "regulation_name": "DOT Operator Qualification",
+          "regulatory_body": "DOT",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-014",
+          "regulation_name": "PHMSA Control Room",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Operations"
+        },
+        {
+          "reg_id": "CF-REG-015",
+          "regulation_name": "FERC Rate Case",
+          "regulatory_body": "FERC",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-016",
+          "regulation_name": "State Right-of-Way",
+          "regulatory_body": "State Commission",
+          "compliance_area": "Permitting"
+        },
+        {
+          "reg_id": "CF-REG-017",
+          "regulation_name": "EPA GHG Reporting",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-018",
+          "regulation_name": "OSHA Emergency Plan",
+          "regulatory_body": "OSHA",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-019",
+          "regulation_name": "State Tax Compliance",
+          "regulatory_body": "State Revenue",
+          "compliance_area": "Financial"
+        },
+        {
+          "reg_id": "CF-REG-020",
+          "regulation_name": "PHMSA Leak Detection",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Pipeline Integrity"
+        }
+      ],
+      "category_distribution": {
+        "Pipeline Integrity": 0.06,
+        "Environmental": 0.06,
+        "Safety": 0.05,
+        "Commercial": 0.05,
+        "Permitting": 0.04,
+        "Transportation": 0.04,
+        "Operations": 0.03,
+        "Financial": 0.03
+      }
+    },
+    {
+      "table_name": "audit_snapshots",
+      "description": "Periodic audit and compliance status snapshots.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('AS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.reg_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "reg_id",
+          "sql_type": "STRING",
+          "comment": "Regulation ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "regulatory_body",
+          "sql_type": "STRING",
+          "comment": "Regulatory body",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "compliance_area",
+          "sql_type": "STRING",
+          "comment": "Compliance area",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "compliance_score",
+          "sql_type": "DOUBLE",
+          "comment": "Compliance score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 78.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "open_findings",
+          "sql_type": "INT",
+          "comment": "Open audit findings",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 8) AS INT)"
+        },
+        {
+          "name": "overdue_actions",
+          "sql_type": "INT",
+          "comment": "Overdue corrective actions",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 4) AS INT)"
+        },
+        {
+          "name": "last_audit_days_ago",
+          "sql_type": "INT",
+          "comment": "Days since last audit",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(1, FLOOR({qty_noise} * 365)) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "reg_id": "CF-REG-001",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Pipeline Integrity"
+        },
+        {
+          "reg_id": "CF-REG-002",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-003",
+          "regulatory_body": "OSHA",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-004",
+          "regulatory_body": "FERC",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-005",
+          "regulatory_body": "State Commission",
+          "compliance_area": "Permitting"
+        },
+        {
+          "reg_id": "CF-REG-006",
+          "regulatory_body": "DOT",
+          "compliance_area": "Transportation"
+        },
+        {
+          "reg_id": "CF-REG-007",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-008",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Pipeline Integrity"
+        },
+        {
+          "reg_id": "CF-REG-009",
+          "regulatory_body": "OSHA",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-010",
+          "regulatory_body": "FERC",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-011",
+          "regulatory_body": "State DEQ",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-012",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-013",
+          "regulatory_body": "DOT",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-014",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Operations"
+        },
+        {
+          "reg_id": "CF-REG-015",
+          "regulatory_body": "FERC",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-016",
+          "regulatory_body": "State Commission",
+          "compliance_area": "Permitting"
+        },
+        {
+          "reg_id": "CF-REG-017",
+          "regulatory_body": "EPA",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-018",
+          "regulatory_body": "OSHA",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-019",
+          "regulatory_body": "State Revenue",
+          "compliance_area": "Financial"
+        },
+        {
+          "reg_id": "CF-REG-020",
+          "regulatory_body": "PHMSA",
+          "compliance_area": "Pipeline Integrity"
+        }
+      ],
+      "category_distribution": {
+        "Pipeline Integrity": 0.06,
+        "Environmental": 0.06,
+        "Safety": 0.05,
+        "Commercial": 0.05
+      }
+    },
+    {
+      "table_name": "compliance_kpi_monthly",
+      "description": "Monthly compliance KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.reg_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "reg_id",
+          "sql_type": "STRING",
+          "comment": "Regulation ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "compliance_area",
+          "sql_type": "STRING",
+          "comment": "Compliance area",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "violation_count",
+          "sql_type": "INT",
+          "comment": "Violations in month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 3) AS INT)"
+        },
+        {
+          "name": "total_fines_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total fines USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 250000.0), 2)"
+        },
+        {
+          "name": "closure_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Finding closure rate pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 75.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "training_completion_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Training completion pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(50.0, 85.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "reg_id": "CF-REG-001",
+          "compliance_area": "Pipeline Integrity"
+        },
+        {
+          "reg_id": "CF-REG-002",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-003",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-004",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-005",
+          "compliance_area": "Permitting"
+        },
+        {
+          "reg_id": "CF-REG-006",
+          "compliance_area": "Transportation"
+        },
+        {
+          "reg_id": "CF-REG-007",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-008",
+          "compliance_area": "Pipeline Integrity"
+        },
+        {
+          "reg_id": "CF-REG-009",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-010",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-011",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-012",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-013",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-014",
+          "compliance_area": "Operations"
+        },
+        {
+          "reg_id": "CF-REG-015",
+          "compliance_area": "Commercial"
+        },
+        {
+          "reg_id": "CF-REG-016",
+          "compliance_area": "Permitting"
+        },
+        {
+          "reg_id": "CF-REG-017",
+          "compliance_area": "Environmental"
+        },
+        {
+          "reg_id": "CF-REG-018",
+          "compliance_area": "Safety"
+        },
+        {
+          "reg_id": "CF-REG-019",
+          "compliance_area": "Financial"
+        },
+        {
+          "reg_id": "CF-REG-020",
+          "compliance_area": "Pipeline Integrity"
+        }
+      ],
+      "category_distribution": {
+        "Pipeline Integrity": 0.06,
+        "Environmental": 0.06,
+        "Safety": 0.05,
+        "Commercial": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "compliance_events_metrics",
+      "source_table": "compliance_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "reg_id",
+          "expr": "reg_id"
+        },
+        {
+          "name": "regulatory_body",
+          "expr": "regulatory_body"
+        },
+        {
+          "name": "compliance_area",
+          "expr": "compliance_area"
+        },
+        {
+          "name": "event_type",
+          "expr": "event_type"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        },
+        {
+          "name": "status",
+          "expr": "status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total compliance events"
+        },
+        {
+          "name": "total_fines_usd",
+          "expr": "SUM(fine_amount_usd)",
+          "comment": "Total fines USD"
+        },
+        {
+          "name": "avg_resolution_days",
+          "expr": "AVG(resolution_days)",
+          "comment": "Avg resolution days"
+        },
+        {
+          "name": "violation_count",
+          "expr": "COUNT(DISTINCT CASE WHEN event_type = 'Violation' THEN event_id END)",
+          "comment": "Total violations"
+        },
+        {
+          "name": "max_fine_amount",
+          "expr": "MAX(fine_amount_usd)",
+          "comment": "Maximum fine amount usd"
+        }
+      ]
+    },
+    {
+      "view_name": "audit_snapshots_metrics",
+      "source_table": "audit_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "reg_id",
+          "expr": "reg_id"
+        },
+        {
+          "name": "regulatory_body",
+          "expr": "regulatory_body"
+        },
+        {
+          "name": "compliance_area",
+          "expr": "compliance_area"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_compliance_score",
+          "expr": "AVG(compliance_score)",
+          "comment": "Avg compliance score"
+        },
+        {
+          "name": "total_open_findings",
+          "expr": "SUM(open_findings)",
+          "comment": "Total open findings"
+        },
+        {
+          "name": "total_overdue_actions",
+          "expr": "SUM(overdue_actions)",
+          "comment": "Total overdue actions"
+        },
+        {
+          "name": "avg_days_since_audit",
+          "expr": "AVG(last_audit_days_ago)",
+          "comment": "Avg days since last audit"
+        },
+        {
+          "name": "max_compliance_score",
+          "expr": "MAX(compliance_score)",
+          "comment": "Maximum compliance score"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The compliance_events_metrics view (source: compliance_events) has dimensions: event_date, reg_id, regulatory_body, compliance_area, event_type, severity, status. Measures: total_events, total_fines_usd, avg_resolution_days, violation_count. The audit_snapshots_metrics view (source: audit_snapshots) has dimensions: snapshot_date, reg_id, regulatory_body, compliance_area. Measures: avg_compliance_score, total_open_findings, total_overdue_actions, avg_days_since_audit. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. regulation_name).",
+  "sample_questions": [
+    "What is the monthly trend in violation count?",
+    "How has unique total eventss changed over time?",
+    "What is the monthly trend in highest fine amount?",
+    "How has total fines usd changed over time?",
+    "What is the monthly trend in highest compliance score?",
+    "How has total open findings changed over time?",
+    "What is the monthly trend in total overdue actions?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest fine amount?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_fine_amount) AS max_fine_amount",
+        "FROM {fqn}.compliance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has total fines usd changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_fines_usd) AS total_fines_usd",
+        "FROM {fqn}.compliance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total overdue actions?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_overdue_actions) AS total_overdue_actions",
+        "FROM {fqn}.audit_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total fine/penalty amount usd break down by regulation id for 'Open' records?",
+      "sql_lines": [
+        "SELECT reg_id, COUNT(*) AS record_count, SUM(fine_amount_usd) AS total_fine_amount_usd",
+        "FROM {fqn}.compliance_events",
+        "WHERE status = 'Open' GROUP BY reg_id ORDER BY total_fine_amount_usd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total open audit findings over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(open_findings) AS total_open_findings",
+        "FROM {fqn}.audit_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average finding closure rate pct changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(closure_rate_pct) AS avg_closure_rate_pct",
+        "FROM {fqn}.compliance_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has avg resolution days changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(avg_resolution_days) AS avg_resolution_days",
+        "FROM {fqn}.compliance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "event_type = 'Violation'",
+        "display_name": "violations only",
+        "synonyms": [
+          "violations"
+        ],
+        "instruction": "Filter to violations."
+      },
+      {
+        "sql": "status = 'Overdue'",
+        "display_name": "overdue items",
+        "synonyms": [
+          "past due",
+          "late"
+        ],
+        "instruction": "Overdue compliance items."
+      },
+      {
+        "sql": "compliance_score < 70",
+        "display_name": "low compliance",
+        "synonyms": [
+          "non-compliant"
+        ],
+        "instruction": "Low compliance score regulations."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "fine_per_violation",
+        "sql": "ROUND(compliance_kpi_monthly.total_fines_usd / NULLIF(compliance_kpi_monthly.violation_count, 0), 2)",
+        "display_name": "fine per violation",
+        "synonyms": [
+          "avg fine"
+        ]
+      },
+      {
+        "alias": "compliance_gap",
+        "sql": "100.0 - audit_snapshots.compliance_score",
+        "display_name": "compliance gap",
+        "synonyms": [
+          "risk gap"
+        ]
+      },
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', compliance_events.event_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_fines",
+        "sql": "SUM(compliance_events.fine_amount_usd)",
+        "display_name": "total fines",
+        "synonyms": [
+          "penalties"
+        ]
+      },
+      {
+        "alias": "total_violations",
+        "sql": "COUNT(DISTINCT CASE WHEN compliance_events.event_type = 'Violation' THEN compliance_events.event_id END)",
+        "display_name": "total violations",
+        "synonyms": [
+          "violations"
+        ]
+      },
+      {
+        "alias": "avg_score",
+        "sql": "AVG(audit_snapshots.compliance_score)",
+        "display_name": "avg compliance score",
+        "synonyms": [
+          "compliance"
+        ]
+      },
+      {
+        "alias": "total_overdue",
+        "sql": "SUM(audit_snapshots.overdue_actions)",
+        "display_name": "total overdue",
+        "synonyms": [
+          "overdue actions"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in violation count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(violation_count) AS violation_count",
+        "FROM {fqn}.compliance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique total eventss changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.compliance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest compliance score?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_compliance_score) AS max_compliance_score",
+        "FROM {fqn}.audit_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total open findings changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_open_findings) AS total_open_findings",
+        "FROM {fqn}.audit_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top regulation id by total fine/penalty amount usd?",
+      "sql_lines": [
+        "SELECT reg_id, SUM(fine_amount_usd) AS total_fine_amount_usd",
+        "FROM {fqn}.compliance_events",
+        "GROUP BY reg_id ORDER BY total_fine_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average compliance score 0-100 by regulatory body?",
+      "sql_lines": [
+        "SELECT regulatory_body, AVG(compliance_score) AS avg_compliance_score",
+        "FROM {fqn}.audit_snapshots",
+        "GROUP BY regulatory_body ORDER BY avg_compliance_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.compliance_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

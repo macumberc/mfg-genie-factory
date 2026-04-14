@@ -1,0 +1,152 @@
+"""Validation and default resolution helpers."""
+
+from __future__ import annotations
+
+import logging
+import re
+from dataclasses import dataclass
+from typing import Optional
+
+_logger = logging.getLogger("genie_factory")
+
+_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+@dataclass(frozen=True)
+class Namespace:
+    """Resolved deployment namespace."""
+
+    username: str
+    user_slug: str
+    catalog: str
+    schema: str
+
+    @property
+    def fqn(self) -> str:
+        return f"{self.catalog}.{self.schema}"
+
+
+def sql_string(value: str) -> str:
+    """Escape a Python string for single-quoted SQL literals."""
+
+    return value.replace("'", "''")
+
+
+def normalize_user_slug(username: str) -> str:
+    """Convert the current user into a stable identifier-safe slug."""
+
+    base = username.split("@", 1)[0]
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", base).strip("_").lower()
+    if not slug:
+        raise ValueError(
+            "Could not derive a valid user slug from current_user(); "
+            "pass an explicit schema name."
+        )
+    return slug
+
+
+def validate_identifier(value: str, field_name: str) -> str:
+    """Accept only simple unquoted identifiers for demo resources."""
+
+    if not value:
+        raise ValueError(f"{field_name} must not be empty.")
+    if not _IDENTIFIER_RE.match(value):
+        raise ValueError(
+            f"{field_name}={value!r} is not a valid identifier. "
+            "Use letters, numbers, and underscores only, and start with a letter "
+            "or underscore."
+        )
+    return value
+
+
+def sanitize_sql_identifier(name: str, context: str) -> str:
+    """Sanitize and validate a SQL identifier, raising on invalid names."""
+
+    original = name
+    name = name.strip()
+    name = name.replace("-", "_").replace(" ", "_")
+    if not _IDENTIFIER_RE.match(name):
+        raise ValueError(
+            f"Invalid SQL identifier for {context}: {original!r} "
+            f"(sanitized to {name!r}). Use letters, numbers, and underscores only, "
+            "starting with a letter or underscore."
+        )
+    if name != original:
+        _logger.warning("Sanitized %s identifier %r -> %r", context, original, name)
+    return name
+
+
+def default_schema_name(username: str, schema_basename: str) -> str:
+    """Generate a user-scoped schema name from a dynamic basename."""
+
+    return validate_identifier(
+        f"{schema_basename}_{normalize_user_slug(username)}",
+        "default schema",
+    )
+
+
+def current_user(spark, deployer_email: Optional[str] = None) -> str:
+    """Fetch the current Databricks user.
+
+    Priority order:
+    1. Explicit ``deployer_email`` parameter (thread-safe).
+    2. ``GENIE_DEPLOYER_EMAIL`` env var (legacy, not thread-safe).
+    3. ``SELECT current_user()`` fallback.
+
+    The email is needed for workspace paths (e.g., Genie space parent_path).
+    """
+    import os
+
+    if deployer_email:
+        return deployer_email
+    override = os.environ.get("GENIE_DEPLOYER_EMAIL")
+    if override:
+        return override
+    return spark.sql("SELECT current_user()").first()[0]
+
+
+def current_catalog(spark) -> str:
+    """Fetch the current Unity Catalog, falling back to main."""
+
+    try:
+        value = spark.sql("SELECT current_catalog()").first()[0]
+    except Exception:
+        _logger.warning("Could not determine current catalog, falling back to 'main'")
+        value = "main"
+    return validate_identifier(value, "catalog")
+
+
+def catalog_exists(spark, catalog: str) -> bool:
+    """Check whether a catalog already exists in the metastore."""
+
+    rows = spark.sql("SHOW CATALOGS").collect()
+    return any(row[0] == catalog for row in rows)
+
+
+def resolve_namespace(
+    spark,
+    catalog: Optional[str],
+    schema: Optional[str],
+    schema_basename: str = "genie_demo",
+    deployer_email: Optional[str] = None,
+) -> Namespace:
+    """Resolve user, catalog, and schema defaults."""
+
+    username = current_user(spark, deployer_email=deployer_email)
+    user_slug = normalize_user_slug(username)
+
+    resolved_catalog = validate_identifier(
+        catalog if catalog else current_catalog(spark),
+        "catalog",
+    )
+    resolved_schema = validate_identifier(
+        schema if schema else default_schema_name(username, schema_basename),
+        "schema",
+    )
+
+    return Namespace(
+        username=username,
+        user_slug=user_slug,
+        catalog=resolved_catalog,
+        schema=resolved_schema,
+    )

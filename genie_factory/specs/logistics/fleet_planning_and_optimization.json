@@ -1,0 +1,974 @@
+{
+  "company_name": "FleetEdge Solutions",
+  "industry": "Logistics",
+  "use_case": "Fleet planning, vehicle allocation, and capacity optimization",
+  "space_title": "FleetEdge Solutions - Fleet Planning & Optimization 🚚",
+  "space_description": "Fleet analytics for FleetEdge Solutions. Ask about vehicle utilization, dispatch efficiency, capacity forecasts, maintenance downtime, and allocation KPIs across 20 vehicle assets and regional depots.",
+  "schema_basename": "fleet_planning",
+  "tables": [
+    {
+      "table_name": "fleet_operations",
+      "description": "Daily fleet dispatch and operation records including vehicle assignments, routes, cargo, mileage, fuel usage, and delivery outcomes.",
+      "columns": [
+        {
+          "name": "operation_id",
+          "sql_type": "STRING",
+          "comment": "Unique fleet operation identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FOP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "operation_date",
+          "sql_type": "DATE",
+          "comment": "Date of the fleet operation",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle class: Heavy Duty, Medium Duty, Light Duty, Sprinter",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "depot_code",
+          "sql_type": "STRING",
+          "comment": "Depot/hub origin code",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'DEP-NE' WHEN {status_noise} < 0.25 THEN 'DEP-SE' WHEN {status_noise} < 0.375 THEN 'DEP-MW' WHEN {status_noise} < 0.5 THEN 'DEP-SW' WHEN {status_noise} < 0.625 THEN 'DEP-NW' WHEN {status_noise} < 0.75 THEN 'DEP-SC' WHEN {status_noise} < 0.875 THEN 'DEP-WC' ELSE 'DEP-CE' END"
+        },
+        {
+          "name": "route_distance_km",
+          "sql_type": "DOUBLE",
+          "comment": "Total route distance in kilometers",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80 + {qty_noise} * 920, 1)"
+        },
+        {
+          "name": "cargo_weight_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Cargo weight in kilograms",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200 + {qty_noise} * 19800, 1)"
+        },
+        {
+          "name": "fuel_consumed_liters",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel consumed in liters",
+          "is_dimension": false,
+          "generation_expr": "ROUND((80 + {qty_noise} * 920) / (3.5 + {qty_noise} * 6.5), 2)"
+        },
+        {
+          "name": "delivery_status",
+          "sql_type": "STRING",
+          "comment": "Delivery outcome: On Time, Late, Partial, Failed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Failed' WHEN {status_noise} < 0.08 THEN 'Partial' WHEN {status_noise} < 0.18 THEN 'Late' ELSE 'On Time' END"
+        },
+        {
+          "name": "revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue earned from this operation in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(150 + {qty_noise} * 2850, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Heavy Duty": {
+          "11,12": 0.055,
+          "6,7": 0.05
+        },
+        "Medium Duty": {
+          "3,4,5": 0.05,
+          "11,12": 0.045
+        },
+        "Light Duty": {
+          "11,12": 0.06
+        },
+        "Sprinter": {
+          "11,12": 0.065
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "vehicle_id": "FLT-001",
+          "vehicle_name": "Titan I",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-002",
+          "vehicle_name": "Titan II",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-003",
+          "vehicle_name": "Titan III",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-004",
+          "vehicle_name": "Titan IV",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-005",
+          "vehicle_name": "Titan V",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-006",
+          "vehicle_name": "Atlas I",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-007",
+          "vehicle_name": "Atlas II",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-008",
+          "vehicle_name": "Atlas III",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-009",
+          "vehicle_name": "Atlas IV",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-010",
+          "vehicle_name": "Atlas V",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-011",
+          "vehicle_name": "Scout I",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-012",
+          "vehicle_name": "Scout II",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-013",
+          "vehicle_name": "Scout III",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-014",
+          "vehicle_name": "Scout IV",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-015",
+          "vehicle_name": "Scout V",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-016",
+          "vehicle_name": "Sprint I",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-017",
+          "vehicle_name": "Sprint II",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-018",
+          "vehicle_name": "Sprint III",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-019",
+          "vehicle_name": "Sprint IV",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-020",
+          "vehicle_name": "Sprint V",
+          "vehicle_class": "Sprinter"
+        }
+      ],
+      "category_distribution": {
+        "Heavy Duty": 0.04,
+        "Medium Duty": 0.035,
+        "Light Duty": 0.03,
+        "Sprinter": 0.025
+      }
+    },
+    {
+      "table_name": "vehicle_utilization_snapshots",
+      "description": "Weekly snapshots of vehicle utilization rates, availability, maintenance hours, and idle time per vehicle asset.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SNAP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Weekly snapshot date",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "available_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours vehicle was available for dispatch",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80 + {qty_noise} * 88, 1)"
+        },
+        {
+          "name": "dispatched_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours vehicle was actively dispatched",
+          "is_dimension": false,
+          "generation_expr": "ROUND((80 + {qty_noise} * 88) * (0.45 + {qty_noise} * 0.45), 1)"
+        },
+        {
+          "name": "maintenance_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours spent in maintenance",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 24, 1)"
+        },
+        {
+          "name": "idle_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours vehicle was idle (not dispatched, not in maintenance)",
+          "is_dimension": false,
+          "generation_expr": "ROUND((80 + {qty_noise} * 88) * (0.10 + {qty_noise} * 0.25), 1)"
+        },
+        {
+          "name": "utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Dispatched hours as percentage of available hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND((0.45 + {qty_noise} * 0.45) * 100, 2)"
+        },
+        {
+          "name": "odometer_km",
+          "sql_type": "DOUBLE",
+          "comment": "Total odometer reading in km at snapshot",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000 + {qty_noise} * 250000, 0)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "vehicle_id": "FLT-001",
+          "vehicle_name": "Titan I",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-002",
+          "vehicle_name": "Titan II",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-003",
+          "vehicle_name": "Titan III",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-004",
+          "vehicle_name": "Titan IV",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-005",
+          "vehicle_name": "Titan V",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-006",
+          "vehicle_name": "Atlas I",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-007",
+          "vehicle_name": "Atlas II",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-008",
+          "vehicle_name": "Atlas III",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-009",
+          "vehicle_name": "Atlas IV",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-010",
+          "vehicle_name": "Atlas V",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-011",
+          "vehicle_name": "Scout I",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-012",
+          "vehicle_name": "Scout II",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-013",
+          "vehicle_name": "Scout III",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-014",
+          "vehicle_name": "Scout IV",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-015",
+          "vehicle_name": "Scout V",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-016",
+          "vehicle_name": "Sprint I",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-017",
+          "vehicle_name": "Sprint II",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-018",
+          "vehicle_name": "Sprint III",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-019",
+          "vehicle_name": "Sprint IV",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-020",
+          "vehicle_name": "Sprint V",
+          "vehicle_class": "Sprinter"
+        }
+      ],
+      "category_distribution": {
+        "Heavy Duty": 0.04,
+        "Medium Duty": 0.035,
+        "Light Duty": 0.03,
+        "Sprinter": 0.025
+      }
+    },
+    {
+      "table_name": "fleet_kpi_monthly",
+      "description": "Monthly fleet-level KPIs per vehicle class including total revenue, cost per km, utilization targets, and capacity forecasts.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('KPI-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of reporting month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total revenue generated for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(8000 + {qty_noise} * 42000, 2)"
+        },
+        {
+          "name": "monthly_fuel_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total fuel cost for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1500 + {qty_noise} * 8500, 2)"
+        },
+        {
+          "name": "monthly_maintenance_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total maintenance cost for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200 + {qty_noise} * 3800, 2)"
+        },
+        {
+          "name": "total_distance_km",
+          "sql_type": "DOUBLE",
+          "comment": "Total distance driven in the month in km",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3000 + {qty_noise} * 17000, 1)"
+        },
+        {
+          "name": "avg_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Average utilization rate for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50 + {qty_noise} * 42, 2)"
+        },
+        {
+          "name": "on_time_delivery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of on-time deliveries for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(78 + {qty_noise} * 20, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Heavy Duty": {
+          "11,12": 0.055
+        },
+        "Medium Duty": {
+          "3,4,5": 0.05
+        },
+        "Light Duty": {
+          "11,12": 0.06
+        },
+        "Sprinter": {
+          "11,12": 0.065
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "vehicle_id": "FLT-001",
+          "vehicle_name": "Titan I",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-002",
+          "vehicle_name": "Titan II",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-003",
+          "vehicle_name": "Titan III",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-004",
+          "vehicle_name": "Titan IV",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-005",
+          "vehicle_name": "Titan V",
+          "vehicle_class": "Heavy Duty"
+        },
+        {
+          "vehicle_id": "FLT-006",
+          "vehicle_name": "Atlas I",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-007",
+          "vehicle_name": "Atlas II",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-008",
+          "vehicle_name": "Atlas III",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-009",
+          "vehicle_name": "Atlas IV",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-010",
+          "vehicle_name": "Atlas V",
+          "vehicle_class": "Medium Duty"
+        },
+        {
+          "vehicle_id": "FLT-011",
+          "vehicle_name": "Scout I",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-012",
+          "vehicle_name": "Scout II",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-013",
+          "vehicle_name": "Scout III",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-014",
+          "vehicle_name": "Scout IV",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-015",
+          "vehicle_name": "Scout V",
+          "vehicle_class": "Light Duty"
+        },
+        {
+          "vehicle_id": "FLT-016",
+          "vehicle_name": "Sprint I",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-017",
+          "vehicle_name": "Sprint II",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-018",
+          "vehicle_name": "Sprint III",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-019",
+          "vehicle_name": "Sprint IV",
+          "vehicle_class": "Sprinter"
+        },
+        {
+          "vehicle_id": "FLT-020",
+          "vehicle_name": "Sprint V",
+          "vehicle_class": "Sprinter"
+        }
+      ],
+      "category_distribution": {
+        "Heavy Duty": 0.04,
+        "Medium Duty": 0.035,
+        "Light Duty": 0.03,
+        "Sprinter": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "fleet_operations_metrics",
+      "source_table": "fleet_operations",
+      "dimensions": [
+        {
+          "name": "operation_date",
+          "expr": "operation_date"
+        },
+        {
+          "name": "vehicle_class",
+          "expr": "vehicle_class"
+        },
+        {
+          "name": "depot_code",
+          "expr": "depot_code"
+        },
+        {
+          "name": "delivery_status",
+          "expr": "delivery_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_revenue_usd",
+          "expr": "SUM(revenue_usd)",
+          "comment": "Total revenue from fleet operations in USD"
+        },
+        {
+          "name": "total_fuel_consumed_liters",
+          "expr": "SUM(fuel_consumed_liters)",
+          "comment": "Total fuel consumed in liters"
+        },
+        {
+          "name": "total_distance_km",
+          "expr": "SUM(route_distance_km)",
+          "comment": "Total route distance in km"
+        },
+        {
+          "name": "total_cargo_weight_kg",
+          "expr": "SUM(cargo_weight_kg)",
+          "comment": "Total cargo weight in kg"
+        },
+        {
+          "name": "operation_count",
+          "expr": "COUNT(DISTINCT operation_id)",
+          "comment": "Number of fleet operations"
+        },
+        {
+          "name": "on_time_operation_count",
+          "expr": "COUNT(DISTINCT CASE WHEN delivery_status = 'On Time' THEN operation_id END)",
+          "comment": "Number of on-time operations"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "max_route_distance_km",
+          "expr": "MAX(route_distance_km)",
+          "comment": "Maximum route distance km"
+        }
+      ]
+    },
+    {
+      "view_name": "fleet_kpi_monthly_metrics",
+      "source_table": "fleet_kpi_monthly",
+      "dimensions": [
+        {
+          "name": "report_month",
+          "expr": "report_month"
+        },
+        {
+          "name": "vehicle_class",
+          "expr": "vehicle_class"
+        },
+        {
+          "name": "vehicle_id",
+          "expr": "vehicle_id"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_monthly_revenue",
+          "expr": "SUM(monthly_revenue_usd)",
+          "comment": "Total monthly revenue in USD"
+        },
+        {
+          "name": "total_monthly_fuel_cost",
+          "expr": "SUM(monthly_fuel_cost_usd)",
+          "comment": "Total monthly fuel cost in USD"
+        },
+        {
+          "name": "total_monthly_maintenance_cost",
+          "expr": "SUM(monthly_maintenance_cost_usd)",
+          "comment": "Total monthly maintenance cost in USD"
+        },
+        {
+          "name": "avg_utilization_pct",
+          "expr": "AVG(avg_utilization_pct)",
+          "comment": "Average utilization rate"
+        },
+        {
+          "name": "avg_on_time_delivery_pct",
+          "expr": "AVG(on_time_delivery_pct)",
+          "comment": "Average on-time delivery percentage"
+        },
+        {
+          "name": "total_total_distance_km",
+          "expr": "SUM(total_distance_km)",
+          "comment": "Total total distance km"
+        },
+        {
+          "name": "max_monthly_revenue",
+          "expr": "MAX(monthly_revenue_usd)",
+          "comment": "Maximum monthly revenue usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The fleet_operations_metrics view (source: fleet_operations) has dimensions: operation_date, vehicle_class, depot_code, delivery_status. Measures: total_revenue_usd, total_fuel_consumed_liters, total_distance_km, total_cargo_weight_kg, operation_count, on_time_operation_count. The fleet_kpi_monthly_metrics view (source: fleet_kpi_monthly) has dimensions: report_month, vehicle_class, vehicle_id. Measures: total_monthly_revenue, total_monthly_fuel_cost, total_monthly_maintenance_cost, avg_utilization_pct, avg_on_time_delivery_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. vehicle_name).",
+  "sample_questions": [
+    "What is the monthly trend in on time operation count?",
+    "How has unique operations changed over time?",
+    "What is the monthly trend in unique vehicles?",
+    "How has highest route distance km changed over time?",
+    "What is the monthly trend in highest monthly revenue?",
+    "How has total monthly revenue in usd changed over time?",
+    "What is the monthly trend in total monthly fuel cost in usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique vehicles?",
+      "sql_lines": [
+        "SELECT operation_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "FROM {fqn}.fleet_operations_metrics",
+        "GROUP BY ALL",
+        "ORDER BY operation_date"
+      ]
+    },
+    {
+      "question": "How has highest route distance km changed over time?",
+      "sql_lines": [
+        "SELECT operation_date, MEASURE(max_route_distance_km) AS max_route_distance_km",
+        "FROM {fqn}.fleet_operations_metrics",
+        "GROUP BY ALL",
+        "ORDER BY operation_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total monthly fuel cost in usd?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_monthly_fuel_cost) AS total_monthly_fuel_cost",
+        "FROM {fqn}.fleet_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has average on-time delivery percentage changed over time?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(avg_on_time_delivery_pct) AS avg_on_time_delivery_pct",
+        "FROM {fqn}.fleet_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How does total total route distance in kilometers break down by vehicle asset identifier for 'Failed' records?",
+      "sql_lines": [
+        "SELECT vehicle_id, COUNT(*) AS record_count, SUM(route_distance_km) AS total_route_distance_km",
+        "FROM {fqn}.fleet_operations",
+        "WHERE delivery_status = 'Failed' GROUP BY vehicle_id ORDER BY total_route_distance_km DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total hours vehicle was available for dispatch over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(available_hours) AS total_available_hours",
+        "FROM {fqn}.vehicle_utilization_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average average utilization rate for the month changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
+        "FROM {fqn}.fleet_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "delivery_status = 'On Time'",
+        "display_name": "on-time deliveries",
+        "synonyms": [
+          "successful deliveries",
+          "completed on time"
+        ],
+        "instruction": "Use when calculating on-time delivery rates or filtering to successful operations."
+      },
+      {
+        "sql": "vehicle_class = 'Heavy Duty'",
+        "display_name": "heavy duty vehicles",
+        "synonyms": [
+          "long-haul",
+          "heavy trucks",
+          "class 8"
+        ],
+        "instruction": "Use when filtering to the largest vehicle class for long-haul operations."
+      },
+      {
+        "sql": "delivery_status IN ('Late', 'Failed')",
+        "display_name": "problem deliveries",
+        "synonyms": [
+          "late deliveries",
+          "failed deliveries",
+          "missed deliveries"
+        ],
+        "instruction": "Use when analyzing delivery failures and delays."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "operation_month",
+        "sql": "DATE_TRUNC('month', operation_date)",
+        "display_name": "operation month",
+        "synonyms": [
+          "month",
+          "reporting month"
+        ]
+      },
+      {
+        "alias": "profit_margin_usd",
+        "sql": "monthly_revenue_usd - monthly_fuel_cost_usd - monthly_maintenance_cost_usd",
+        "display_name": "profit margin",
+        "synonyms": [
+          "net margin",
+          "operating profit"
+        ]
+      },
+      {
+        "alias": "cost_per_km",
+        "sql": "(monthly_fuel_cost_usd + monthly_maintenance_cost_usd) / NULLIF(total_distance_km, 0)",
+        "display_name": "cost per km",
+        "synonyms": [
+          "unit cost",
+          "km cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_fleet_revenue",
+        "sql": "SUM(revenue_usd)",
+        "display_name": "total fleet revenue",
+        "synonyms": [
+          "revenue",
+          "total revenue",
+          "fleet income"
+        ]
+      },
+      {
+        "alias": "on_time_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN delivery_status = 'On Time' THEN operation_id END) * 1.0 / NULLIF(COUNT(DISTINCT operation_id), 0)",
+        "display_name": "on-time delivery rate",
+        "synonyms": [
+          "OTD rate",
+          "delivery success rate"
+        ]
+      },
+      {
+        "alias": "avg_utilization",
+        "sql": "AVG(utilization_pct)",
+        "display_name": "average utilization",
+        "synonyms": [
+          "utilization rate",
+          "usage rate",
+          "fleet utilization"
+        ]
+      },
+      {
+        "alias": "total_maintenance_cost",
+        "sql": "SUM(monthly_maintenance_cost_usd)",
+        "display_name": "total maintenance cost",
+        "synonyms": [
+          "maintenance spend",
+          "repair cost"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in on time operation count?",
+      "sql_lines": [
+        "SELECT operation_date, MEASURE(on_time_operation_count) AS on_time_operation_count",
+        "FROM {fqn}.fleet_operations_metrics",
+        "GROUP BY ALL",
+        "ORDER BY operation_date"
+      ]
+    },
+    {
+      "question": "How has unique operations changed over time?",
+      "sql_lines": [
+        "SELECT operation_date, MEASURE(operation_count) AS operation_count",
+        "FROM {fqn}.fleet_operations_metrics",
+        "GROUP BY ALL",
+        "ORDER BY operation_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest monthly revenue?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(max_monthly_revenue) AS max_monthly_revenue",
+        "FROM {fqn}.fleet_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has total monthly revenue in usd changed over time?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_monthly_revenue) AS total_monthly_revenue",
+        "FROM {fqn}.fleet_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "What are the top vehicle asset identifier by total total route distance in kilometers?",
+      "sql_lines": [
+        "SELECT vehicle_id, SUM(route_distance_km) AS total_route_distance_km",
+        "FROM {fqn}.fleet_operations",
+        "GROUP BY vehicle_id ORDER BY total_route_distance_km DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average dispatched hours as percentage of available hours by human-readable vehicle name?",
+      "sql_lines": [
+        "SELECT vehicle_name, AVG(utilization_pct) AS avg_utilization_pct",
+        "FROM {fqn}.vehicle_utilization_snapshots",
+        "GROUP BY vehicle_name ORDER BY avg_utilization_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of reporting month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.fleet_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

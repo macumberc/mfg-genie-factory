@@ -1,0 +1,1019 @@
+{
+  "company_name": "MineOps Central",
+  "industry": "Mining",
+  "use_case": "Mining production monitoring and processing control center",
+  "space_title": "MineOps Central - Production Monitoring Control Center 📊",
+  "space_description": "Mining production analytics for MineOps Central. Ask about throughput rates, recovery yields, equipment utilization, and bottleneck analysis across 20 processing units.",
+  "schema_basename": "mining_production_monitor",
+  "tables": [
+    {
+      "table_name": "processing_units",
+      "description": "Daily processing unit records with throughput, recovery rates, and energy consumption.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PD-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Record date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_name",
+          "sql_type": "STRING",
+          "comment": "Unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_type",
+          "sql_type": "STRING",
+          "comment": "Unit type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "processing_stage",
+          "sql_type": "STRING",
+          "comment": "Processing stage",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "throughput_tph",
+          "sql_type": "DOUBLE",
+          "comment": "Throughput tons per hour",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 900.0), 1)"
+        },
+        {
+          "name": "recovery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Material recovery 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70.0 + ({qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "energy_kwh_per_ton",
+          "sql_type": "DOUBLE",
+          "comment": "Energy consumption kWh/ton",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "unit_status",
+          "sql_type": "STRING",
+          "comment": "Status: Running, Idle, Maintenance, Fault",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fault' WHEN {status_noise} < 0.12 THEN 'Maintenance' WHEN {status_noise} < 0.20 THEN 'Idle' ELSE 'Running' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "SAG Mill": {
+          "4,5,6": 0.05
+        },
+        "Ball Mill": {
+          "4,5,6": 0.05
+        },
+        "Jaw Crusher": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "unit_id": "PU-001",
+          "unit_name": "Primary Jaw Crusher A",
+          "unit_type": "Jaw Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-002",
+          "unit_name": "Primary Jaw Crusher B",
+          "unit_type": "Jaw Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-003",
+          "unit_name": "Primary Gyratory Crusher",
+          "unit_type": "Gyratory Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-004",
+          "unit_name": "Secondary Cone Crusher 1",
+          "unit_type": "Cone Crusher",
+          "processing_stage": "Secondary Crushing"
+        },
+        {
+          "unit_id": "PU-005",
+          "unit_name": "Secondary Cone Crusher 2",
+          "unit_type": "Cone Crusher",
+          "processing_stage": "Secondary Crushing"
+        },
+        {
+          "unit_id": "PU-006",
+          "unit_name": "Tertiary Impact Crusher",
+          "unit_type": "Impact Crusher",
+          "processing_stage": "Tertiary Crushing"
+        },
+        {
+          "unit_id": "PU-007",
+          "unit_name": "HPGR Unit 1",
+          "unit_type": "HPGR",
+          "processing_stage": "Tertiary Crushing"
+        },
+        {
+          "unit_id": "PU-008",
+          "unit_name": "SAG Mill 1",
+          "unit_type": "SAG Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-009",
+          "unit_name": "SAG Mill 2",
+          "unit_type": "SAG Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-010",
+          "unit_name": "Ball Mill 1",
+          "unit_type": "Ball Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-011",
+          "unit_name": "Ball Mill 2",
+          "unit_type": "Ball Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-012",
+          "unit_name": "Flotation Cell Bank A",
+          "unit_type": "Flotation Cell",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-013",
+          "unit_name": "Flotation Cell Bank B",
+          "unit_type": "Flotation Cell",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-014",
+          "unit_name": "Thickener 1",
+          "unit_type": "Thickener",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-015",
+          "unit_name": "Thickener 2",
+          "unit_type": "Thickener",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-016",
+          "unit_name": "Overland Conveyor 1",
+          "unit_type": "Conveyor",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-017",
+          "unit_name": "Overland Conveyor 2",
+          "unit_type": "Conveyor",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-018",
+          "unit_name": "Stacker-Reclaimer 1",
+          "unit_type": "Stacker",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-019",
+          "unit_name": "Screening Plant A",
+          "unit_type": "Vibrating Screen",
+          "processing_stage": "Classification"
+        },
+        {
+          "unit_id": "PU-020",
+          "unit_name": "Screening Plant B",
+          "unit_type": "Vibrating Screen",
+          "processing_stage": "Classification"
+        }
+      ],
+      "category_distribution": {
+        "Jaw Crusher": 0.03,
+        "Gyratory Crusher": 0.025,
+        "Cone Crusher": 0.028,
+        "Impact Crusher": 0.02,
+        "HPGR": 0.022,
+        "SAG Mill": 0.035,
+        "Ball Mill": 0.032,
+        "Flotation Cell": 0.028,
+        "Thickener": 0.025,
+        "Conveyor": 0.03,
+        "Stacker": 0.02,
+        "Vibrating Screen": 0.025
+      }
+    },
+    {
+      "table_name": "production_readings",
+      "description": "Hourly production readings with grade, particle size, and quality metrics.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Reading ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Reading date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_type",
+          "sql_type": "STRING",
+          "comment": "Unit type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "processing_stage",
+          "sql_type": "STRING",
+          "comment": "Stage",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "ore_grade_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Ore grade percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 4.5), 3)"
+        },
+        {
+          "name": "particle_size_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Average particle size mm",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.1 + ({qty_noise} * 99.9), 1)"
+        },
+        {
+          "name": "moisture_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Moisture content percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 13.0), 1)"
+        },
+        {
+          "name": "concentrate_grade_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Concentrate grade percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 45.0), 2)"
+        },
+        {
+          "name": "quality_status",
+          "sql_type": "STRING",
+          "comment": "Quality: On Spec, Marginal, Off Spec",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Off Spec' WHEN {status_noise} < 0.18 THEN 'Marginal' ELSE 'On Spec' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "SAG Mill": {
+          "4,5,6": 0.05
+        },
+        "Ball Mill": {
+          "4,5,6": 0.05
+        },
+        "Jaw Crusher": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "unit_id": "PU-001",
+          "unit_name": "Primary Jaw Crusher A",
+          "unit_type": "Jaw Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-002",
+          "unit_name": "Primary Jaw Crusher B",
+          "unit_type": "Jaw Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-003",
+          "unit_name": "Primary Gyratory Crusher",
+          "unit_type": "Gyratory Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-004",
+          "unit_name": "Secondary Cone Crusher 1",
+          "unit_type": "Cone Crusher",
+          "processing_stage": "Secondary Crushing"
+        },
+        {
+          "unit_id": "PU-005",
+          "unit_name": "Secondary Cone Crusher 2",
+          "unit_type": "Cone Crusher",
+          "processing_stage": "Secondary Crushing"
+        },
+        {
+          "unit_id": "PU-006",
+          "unit_name": "Tertiary Impact Crusher",
+          "unit_type": "Impact Crusher",
+          "processing_stage": "Tertiary Crushing"
+        },
+        {
+          "unit_id": "PU-007",
+          "unit_name": "HPGR Unit 1",
+          "unit_type": "HPGR",
+          "processing_stage": "Tertiary Crushing"
+        },
+        {
+          "unit_id": "PU-008",
+          "unit_name": "SAG Mill 1",
+          "unit_type": "SAG Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-009",
+          "unit_name": "SAG Mill 2",
+          "unit_type": "SAG Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-010",
+          "unit_name": "Ball Mill 1",
+          "unit_type": "Ball Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-011",
+          "unit_name": "Ball Mill 2",
+          "unit_type": "Ball Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-012",
+          "unit_name": "Flotation Cell Bank A",
+          "unit_type": "Flotation Cell",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-013",
+          "unit_name": "Flotation Cell Bank B",
+          "unit_type": "Flotation Cell",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-014",
+          "unit_name": "Thickener 1",
+          "unit_type": "Thickener",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-015",
+          "unit_name": "Thickener 2",
+          "unit_type": "Thickener",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-016",
+          "unit_name": "Overland Conveyor 1",
+          "unit_type": "Conveyor",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-017",
+          "unit_name": "Overland Conveyor 2",
+          "unit_type": "Conveyor",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-018",
+          "unit_name": "Stacker-Reclaimer 1",
+          "unit_type": "Stacker",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-019",
+          "unit_name": "Screening Plant A",
+          "unit_type": "Vibrating Screen",
+          "processing_stage": "Classification"
+        },
+        {
+          "unit_id": "PU-020",
+          "unit_name": "Screening Plant B",
+          "unit_type": "Vibrating Screen",
+          "processing_stage": "Classification"
+        }
+      ],
+      "category_distribution": {
+        "Jaw Crusher": 0.03,
+        "Gyratory Crusher": 0.025,
+        "Cone Crusher": 0.028,
+        "Impact Crusher": 0.02,
+        "HPGR": 0.022,
+        "SAG Mill": 0.035,
+        "Ball Mill": 0.032,
+        "Flotation Cell": 0.028,
+        "Thickener": 0.025,
+        "Conveyor": 0.03,
+        "Stacker": 0.02,
+        "Vibrating Screen": 0.025
+      }
+    },
+    {
+      "table_name": "throughput_snapshots",
+      "description": "Weekly production targets and bottleneck analysis with planned vs actual throughput.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_type",
+          "sql_type": "STRING",
+          "comment": "Unit type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "processing_stage",
+          "sql_type": "STRING",
+          "comment": "Stage",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "planned_throughput_tpd",
+          "sql_type": "DOUBLE",
+          "comment": "Planned throughput tons/day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2000.0 + ({qty_noise} * 18000.0), 0)"
+        },
+        {
+          "name": "actual_throughput_tpd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual throughput tons/day",
+          "is_dimension": false,
+          "generation_expr": "ROUND((2000.0 + ({qty_noise} * 18000.0)) * (0.75 + {status_noise} * 0.35), 0)"
+        },
+        {
+          "name": "utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Equipment utilization 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(55.0 + ({qty_noise} * 40.0), 2)"
+        },
+        {
+          "name": "downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Unplanned downtime hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 24.0, 1)"
+        },
+        {
+          "name": "bottleneck_flag",
+          "sql_type": "STRING",
+          "comment": "Bottleneck: Yes, No",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Yes' ELSE 'No' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "SAG Mill": {
+          "4,5,6": 0.05
+        },
+        "Ball Mill": {
+          "4,5,6": 0.05
+        },
+        "Jaw Crusher": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "unit_id": "PU-001",
+          "unit_name": "Primary Jaw Crusher A",
+          "unit_type": "Jaw Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-002",
+          "unit_name": "Primary Jaw Crusher B",
+          "unit_type": "Jaw Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-003",
+          "unit_name": "Primary Gyratory Crusher",
+          "unit_type": "Gyratory Crusher",
+          "processing_stage": "Primary Crushing"
+        },
+        {
+          "unit_id": "PU-004",
+          "unit_name": "Secondary Cone Crusher 1",
+          "unit_type": "Cone Crusher",
+          "processing_stage": "Secondary Crushing"
+        },
+        {
+          "unit_id": "PU-005",
+          "unit_name": "Secondary Cone Crusher 2",
+          "unit_type": "Cone Crusher",
+          "processing_stage": "Secondary Crushing"
+        },
+        {
+          "unit_id": "PU-006",
+          "unit_name": "Tertiary Impact Crusher",
+          "unit_type": "Impact Crusher",
+          "processing_stage": "Tertiary Crushing"
+        },
+        {
+          "unit_id": "PU-007",
+          "unit_name": "HPGR Unit 1",
+          "unit_type": "HPGR",
+          "processing_stage": "Tertiary Crushing"
+        },
+        {
+          "unit_id": "PU-008",
+          "unit_name": "SAG Mill 1",
+          "unit_type": "SAG Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-009",
+          "unit_name": "SAG Mill 2",
+          "unit_type": "SAG Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-010",
+          "unit_name": "Ball Mill 1",
+          "unit_type": "Ball Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-011",
+          "unit_name": "Ball Mill 2",
+          "unit_type": "Ball Mill",
+          "processing_stage": "Grinding"
+        },
+        {
+          "unit_id": "PU-012",
+          "unit_name": "Flotation Cell Bank A",
+          "unit_type": "Flotation Cell",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-013",
+          "unit_name": "Flotation Cell Bank B",
+          "unit_type": "Flotation Cell",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-014",
+          "unit_name": "Thickener 1",
+          "unit_type": "Thickener",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-015",
+          "unit_name": "Thickener 2",
+          "unit_type": "Thickener",
+          "processing_stage": "Concentration"
+        },
+        {
+          "unit_id": "PU-016",
+          "unit_name": "Overland Conveyor 1",
+          "unit_type": "Conveyor",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-017",
+          "unit_name": "Overland Conveyor 2",
+          "unit_type": "Conveyor",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-018",
+          "unit_name": "Stacker-Reclaimer 1",
+          "unit_type": "Stacker",
+          "processing_stage": "Material Handling"
+        },
+        {
+          "unit_id": "PU-019",
+          "unit_name": "Screening Plant A",
+          "unit_type": "Vibrating Screen",
+          "processing_stage": "Classification"
+        },
+        {
+          "unit_id": "PU-020",
+          "unit_name": "Screening Plant B",
+          "unit_type": "Vibrating Screen",
+          "processing_stage": "Classification"
+        }
+      ],
+      "category_distribution": {
+        "Jaw Crusher": 0.03,
+        "Gyratory Crusher": 0.025,
+        "Cone Crusher": 0.028,
+        "Impact Crusher": 0.02,
+        "HPGR": 0.022,
+        "SAG Mill": 0.035,
+        "Ball Mill": 0.032,
+        "Flotation Cell": 0.028,
+        "Thickener": 0.025,
+        "Conveyor": 0.03,
+        "Stacker": 0.02,
+        "Vibrating Screen": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "production_kpi_monthly",
+      "source_table": "processing_units",
+      "dimensions": [
+        {
+          "name": "record_date",
+          "expr": "record_date"
+        },
+        {
+          "name": "unit_type",
+          "expr": "unit_type"
+        },
+        {
+          "name": "processing_stage",
+          "expr": "processing_stage"
+        },
+        {
+          "name": "unit_status",
+          "expr": "unit_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_throughput_tph",
+          "expr": "AVG(throughput_tph)",
+          "comment": "Avg throughput tph"
+        },
+        {
+          "name": "avg_recovery_pct",
+          "expr": "AVG(recovery_pct)",
+          "comment": "Avg recovery rate"
+        },
+        {
+          "name": "avg_energy_per_ton",
+          "expr": "AVG(energy_kwh_per_ton)",
+          "comment": "Avg energy kWh/ton"
+        },
+        {
+          "name": "running_count",
+          "expr": "COUNT(DISTINCT CASE WHEN unit_status = 'Running' THEN unit_id END)",
+          "comment": "Running units"
+        },
+        {
+          "name": "total_unit_count",
+          "expr": "COUNT(DISTINCT unit_id)",
+          "comment": "Total units"
+        },
+        {
+          "name": "max_throughput_tph",
+          "expr": "MAX(throughput_tph)",
+          "comment": "Maximum throughput tph"
+        }
+      ]
+    },
+    {
+      "view_name": "throughput_kpi_monthly",
+      "source_table": "throughput_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "unit_type",
+          "expr": "unit_type"
+        },
+        {
+          "name": "processing_stage",
+          "expr": "processing_stage"
+        },
+        {
+          "name": "bottleneck_flag",
+          "expr": "bottleneck_flag"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_planned_tpd",
+          "expr": "SUM(planned_throughput_tpd)",
+          "comment": "Total planned TPD"
+        },
+        {
+          "name": "total_actual_tpd",
+          "expr": "SUM(actual_throughput_tpd)",
+          "comment": "Total actual TPD"
+        },
+        {
+          "name": "avg_utilization",
+          "expr": "AVG(utilization_pct)",
+          "comment": "Avg utilization pct"
+        },
+        {
+          "name": "total_downtime",
+          "expr": "SUM(downtime_hours)",
+          "comment": "Total downtime hours"
+        },
+        {
+          "name": "bottleneck_count",
+          "expr": "COUNT(DISTINCT CASE WHEN bottleneck_flag = 'Yes' THEN snapshot_id END)",
+          "comment": "Bottleneck count"
+        },
+        {
+          "name": "unique_unit_count",
+          "expr": "COUNT(DISTINCT unit_id)",
+          "comment": "Number of distinct units"
+        },
+        {
+          "name": "max_planned_throughput_tpd",
+          "expr": "MAX(planned_throughput_tpd)",
+          "comment": "Maximum planned throughput tpd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_kpi_monthly view (source: processing_units) has dimensions: record_date, unit_type, processing_stage, unit_status. Measures: avg_throughput_tph, avg_recovery_pct, avg_energy_per_ton, running_count, total_unit_count. The throughput_kpi_monthly view (source: throughput_snapshots) has dimensions: snapshot_date, unit_type, processing_stage, bottleneck_flag. Measures: total_planned_tpd, total_actual_tpd, avg_utilization, total_downtime, bottleneck_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_id, unit_name).",
+  "sample_questions": [
+    "What is the monthly trend in running count?",
+    "How has unique total units changed over time?",
+    "What is the monthly trend in highest throughput tph?",
+    "How has avg throughput tph changed over time?",
+    "What is the monthly trend in bottleneck count?",
+    "How has unique units changed over time?",
+    "What is the monthly trend in highest planned throughput tpd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest throughput tph?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(max_throughput_tph) AS max_throughput_tph",
+        "FROM {fqn}.production_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has avg throughput tph changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(avg_throughput_tph) AS avg_throughput_tph",
+        "FROM {fqn}.production_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest planned throughput tpd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_planned_throughput_tpd) AS max_planned_throughput_tpd",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has bottleneck count changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(bottleneck_count) AS bottleneck_count",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total throughput tons per hour break down by unit id for 'Fault' records?",
+      "sql_lines": [
+        "SELECT unit_id, COUNT(*) AS record_count, SUM(throughput_tph) AS total_throughput_tph",
+        "FROM {fqn}.processing_units",
+        "WHERE unit_status = 'Fault' GROUP BY unit_id ORDER BY total_throughput_tph DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total average particle size mm over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(particle_size_mm) AS total_particle_size_mm",
+        "FROM {fqn}.production_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has the average equipment utilization 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, AVG(utilization_pct) AS avg_utilization_pct",
+        "FROM {fqn}.throughput_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "throughput_snapshots.bottleneck_flag = 'Yes'",
+        "display_name": "bottlenecks",
+        "synonyms": [
+          "constraints"
+        ],
+        "instruction": "Filter bottlenecks."
+      },
+      {
+        "sql": "processing_units.unit_status = 'Fault'",
+        "display_name": "faulted units",
+        "synonyms": [
+          "down"
+        ],
+        "instruction": "Filter faulted."
+      },
+      {
+        "sql": "production_readings.quality_status = 'Off Spec'",
+        "display_name": "off spec",
+        "synonyms": [
+          "quality issues"
+        ],
+        "instruction": "Filter off spec."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "record_month",
+        "sql": "DATE_TRUNC('month', processing_units.record_date)",
+        "display_name": "record month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "plan_adherence",
+        "sql": "throughput_snapshots.actual_throughput_tpd / NULLIF(throughput_snapshots.planned_throughput_tpd, 0) * 100",
+        "display_name": "plan adherence pct",
+        "synonyms": [
+          "achievement rate"
+        ]
+      },
+      {
+        "alias": "energy_cost_per_ton",
+        "sql": "processing_units.energy_kwh_per_ton * 0.08",
+        "display_name": "energy cost per ton USD",
+        "synonyms": [
+          "power cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_throughput",
+        "sql": "AVG(processing_units.throughput_tph)",
+        "display_name": "avg throughput",
+        "synonyms": [
+          "processing rate"
+        ]
+      },
+      {
+        "alias": "avg_recovery",
+        "sql": "AVG(processing_units.recovery_pct)",
+        "display_name": "avg recovery",
+        "synonyms": [
+          "yield"
+        ]
+      },
+      {
+        "alias": "total_downtime",
+        "sql": "SUM(throughput_snapshots.downtime_hours)",
+        "display_name": "total downtime",
+        "synonyms": [
+          "lost time"
+        ]
+      },
+      {
+        "alias": "avg_utilization",
+        "sql": "AVG(throughput_snapshots.utilization_pct)",
+        "display_name": "avg utilization",
+        "synonyms": [
+          "OEE"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in running count?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(running_count) AS running_count",
+        "FROM {fqn}.production_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has unique total units changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_unit_count) AS total_unit_count",
+        "FROM {fqn}.production_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in bottleneck count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(bottleneck_count) AS bottleneck_count",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique units changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_unit_count) AS unique_unit_count",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top unit id by total throughput tons per hour?",
+      "sql_lines": [
+        "SELECT unit_id, SUM(throughput_tph) AS total_throughput_tph",
+        "FROM {fqn}.processing_units",
+        "GROUP BY unit_id ORDER BY total_throughput_tph DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average ore grade percentage by unit type?",
+      "sql_lines": [
+        "SELECT unit_type, AVG(ore_grade_pct) AS avg_ore_grade_pct",
+        "FROM {fqn}.production_readings",
+        "GROUP BY unit_type ORDER BY avg_ore_grade_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.throughput_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

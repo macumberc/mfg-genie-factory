@@ -1,0 +1,1011 @@
+{
+  "company_name": "LoadCast Energy",
+  "industry": "Electric Utility",
+  "use_case": "Electric load demand forecasting and capacity planning",
+  "space_title": "LoadCast Energy - Demand Forecasting & Capacity Planning 📈",
+  "space_description": "Demand forecasting analytics for LoadCast Energy. Ask about load forecasts vs actuals, peak demand trends, forecast accuracy, capacity margins, and weather-driven demand across 20 service territories.",
+  "schema_basename": "utility_demand_forecast",
+  "tables": [
+    {
+      "table_name": "demand_readings",
+      "description": "Daily actual demand readings by service territory including peak load, temperature, and day type.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique demand reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.territory_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of demand reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "territory_id",
+          "sql_type": "STRING",
+          "comment": "Service territory identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "territory_name",
+          "sql_type": "STRING",
+          "comment": "Service territory name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "territory_type",
+          "sql_type": "STRING",
+          "comment": "Territory type: Urban, Suburban, Rural, Industrial, Commercial",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "climate_zone",
+          "sql_type": "STRING",
+          "comment": "Climate zone: Hot-Humid, Hot-Dry, Temperate, Cold, Mixed",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "peak_demand_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Daily peak demand in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 900.0) + (CASE WHEN MONTH(d.dt) IN (7,8) THEN 150.0 WHEN MONTH(d.dt) IN (1,2) THEN 100.0 ELSE 0.0 END), 2)"
+        },
+        {
+          "name": "avg_demand_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Average demand in MW for the day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80.0 + ({qty_noise} * 620.0) + (CASE WHEN MONTH(d.dt) IN (7,8) THEN 80.0 ELSE 0.0 END), 2)"
+        },
+        {
+          "name": "avg_temp_fahrenheit",
+          "sql_type": "DOUBLE",
+          "comment": "Average daily temperature in Fahrenheit",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + ({qty_noise} * 70.0) + (CASE WHEN MONTH(d.dt) IN (6,7,8) THEN 20.0 WHEN MONTH(d.dt) IN (12,1,2) THEN -15.0 ELSE 0.0 END), 1)"
+        },
+        {
+          "name": "day_type",
+          "sql_type": "STRING",
+          "comment": "Day type: Weekday, Weekend, Holiday",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Holiday' WHEN {status_noise} < 0.33 THEN 'Weekend' ELSE 'Weekday' END"
+        },
+        {
+          "name": "customer_count",
+          "sql_type": "INT",
+          "comment": "Number of active customers in the territory",
+          "is_dimension": false,
+          "generation_expr": "CAST(5000 + FLOOR({qty_noise} * 95000) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Hot-Humid": {
+          "6,7,8": 0.07
+        },
+        "Hot-Dry": {
+          "6,7,8,9": 0.065
+        },
+        "Cold": {
+          "12,1,2": 0.06
+        },
+        "Temperate": {
+          "7,8": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "territory_id": "ST-001",
+          "territory_name": "Metro Downtown",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-002",
+          "territory_name": "Metro Midtown",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-003",
+          "territory_name": "Northside Residential",
+          "territory_type": "Suburban",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-004",
+          "territory_name": "Southside Residential",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-005",
+          "territory_name": "Eastgate Industrial Park",
+          "territory_type": "Industrial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-006",
+          "territory_name": "Westview Mall District",
+          "territory_type": "Commercial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-007",
+          "territory_name": "Lakeside Estates",
+          "territory_type": "Suburban",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-008",
+          "territory_name": "River Valley Rural",
+          "territory_type": "Rural",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-009",
+          "territory_name": "Desert Springs",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Dry"
+        },
+        {
+          "territory_id": "ST-010",
+          "territory_name": "Mountain View",
+          "territory_type": "Rural",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-011",
+          "territory_name": "Harbor Commercial",
+          "territory_type": "Commercial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-012",
+          "territory_name": "Airport Industrial",
+          "territory_type": "Industrial",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-013",
+          "territory_name": "College Town",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-014",
+          "territory_name": "Tech Campus North",
+          "territory_type": "Commercial",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-015",
+          "territory_name": "Coastal Villas",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-016",
+          "territory_name": "Prairie Farms",
+          "territory_type": "Rural",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-017",
+          "territory_name": "Sunbelt Towers",
+          "territory_type": "Urban",
+          "climate_zone": "Hot-Dry"
+        },
+        {
+          "territory_id": "ST-018",
+          "territory_name": "Forest Hills",
+          "territory_type": "Suburban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-019",
+          "territory_name": "Refinery Row",
+          "territory_type": "Industrial",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-020",
+          "territory_name": "Data Center Corridor",
+          "territory_type": "Commercial",
+          "climate_zone": "Mixed"
+        }
+      ],
+      "category_distribution": {
+        "Urban": 0.03,
+        "Suburban": 0.035,
+        "Rural": 0.025,
+        "Industrial": 0.03,
+        "Commercial": 0.03
+      }
+    },
+    {
+      "table_name": "demand_forecasts",
+      "description": "Monthly demand forecasts with predicted peak and average load, capacity margin, and forecast model metadata.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique forecast record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DF-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.territory_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Month being forecasted (first day)",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "territory_id",
+          "sql_type": "STRING",
+          "comment": "Service territory identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "territory_name",
+          "sql_type": "STRING",
+          "comment": "Service territory name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "territory_type",
+          "sql_type": "STRING",
+          "comment": "Territory type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_peak_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Forecasted peak demand in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND(150.0 + ({qty_noise} * 850.0), 2)"
+        },
+        {
+          "name": "actual_peak_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Actual peak demand in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50.0, (150.0 + ({qty_noise} * 850.0)) * (0.85 + {status_noise} * 0.30)), 2)"
+        },
+        {
+          "name": "forecast_error_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Absolute forecast error percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(ABS(({qty_noise} * 0.30) - 0.08) * 100.0, 2)"
+        },
+        {
+          "name": "capacity_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Available capacity margin as percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 30.0), 2)"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Forecast model version: v2.0, v2.1, v2.2",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v2.0' WHEN {status_noise} < 0.55 THEN 'v2.1' ELSE 'v2.2' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Urban": {
+          "7,8": 0.06
+        },
+        "Industrial": {
+          "3,4,9,10": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "territory_id": "ST-001",
+          "territory_name": "Metro Downtown",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-002",
+          "territory_name": "Metro Midtown",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-003",
+          "territory_name": "Northside Residential",
+          "territory_type": "Suburban",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-004",
+          "territory_name": "Southside Residential",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-005",
+          "territory_name": "Eastgate Industrial Park",
+          "territory_type": "Industrial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-006",
+          "territory_name": "Westview Mall District",
+          "territory_type": "Commercial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-007",
+          "territory_name": "Lakeside Estates",
+          "territory_type": "Suburban",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-008",
+          "territory_name": "River Valley Rural",
+          "territory_type": "Rural",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-009",
+          "territory_name": "Desert Springs",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Dry"
+        },
+        {
+          "territory_id": "ST-010",
+          "territory_name": "Mountain View",
+          "territory_type": "Rural",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-011",
+          "territory_name": "Harbor Commercial",
+          "territory_type": "Commercial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-012",
+          "territory_name": "Airport Industrial",
+          "territory_type": "Industrial",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-013",
+          "territory_name": "College Town",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-014",
+          "territory_name": "Tech Campus North",
+          "territory_type": "Commercial",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-015",
+          "territory_name": "Coastal Villas",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-016",
+          "territory_name": "Prairie Farms",
+          "territory_type": "Rural",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-017",
+          "territory_name": "Sunbelt Towers",
+          "territory_type": "Urban",
+          "climate_zone": "Hot-Dry"
+        },
+        {
+          "territory_id": "ST-018",
+          "territory_name": "Forest Hills",
+          "territory_type": "Suburban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-019",
+          "territory_name": "Refinery Row",
+          "territory_type": "Industrial",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-020",
+          "territory_name": "Data Center Corridor",
+          "territory_type": "Commercial",
+          "climate_zone": "Mixed"
+        }
+      ],
+      "category_distribution": {
+        "Urban": 0.03,
+        "Suburban": 0.035,
+        "Rural": 0.025,
+        "Industrial": 0.03,
+        "Commercial": 0.03
+      }
+    },
+    {
+      "table_name": "demand_kpi_monthly",
+      "description": "Monthly demand KPIs including load factor, reserve margin, weather sensitivity, and EV adoption impact.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.territory_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "territory_id",
+          "sql_type": "STRING",
+          "comment": "Service territory identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "territory_type",
+          "sql_type": "STRING",
+          "comment": "Territory type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "climate_zone",
+          "sql_type": "STRING",
+          "comment": "Climate zone",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "load_factor_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Load factor as percentage (avg demand / peak demand * 100)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(55.0 + ({qty_noise} * 35.0), 2)"
+        },
+        {
+          "name": "reserve_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Reserve margin above peak demand",
+          "is_dimension": false,
+          "generation_expr": "ROUND(8.0 + ({qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "weather_sensitivity_score",
+          "sql_type": "DOUBLE",
+          "comment": "Weather sensitivity score 0-10 (higher = more weather dependent)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 8.0), 2)"
+        },
+        {
+          "name": "ev_load_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated EV charging load contribution in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 95.0), 2)"
+        },
+        {
+          "name": "distributed_solar_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Behind-the-meter solar generation offsetting demand in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 48.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "territory_id": "ST-001",
+          "territory_name": "Metro Downtown",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-002",
+          "territory_name": "Metro Midtown",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-003",
+          "territory_name": "Northside Residential",
+          "territory_type": "Suburban",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-004",
+          "territory_name": "Southside Residential",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-005",
+          "territory_name": "Eastgate Industrial Park",
+          "territory_type": "Industrial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-006",
+          "territory_name": "Westview Mall District",
+          "territory_type": "Commercial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-007",
+          "territory_name": "Lakeside Estates",
+          "territory_type": "Suburban",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-008",
+          "territory_name": "River Valley Rural",
+          "territory_type": "Rural",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-009",
+          "territory_name": "Desert Springs",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Dry"
+        },
+        {
+          "territory_id": "ST-010",
+          "territory_name": "Mountain View",
+          "territory_type": "Rural",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-011",
+          "territory_name": "Harbor Commercial",
+          "territory_type": "Commercial",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-012",
+          "territory_name": "Airport Industrial",
+          "territory_type": "Industrial",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-013",
+          "territory_name": "College Town",
+          "territory_type": "Urban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-014",
+          "territory_name": "Tech Campus North",
+          "territory_type": "Commercial",
+          "climate_zone": "Mixed"
+        },
+        {
+          "territory_id": "ST-015",
+          "territory_name": "Coastal Villas",
+          "territory_type": "Suburban",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-016",
+          "territory_name": "Prairie Farms",
+          "territory_type": "Rural",
+          "climate_zone": "Cold"
+        },
+        {
+          "territory_id": "ST-017",
+          "territory_name": "Sunbelt Towers",
+          "territory_type": "Urban",
+          "climate_zone": "Hot-Dry"
+        },
+        {
+          "territory_id": "ST-018",
+          "territory_name": "Forest Hills",
+          "territory_type": "Suburban",
+          "climate_zone": "Temperate"
+        },
+        {
+          "territory_id": "ST-019",
+          "territory_name": "Refinery Row",
+          "territory_type": "Industrial",
+          "climate_zone": "Hot-Humid"
+        },
+        {
+          "territory_id": "ST-020",
+          "territory_name": "Data Center Corridor",
+          "territory_type": "Commercial",
+          "climate_zone": "Mixed"
+        }
+      ],
+      "category_distribution": {
+        "Urban": 0.03,
+        "Suburban": 0.035,
+        "Rural": 0.025,
+        "Industrial": 0.03,
+        "Commercial": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "demand_readings_metrics",
+      "source_table": "demand_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "territory_type",
+          "expr": "territory_type"
+        },
+        {
+          "name": "climate_zone",
+          "expr": "climate_zone"
+        },
+        {
+          "name": "day_type",
+          "expr": "day_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_peak_demand_mw",
+          "expr": "AVG(peak_demand_mw)",
+          "comment": "Average daily peak demand in MW"
+        },
+        {
+          "name": "max_peak_demand_mw",
+          "expr": "MAX(peak_demand_mw)",
+          "comment": "Maximum peak demand observed in MW"
+        },
+        {
+          "name": "avg_demand_mw",
+          "expr": "AVG(avg_demand_mw)",
+          "comment": "Average daily demand in MW"
+        },
+        {
+          "name": "total_customer_count",
+          "expr": "SUM(customer_count)",
+          "comment": "Total customer count across territories"
+        },
+        {
+          "name": "reading_count",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total number of demand readings"
+        },
+        {
+          "name": "total_avg_temp_fahrenheit",
+          "expr": "SUM(avg_temp_fahrenheit)",
+          "comment": "Total avg temp fahrenheit"
+        },
+        {
+          "name": "unique_territory_count",
+          "expr": "COUNT(DISTINCT territory_id)",
+          "comment": "Number of distinct territorys"
+        },
+        {
+          "name": "max_avg_demand_mw",
+          "expr": "MAX(avg_demand_mw)",
+          "comment": "Maximum avg demand mw"
+        }
+      ]
+    },
+    {
+      "view_name": "demand_forecast_metrics",
+      "source_table": "demand_forecasts",
+      "dimensions": [
+        {
+          "name": "forecast_month",
+          "expr": "forecast_month"
+        },
+        {
+          "name": "territory_type",
+          "expr": "territory_type"
+        },
+        {
+          "name": "model_version",
+          "expr": "model_version"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_forecasted_peak_mw",
+          "expr": "AVG(forecasted_peak_mw)",
+          "comment": "Average forecasted peak demand in MW"
+        },
+        {
+          "name": "avg_actual_peak_mw",
+          "expr": "AVG(actual_peak_mw)",
+          "comment": "Average actual peak demand in MW"
+        },
+        {
+          "name": "avg_forecast_error_pct",
+          "expr": "AVG(forecast_error_pct)",
+          "comment": "Average forecast error percentage"
+        },
+        {
+          "name": "avg_capacity_margin_pct",
+          "expr": "AVG(capacity_margin_pct)",
+          "comment": "Average available capacity margin"
+        },
+        {
+          "name": "forecast_count",
+          "expr": "COUNT(DISTINCT forecast_id)",
+          "comment": "Number of forecast records"
+        },
+        {
+          "name": "unique_territory_count",
+          "expr": "COUNT(DISTINCT territory_id)",
+          "comment": "Number of distinct territorys"
+        },
+        {
+          "name": "max_forecasted_peak_mw",
+          "expr": "MAX(forecasted_peak_mw)",
+          "comment": "Maximum forecasted peak mw"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The demand_readings_metrics view (source: demand_readings) has dimensions: reading_date, territory_type, climate_zone, day_type. Measures: avg_peak_demand_mw, max_peak_demand_mw, avg_demand_mw, total_customer_count, reading_count. The demand_forecast_metrics view (source: demand_forecasts) has dimensions: forecast_month, territory_type, model_version. Measures: avg_forecasted_peak_mw, avg_actual_peak_mw, avg_forecast_error_pct, avg_capacity_margin_pct, forecast_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. territory_id, territory_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique readings?",
+    "How has unique territorys changed over time?",
+    "What is the monthly trend in highest peak demand mw?",
+    "How has highest avg demand mw changed over time?",
+    "What is the monthly trend in unique forecasts?",
+    "How has unique territorys changed over time?",
+    "What is the monthly trend in highest forecasted peak mw?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest peak demand mw?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_peak_demand_mw) AS max_peak_demand_mw",
+        "FROM {fqn}.demand_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest avg demand mw changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_avg_demand_mw) AS max_avg_demand_mw",
+        "FROM {fqn}.demand_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique forecasts changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
+        "FROM {fqn}.demand_forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total daily peak demand in mw over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(peak_demand_mw) AS total_peak_demand_mw",
+        "FROM {fqn}.demand_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total forecasted peak demand in mw over time?",
+      "sql_lines": [
+        "SELECT forecast_month, SUM(forecasted_peak_mw) AS total_forecasted_peak_mw",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has the average load factor as percentage (avg demand / peak demand * 100) changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(load_factor_pct) AS avg_load_factor_pct",
+        "FROM {fqn}.demand_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has total avg temp fahrenheit changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_avg_temp_fahrenheit) AS total_avg_temp_fahrenheit",
+        "FROM {fqn}.demand_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "demand_readings.day_type = 'Weekday'",
+        "display_name": "weekday demand",
+        "synonyms": [
+          "business days",
+          "work days"
+        ],
+        "instruction": "Use when filtering for weekday-only demand patterns."
+      },
+      {
+        "sql": "demand_forecasts.model_version = 'v2.2'",
+        "display_name": "latest forecast model",
+        "synonyms": [
+          "v2.2 model",
+          "newest model"
+        ],
+        "instruction": "Use when filtering forecasts to the latest model version."
+      },
+      {
+        "sql": "demand_kpi_monthly.reserve_margin_pct < 15",
+        "display_name": "low reserve margin",
+        "synonyms": [
+          "capacity risk",
+          "tight capacity"
+        ],
+        "instruction": "Use when identifying territories at risk of capacity shortfall."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "demand_month",
+        "sql": "DATE_TRUNC('month', demand_readings.reading_date)",
+        "display_name": "demand month",
+        "synonyms": [
+          "month of demand",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "peak_to_avg_ratio",
+        "sql": "demand_readings.peak_demand_mw / NULLIF(demand_readings.avg_demand_mw, 0)",
+        "display_name": "peak-to-average ratio",
+        "synonyms": [
+          "load shape",
+          "peak ratio"
+        ]
+      },
+      {
+        "alias": "net_load_mw",
+        "sql": "demand_kpi_monthly.ev_load_mw - demand_kpi_monthly.distributed_solar_mw",
+        "display_name": "net DER impact MW",
+        "synonyms": [
+          "net distributed resource impact",
+          "net DER"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_peak_demand",
+        "sql": "AVG(demand_readings.peak_demand_mw)",
+        "display_name": "average peak demand MW",
+        "synonyms": [
+          "peak load",
+          "max load"
+        ]
+      },
+      {
+        "alias": "avg_forecast_error",
+        "sql": "AVG(demand_forecasts.forecast_error_pct)",
+        "display_name": "average forecast error percentage",
+        "synonyms": [
+          "MAPE",
+          "forecast accuracy error"
+        ]
+      },
+      {
+        "alias": "avg_reserve_margin",
+        "sql": "AVG(demand_kpi_monthly.reserve_margin_pct)",
+        "display_name": "average reserve margin percentage",
+        "synonyms": [
+          "capacity margin",
+          "reserve"
+        ]
+      },
+      {
+        "alias": "total_ev_load",
+        "sql": "SUM(demand_kpi_monthly.ev_load_mw)",
+        "display_name": "total EV charging load MW",
+        "synonyms": [
+          "EV demand",
+          "electric vehicle load"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique readings?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "FROM {fqn}.demand_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique territorys changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_territory_count) AS unique_territory_count",
+        "FROM {fqn}.demand_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique forecasts?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
+        "FROM {fqn}.demand_forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest forecasted peak mw?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(max_forecasted_peak_mw) AS max_forecasted_peak_mw",
+        "FROM {fqn}.demand_forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What are the top service territory identifier by total daily peak demand in mw?",
+      "sql_lines": [
+        "SELECT territory_id, SUM(peak_demand_mw) AS total_peak_demand_mw",
+        "FROM {fqn}.demand_readings",
+        "GROUP BY territory_id ORDER BY total_peak_demand_mw DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average absolute forecast error percentage by service territory name?",
+      "sql_lines": [
+        "SELECT territory_name, AVG(forecast_error_pct) AS avg_forecast_error_pct",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY territory_name ORDER BY avg_forecast_error_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.demand_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

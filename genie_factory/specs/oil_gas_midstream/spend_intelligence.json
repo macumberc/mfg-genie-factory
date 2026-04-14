@@ -1,0 +1,903 @@
+{
+  "company_name": "MidSpend Analytics",
+  "industry": "Oil & Gas Midstream",
+  "use_case": "Procurement spend intelligence and supplier management",
+  "space_title": "MidSpend Analytics - Spend Intelligence 💰",
+  "space_description": "Procurement analytics for MidSpend Analytics. Ask questions about supplier spend, procurement trends, supplier risk, and spend KPIs across 20 suppliers in the midstream pipeline supply chain.",
+  "schema_basename": "og_midstream_spend",
+  "tables": [
+    {
+      "table_name": "procurement_transactions",
+      "description": "Purchase order and invoice transactions.",
+      "columns": [
+        {
+          "name": "transaction_id",
+          "sql_type": "STRING",
+          "comment": "Transaction ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.supplier_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "transaction_date",
+          "sql_type": "DATE",
+          "comment": "Transaction date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "supplier_id",
+          "sql_type": "STRING",
+          "comment": "Supplier ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "supplier_name",
+          "sql_type": "STRING",
+          "comment": "Supplier name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "spend_category",
+          "sql_type": "STRING",
+          "comment": "Spend category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "risk_tier",
+          "sql_type": "STRING",
+          "comment": "Risk: Low, Medium, High",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "document_type",
+          "sql_type": "STRING",
+          "comment": "Type: PO, Invoice, Change Order, Credit Memo",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'PO' WHEN {status_noise} < 0.70 THEN 'Invoice' WHEN {status_noise} < 0.88 THEN 'Change Order' ELSE 'Credit Memo' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, {qty_noise} * 2000000.0), 2)"
+        },
+        {
+          "name": "contract_compliance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Contract compliance pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 88.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+        },
+        {
+          "name": "delivery_days",
+          "sql_type": "INT",
+          "comment": "Delivery lead time days",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(1, 3 + FLOOR({qty_noise} * 60)) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "supplier_id": "MS-PIP-001",
+          "supplier_name": "SteelPipe International",
+          "spend_category": "Pipe & Fittings",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-PIP-002",
+          "supplier_name": "AmeriPipe Manufacturing",
+          "spend_category": "Pipe & Fittings",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CMP-003",
+          "supplier_name": "Atlas Copco Compressors",
+          "spend_category": "Rotating Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CMP-004",
+          "supplier_name": "Solar Turbines",
+          "spend_category": "Rotating Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-VLV-005",
+          "supplier_name": "Cameron Valves",
+          "spend_category": "Valves & Actuators",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-VLV-006",
+          "supplier_name": "Emerson Automation",
+          "spend_category": "Valves & Actuators",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-INS-007",
+          "supplier_name": "AECOM Services",
+          "spend_category": "Engineering & Inspection",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-INS-008",
+          "supplier_name": "Wood Group PLC",
+          "spend_category": "Engineering & Inspection",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-CHM-009",
+          "supplier_name": "BASF Pipeline Chemicals",
+          "spend_category": "Chemicals & Corrosion",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CHM-010",
+          "supplier_name": "Nalco Water",
+          "spend_category": "Chemicals & Corrosion",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-ELC-011",
+          "supplier_name": "Schneider Electric",
+          "spend_category": "Electrical & SCADA",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-ELC-012",
+          "supplier_name": "ABB Power Systems",
+          "spend_category": "Electrical & SCADA",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CTG-013",
+          "supplier_name": "Welspun Coatings",
+          "spend_category": "Coatings & Cathodic",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-CTG-014",
+          "supplier_name": "Shawflex Coatings",
+          "spend_category": "Coatings & Cathodic",
+          "risk_tier": "High"
+        },
+        {
+          "supplier_id": "MS-LOG-015",
+          "supplier_name": "TransForce Logistics",
+          "spend_category": "Logistics & Fleet",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-LOG-016",
+          "supplier_name": "USIC Locating Services",
+          "spend_category": "Logistics & Fleet",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-SAF-017",
+          "supplier_name": "MSA Safety Products",
+          "spend_category": "Safety Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-SAF-018",
+          "supplier_name": "Honeywell Safety",
+          "spend_category": "Safety Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-IT-019",
+          "supplier_name": "Aveva SCADA Software",
+          "spend_category": "IT & Software",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-IT-020",
+          "supplier_name": "OSIsoft PI Systems",
+          "spend_category": "IT & Software",
+          "risk_tier": "Low"
+        }
+      ],
+      "category_distribution": {
+        "Pipe & Fittings": 0.06,
+        "Rotating Equipment": 0.055,
+        "Valves & Actuators": 0.055,
+        "Engineering & Inspection": 0.05,
+        "Chemicals & Corrosion": 0.05,
+        "Electrical & SCADA": 0.05,
+        "Coatings & Cathodic": 0.04,
+        "Logistics & Fleet": 0.04,
+        "Safety Equipment": 0.04,
+        "IT & Software": 0.035
+      }
+    },
+    {
+      "table_name": "supplier_snapshots",
+      "description": "Periodic supplier performance snapshots.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.supplier_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "supplier_id",
+          "sql_type": "STRING",
+          "comment": "Supplier ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "supplier_name",
+          "sql_type": "STRING",
+          "comment": "Supplier name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "spend_category",
+          "sql_type": "STRING",
+          "comment": "Spend category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "risk_tier",
+          "sql_type": "STRING",
+          "comment": "Risk tier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "quality_score",
+          "sql_type": "DOUBLE",
+          "comment": "Quality score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 78.0 + ({qty_noise} - 0.5) * 36.0)), 1)"
+        },
+        {
+          "name": "on_time_delivery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "On-time delivery pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 88.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+        },
+        {
+          "name": "avg_lead_time_days",
+          "sql_type": "INT",
+          "comment": "Avg lead time days",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(2, 5 + FLOOR({qty_noise} * 45)) AS INT)"
+        },
+        {
+          "name": "defect_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Defect rate pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(10.0, GREATEST(0.1, 1.0 + {qty_noise} * 5.0)), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "supplier_id": "MS-PIP-001",
+          "supplier_name": "SteelPipe International",
+          "spend_category": "Pipe & Fittings",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-PIP-002",
+          "supplier_name": "AmeriPipe Manufacturing",
+          "spend_category": "Pipe & Fittings",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CMP-003",
+          "supplier_name": "Atlas Copco Compressors",
+          "spend_category": "Rotating Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CMP-004",
+          "supplier_name": "Solar Turbines",
+          "spend_category": "Rotating Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-VLV-005",
+          "supplier_name": "Cameron Valves",
+          "spend_category": "Valves & Actuators",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-VLV-006",
+          "supplier_name": "Emerson Automation",
+          "spend_category": "Valves & Actuators",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-INS-007",
+          "supplier_name": "AECOM Services",
+          "spend_category": "Engineering & Inspection",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-INS-008",
+          "supplier_name": "Wood Group PLC",
+          "spend_category": "Engineering & Inspection",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-CHM-009",
+          "supplier_name": "BASF Pipeline Chemicals",
+          "spend_category": "Chemicals & Corrosion",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CHM-010",
+          "supplier_name": "Nalco Water",
+          "spend_category": "Chemicals & Corrosion",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-ELC-011",
+          "supplier_name": "Schneider Electric",
+          "spend_category": "Electrical & SCADA",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-ELC-012",
+          "supplier_name": "ABB Power Systems",
+          "spend_category": "Electrical & SCADA",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-CTG-013",
+          "supplier_name": "Welspun Coatings",
+          "spend_category": "Coatings & Cathodic",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-CTG-014",
+          "supplier_name": "Shawflex Coatings",
+          "spend_category": "Coatings & Cathodic",
+          "risk_tier": "High"
+        },
+        {
+          "supplier_id": "MS-LOG-015",
+          "supplier_name": "TransForce Logistics",
+          "spend_category": "Logistics & Fleet",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-LOG-016",
+          "supplier_name": "USIC Locating Services",
+          "spend_category": "Logistics & Fleet",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-SAF-017",
+          "supplier_name": "MSA Safety Products",
+          "spend_category": "Safety Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-SAF-018",
+          "supplier_name": "Honeywell Safety",
+          "spend_category": "Safety Equipment",
+          "risk_tier": "Low"
+        },
+        {
+          "supplier_id": "MS-IT-019",
+          "supplier_name": "Aveva SCADA Software",
+          "spend_category": "IT & Software",
+          "risk_tier": "Medium"
+        },
+        {
+          "supplier_id": "MS-IT-020",
+          "supplier_name": "OSIsoft PI Systems",
+          "spend_category": "IT & Software",
+          "risk_tier": "Low"
+        }
+      ],
+      "category_distribution": {
+        "Pipe & Fittings": 0.06,
+        "Rotating Equipment": 0.055,
+        "Valves & Actuators": 0.055
+      }
+    },
+    {
+      "table_name": "spend_kpi_monthly",
+      "description": "Monthly spend KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.supplier_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "supplier_id",
+          "sql_type": "STRING",
+          "comment": "Supplier ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "spend_category",
+          "sql_type": "STRING",
+          "comment": "Spend category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_spend_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly spend USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5000.0, {qty_noise} * 3000000.0), 2)"
+        },
+        {
+          "name": "savings_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Negotiated savings USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 200000.0), 2)"
+        },
+        {
+          "name": "maverick_spend_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Off-contract spend pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(30.0, GREATEST(1.0, 5.0 + {qty_noise} * 18.0)), 1)"
+        },
+        {
+          "name": "invoice_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Invoice accuracy pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(80.0, 94.0 + ({qty_noise} - 0.5) * 10.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "supplier_id": "MS-PIP-001",
+          "spend_category": "Pipe & Fittings"
+        },
+        {
+          "supplier_id": "MS-PIP-002",
+          "spend_category": "Pipe & Fittings"
+        },
+        {
+          "supplier_id": "MS-CMP-003",
+          "spend_category": "Rotating Equipment"
+        },
+        {
+          "supplier_id": "MS-CMP-004",
+          "spend_category": "Rotating Equipment"
+        },
+        {
+          "supplier_id": "MS-VLV-005",
+          "spend_category": "Valves & Actuators"
+        },
+        {
+          "supplier_id": "MS-VLV-006",
+          "spend_category": "Valves & Actuators"
+        },
+        {
+          "supplier_id": "MS-INS-007",
+          "spend_category": "Engineering & Inspection"
+        },
+        {
+          "supplier_id": "MS-INS-008",
+          "spend_category": "Engineering & Inspection"
+        },
+        {
+          "supplier_id": "MS-CHM-009",
+          "spend_category": "Chemicals & Corrosion"
+        },
+        {
+          "supplier_id": "MS-CHM-010",
+          "spend_category": "Chemicals & Corrosion"
+        },
+        {
+          "supplier_id": "MS-ELC-011",
+          "spend_category": "Electrical & SCADA"
+        },
+        {
+          "supplier_id": "MS-ELC-012",
+          "spend_category": "Electrical & SCADA"
+        },
+        {
+          "supplier_id": "MS-CTG-013",
+          "spend_category": "Coatings & Cathodic"
+        },
+        {
+          "supplier_id": "MS-CTG-014",
+          "spend_category": "Coatings & Cathodic"
+        },
+        {
+          "supplier_id": "MS-LOG-015",
+          "spend_category": "Logistics & Fleet"
+        },
+        {
+          "supplier_id": "MS-LOG-016",
+          "spend_category": "Logistics & Fleet"
+        },
+        {
+          "supplier_id": "MS-SAF-017",
+          "spend_category": "Safety Equipment"
+        },
+        {
+          "supplier_id": "MS-SAF-018",
+          "spend_category": "Safety Equipment"
+        },
+        {
+          "supplier_id": "MS-IT-019",
+          "spend_category": "IT & Software"
+        },
+        {
+          "supplier_id": "MS-IT-020",
+          "spend_category": "IT & Software"
+        }
+      ],
+      "category_distribution": {
+        "Pipe & Fittings": 0.06,
+        "Rotating Equipment": 0.055
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "procurement_transactions_metrics",
+      "source_table": "procurement_transactions",
+      "dimensions": [
+        {
+          "name": "transaction_date",
+          "expr": "transaction_date"
+        },
+        {
+          "name": "supplier_id",
+          "expr": "supplier_id"
+        },
+        {
+          "name": "spend_category",
+          "expr": "spend_category"
+        },
+        {
+          "name": "risk_tier",
+          "expr": "risk_tier"
+        },
+        {
+          "name": "document_type",
+          "expr": "document_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_spend_usd",
+          "expr": "SUM(amount_usd)",
+          "comment": "Total spend USD"
+        },
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT transaction_id)",
+          "comment": "Total transactions"
+        },
+        {
+          "name": "avg_compliance_pct",
+          "expr": "AVG(contract_compliance_pct)",
+          "comment": "Avg contract compliance"
+        },
+        {
+          "name": "avg_delivery_days",
+          "expr": "AVG(delivery_days)",
+          "comment": "Avg delivery lead time days"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        }
+      ]
+    },
+    {
+      "view_name": "supplier_snapshots_metrics",
+      "source_table": "supplier_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "supplier_id",
+          "expr": "supplier_id"
+        },
+        {
+          "name": "spend_category",
+          "expr": "spend_category"
+        },
+        {
+          "name": "risk_tier",
+          "expr": "risk_tier"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_quality_score",
+          "expr": "AVG(quality_score)",
+          "comment": "Avg quality score"
+        },
+        {
+          "name": "avg_on_time_pct",
+          "expr": "AVG(on_time_delivery_pct)",
+          "comment": "Avg on-time delivery"
+        },
+        {
+          "name": "avg_defect_rate",
+          "expr": "AVG(defect_rate_pct)",
+          "comment": "Avg defect rate"
+        },
+        {
+          "name": "avg_lead_time",
+          "expr": "AVG(avg_lead_time_days)",
+          "comment": "Avg lead time days"
+        },
+        {
+          "name": "max_quality_score",
+          "expr": "MAX(quality_score)",
+          "comment": "Maximum quality score"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The procurement_transactions_metrics view (source: procurement_transactions) has dimensions: transaction_date, supplier_id, spend_category, risk_tier, document_type. Measures: total_spend_usd, total_transactions, avg_compliance_pct, avg_delivery_days. The supplier_snapshots_metrics view (source: supplier_snapshots) has dimensions: snapshot_date, supplier_id, spend_category, risk_tier. Measures: avg_quality_score, avg_on_time_pct, avg_defect_rate, avg_lead_time. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. supplier_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total transactionss?",
+    "How has highest amount changed over time?",
+    "What is the monthly trend in total spend usd?",
+    "How has avg contract compliance changed over time?",
+    "What is the monthly trend in highest quality score?",
+    "How has avg quality score changed over time?",
+    "What is the monthly trend in avg on-time delivery?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total spend usd?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_spend_usd) AS total_spend_usd",
+        "FROM {fqn}.procurement_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has avg contract compliance changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(avg_compliance_pct) AS avg_compliance_pct",
+        "FROM {fqn}.procurement_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in avg on-time delivery?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_on_time_pct) AS avg_on_time_pct",
+        "FROM {fqn}.supplier_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total transaction amount usd over time?",
+      "sql_lines": [
+        "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.procurement_transactions",
+        "GROUP BY transaction_date ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total avg lead time days over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(avg_lead_time_days) AS total_avg_lead_time_days",
+        "FROM {fqn}.supplier_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average off-contract spend pct changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(maverick_spend_pct) AS avg_maverick_spend_pct",
+        "FROM {fqn}.spend_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How does the number of unique total transactionss vary by supplier id?",
+      "sql_lines": [
+        "SELECT supplier_id, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.procurement_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_transactions DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "risk_tier = 'High'",
+        "display_name": "high risk suppliers",
+        "synonyms": [
+          "risky"
+        ],
+        "instruction": "High risk suppliers."
+      },
+      {
+        "sql": "document_type = 'Invoice'",
+        "display_name": "invoices only",
+        "synonyms": [
+          "invoiced"
+        ],
+        "instruction": "Invoice transactions."
+      },
+      {
+        "sql": "contract_compliance_pct < 80",
+        "display_name": "low compliance",
+        "synonyms": [
+          "non-compliant"
+        ],
+        "instruction": "Low compliance transactions."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "cost_per_unit",
+        "sql": "ROUND(procurement_transactions.amount_usd / NULLIF(procurement_transactions.delivery_days, 0), 2)",
+        "display_name": "cost per lead day",
+        "synonyms": [
+          "daily cost"
+        ]
+      },
+      {
+        "alias": "quality_defect_ratio",
+        "sql": "ROUND(supplier_snapshots.quality_score / NULLIF(supplier_snapshots.defect_rate_pct, 0), 2)",
+        "display_name": "quality-defect ratio",
+        "synonyms": [
+          "quality efficiency"
+        ]
+      },
+      {
+        "alias": "txn_month",
+        "sql": "DATE_TRUNC('month', procurement_transactions.transaction_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_spend",
+        "sql": "SUM(procurement_transactions.amount_usd)",
+        "display_name": "total spend",
+        "synonyms": [
+          "procurement cost"
+        ]
+      },
+      {
+        "alias": "avg_quality",
+        "sql": "AVG(supplier_snapshots.quality_score)",
+        "display_name": "avg quality",
+        "synonyms": [
+          "quality"
+        ]
+      },
+      {
+        "alias": "total_savings",
+        "sql": "SUM(spend_kpi_monthly.savings_usd)",
+        "display_name": "total savings",
+        "synonyms": [
+          "cost savings"
+        ]
+      },
+      {
+        "alias": "avg_otd",
+        "sql": "AVG(supplier_snapshots.on_time_delivery_pct)",
+        "display_name": "avg on-time",
+        "synonyms": [
+          "delivery performance"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total transactionss?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.procurement_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has highest amount changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "FROM {fqn}.procurement_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest quality score?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_quality_score) AS max_quality_score",
+        "FROM {fqn}.supplier_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has avg quality score changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_quality_score) AS avg_quality_score",
+        "FROM {fqn}.supplier_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top supplier id by total transaction amount usd?",
+      "sql_lines": [
+        "SELECT supplier_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.procurement_transactions",
+        "GROUP BY supplier_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average quality score 0-100 by supplier name?",
+      "sql_lines": [
+        "SELECT supplier_name, AVG(quality_score) AS avg_quality_score",
+        "FROM {fqn}.supplier_snapshots",
+        "GROUP BY supplier_name ORDER BY avg_quality_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.spend_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,964 @@
+{
+  "company_name": "CargoSight Analytics",
+  "industry": "Logistics",
+  "use_case": "Load demand forecasting and shipment volume prediction",
+  "space_title": "CargoSight Analytics - Load Demand & Shipment Forecasting 📈",
+  "space_description": "Logistics demand forecasting for CargoSight Analytics. Ask about shipment orders, demand forecasts, capacity snapshots, lane utilization, and forecast accuracy across 20 shipping lanes and 8 distribution hubs.",
+  "schema_basename": "load_forecasting",
+  "tables": [
+    {
+      "table_name": "shipment_orders",
+      "description": "Daily shipment order records with lane, cargo type, weight, freight charges, transit time, and delivery status.",
+      "columns": [
+        {
+          "name": "order_id",
+          "sql_type": "STRING",
+          "comment": "Unique shipment order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ORD-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "order_date",
+          "sql_type": "DATE",
+          "comment": "Date order was placed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "lane_id",
+          "sql_type": "STRING",
+          "comment": "Shipping lane identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lane_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable lane name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lane_category",
+          "sql_type": "STRING",
+          "comment": "Lane category: Domestic FTL, Domestic LTL, Cross-Border, Intermodal",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "origin_hub",
+          "sql_type": "STRING",
+          "comment": "Origin distribution hub",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Chicago Hub' WHEN {status_noise} < 0.25 THEN 'Dallas Hub' WHEN {status_noise} < 0.375 THEN 'Atlanta Hub' WHEN {status_noise} < 0.5 THEN 'Los Angeles Hub' WHEN {status_noise} < 0.625 THEN 'New York Hub' WHEN {status_noise} < 0.75 THEN 'Seattle Hub' WHEN {status_noise} < 0.875 THEN 'Denver Hub' ELSE 'Miami Hub' END"
+        },
+        {
+          "name": "destination_hub",
+          "sql_type": "STRING",
+          "comment": "Destination hub",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Denver Hub' WHEN {status_noise} < 0.25 THEN 'Miami Hub' WHEN {status_noise} < 0.375 THEN 'New York Hub' WHEN {status_noise} < 0.5 THEN 'Chicago Hub' WHEN {status_noise} < 0.625 THEN 'Dallas Hub' WHEN {status_noise} < 0.75 THEN 'Atlanta Hub' WHEN {status_noise} < 0.875 THEN 'Los Angeles Hub' ELSE 'Seattle Hub' END"
+        },
+        {
+          "name": "weight_lbs",
+          "sql_type": "DOUBLE",
+          "comment": "Shipment weight in pounds",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500 + {qty_noise} * 39500, 1)"
+        },
+        {
+          "name": "freight_charge_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Freight charge in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((500 + {qty_noise} * 39500) * (0.04 + {qty_noise} * 0.06), 2)"
+        },
+        {
+          "name": "transit_days",
+          "sql_type": "INT",
+          "comment": "Planned transit days",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 7) AS INT)"
+        },
+        {
+          "name": "order_status",
+          "sql_type": "STRING",
+          "comment": "Status: Delivered, In Transit, Delayed, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.10 THEN 'Delayed' WHEN {status_noise} < 0.18 THEN 'In Transit' ELSE 'Delivered' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Domestic FTL": {
+          "11,12": 0.065,
+          "6,7": 0.05
+        },
+        "Domestic LTL": {
+          "11,12": 0.055,
+          "3,4": 0.045
+        },
+        "Cross-Border": {
+          "6,7,8": 0.055
+        },
+        "Intermodal": {
+          "10,11": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "lane_id": "LN-001",
+          "lane_name": "Chicago to Dallas FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-002",
+          "lane_name": "Atlanta to New York FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-003",
+          "lane_name": "Los Angeles to Seattle FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-004",
+          "lane_name": "Denver to Miami FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-005",
+          "lane_name": "New York to Chicago FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-006",
+          "lane_name": "Midwest Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-007",
+          "lane_name": "Southeast Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-008",
+          "lane_name": "West Coast Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-009",
+          "lane_name": "Northeast Corridor LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-010",
+          "lane_name": "Southwest Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-011",
+          "lane_name": "US-Mexico Laredo Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-012",
+          "lane_name": "US-Canada Ontario Gateway",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-013",
+          "lane_name": "US-Mexico Nogales Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-014",
+          "lane_name": "US-Canada BC Pacific",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-015",
+          "lane_name": "US-Mexico El Paso Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-016",
+          "lane_name": "Chicago Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-017",
+          "lane_name": "LA Port Drayage Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-018",
+          "lane_name": "East Coast Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-019",
+          "lane_name": "Gulf Coast Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-020",
+          "lane_name": "Pacific NW Intermodal",
+          "lane_category": "Intermodal"
+        }
+      ],
+      "category_distribution": {
+        "Domestic FTL": 0.04,
+        "Domestic LTL": 0.035,
+        "Cross-Border": 0.03,
+        "Intermodal": 0.025
+      }
+    },
+    {
+      "table_name": "demand_forecasts",
+      "description": "Monthly demand forecasts vs actuals by shipping lane and hub, including model version and accuracy metrics.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique forecast record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FCST-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Month being forecasted",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "lane_id",
+          "sql_type": "STRING",
+          "comment": "Shipping lane identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lane_category",
+          "sql_type": "STRING",
+          "comment": "Lane category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "hub_code",
+          "sql_type": "STRING",
+          "comment": "Target hub code",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'HUB-CHI' WHEN {status_noise} < 0.25 THEN 'HUB-DAL' WHEN {status_noise} < 0.375 THEN 'HUB-ATL' WHEN {status_noise} < 0.5 THEN 'HUB-LAX' WHEN {status_noise} < 0.625 THEN 'HUB-NYC' WHEN {status_noise} < 0.75 THEN 'HUB-SEA' WHEN {status_noise} < 0.875 THEN 'HUB-DEN' ELSE 'HUB-MIA' END"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Forecast model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v2.0' WHEN {status_noise} < 0.66 THEN 'v2.1' ELSE 'v2.2' END"
+        },
+        {
+          "name": "forecasted_shipments",
+          "sql_type": "INT",
+          "comment": "Predicted shipment count for month",
+          "is_dimension": false,
+          "generation_expr": "CAST(150 + FLOOR({qty_noise} * 1350) AS INT)"
+        },
+        {
+          "name": "actual_shipments",
+          "sql_type": "INT",
+          "comment": "Actual shipment count for month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR((150 + {qty_noise} * 1350) * (0.88 + {qty_noise} * 0.24)) AS INT)"
+        },
+        {
+          "name": "forecasted_weight_tons",
+          "sql_type": "DOUBLE",
+          "comment": "Predicted total weight in tons",
+          "is_dimension": false,
+          "generation_expr": "ROUND((150 + {qty_noise} * 1350) * (6.0 + {qty_noise} * 14.0), 1)"
+        },
+        {
+          "name": "actual_weight_tons",
+          "sql_type": "DOUBLE",
+          "comment": "Actual total weight in tons",
+          "is_dimension": false,
+          "generation_expr": "ROUND((150 + {qty_noise} * 1350) * (6.0 + {qty_noise} * 14.0) * (0.90 + {qty_noise} * 0.20), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Domestic FTL": {
+          "11,12": 0.065,
+          "6,7": 0.05
+        },
+        "Domestic LTL": {
+          "11,12": 0.055
+        },
+        "Cross-Border": {
+          "6,7,8": 0.055
+        },
+        "Intermodal": {
+          "10,11": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "lane_id": "LN-001",
+          "lane_name": "Chicago to Dallas FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-002",
+          "lane_name": "Atlanta to New York FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-003",
+          "lane_name": "Los Angeles to Seattle FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-004",
+          "lane_name": "Denver to Miami FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-005",
+          "lane_name": "New York to Chicago FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-006",
+          "lane_name": "Midwest Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-007",
+          "lane_name": "Southeast Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-008",
+          "lane_name": "West Coast Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-009",
+          "lane_name": "Northeast Corridor LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-010",
+          "lane_name": "Southwest Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-011",
+          "lane_name": "US-Mexico Laredo Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-012",
+          "lane_name": "US-Canada Ontario Gateway",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-013",
+          "lane_name": "US-Mexico Nogales Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-014",
+          "lane_name": "US-Canada BC Pacific",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-015",
+          "lane_name": "US-Mexico El Paso Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-016",
+          "lane_name": "Chicago Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-017",
+          "lane_name": "LA Port Drayage Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-018",
+          "lane_name": "East Coast Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-019",
+          "lane_name": "Gulf Coast Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-020",
+          "lane_name": "Pacific NW Intermodal",
+          "lane_category": "Intermodal"
+        }
+      ],
+      "category_distribution": {
+        "Domestic FTL": 0.04,
+        "Domestic LTL": 0.035,
+        "Cross-Border": 0.03,
+        "Intermodal": 0.025
+      }
+    },
+    {
+      "table_name": "capacity_snapshots",
+      "description": "Weekly snapshots of hub-level capacity utilization, dock availability, and backlog volumes.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SNAP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Weekly snapshot date",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "lane_id",
+          "sql_type": "STRING",
+          "comment": "Shipping lane identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lane_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable lane name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lane_category",
+          "sql_type": "STRING",
+          "comment": "Lane category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "total_capacity_units",
+          "sql_type": "INT",
+          "comment": "Total available capacity units for the lane",
+          "is_dimension": false,
+          "generation_expr": "CAST(50 + FLOOR({qty_noise} * 150) AS INT)"
+        },
+        {
+          "name": "utilized_capacity_units",
+          "sql_type": "INT",
+          "comment": "Capacity units currently in use",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR((50 + {qty_noise} * 150) * (0.50 + {qty_noise} * 0.45)) AS INT)"
+        },
+        {
+          "name": "capacity_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Capacity utilization percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND((0.50 + {qty_noise} * 0.45) * 100, 2)"
+        },
+        {
+          "name": "backlog_orders",
+          "sql_type": "INT",
+          "comment": "Orders awaiting capacity",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 40) AS INT)"
+        },
+        {
+          "name": "avg_wait_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Average wait time for capacity in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + {qty_noise} * 18.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "lane_id": "LN-001",
+          "lane_name": "Chicago to Dallas FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-002",
+          "lane_name": "Atlanta to New York FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-003",
+          "lane_name": "Los Angeles to Seattle FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-004",
+          "lane_name": "Denver to Miami FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-005",
+          "lane_name": "New York to Chicago FTL",
+          "lane_category": "Domestic FTL"
+        },
+        {
+          "lane_id": "LN-006",
+          "lane_name": "Midwest Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-007",
+          "lane_name": "Southeast Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-008",
+          "lane_name": "West Coast Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-009",
+          "lane_name": "Northeast Corridor LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-010",
+          "lane_name": "Southwest Regional LTL",
+          "lane_category": "Domestic LTL"
+        },
+        {
+          "lane_id": "LN-011",
+          "lane_name": "US-Mexico Laredo Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-012",
+          "lane_name": "US-Canada Ontario Gateway",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-013",
+          "lane_name": "US-Mexico Nogales Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-014",
+          "lane_name": "US-Canada BC Pacific",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-015",
+          "lane_name": "US-Mexico El Paso Corridor",
+          "lane_category": "Cross-Border"
+        },
+        {
+          "lane_id": "LN-016",
+          "lane_name": "Chicago Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-017",
+          "lane_name": "LA Port Drayage Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-018",
+          "lane_name": "East Coast Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-019",
+          "lane_name": "Gulf Coast Rail Intermodal",
+          "lane_category": "Intermodal"
+        },
+        {
+          "lane_id": "LN-020",
+          "lane_name": "Pacific NW Intermodal",
+          "lane_category": "Intermodal"
+        }
+      ],
+      "category_distribution": {
+        "Domestic FTL": 0.04,
+        "Domestic LTL": 0.035,
+        "Cross-Border": 0.03,
+        "Intermodal": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "shipment_orders_metrics",
+      "source_table": "shipment_orders",
+      "dimensions": [
+        {
+          "name": "order_date",
+          "expr": "order_date"
+        },
+        {
+          "name": "lane_category",
+          "expr": "lane_category"
+        },
+        {
+          "name": "origin_hub",
+          "expr": "origin_hub"
+        },
+        {
+          "name": "order_status",
+          "expr": "order_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_freight_revenue",
+          "expr": "SUM(freight_charge_usd) FILTER (WHERE order_status = 'Delivered')",
+          "comment": "Total revenue from delivered shipments in USD"
+        },
+        {
+          "name": "total_weight_delivered_lbs",
+          "expr": "SUM(weight_lbs) FILTER (WHERE order_status = 'Delivered')",
+          "comment": "Total weight delivered in pounds"
+        },
+        {
+          "name": "delivered_order_count",
+          "expr": "COUNT(DISTINCT CASE WHEN order_status = 'Delivered' THEN order_id END)",
+          "comment": "Count of delivered orders"
+        },
+        {
+          "name": "total_order_count",
+          "expr": "COUNT(DISTINCT order_id)",
+          "comment": "Total orders placed"
+        },
+        {
+          "name": "delayed_order_count",
+          "expr": "COUNT(DISTINCT CASE WHEN order_status = 'Delayed' THEN order_id END)",
+          "comment": "Count of delayed orders"
+        },
+        {
+          "name": "avg_transit_days",
+          "expr": "AVG(transit_days) FILTER (WHERE order_status = 'Delivered')",
+          "comment": "Average transit days for delivered orders"
+        },
+        {
+          "name": "unique_lane_count",
+          "expr": "COUNT(DISTINCT lane_id)",
+          "comment": "Number of distinct lanes"
+        },
+        {
+          "name": "max_weight_lbs",
+          "expr": "MAX(weight_lbs)",
+          "comment": "Maximum weight lbs"
+        }
+      ]
+    },
+    {
+      "view_name": "demand_forecasts_metrics",
+      "source_table": "demand_forecasts",
+      "dimensions": [
+        {
+          "name": "forecast_month",
+          "expr": "forecast_month"
+        },
+        {
+          "name": "lane_category",
+          "expr": "lane_category"
+        },
+        {
+          "name": "hub_code",
+          "expr": "hub_code"
+        },
+        {
+          "name": "model_version",
+          "expr": "model_version"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_forecasted_shipments",
+          "expr": "SUM(forecasted_shipments)",
+          "comment": "Sum of forecasted shipment counts"
+        },
+        {
+          "name": "total_actual_shipments",
+          "expr": "SUM(actual_shipments)",
+          "comment": "Sum of actual shipment counts"
+        },
+        {
+          "name": "total_forecasted_weight_tons",
+          "expr": "SUM(forecasted_weight_tons)",
+          "comment": "Total forecasted weight in tons"
+        },
+        {
+          "name": "total_actual_weight_tons",
+          "expr": "SUM(actual_weight_tons)",
+          "comment": "Total actual weight in tons"
+        },
+        {
+          "name": "forecast_record_count",
+          "expr": "COUNT(DISTINCT forecast_id)",
+          "comment": "Number of forecast records"
+        },
+        {
+          "name": "unique_lane_count",
+          "expr": "COUNT(DISTINCT lane_id)",
+          "comment": "Number of distinct lanes"
+        },
+        {
+          "name": "max_forecasted_shipments",
+          "expr": "MAX(forecasted_shipments)",
+          "comment": "Maximum forecasted shipments"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The shipment_orders_metrics view (source: shipment_orders) has dimensions: order_date, lane_category, origin_hub, order_status. Measures: total_freight_revenue, total_weight_delivered_lbs, delivered_order_count, total_order_count, delayed_order_count, avg_transit_days. The demand_forecasts_metrics view (source: demand_forecasts) has dimensions: forecast_month, lane_category, hub_code, model_version. Measures: total_forecasted_shipments, total_actual_shipments, total_forecasted_weight_tons, total_actual_weight_tons, forecast_record_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. lane_id, lane_name).",
+  "sample_questions": [
+    "What is the monthly trend in total freight revenue count?",
+    "How has total weight delivered lbs count changed over time?",
+    "What is the monthly trend in delivered order count?",
+    "How has delayed order count changed over time?",
+    "What is the monthly trend in unique forecast records?",
+    "How has unique lanes changed over time?",
+    "What is the monthly trend in highest forecasted shipments?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in delivered order count?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(delivered_order_count) AS delivered_order_count",
+        "FROM {fqn}.shipment_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has delayed order count changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(delayed_order_count) AS delayed_order_count",
+        "FROM {fqn}.shipment_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest forecasted shipments?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(max_forecasted_shipments) AS max_forecasted_shipments",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has unique forecast records changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(forecast_record_count) AS forecast_record_count",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How does total shipment weight in pounds break down by shipping lane identifier for 'Delayed' records?",
+      "sql_lines": [
+        "SELECT lane_id, COUNT(*) AS record_count, SUM(weight_lbs) AS total_weight_lbs",
+        "FROM {fqn}.shipment_orders",
+        "WHERE order_status = 'Delayed' GROUP BY lane_id ORDER BY total_weight_lbs DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total predicted shipment count for month over time?",
+      "sql_lines": [
+        "SELECT forecast_month, SUM(forecasted_shipments) AS total_forecasted_shipments",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has the average capacity utilization percentage changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, AVG(capacity_utilization_pct) AS avg_capacity_utilization_pct",
+        "FROM {fqn}.capacity_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "order_status = 'Delivered'",
+        "display_name": "delivered orders",
+        "synonyms": [
+          "completed shipments",
+          "on-time deliveries"
+        ],
+        "instruction": "Use when calculating delivery rate or revenue from completed orders."
+      },
+      {
+        "sql": "order_status = 'Delayed'",
+        "display_name": "delayed orders",
+        "synonyms": [
+          "late shipments",
+          "overdue orders"
+        ],
+        "instruction": "Use when analyzing delay rates or identifying problem lanes."
+      },
+      {
+        "sql": "lane_category = 'Cross-Border'",
+        "display_name": "cross-border lanes",
+        "synonyms": [
+          "international",
+          "US-Mexico",
+          "US-Canada"
+        ],
+        "instruction": "Use when filtering to cross-border shipping lanes only."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "order_month",
+        "sql": "DATE_TRUNC('month', order_date)",
+        "display_name": "order month",
+        "synonyms": [
+          "month",
+          "booking month"
+        ]
+      },
+      {
+        "alias": "forecast_error_shipments",
+        "sql": "actual_shipments - forecasted_shipments",
+        "display_name": "forecast error (shipments)",
+        "synonyms": [
+          "shipment forecast miss",
+          "prediction error"
+        ]
+      },
+      {
+        "alias": "weight_tons",
+        "sql": "weight_lbs / 2000.0",
+        "display_name": "weight in tons",
+        "synonyms": [
+          "tons",
+          "short tons"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_freight_revenue",
+        "sql": "SUM(freight_charge_usd)",
+        "display_name": "total freight revenue",
+        "synonyms": [
+          "revenue",
+          "freight charges",
+          "total charges"
+        ]
+      },
+      {
+        "alias": "on_time_delivery_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN order_status = 'Delivered' THEN order_id END) * 1.0 / NULLIF(COUNT(DISTINCT order_id), 0)",
+        "display_name": "on-time delivery rate",
+        "synonyms": [
+          "OTD rate",
+          "delivery rate",
+          "fill rate"
+        ]
+      },
+      {
+        "alias": "avg_capacity_utilization",
+        "sql": "AVG(capacity_utilization_pct)",
+        "display_name": "avg capacity utilization",
+        "synonyms": [
+          "utilization",
+          "lane utilization"
+        ]
+      },
+      {
+        "alias": "forecast_volume_accuracy",
+        "sql": "SUM(actual_shipments) * 1.0 / NULLIF(SUM(forecasted_shipments), 0)",
+        "display_name": "forecast volume accuracy",
+        "synonyms": [
+          "forecast accuracy",
+          "prediction accuracy"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in total freight revenue count?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_freight_revenue) AS total_freight_revenue",
+        "FROM {fqn}.shipment_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has total weight delivered lbs count changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_weight_delivered_lbs) AS total_weight_delivered_lbs",
+        "FROM {fqn}.shipment_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique forecast records?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(forecast_record_count) AS forecast_record_count",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has unique lanes changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(unique_lane_count) AS unique_lane_count",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What are the top shipping lane identifier by total shipment weight in pounds?",
+      "sql_lines": [
+        "SELECT lane_id, SUM(weight_lbs) AS total_weight_lbs",
+        "FROM {fqn}.shipment_orders",
+        "GROUP BY lane_id ORDER BY total_weight_lbs DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per month being forecasted?",
+      "sql_lines": [
+        "SELECT forecast_month, COUNT(*) AS record_count",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How many records are there per weekly snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.capacity_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

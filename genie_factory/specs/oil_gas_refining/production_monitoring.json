@@ -1,0 +1,908 @@
+{
+  "company_name": "RefineOps Central",
+  "industry": "Oil & Gas Refining",
+  "use_case": "Production monitoring and throughput optimization for refinery operations",
+  "space_title": "RefineOps Central - Production Monitoring 📊",
+  "space_description": "Production monitoring analytics for RefineOps Central. Ask questions about refinery throughput, unit utilization, product yields, and production KPIs across 20 process units spanning crude distillation, conversion, treating, and blending.",
+  "schema_basename": "og_refining_production",
+  "tables": [
+    {
+      "table_name": "throughput_readings",
+      "description": "Daily throughput readings from refinery process units.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique reading ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Reading date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Process unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_name",
+          "sql_type": "STRING",
+          "comment": "Process unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_stream",
+          "sql_type": "STRING",
+          "comment": "Product stream",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "refinery_section",
+          "sql_type": "STRING",
+          "comment": "Section: Primary, Conversion, Treating, Blending, Utilities, Gas Processing, Residue",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "throughput_bpd",
+          "sql_type": "DOUBLE",
+          "comment": "Throughput in barrels per day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, 5000.0 + {qty_noise} * 45000.0), 0)"
+        },
+        {
+          "name": "utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Unit utilization percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(50.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Product yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(50.0, 80.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "feed_quality_api",
+          "sql_type": "DOUBLE",
+          "comment": "Feed API gravity",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(15.0, 25.0 + {qty_noise} * 20.0), 1)"
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Status: Running, Reduced Rate, Shutdown, Startup",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Running' WHEN {status_noise} < 0.85 THEN 'Reduced Rate' WHEN {status_noise} < 0.94 THEN 'Shutdown' ELSE 'Startup' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Primary": {
+          "3,4,9,10": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "unit_id": "RO-CDU-01",
+          "unit_name": "Crude Distillation Unit 1",
+          "product_stream": "Naphtha",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-CDU-02",
+          "unit_name": "Crude Distillation Unit 2",
+          "product_stream": "Diesel",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-VDU-03",
+          "unit_name": "Vacuum Distillation Unit",
+          "product_stream": "VGO",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-FCC-04",
+          "unit_name": "Fluid Catalytic Cracker",
+          "product_stream": "Gasoline",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-HCK-05",
+          "unit_name": "Hydrocracker",
+          "product_stream": "Diesel",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-HDT-06",
+          "unit_name": "Diesel Hydrotreater",
+          "product_stream": "ULSD",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-HDT-07",
+          "unit_name": "Naphtha Hydrotreater",
+          "product_stream": "Naphtha",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-REF-08",
+          "unit_name": "Catalytic Reformer",
+          "product_stream": "Reformate",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-ISO-09",
+          "unit_name": "Isomerization Unit",
+          "product_stream": "Isomerate",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-ALK-10",
+          "unit_name": "Alkylation Unit",
+          "product_stream": "Alkylate",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-COK-11",
+          "unit_name": "Delayed Coker",
+          "product_stream": "Coke",
+          "refinery_section": "Residue"
+        },
+        {
+          "unit_id": "RO-SRU-12",
+          "unit_name": "Sulfur Recovery Unit",
+          "product_stream": "Sulfur",
+          "refinery_section": "Utilities"
+        },
+        {
+          "unit_id": "RO-H2-13",
+          "unit_name": "Hydrogen Plant",
+          "product_stream": "Hydrogen",
+          "refinery_section": "Utilities"
+        },
+        {
+          "unit_id": "RO-BLD-14",
+          "unit_name": "Gasoline Blending",
+          "product_stream": "Gasoline",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-BLD-15",
+          "unit_name": "Diesel Blending",
+          "product_stream": "ULSD",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-BLD-16",
+          "unit_name": "Jet Fuel Blending",
+          "product_stream": "Jet Fuel",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-SAT-17",
+          "unit_name": "Saturated Gas Plant",
+          "product_stream": "LPG",
+          "refinery_section": "Gas Processing"
+        },
+        {
+          "unit_id": "RO-UNS-18",
+          "unit_name": "Unsaturated Gas Plant",
+          "product_stream": "Propylene",
+          "refinery_section": "Gas Processing"
+        },
+        {
+          "unit_id": "RO-MRX-19",
+          "unit_name": "Merox Unit",
+          "product_stream": "Jet Fuel",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-WWT-20",
+          "unit_name": "Wastewater Treatment",
+          "product_stream": "Naphtha",
+          "refinery_section": "Utilities"
+        }
+      ],
+      "category_distribution": {
+        "Primary": 0.06,
+        "Conversion": 0.06,
+        "Treating": 0.05,
+        "Blending": 0.05,
+        "Utilities": 0.04,
+        "Gas Processing": 0.04,
+        "Residue": 0.03
+      }
+    },
+    {
+      "table_name": "production_snapshots",
+      "description": "Weekly production snapshots with aggregated throughput and yield metrics.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Process unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_name",
+          "sql_type": "STRING",
+          "comment": "Process unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "refinery_section",
+          "sql_type": "STRING",
+          "comment": "Section",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "avg_throughput_bpd",
+          "sql_type": "DOUBLE",
+          "comment": "Average throughput BPD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, 5000.0 + {qty_noise} * 45000.0), 0)"
+        },
+        {
+          "name": "avg_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Average utilization pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(50.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "total_product_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Total product output in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(3000.0, 30000.0 + {qty_noise} * 270000.0), 0)"
+        },
+        {
+          "name": "downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Downtime hours in period",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 48.0), 1)"
+        },
+        {
+          "name": "energy_intensity_btu_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Energy intensity BTU/BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50000.0, 100000.0 + {qty_noise} * 200000.0), 0)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "unit_id": "RO-CDU-01",
+          "unit_name": "Crude Distillation Unit 1",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-CDU-02",
+          "unit_name": "Crude Distillation Unit 2",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-VDU-03",
+          "unit_name": "Vacuum Distillation Unit",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-FCC-04",
+          "unit_name": "Fluid Catalytic Cracker",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-HCK-05",
+          "unit_name": "Hydrocracker",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-HDT-06",
+          "unit_name": "Diesel Hydrotreater",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-HDT-07",
+          "unit_name": "Naphtha Hydrotreater",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-REF-08",
+          "unit_name": "Catalytic Reformer",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-ISO-09",
+          "unit_name": "Isomerization Unit",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-ALK-10",
+          "unit_name": "Alkylation Unit",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-COK-11",
+          "unit_name": "Delayed Coker",
+          "refinery_section": "Residue"
+        },
+        {
+          "unit_id": "RO-SRU-12",
+          "unit_name": "Sulfur Recovery Unit",
+          "refinery_section": "Utilities"
+        },
+        {
+          "unit_id": "RO-H2-13",
+          "unit_name": "Hydrogen Plant",
+          "refinery_section": "Utilities"
+        },
+        {
+          "unit_id": "RO-BLD-14",
+          "unit_name": "Gasoline Blending",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-BLD-15",
+          "unit_name": "Diesel Blending",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-BLD-16",
+          "unit_name": "Jet Fuel Blending",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-SAT-17",
+          "unit_name": "Saturated Gas Plant",
+          "refinery_section": "Gas Processing"
+        },
+        {
+          "unit_id": "RO-UNS-18",
+          "unit_name": "Unsaturated Gas Plant",
+          "refinery_section": "Gas Processing"
+        },
+        {
+          "unit_id": "RO-MRX-19",
+          "unit_name": "Merox Unit",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-WWT-20",
+          "unit_name": "Wastewater Treatment",
+          "refinery_section": "Utilities"
+        }
+      ],
+      "category_distribution": {
+        "Primary": 0.06,
+        "Conversion": 0.06,
+        "Treating": 0.05,
+        "Blending": 0.05,
+        "Utilities": 0.04,
+        "Gas Processing": 0.04,
+        "Residue": 0.03
+      }
+    },
+    {
+      "table_name": "throughput_kpi_monthly",
+      "description": "Monthly production KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Process unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "refinery_section",
+          "sql_type": "STRING",
+          "comment": "Section",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_throughput_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly throughput BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10000.0, {qty_noise} * 1500000.0), 0)"
+        },
+        {
+          "name": "availability_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Unit availability pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(70.0, 92.0 + ({qty_noise} - 0.5) * 16.0)), 1)"
+        },
+        {
+          "name": "gross_margin_per_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Gross margin USD per barrel",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(2.0, 8.0 + {qty_noise} * 18.0), 2)"
+        },
+        {
+          "name": "opex_per_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "OPEX per barrel",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 3.0 + {qty_noise} * 12.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "unit_id": "RO-CDU-01",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-CDU-02",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-VDU-03",
+          "refinery_section": "Primary"
+        },
+        {
+          "unit_id": "RO-FCC-04",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-HCK-05",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-HDT-06",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-HDT-07",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-REF-08",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-ISO-09",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-ALK-10",
+          "refinery_section": "Conversion"
+        },
+        {
+          "unit_id": "RO-COK-11",
+          "refinery_section": "Residue"
+        },
+        {
+          "unit_id": "RO-SRU-12",
+          "refinery_section": "Utilities"
+        },
+        {
+          "unit_id": "RO-H2-13",
+          "refinery_section": "Utilities"
+        },
+        {
+          "unit_id": "RO-BLD-14",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-BLD-15",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-BLD-16",
+          "refinery_section": "Blending"
+        },
+        {
+          "unit_id": "RO-SAT-17",
+          "refinery_section": "Gas Processing"
+        },
+        {
+          "unit_id": "RO-UNS-18",
+          "refinery_section": "Gas Processing"
+        },
+        {
+          "unit_id": "RO-MRX-19",
+          "refinery_section": "Treating"
+        },
+        {
+          "unit_id": "RO-WWT-20",
+          "refinery_section": "Utilities"
+        }
+      ],
+      "category_distribution": {
+        "Primary": 0.06,
+        "Conversion": 0.06,
+        "Treating": 0.05,
+        "Blending": 0.05,
+        "Utilities": 0.04,
+        "Gas Processing": 0.04,
+        "Residue": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "throughput_readings_metrics",
+      "source_table": "throughput_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "unit_id",
+          "expr": "unit_id"
+        },
+        {
+          "name": "refinery_section",
+          "expr": "refinery_section"
+        },
+        {
+          "name": "product_stream",
+          "expr": "product_stream"
+        },
+        {
+          "name": "status",
+          "expr": "status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_throughput_bpd",
+          "expr": "AVG(throughput_bpd)",
+          "comment": "Average throughput BPD"
+        },
+        {
+          "name": "avg_utilization_pct",
+          "expr": "AVG(utilization_pct)",
+          "comment": "Average utilization"
+        },
+        {
+          "name": "avg_yield_pct",
+          "expr": "AVG(yield_pct)",
+          "comment": "Average product yield"
+        },
+        {
+          "name": "total_readings",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total readings"
+        },
+        {
+          "name": "total_feed_quality_api",
+          "expr": "SUM(feed_quality_api)",
+          "comment": "Total feed quality api"
+        },
+        {
+          "name": "max_throughput_bpd",
+          "expr": "MAX(throughput_bpd)",
+          "comment": "Maximum throughput bpd"
+        }
+      ]
+    },
+    {
+      "view_name": "production_snapshots_metrics",
+      "source_table": "production_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "unit_id",
+          "expr": "unit_id"
+        },
+        {
+          "name": "refinery_section",
+          "expr": "refinery_section"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_product_bbl",
+          "expr": "SUM(total_product_bbl)",
+          "comment": "Total product output BBL"
+        },
+        {
+          "name": "total_downtime_hours",
+          "expr": "SUM(downtime_hours)",
+          "comment": "Total downtime hours"
+        },
+        {
+          "name": "avg_energy_intensity",
+          "expr": "AVG(energy_intensity_btu_bbl)",
+          "comment": "Average energy intensity"
+        },
+        {
+          "name": "avg_throughput",
+          "expr": "AVG(avg_throughput_bpd)",
+          "comment": "Average throughput BPD"
+        },
+        {
+          "name": "total_avg_utilization_percent",
+          "expr": "SUM(avg_utilization_pct)",
+          "comment": "Total avg utilization pct"
+        },
+        {
+          "name": "max_avg_throughput_bpd",
+          "expr": "MAX(avg_throughput_bpd)",
+          "comment": "Maximum avg throughput bpd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The throughput_readings_metrics view (source: throughput_readings) has dimensions: reading_date, unit_id, refinery_section, product_stream, status. Measures: avg_throughput_bpd, avg_utilization_pct, avg_yield_pct, total_readings. The production_snapshots_metrics view (source: production_snapshots) has dimensions: snapshot_date, unit_id, refinery_section. Measures: total_product_bbl, total_downtime_hours, avg_energy_intensity, avg_throughput. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total readingss?",
+    "How has highest throughput bpd changed over time?",
+    "What is the monthly trend in total feed quality api?",
+    "How has average throughput bpd changed over time?",
+    "What is the monthly trend in highest avg throughput bpd?",
+    "How has total product output bbl changed over time?",
+    "What is the monthly trend in total downtime hours?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total feed quality api?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_feed_quality_api) AS total_feed_quality_api",
+        "FROM {fqn}.throughput_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has average throughput bpd changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
+        "FROM {fqn}.throughput_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total downtime hours?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
+        "FROM {fqn}.production_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total throughput in barrels per day break down by process unit id for 'Running' records?",
+      "sql_lines": [
+        "SELECT unit_id, COUNT(*) AS record_count, SUM(throughput_bpd) AS total_throughput_bpd",
+        "FROM {fqn}.throughput_readings",
+        "WHERE status = 'Running' GROUP BY unit_id ORDER BY total_throughput_bpd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total average throughput bpd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(avg_throughput_bpd) AS total_avg_throughput_bpd",
+        "FROM {fqn}.production_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average unit availability pct changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(availability_pct) AS avg_availability_pct",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has unique total readingss changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "FROM {fqn}.throughput_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "status = 'Running'",
+        "display_name": "running units",
+        "synonyms": [
+          "active",
+          "online"
+        ],
+        "instruction": "Filter to running units."
+      },
+      {
+        "sql": "utilization_pct < 70",
+        "display_name": "low utilization",
+        "synonyms": [
+          "underutilized"
+        ],
+        "instruction": "Low utilization units."
+      },
+      {
+        "sql": "refinery_section = 'Conversion'",
+        "display_name": "conversion units",
+        "synonyms": [
+          "FCC",
+          "cracking"
+        ],
+        "instruction": "Filter to conversion section."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "boe_equivalent",
+        "sql": "throughput_readings.throughput_bpd",
+        "display_name": "throughput BPD",
+        "synonyms": [
+          "barrels per day"
+        ]
+      },
+      {
+        "alias": "margin_usd",
+        "sql": "throughput_kpi_monthly.gross_margin_per_bbl * throughput_kpi_monthly.monthly_throughput_bbl",
+        "display_name": "total margin",
+        "synonyms": [
+          "gross margin"
+        ]
+      },
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', throughput_readings.reading_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_throughput",
+        "sql": "AVG(throughput_readings.throughput_bpd)",
+        "display_name": "avg throughput",
+        "synonyms": [
+          "throughput"
+        ]
+      },
+      {
+        "alias": "avg_utilization",
+        "sql": "AVG(throughput_readings.utilization_pct)",
+        "display_name": "avg utilization",
+        "synonyms": [
+          "utilization"
+        ]
+      },
+      {
+        "alias": "total_output",
+        "sql": "SUM(production_snapshots.total_product_bbl)",
+        "display_name": "total output",
+        "synonyms": [
+          "production"
+        ]
+      },
+      {
+        "alias": "total_downtime",
+        "sql": "SUM(production_snapshots.downtime_hours)",
+        "display_name": "total downtime",
+        "synonyms": [
+          "downtime"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total readingss?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "FROM {fqn}.throughput_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest throughput bpd changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_throughput_bpd) AS max_throughput_bpd",
+        "FROM {fqn}.throughput_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest avg throughput bpd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_avg_throughput_bpd) AS max_avg_throughput_bpd",
+        "FROM {fqn}.production_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total product output bbl changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_product_bbl) AS total_product_bbl",
+        "FROM {fqn}.production_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top process unit id by total throughput in barrels per day?",
+      "sql_lines": [
+        "SELECT unit_id, SUM(throughput_bpd) AS total_throughput_bpd",
+        "FROM {fqn}.throughput_readings",
+        "GROUP BY unit_id ORDER BY total_throughput_bpd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average average utilization pct by process unit name?",
+      "sql_lines": [
+        "SELECT unit_name, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
+        "FROM {fqn}.production_snapshots",
+        "GROUP BY unit_name ORDER BY avg_avg_utilization_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

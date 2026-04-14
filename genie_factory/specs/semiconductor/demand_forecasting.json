@@ -1,0 +1,978 @@
+{
+  "company_name": "ChipFlow Supply",
+  "industry": "Semiconductor",
+  "use_case": "Semiconductor demand forecasting and order backlog management",
+  "space_title": "ChipFlow - Demand Forecasting 📈",
+  "space_description": "Demand forecasting analytics for ChipFlow Supply. Analyze customer orders, demand forecasts, and inventory positions across 20 product SKUs to optimize production planning and reduce backlog risk.",
+  "schema_basename": "semiconductor_demand_forecast",
+  "tables": [
+    {
+      "table_name": "customer_orders",
+      "description": "Daily customer order records capturing order quantities, revenue, lead times, and fulfillment status across product SKUs.",
+      "columns": [
+        {
+          "name": "order_id",
+          "sql_type": "STRING",
+          "comment": "Unique customer order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ORD-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "order_date",
+          "sql_type": "DATE",
+          "comment": "Date the order was placed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "sku_id",
+          "sql_type": "STRING",
+          "comment": "Product SKU identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "sku_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product SKU name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "customer_segment",
+          "sql_type": "STRING",
+          "comment": "Customer segment classification",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'OEM Tier 1' WHEN {status_noise} < 0.45 THEN 'OEM Tier 2' WHEN {status_noise} < 0.65 THEN 'Distributor' WHEN {status_noise} < 0.82 THEN 'Contract Manufacturer' ELSE 'Direct Enterprise' END"
+        },
+        {
+          "name": "order_quantity",
+          "sql_type": "INT",
+          "comment": "Number of units ordered",
+          "is_dimension": false,
+          "generation_expr": "CAST(100 + FLOOR({qty_noise} * 9900) AS INT)"
+        },
+        {
+          "name": "unit_price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Unit price in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.50 + {qty_noise} * 49.50, 2)"
+        },
+        {
+          "name": "order_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total order revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((100 + FLOOR({qty_noise} * 9900)) * (0.50 + {qty_noise} * 49.50), 2)"
+        },
+        {
+          "name": "lead_time_days",
+          "sql_type": "INT",
+          "comment": "Quoted lead time in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(7 + FLOOR({qty_noise} * 83) AS INT)"
+        },
+        {
+          "name": "fulfillment_status",
+          "sql_type": "STRING",
+          "comment": "Order fulfillment status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Shipped' WHEN {status_noise} < 0.72 THEN 'In Production' WHEN {status_noise} < 0.85 THEN 'Backlogged' WHEN {status_noise} < 0.93 THEN 'Partial Ship' ELSE 'Cancelled' END"
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Customer geographic region",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Asia Pacific' WHEN {status_noise} < 0.55 THEN 'North America' WHEN {status_noise} < 0.75 THEN 'Europe' WHEN {status_noise} < 0.90 THEN 'Greater China' ELSE 'Rest of World' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Microcontroller": {
+          "1,2": 0.045,
+          "9,10": 0.06
+        },
+        "Memory Module": {
+          "3,4": 0.055,
+          "7,8": 0.05
+        },
+        "Analog IC": {
+          "5,6": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "sku_id": "CF-MCU-001",
+          "sku_name": "FlowCtrl MCU-32 Automotive",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-002",
+          "sku_name": "FlowCtrl MCU-16 Industrial",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-003",
+          "sku_name": "FlowCtrl MCU-8 Consumer",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-004",
+          "sku_name": "FlowCtrl MCU-64 Secure Boot",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MEM-001",
+          "sku_name": "FlowRAM DDR5 8GB Module",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-002",
+          "sku_name": "FlowRAM DDR5 16GB Module",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-003",
+          "sku_name": "FlowRAM LPDDR5 6GB",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-004",
+          "sku_name": "FlowNAND 256GB eMMC",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-ANA-001",
+          "sku_name": "FlowSense ADC 16-bit",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-002",
+          "sku_name": "FlowSense DAC 12-bit",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-003",
+          "sku_name": "FlowSense Op-Amp Rail-to-Rail",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-004",
+          "sku_name": "FlowSense Temp Sensor Digital",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-PWR-001",
+          "sku_name": "FlowVolt LDO 3.3V 500mA",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-002",
+          "sku_name": "FlowVolt Buck 5V-1.2V 3A",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-003",
+          "sku_name": "FlowVolt PMIC 6-Rail Automotive",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-004",
+          "sku_name": "FlowVolt GaN FET 100V",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-COM-001",
+          "sku_name": "FlowLink USB 3.2 Hub IC",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-002",
+          "sku_name": "FlowLink Ethernet PHY 1G",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-003",
+          "sku_name": "FlowLink CAN-FD Transceiver",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-004",
+          "sku_name": "FlowLink BLE 5.3 SoC",
+          "product_category": "Connectivity"
+        }
+      ],
+      "category_distribution": {
+        "Microcontroller": 0.035,
+        "Memory Module": 0.03,
+        "Analog IC": 0.025,
+        "Power IC": 0.028,
+        "Connectivity": 0.022
+      }
+    },
+    {
+      "table_name": "demand_forecasts",
+      "description": "Weekly demand forecast snapshots comparing predicted vs actual order volumes per SKU, with forecast accuracy tracking.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique demand forecast record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DF-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "forecast_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of forecast",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "sku_id",
+          "sql_type": "STRING",
+          "comment": "Product SKU identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "sku_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product SKU name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_units",
+          "sql_type": "INT",
+          "comment": "Predicted demand in units",
+          "is_dimension": false,
+          "generation_expr": "CAST(500 + FLOOR({qty_noise} * 19500) AS INT)"
+        },
+        {
+          "name": "actual_units",
+          "sql_type": "INT",
+          "comment": "Actual orders received in units",
+          "is_dimension": false,
+          "generation_expr": "CAST(400 + FLOOR({qty_noise} * 19600 + ({status_noise} - 0.5) * 3000) AS INT)"
+        },
+        {
+          "name": "forecast_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Forecast accuracy as percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(50.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "forecast_bias",
+          "sql_type": "STRING",
+          "comment": "Whether forecast was over or under",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Over-forecast' WHEN {status_noise} < 0.55 THEN 'On Target' ELSE 'Under-forecast' END"
+        },
+        {
+          "name": "model_type",
+          "sql_type": "STRING",
+          "comment": "Forecasting model used",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'ML Ensemble' WHEN {status_noise} < 0.65 THEN 'ARIMA' ELSE 'Prophet' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Microcontroller": {
+          "1,2": 0.04,
+          "9,10": 0.055
+        },
+        "Memory Module": {
+          "3,4": 0.05
+        },
+        "Power IC": {
+          "7,8": 0.045
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "sku_id": "CF-MCU-001",
+          "sku_name": "FlowCtrl MCU-32 Automotive",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-002",
+          "sku_name": "FlowCtrl MCU-16 Industrial",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-003",
+          "sku_name": "FlowCtrl MCU-8 Consumer",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-004",
+          "sku_name": "FlowCtrl MCU-64 Secure Boot",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MEM-001",
+          "sku_name": "FlowRAM DDR5 8GB Module",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-002",
+          "sku_name": "FlowRAM DDR5 16GB Module",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-003",
+          "sku_name": "FlowRAM LPDDR5 6GB",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-004",
+          "sku_name": "FlowNAND 256GB eMMC",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-ANA-001",
+          "sku_name": "FlowSense ADC 16-bit",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-002",
+          "sku_name": "FlowSense DAC 12-bit",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-003",
+          "sku_name": "FlowSense Op-Amp Rail-to-Rail",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-004",
+          "sku_name": "FlowSense Temp Sensor Digital",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-PWR-001",
+          "sku_name": "FlowVolt LDO 3.3V 500mA",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-002",
+          "sku_name": "FlowVolt Buck 5V-1.2V 3A",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-003",
+          "sku_name": "FlowVolt PMIC 6-Rail Automotive",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-004",
+          "sku_name": "FlowVolt GaN FET 100V",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-COM-001",
+          "sku_name": "FlowLink USB 3.2 Hub IC",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-002",
+          "sku_name": "FlowLink Ethernet PHY 1G",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-003",
+          "sku_name": "FlowLink CAN-FD Transceiver",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-004",
+          "sku_name": "FlowLink BLE 5.3 SoC",
+          "product_category": "Connectivity"
+        }
+      ],
+      "category_distribution": {
+        "Microcontroller": 0.035,
+        "Memory Module": 0.03,
+        "Analog IC": 0.025,
+        "Power IC": 0.028,
+        "Connectivity": 0.022
+      }
+    },
+    {
+      "table_name": "inventory_positions",
+      "description": "Monthly inventory position summaries per SKU tracking on-hand stock, committed allocations, and weeks-of-supply coverage.",
+      "columns": [
+        {
+          "name": "position_id",
+          "sql_type": "STRING",
+          "comment": "Unique inventory position record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "position_month",
+          "sql_type": "DATE",
+          "comment": "Month of inventory position",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "sku_id",
+          "sql_type": "STRING",
+          "comment": "Product SKU identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "sku_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product SKU name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "on_hand_units",
+          "sql_type": "INT",
+          "comment": "Units currently on hand",
+          "is_dimension": false,
+          "generation_expr": "CAST(1000 + FLOOR({qty_noise} * 49000) AS INT)"
+        },
+        {
+          "name": "committed_units",
+          "sql_type": "INT",
+          "comment": "Units allocated to existing orders",
+          "is_dimension": false,
+          "generation_expr": "CAST(500 + FLOOR({qty_noise} * 30000) AS INT)"
+        },
+        {
+          "name": "available_units",
+          "sql_type": "INT",
+          "comment": "Uncommitted available units",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(0, (1000 + FLOOR({qty_noise} * 49000)) - (500 + FLOOR({qty_noise} * 30000))) AS INT)"
+        },
+        {
+          "name": "weeks_of_supply",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated weeks of supply at current demand rate",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.5, 2.0 + {qty_noise} * 18.0), 1)"
+        },
+        {
+          "name": "inventory_health",
+          "sql_type": "STRING",
+          "comment": "Inventory health status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN (2.0 + {qty_noise} * 18.0) >= 8.0 THEN 'Excess' WHEN (2.0 + {qty_noise} * 18.0) >= 4.0 THEN 'Healthy' WHEN (2.0 + {qty_noise} * 18.0) >= 2.0 THEN 'Low' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Microcontroller": {
+          "9,10,11": 0.055
+        },
+        "Memory Module": {
+          "1,2,3": 0.05
+        },
+        "Analog IC": {
+          "5,6": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "sku_id": "CF-MCU-001",
+          "sku_name": "FlowCtrl MCU-32 Automotive",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-002",
+          "sku_name": "FlowCtrl MCU-16 Industrial",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-003",
+          "sku_name": "FlowCtrl MCU-8 Consumer",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MCU-004",
+          "sku_name": "FlowCtrl MCU-64 Secure Boot",
+          "product_category": "Microcontroller"
+        },
+        {
+          "sku_id": "CF-MEM-001",
+          "sku_name": "FlowRAM DDR5 8GB Module",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-002",
+          "sku_name": "FlowRAM DDR5 16GB Module",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-003",
+          "sku_name": "FlowRAM LPDDR5 6GB",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-MEM-004",
+          "sku_name": "FlowNAND 256GB eMMC",
+          "product_category": "Memory Module"
+        },
+        {
+          "sku_id": "CF-ANA-001",
+          "sku_name": "FlowSense ADC 16-bit",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-002",
+          "sku_name": "FlowSense DAC 12-bit",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-003",
+          "sku_name": "FlowSense Op-Amp Rail-to-Rail",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-ANA-004",
+          "sku_name": "FlowSense Temp Sensor Digital",
+          "product_category": "Analog IC"
+        },
+        {
+          "sku_id": "CF-PWR-001",
+          "sku_name": "FlowVolt LDO 3.3V 500mA",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-002",
+          "sku_name": "FlowVolt Buck 5V-1.2V 3A",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-003",
+          "sku_name": "FlowVolt PMIC 6-Rail Automotive",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-PWR-004",
+          "sku_name": "FlowVolt GaN FET 100V",
+          "product_category": "Power IC"
+        },
+        {
+          "sku_id": "CF-COM-001",
+          "sku_name": "FlowLink USB 3.2 Hub IC",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-002",
+          "sku_name": "FlowLink Ethernet PHY 1G",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-003",
+          "sku_name": "FlowLink CAN-FD Transceiver",
+          "product_category": "Connectivity"
+        },
+        {
+          "sku_id": "CF-COM-004",
+          "sku_name": "FlowLink BLE 5.3 SoC",
+          "product_category": "Connectivity"
+        }
+      ],
+      "category_distribution": {
+        "Microcontroller": 0.035,
+        "Memory Module": 0.03,
+        "Analog IC": 0.025,
+        "Power IC": 0.028,
+        "Connectivity": 0.022
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "customer_order_metrics",
+      "source_table": "customer_orders",
+      "dimensions": [
+        {
+          "name": "order_date",
+          "expr": "order_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "customer_segment",
+          "expr": "customer_segment"
+        },
+        {
+          "name": "fulfillment_status",
+          "expr": "fulfillment_status"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_orders",
+          "expr": "COUNT(DISTINCT order_id)",
+          "comment": "Total customer orders"
+        },
+        {
+          "name": "total_order_revenue_usd",
+          "expr": "SUM(order_revenue_usd)",
+          "comment": "Total order revenue in USD"
+        },
+        {
+          "name": "total_units_ordered",
+          "expr": "SUM(order_quantity)",
+          "comment": "Total units ordered"
+        },
+        {
+          "name": "avg_lead_time_days",
+          "expr": "AVG(lead_time_days)",
+          "comment": "Average quoted lead time in days"
+        },
+        {
+          "name": "backlogged_order_count",
+          "expr": "COUNT(DISTINCT CASE WHEN fulfillment_status = 'Backlogged' THEN order_id END)",
+          "comment": "Orders in backlog"
+        },
+        {
+          "name": "total_unit_price",
+          "expr": "SUM(unit_price_usd)",
+          "comment": "Total unit price usd"
+        },
+        {
+          "name": "unique_sku_count",
+          "expr": "COUNT(DISTINCT sku_id)",
+          "comment": "Number of distinct skus"
+        },
+        {
+          "name": "max_order_quantity",
+          "expr": "MAX(order_quantity)",
+          "comment": "Maximum order quantity"
+        }
+      ]
+    },
+    {
+      "view_name": "forecast_accuracy_metrics",
+      "source_table": "demand_forecasts",
+      "dimensions": [
+        {
+          "name": "forecast_date",
+          "expr": "forecast_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "forecast_bias",
+          "expr": "forecast_bias"
+        },
+        {
+          "name": "model_type",
+          "expr": "model_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_forecast_accuracy_pct",
+          "expr": "AVG(forecast_accuracy_pct)",
+          "comment": "Average forecast accuracy percentage"
+        },
+        {
+          "name": "total_forecasted_units",
+          "expr": "SUM(forecasted_units)",
+          "comment": "Total units forecasted"
+        },
+        {
+          "name": "total_actual_units",
+          "expr": "SUM(actual_units)",
+          "comment": "Total actual units ordered"
+        },
+        {
+          "name": "total_forecast_records",
+          "expr": "COUNT(DISTINCT forecast_id)",
+          "comment": "Total forecast records"
+        },
+        {
+          "name": "unique_sku_count",
+          "expr": "COUNT(DISTINCT sku_id)",
+          "comment": "Number of distinct skus"
+        },
+        {
+          "name": "max_forecasted_units",
+          "expr": "MAX(forecasted_units)",
+          "comment": "Maximum forecasted units"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The customer_order_metrics view (source: customer_orders) has dimensions: order_date, product_category, customer_segment, fulfillment_status, region. Measures: total_orders, total_order_revenue_usd, total_units_ordered, avg_lead_time_days, backlogged_order_count. The forecast_accuracy_metrics view (source: demand_forecasts) has dimensions: forecast_date, product_category, forecast_bias, model_type. Measures: avg_forecast_accuracy_pct, total_forecasted_units, total_actual_units, total_forecast_records. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. sku_id, sku_name).",
+  "sample_questions": [
+    "What is the monthly trend in backlogged order count?",
+    "How has unique total orderss changed over time?",
+    "What is the monthly trend in unique skus?",
+    "How has highest order quantity changed over time?",
+    "What is the monthly trend in unique total forecast recordss?",
+    "How has unique skus changed over time?",
+    "What is the monthly trend in highest forecasted units?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique skus?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(unique_sku_count) AS unique_sku_count",
+        "FROM {fqn}.customer_order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has highest order quantity changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(max_order_quantity) AS max_order_quantity",
+        "FROM {fqn}.customer_order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest forecasted units?",
+      "sql_lines": [
+        "SELECT forecast_date, MEASURE(max_forecasted_units) AS max_forecasted_units",
+        "FROM {fqn}.forecast_accuracy_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_date"
+      ]
+    },
+    {
+      "question": "How does total number of units ordered break down by product sku identifier for 'Shipped' records?",
+      "sql_lines": [
+        "SELECT sku_id, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
+        "FROM {fqn}.customer_orders",
+        "WHERE fulfillment_status = 'Shipped' GROUP BY sku_id ORDER BY total_order_quantity DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total predicted demand in units over time?",
+      "sql_lines": [
+        "SELECT forecast_date, SUM(forecasted_units) AS total_forecasted_units",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_date ORDER BY forecast_date"
+      ]
+    },
+    {
+      "question": "How many distinct unique inventory position record identifier are there per product category grouping?",
+      "sql_lines": [
+        "SELECT product_category, COUNT(DISTINCT position_id) AS distinct_count",
+        "FROM {fqn}.inventory_positions",
+        "GROUP BY product_category ORDER BY distinct_count DESC"
+      ]
+    },
+    {
+      "question": "How has total unit price usd changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_unit_price) AS total_unit_price",
+        "FROM {fqn}.customer_order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "customer_orders.fulfillment_status = 'Backlogged'",
+        "display_name": "backlogged orders",
+        "synonyms": [
+          "backlog",
+          "unfulfilled orders",
+          "stuck orders"
+        ],
+        "instruction": "Use when analyzing orders that cannot be fulfilled from current stock."
+      },
+      {
+        "sql": "inventory_positions.inventory_health = 'Critical'",
+        "display_name": "critical inventory",
+        "synonyms": [
+          "low stock",
+          "stockout risk",
+          "under 2 weeks supply"
+        ],
+        "instruction": "Use when identifying SKUs at risk of stockout."
+      },
+      {
+        "sql": "customer_orders.order_date >= ADD_MONTHS(CURRENT_DATE(), -3)",
+        "display_name": "last 3 months",
+        "synonyms": [
+          "recent orders",
+          "past quarter",
+          "trailing 90 days"
+        ],
+        "instruction": "Use to restrict analysis to the most recent quarter."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "order_month",
+        "sql": "DATE_TRUNC('month', customer_orders.order_date)",
+        "display_name": "order month",
+        "synonyms": [
+          "month of order",
+          "order period"
+        ]
+      },
+      {
+        "alias": "forecast_gap_units",
+        "sql": "demand_forecasts.forecasted_units - demand_forecasts.actual_units",
+        "display_name": "forecast gap",
+        "synonyms": [
+          "demand gap",
+          "forecast vs actual delta"
+        ]
+      },
+      {
+        "alias": "committed_pct",
+        "sql": "inventory_positions.committed_units * 100.0 / NULLIF(inventory_positions.on_hand_units, 0)",
+        "display_name": "committed percentage",
+        "synonyms": [
+          "allocation rate",
+          "pct committed"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(customer_orders.order_revenue_usd)",
+        "display_name": "total order revenue",
+        "synonyms": [
+          "revenue",
+          "order value",
+          "total sales"
+        ]
+      },
+      {
+        "alias": "total_units",
+        "sql": "SUM(customer_orders.order_quantity)",
+        "display_name": "total units ordered",
+        "synonyms": [
+          "order volume",
+          "unit count"
+        ]
+      },
+      {
+        "alias": "avg_forecast_accuracy",
+        "sql": "AVG(demand_forecasts.forecast_accuracy_pct)",
+        "display_name": "average forecast accuracy",
+        "synonyms": [
+          "mean accuracy",
+          "forecast precision"
+        ]
+      },
+      {
+        "alias": "avg_weeks_of_supply",
+        "sql": "AVG(inventory_positions.weeks_of_supply)",
+        "display_name": "average weeks of supply",
+        "synonyms": [
+          "mean WOS",
+          "inventory coverage"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in backlogged order count?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(backlogged_order_count) AS backlogged_order_count",
+        "FROM {fqn}.customer_order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has unique total orderss changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_orders) AS total_orders",
+        "FROM {fqn}.customer_order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique total forecast recordss?",
+      "sql_lines": [
+        "SELECT forecast_date, MEASURE(total_forecast_records) AS total_forecast_records",
+        "FROM {fqn}.forecast_accuracy_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_date"
+      ]
+    },
+    {
+      "question": "How has unique skus changed over time?",
+      "sql_lines": [
+        "SELECT forecast_date, MEASURE(unique_sku_count) AS unique_sku_count",
+        "FROM {fqn}.forecast_accuracy_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_date"
+      ]
+    },
+    {
+      "question": "What are the top product sku identifier by total number of units ordered?",
+      "sql_lines": [
+        "SELECT sku_id, SUM(order_quantity) AS total_order_quantity",
+        "FROM {fqn}.customer_orders",
+        "GROUP BY sku_id ORDER BY total_order_quantity DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average forecast accuracy as percentage by human-readable product sku name?",
+      "sql_lines": [
+        "SELECT sku_name, AVG(forecast_accuracy_pct) AS avg_forecast_accuracy_pct",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY sku_name ORDER BY avg_forecast_accuracy_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of inventory position?",
+      "sql_lines": [
+        "SELECT position_month, COUNT(*) AS record_count",
+        "FROM {fqn}.inventory_positions",
+        "GROUP BY position_month ORDER BY position_month"
+      ]
+    }
+  ]
+}

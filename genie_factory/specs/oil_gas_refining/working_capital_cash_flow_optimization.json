@@ -1,0 +1,956 @@
+{
+  "company_name": "RefineCapital Systems",
+  "industry": "Oil & Gas Refining",
+  "use_case": "Working capital and cash flow optimization for oil & gas refining operations",
+  "space_title": "RefineCapital Systems - Working Capital & Cash Flow Optimization 💰",
+  "space_description": "Working capital analytics for RefineCapital Systems. Ask questions about cash positions, receivables, payables, inventory, and cash conversion cycle across 20 business units.",
+  "schema_basename": "og_refining_cashflow",
+  "tables": [
+    {
+      "table_name": "cash_transactions",
+      "description": "Daily cash inflows and outflows.",
+      "columns": [
+        {
+          "name": "transaction_id",
+          "sql_type": "STRING",
+          "comment": "Unique cash transaction ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RCC-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.business_unit_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "transaction_date",
+          "sql_type": "DATE",
+          "comment": "Transaction date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "business_unit_id",
+          "sql_type": "STRING",
+          "comment": "Business unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_unit_name",
+          "sql_type": "STRING",
+          "comment": "Business unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment",
+          "sql_type": "STRING",
+          "comment": "Segment: Processing, Supply Chain, Support, Corporate",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "flow_type",
+          "sql_type": "STRING",
+          "comment": "Flow: Collection, Disbursement, Intercompany, Tax Payment, Dividend",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Collection' WHEN {status_noise} < 0.65 THEN 'Disbursement' WHEN {status_noise} < 0.80 THEN 'Intercompany' WHEN {status_noise} < 0.92 THEN 'Tax Payment' ELSE 'Dividend' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cash flow amount USD (positive=inflow)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(CASE WHEN {status_noise} < 0.35 THEN {qty_noise} * 6000000.0 ELSE -{qty_noise} * 4500000.0 END, 2)"
+        },
+        {
+          "name": "counterparty",
+          "sql_type": "STRING",
+          "comment": "Counterparty type",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Customer' WHEN {status_noise} < 0.55 THEN 'Supplier' WHEN {status_noise} < 0.72 THEN 'Government' WHEN {status_noise} < 0.88 THEN 'Internal' ELSE 'Shareholder' END"
+        },
+        {
+          "name": "days_outstanding",
+          "sql_type": "INT",
+          "comment": "Days since invoice",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(0, FLOOR({qty_noise} * 120)) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "business_unit_id": "RC-CDU-01",
+          "business_unit_name": "Crude Distillation",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-FCC-02",
+          "business_unit_name": "FCC Unit",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-HCK-03",
+          "business_unit_name": "Hydrocracker",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-REF-04",
+          "business_unit_name": "Catalytic Reformer",
+          "segment": "Processing",
+          "region": "Midwest"
+        },
+        {
+          "business_unit_id": "RC-HDT-05",
+          "business_unit_name": "Hydrotreater",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-BLD-06",
+          "business_unit_name": "Gasoline Blending",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-BLD2-07",
+          "business_unit_name": "Diesel Blending",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-STR-08",
+          "business_unit_name": "Tank Farm",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-MKT-09",
+          "business_unit_name": "Wholesale Marketing",
+          "segment": "Supply Chain",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-RTL-10",
+          "business_unit_name": "Retail Division",
+          "segment": "Supply Chain",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-MNT-11",
+          "business_unit_name": "Turnaround Team",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-UTL-12",
+          "business_unit_name": "Power & Steam",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-HSE-13",
+          "business_unit_name": "Environmental Compliance",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-QA-14",
+          "business_unit_name": "Lab & Testing",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-FIN-15",
+          "business_unit_name": "Treasury Ops",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-IT-16",
+          "business_unit_name": "Digital Services",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-HR-17",
+          "business_unit_name": "People Ops",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-PRO-18",
+          "business_unit_name": "Strategic Sourcing",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-COK-19",
+          "business_unit_name": "Coker Division",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-PET-20",
+          "business_unit_name": "Specialty Chemicals",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        }
+      ],
+      "category_distribution": {
+        "Processing": 0.125,
+        "Supply Chain": 0.125,
+        "Support": 0.125,
+        "Corporate": 0.125
+      }
+    },
+    {
+      "table_name": "working_capital_snapshots",
+      "description": "Weekly working capital position snapshots.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RCW-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.business_unit_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "business_unit_id",
+          "sql_type": "STRING",
+          "comment": "Business unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_unit_name",
+          "sql_type": "STRING",
+          "comment": "Business unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment",
+          "sql_type": "STRING",
+          "comment": "Segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "accounts_receivable_usd",
+          "sql_type": "DOUBLE",
+          "comment": "AR balance USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(200000.0, {qty_noise} * 80000000.0), 2)"
+        },
+        {
+          "name": "accounts_payable_usd",
+          "sql_type": "DOUBLE",
+          "comment": "AP balance USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(150000.0, {qty_noise} * 60000000.0), 2)"
+        },
+        {
+          "name": "inventory_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Inventory USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, {qty_noise} * 40000000.0), 2)"
+        },
+        {
+          "name": "cash_balance_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cash and equivalents USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50000.0, {qty_noise} * 100000000.0), 2)"
+        },
+        {
+          "name": "dso_days",
+          "sql_type": "DOUBLE",
+          "comment": "Days sales outstanding",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(15.0, 25.0 + {qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "dpo_days",
+          "sql_type": "DOUBLE",
+          "comment": "Days payable outstanding",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(20.0, 30.0 + {qty_noise} * 40.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "business_unit_id": "RC-CDU-01",
+          "business_unit_name": "Crude Distillation",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-FCC-02",
+          "business_unit_name": "FCC Unit",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-HCK-03",
+          "business_unit_name": "Hydrocracker",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-REF-04",
+          "business_unit_name": "Catalytic Reformer",
+          "segment": "Processing",
+          "region": "Midwest"
+        },
+        {
+          "business_unit_id": "RC-HDT-05",
+          "business_unit_name": "Hydrotreater",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-BLD-06",
+          "business_unit_name": "Gasoline Blending",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-BLD2-07",
+          "business_unit_name": "Diesel Blending",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-STR-08",
+          "business_unit_name": "Tank Farm",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-MKT-09",
+          "business_unit_name": "Wholesale Marketing",
+          "segment": "Supply Chain",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-RTL-10",
+          "business_unit_name": "Retail Division",
+          "segment": "Supply Chain",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-MNT-11",
+          "business_unit_name": "Turnaround Team",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-UTL-12",
+          "business_unit_name": "Power & Steam",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-HSE-13",
+          "business_unit_name": "Environmental Compliance",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-QA-14",
+          "business_unit_name": "Lab & Testing",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-FIN-15",
+          "business_unit_name": "Treasury Ops",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-IT-16",
+          "business_unit_name": "Digital Services",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-HR-17",
+          "business_unit_name": "People Ops",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-PRO-18",
+          "business_unit_name": "Strategic Sourcing",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-COK-19",
+          "business_unit_name": "Coker Division",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-PET-20",
+          "business_unit_name": "Specialty Chemicals",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        }
+      ],
+      "category_distribution": {
+        "Processing": 0.125,
+        "Supply Chain": 0.125,
+        "Support": 0.125,
+        "Corporate": 0.125
+      }
+    },
+    {
+      "table_name": "cashflow_monthly",
+      "description": "Monthly cash flow KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RCM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.business_unit_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "business_unit_id",
+          "sql_type": "STRING",
+          "comment": "Business unit ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment",
+          "sql_type": "STRING",
+          "comment": "Segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "free_cash_flow_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Free cash flow USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-3000000.0 + {qty_noise} * 30000000.0, 2)"
+        },
+        {
+          "name": "cash_conversion_cycle_days",
+          "sql_type": "DOUBLE",
+          "comment": "Cash conversion cycle days",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-10.0, 15.0 + {qty_noise} * 60.0), 1)"
+        },
+        {
+          "name": "current_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Current ratio",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.5, 0.8 + {qty_noise} * 1.5), 2)"
+        },
+        {
+          "name": "net_debt_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Net debt USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-30000000.0, {qty_noise} * 200000000.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "business_unit_id": "RC-CDU-01",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-FCC-02",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-HCK-03",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-REF-04",
+          "segment": "Processing",
+          "region": "Midwest"
+        },
+        {
+          "business_unit_id": "RC-HDT-05",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-BLD-06",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-BLD2-07",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-STR-08",
+          "segment": "Supply Chain",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-MKT-09",
+          "segment": "Supply Chain",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-RTL-10",
+          "segment": "Supply Chain",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-MNT-11",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-UTL-12",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-HSE-13",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-QA-14",
+          "segment": "Support",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-FIN-15",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-IT-16",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-HR-17",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-PRO-18",
+          "segment": "Corporate",
+          "region": "National"
+        },
+        {
+          "business_unit_id": "RC-COK-19",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        },
+        {
+          "business_unit_id": "RC-PET-20",
+          "segment": "Processing",
+          "region": "Gulf Coast"
+        }
+      ],
+      "category_distribution": {
+        "Processing": 0.125,
+        "Supply Chain": 0.125,
+        "Support": 0.125,
+        "Corporate": 0.125
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "cash_transactions_metrics",
+      "source_table": "cash_transactions",
+      "dimensions": [
+        {
+          "name": "transaction_date",
+          "expr": "transaction_date"
+        },
+        {
+          "name": "business_unit_id",
+          "expr": "business_unit_id"
+        },
+        {
+          "name": "segment",
+          "expr": "segment"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "flow_type",
+          "expr": "flow_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_inflows_usd",
+          "expr": "SUM(CASE WHEN amount_usd > 0 THEN amount_usd ELSE 0 END)",
+          "comment": "Total inflows USD"
+        },
+        {
+          "name": "total_outflows_usd",
+          "expr": "SUM(CASE WHEN amount_usd < 0 THEN ABS(amount_usd) ELSE 0 END)",
+          "comment": "Total outflows USD"
+        },
+        {
+          "name": "net_cash_flow_usd",
+          "expr": "SUM(amount_usd)",
+          "comment": "Net cash flow USD"
+        },
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT transaction_id)",
+          "comment": "Total transactions"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        },
+        {
+          "name": "total_days_outstanding",
+          "expr": "SUM(days_outstanding)",
+          "comment": "Total days outstanding"
+        }
+      ]
+    },
+    {
+      "view_name": "working_capital_snapshots_metrics",
+      "source_table": "working_capital_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "business_unit_id",
+          "expr": "business_unit_id"
+        },
+        {
+          "name": "segment",
+          "expr": "segment"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_receivables_usd",
+          "expr": "SUM(accounts_receivable_usd)",
+          "comment": "Total AR USD"
+        },
+        {
+          "name": "total_payables_usd",
+          "expr": "SUM(accounts_payable_usd)",
+          "comment": "Total AP USD"
+        },
+        {
+          "name": "total_cash_balance_usd",
+          "expr": "SUM(cash_balance_usd)",
+          "comment": "Total cash USD"
+        },
+        {
+          "name": "avg_dso_days",
+          "expr": "AVG(dso_days)",
+          "comment": "Average DSO"
+        },
+        {
+          "name": "total_inventory",
+          "expr": "SUM(inventory_usd)",
+          "comment": "Total inventory usd"
+        },
+        {
+          "name": "total_dpo_days",
+          "expr": "SUM(dpo_days)",
+          "comment": "Total dpo days"
+        },
+        {
+          "name": "max_accounts_receivable",
+          "expr": "MAX(accounts_receivable_usd)",
+          "comment": "Maximum accounts receivable usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cash_transactions_metrics view (source: cash_transactions) has dimensions: transaction_date, business_unit_id, segment, region, flow_type. Measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions. The working_capital_snapshots_metrics view (source: working_capital_snapshots) has dimensions: snapshot_date, business_unit_id, segment, region. Measures: total_receivables_usd, total_payables_usd, total_cash_balance_usd, avg_dso_days. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. business_unit_name).",
+  "sample_questions": [
+    "What is the monthly trend in total inflows usd count?",
+    "How has total outflows usd count changed over time?",
+    "What is the monthly trend in unique total transactionss?",
+    "How has highest amount changed over time?",
+    "What is the monthly trend in highest accounts receivable?",
+    "How has total ar usd changed over time?",
+    "What is the monthly trend in total ap usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total transactionss?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.cash_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has highest amount changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "FROM {fqn}.cash_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total ap usd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_payables_usd) AS total_payables_usd",
+        "FROM {fqn}.working_capital_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total cash flow amount usd (positive=inflow) over time?",
+      "sql_lines": [
+        "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.cash_transactions",
+        "GROUP BY transaction_date ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total ar balance usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(accounts_receivable_usd) AS total_accounts_receivable_usd",
+        "FROM {fqn}.working_capital_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average current ratio changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(current_ratio) AS avg_current_ratio",
+        "FROM {fqn}.cashflow_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has unique total transactionss changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.cash_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "flow_type = 'Collection'",
+        "display_name": "collections",
+        "synonyms": [
+          "inflows"
+        ],
+        "instruction": "Filter to collections."
+      },
+      {
+        "sql": "dso_days > 45",
+        "display_name": "high DSO",
+        "synonyms": [
+          "slow collections"
+        ],
+        "instruction": "High DSO units."
+      },
+      {
+        "sql": "free_cash_flow_usd < 0",
+        "display_name": "negative FCF",
+        "synonyms": [
+          "cash burn"
+        ],
+        "instruction": "Cash-negative units."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "nwc_usd",
+        "sql": "working_capital_snapshots.accounts_receivable_usd + working_capital_snapshots.inventory_usd - working_capital_snapshots.accounts_payable_usd",
+        "display_name": "net working capital",
+        "synonyms": [
+          "NWC"
+        ]
+      },
+      {
+        "alias": "ccc_simple",
+        "sql": "ROUND(working_capital_snapshots.dso_days - working_capital_snapshots.dpo_days, 1)",
+        "display_name": "cash conversion cycle",
+        "synonyms": [
+          "CCC"
+        ]
+      },
+      {
+        "alias": "txn_month",
+        "sql": "DATE_TRUNC('month', cash_transactions.transaction_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_inflows",
+        "sql": "SUM(CASE WHEN cash_transactions.amount_usd > 0 THEN cash_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total inflows",
+        "synonyms": [
+          "collections"
+        ]
+      },
+      {
+        "alias": "total_outflows",
+        "sql": "SUM(CASE WHEN cash_transactions.amount_usd < 0 THEN ABS(cash_transactions.amount_usd) ELSE 0 END)",
+        "display_name": "total outflows",
+        "synonyms": [
+          "disbursements"
+        ]
+      },
+      {
+        "alias": "total_fcf",
+        "sql": "SUM(cashflow_monthly.free_cash_flow_usd)",
+        "display_name": "total FCF",
+        "synonyms": [
+          "free cash"
+        ]
+      },
+      {
+        "alias": "avg_ratio",
+        "sql": "AVG(cashflow_monthly.current_ratio)",
+        "display_name": "avg current ratio",
+        "synonyms": [
+          "liquidity"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in total inflows usd count?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_inflows_usd) AS total_inflows_usd",
+        "FROM {fqn}.cash_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has total outflows usd count changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_outflows_usd) AS total_outflows_usd",
+        "FROM {fqn}.cash_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest accounts receivable?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
+        "FROM {fqn}.working_capital_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total ar usd changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_receivables_usd) AS total_receivables_usd",
+        "FROM {fqn}.working_capital_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top business unit id by total cash flow amount usd (positive=inflow)?",
+      "sql_lines": [
+        "SELECT business_unit_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.cash_transactions",
+        "GROUP BY business_unit_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.working_capital_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.cashflow_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

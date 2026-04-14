@@ -1,0 +1,1045 @@
+{
+  "company_name": "IronPulse Manufacturing",
+  "industry": "Machinery",
+  "use_case": "Industrial asset health monitoring and predictive maintenance",
+  "space_title": "IronPulse Manufacturing - Asset Health Monitor 🔧",
+  "space_description": "Industrial asset health analytics for IronPulse. Ask about vibration trends, bearing temperatures, health indices, failure predictions, and maintenance costs across 20 industrial assets.",
+  "schema_basename": "mach_asset_health",
+  "tables": [
+    {
+      "table_name": "condition_readings",
+      "description": "Condition monitoring readings from industrial assets including vibration, temperature, oil analysis, and computed health indices.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique condition reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CR-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of condition reading",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "asset_id",
+          "sql_type": "STRING",
+          "comment": "Industrial asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "asset_type",
+          "sql_type": "STRING",
+          "comment": "Type of industrial asset",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "manufacturer",
+          "sql_type": "STRING",
+          "comment": "Asset manufacturer",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vibration_velocity_mm_s",
+          "sql_type": "DOUBLE",
+          "comment": "Vibration velocity in mm/s (ISO 10816 scale)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 19.5), 2)"
+        },
+        {
+          "name": "bearing_temperature_c",
+          "sql_type": "DOUBLE",
+          "comment": "Bearing temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 60.0), 1)"
+        },
+        {
+          "name": "oil_temperature_c",
+          "sql_type": "DOUBLE",
+          "comment": "Lubricant oil temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(35.0 + ({qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "health_index",
+          "sql_type": "DOUBLE",
+          "comment": "Computed health index 0-100 (100 = perfect health)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + ({qty_noise} * 70.0), 1)"
+        },
+        {
+          "name": "remaining_useful_life_days",
+          "sql_type": "INT",
+          "comment": "Predicted remaining useful life in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 350) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Compressor": {
+          "6,7,8": 0.06,
+          "12,1": 0.045
+        },
+        "Pump": {
+          "3,4,5": 0.055,
+          "9,10": 0.05
+        },
+        "Turbine": {
+          "1,2": 0.04,
+          "7,8,9": 0.06
+        },
+        "Gearbox": {
+          "10,11": 0.055,
+          "4,5": 0.05
+        },
+        "Motor": {
+          "6,7": 0.055,
+          "11,12": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "asset_id": "IP-CMP-001",
+          "asset_type": "Compressor",
+          "manufacturer": "Atlas Copco",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-CMP-002",
+          "asset_type": "Compressor",
+          "manufacturer": "Atlas Copco",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-CMP-003",
+          "asset_type": "Compressor",
+          "manufacturer": "Ingersoll Rand",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-CMP-004",
+          "asset_type": "Compressor",
+          "manufacturer": "Ingersoll Rand",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-005",
+          "asset_type": "Pump",
+          "manufacturer": "Sulzer",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-006",
+          "asset_type": "Pump",
+          "manufacturer": "Sulzer",
+          "plant_area": "Cooling"
+        },
+        {
+          "asset_id": "IP-PMP-007",
+          "asset_type": "Pump",
+          "manufacturer": "KSB",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-008",
+          "asset_type": "Pump",
+          "manufacturer": "Flowserve",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-TRB-009",
+          "asset_type": "Turbine",
+          "manufacturer": "Siemens Energy",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-010",
+          "asset_type": "Turbine",
+          "manufacturer": "Siemens Energy",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-011",
+          "asset_type": "Turbine",
+          "manufacturer": "GE Vernova",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-012",
+          "asset_type": "Turbine",
+          "manufacturer": "GE Vernova",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-GBX-013",
+          "asset_type": "Gearbox",
+          "manufacturer": "Flender",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-GBX-014",
+          "asset_type": "Gearbox",
+          "manufacturer": "Flender",
+          "plant_area": "Milling"
+        },
+        {
+          "asset_id": "IP-GBX-015",
+          "asset_type": "Gearbox",
+          "manufacturer": "SEW-Eurodrive",
+          "plant_area": "Conveyor"
+        },
+        {
+          "asset_id": "IP-GBX-016",
+          "asset_type": "Gearbox",
+          "manufacturer": "SEW-Eurodrive",
+          "plant_area": "Conveyor"
+        },
+        {
+          "asset_id": "IP-MTR-017",
+          "asset_type": "Motor",
+          "manufacturer": "ABB",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-MTR-018",
+          "asset_type": "Motor",
+          "manufacturer": "ABB",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-MTR-019",
+          "asset_type": "Motor",
+          "manufacturer": "Siemens",
+          "plant_area": "Milling"
+        },
+        {
+          "asset_id": "IP-MTR-020",
+          "asset_type": "Motor",
+          "manufacturer": "WEG",
+          "plant_area": "Conveyor"
+        }
+      ],
+      "category_distribution": {
+        "Compressor": 0.03,
+        "Pump": 0.032,
+        "Turbine": 0.028,
+        "Gearbox": 0.03,
+        "Motor": 0.032
+      }
+    },
+    {
+      "table_name": "failure_events",
+      "description": "Recorded failure events with failure modes, detection methods, severity, and prediction status.",
+      "columns": [
+        {
+          "name": "failure_id",
+          "sql_type": "STRING",
+          "comment": "Unique failure event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FE-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "failure_date",
+          "sql_type": "DATE",
+          "comment": "Date the failure was recorded",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "asset_id",
+          "sql_type": "STRING",
+          "comment": "Industrial asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "asset_type",
+          "sql_type": "STRING",
+          "comment": "Type of industrial asset",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "manufacturer",
+          "sql_type": "STRING",
+          "comment": "Asset manufacturer",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "failure_mode",
+          "sql_type": "STRING",
+          "comment": "Root cause failure mode",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Bearing Failure' WHEN {status_noise} < 0.16 THEN 'Seal Leak' WHEN {status_noise} < 0.24 THEN 'Impeller Erosion' WHEN {status_noise} < 0.32 THEN 'Shaft Misalignment' WHEN {status_noise} < 0.40 THEN 'Blade Fatigue' WHEN {status_noise} < 0.48 THEN 'Gear Tooth Wear' WHEN {status_noise} < 0.54 THEN 'Lubrication Failure' WHEN {status_noise} < 0.60 THEN 'Overheating' WHEN {status_noise} < 0.66 THEN 'Cavitation Damage' WHEN {status_noise} < 0.72 THEN 'Electrical Fault' WHEN {status_noise} < 0.78 THEN 'Corrosion' WHEN {status_noise} < 0.84 THEN 'Vibration Fatigue' ELSE 'Fouling' END"
+        },
+        {
+          "name": "detection_method",
+          "sql_type": "STRING",
+          "comment": "How the failure was detected: Sensor, Inspection, Breakdown",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Sensor' WHEN {status_noise} < 0.75 THEN 'Inspection' ELSE 'Breakdown' END"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Failure severity: Minor, Major, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Minor' WHEN {status_noise} < 0.80 THEN 'Major' ELSE 'Critical' END"
+        },
+        {
+          "name": "downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Downtime caused by failure in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 71.0), 1)"
+        },
+        {
+          "name": "repair_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cost to repair the failure in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 49500.0), 2)"
+        },
+        {
+          "name": "was_predicted",
+          "sql_type": "BOOLEAN",
+          "comment": "Whether the failure was predicted by the ML model",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN true ELSE false END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Compressor": {
+          "6,7,8": 0.06,
+          "12,1": 0.045
+        },
+        "Pump": {
+          "3,4,5": 0.055,
+          "9,10": 0.05
+        },
+        "Turbine": {
+          "1,2": 0.04,
+          "7,8,9": 0.06
+        },
+        "Gearbox": {
+          "10,11": 0.055,
+          "4,5": 0.05
+        },
+        "Motor": {
+          "6,7": 0.055,
+          "11,12": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "asset_id": "IP-CMP-001",
+          "asset_type": "Compressor",
+          "manufacturer": "Atlas Copco",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-CMP-002",
+          "asset_type": "Compressor",
+          "manufacturer": "Atlas Copco",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-CMP-003",
+          "asset_type": "Compressor",
+          "manufacturer": "Ingersoll Rand",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-CMP-004",
+          "asset_type": "Compressor",
+          "manufacturer": "Ingersoll Rand",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-005",
+          "asset_type": "Pump",
+          "manufacturer": "Sulzer",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-006",
+          "asset_type": "Pump",
+          "manufacturer": "Sulzer",
+          "plant_area": "Cooling"
+        },
+        {
+          "asset_id": "IP-PMP-007",
+          "asset_type": "Pump",
+          "manufacturer": "KSB",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-008",
+          "asset_type": "Pump",
+          "manufacturer": "Flowserve",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-TRB-009",
+          "asset_type": "Turbine",
+          "manufacturer": "Siemens Energy",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-010",
+          "asset_type": "Turbine",
+          "manufacturer": "Siemens Energy",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-011",
+          "asset_type": "Turbine",
+          "manufacturer": "GE Vernova",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-012",
+          "asset_type": "Turbine",
+          "manufacturer": "GE Vernova",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-GBX-013",
+          "asset_type": "Gearbox",
+          "manufacturer": "Flender",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-GBX-014",
+          "asset_type": "Gearbox",
+          "manufacturer": "Flender",
+          "plant_area": "Milling"
+        },
+        {
+          "asset_id": "IP-GBX-015",
+          "asset_type": "Gearbox",
+          "manufacturer": "SEW-Eurodrive",
+          "plant_area": "Conveyor"
+        },
+        {
+          "asset_id": "IP-GBX-016",
+          "asset_type": "Gearbox",
+          "manufacturer": "SEW-Eurodrive",
+          "plant_area": "Conveyor"
+        },
+        {
+          "asset_id": "IP-MTR-017",
+          "asset_type": "Motor",
+          "manufacturer": "ABB",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-MTR-018",
+          "asset_type": "Motor",
+          "manufacturer": "ABB",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-MTR-019",
+          "asset_type": "Motor",
+          "manufacturer": "Siemens",
+          "plant_area": "Milling"
+        },
+        {
+          "asset_id": "IP-MTR-020",
+          "asset_type": "Motor",
+          "manufacturer": "WEG",
+          "plant_area": "Conveyor"
+        }
+      ],
+      "category_distribution": {
+        "Compressor": 0.03,
+        "Pump": 0.032,
+        "Turbine": 0.028,
+        "Gearbox": 0.03,
+        "Motor": 0.032
+      }
+    },
+    {
+      "table_name": "asset_health_monthly",
+      "description": "Monthly asset health summary with average health index, availability, maintenance cost, and prediction effectiveness.",
+      "columns": [
+        {
+          "name": "summary_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly summary identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('AHM-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "summary_month",
+          "sql_type": "DATE",
+          "comment": "Month of the summary record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "asset_id",
+          "sql_type": "STRING",
+          "comment": "Industrial asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "asset_type",
+          "sql_type": "STRING",
+          "comment": "Type of industrial asset",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "manufacturer",
+          "sql_type": "STRING",
+          "comment": "Asset manufacturer",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "avg_health_index",
+          "sql_type": "DOUBLE",
+          "comment": "Average health index for the month 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 58.0), 1)"
+        },
+        {
+          "name": "availability_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Asset availability percentage 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(82.0 + ({qty_noise} * 17.5), 2)"
+        },
+        {
+          "name": "maintenance_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total maintenance cost for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1000.0 + ({qty_noise} * 24000.0), 2)"
+        },
+        {
+          "name": "predicted_failures_caught",
+          "sql_type": "INT",
+          "comment": "Number of predicted failures successfully caught",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 5) AS INT)"
+        },
+        {
+          "name": "unplanned_downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Unplanned downtime hours in the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 36.0, 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Compressor": {
+          "6,7,8": 0.06,
+          "12,1": 0.045
+        },
+        "Pump": {
+          "3,4,5": 0.055,
+          "9,10": 0.05
+        },
+        "Turbine": {
+          "1,2": 0.04,
+          "7,8,9": 0.06
+        },
+        "Gearbox": {
+          "10,11": 0.055,
+          "4,5": 0.05
+        },
+        "Motor": {
+          "6,7": 0.055,
+          "11,12": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "asset_id": "IP-CMP-001",
+          "asset_type": "Compressor",
+          "manufacturer": "Atlas Copco",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-CMP-002",
+          "asset_type": "Compressor",
+          "manufacturer": "Atlas Copco",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-CMP-003",
+          "asset_type": "Compressor",
+          "manufacturer": "Ingersoll Rand",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-CMP-004",
+          "asset_type": "Compressor",
+          "manufacturer": "Ingersoll Rand",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-005",
+          "asset_type": "Pump",
+          "manufacturer": "Sulzer",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-006",
+          "asset_type": "Pump",
+          "manufacturer": "Sulzer",
+          "plant_area": "Cooling"
+        },
+        {
+          "asset_id": "IP-PMP-007",
+          "asset_type": "Pump",
+          "manufacturer": "KSB",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-PMP-008",
+          "asset_type": "Pump",
+          "manufacturer": "Flowserve",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-TRB-009",
+          "asset_type": "Turbine",
+          "manufacturer": "Siemens Energy",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-010",
+          "asset_type": "Turbine",
+          "manufacturer": "Siemens Energy",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-011",
+          "asset_type": "Turbine",
+          "manufacturer": "GE Vernova",
+          "plant_area": "Power Gen"
+        },
+        {
+          "asset_id": "IP-TRB-012",
+          "asset_type": "Turbine",
+          "manufacturer": "GE Vernova",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-GBX-013",
+          "asset_type": "Gearbox",
+          "manufacturer": "Flender",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-GBX-014",
+          "asset_type": "Gearbox",
+          "manufacturer": "Flender",
+          "plant_area": "Milling"
+        },
+        {
+          "asset_id": "IP-GBX-015",
+          "asset_type": "Gearbox",
+          "manufacturer": "SEW-Eurodrive",
+          "plant_area": "Conveyor"
+        },
+        {
+          "asset_id": "IP-GBX-016",
+          "asset_type": "Gearbox",
+          "manufacturer": "SEW-Eurodrive",
+          "plant_area": "Conveyor"
+        },
+        {
+          "asset_id": "IP-MTR-017",
+          "asset_type": "Motor",
+          "manufacturer": "ABB",
+          "plant_area": "Process"
+        },
+        {
+          "asset_id": "IP-MTR-018",
+          "asset_type": "Motor",
+          "manufacturer": "ABB",
+          "plant_area": "Utilities"
+        },
+        {
+          "asset_id": "IP-MTR-019",
+          "asset_type": "Motor",
+          "manufacturer": "Siemens",
+          "plant_area": "Milling"
+        },
+        {
+          "asset_id": "IP-MTR-020",
+          "asset_type": "Motor",
+          "manufacturer": "WEG",
+          "plant_area": "Conveyor"
+        }
+      ],
+      "category_distribution": {
+        "Compressor": 0.03,
+        "Pump": 0.032,
+        "Turbine": 0.028,
+        "Gearbox": 0.03,
+        "Motor": 0.032
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "condition_readings_metrics",
+      "source_table": "condition_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "asset_type",
+          "expr": "asset_type"
+        },
+        {
+          "name": "manufacturer",
+          "expr": "manufacturer"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_vibration_velocity",
+          "expr": "AVG(vibration_velocity_mm_s)",
+          "comment": "Average vibration velocity in mm/s"
+        },
+        {
+          "name": "avg_bearing_temp",
+          "expr": "AVG(bearing_temperature_c)",
+          "comment": "Average bearing temperature in Celsius"
+        },
+        {
+          "name": "avg_health_index",
+          "expr": "AVG(health_index)",
+          "comment": "Average computed health index 0-100"
+        },
+        {
+          "name": "avg_rul_days",
+          "expr": "AVG(remaining_useful_life_days)",
+          "comment": "Average remaining useful life in days"
+        },
+        {
+          "name": "total_oil_temperature_c",
+          "expr": "SUM(oil_temperature_c)",
+          "comment": "Total oil temperature c"
+        },
+        {
+          "name": "unique_asset_count",
+          "expr": "COUNT(DISTINCT asset_id)",
+          "comment": "Number of distinct assets"
+        },
+        {
+          "name": "max_vibration_velocity_mm_s",
+          "expr": "MAX(vibration_velocity_mm_s)",
+          "comment": "Maximum vibration velocity mm s"
+        }
+      ]
+    },
+    {
+      "view_name": "asset_health_monthly_metrics",
+      "source_table": "asset_health_monthly",
+      "dimensions": [
+        {
+          "name": "summary_month",
+          "expr": "summary_month"
+        },
+        {
+          "name": "asset_type",
+          "expr": "asset_type"
+        },
+        {
+          "name": "manufacturer",
+          "expr": "manufacturer"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_availability",
+          "expr": "AVG(availability_pct)",
+          "comment": "Average asset availability percentage"
+        },
+        {
+          "name": "total_maintenance_cost",
+          "expr": "SUM(maintenance_cost_usd)",
+          "comment": "Total maintenance cost in USD"
+        },
+        {
+          "name": "total_predicted_caught",
+          "expr": "SUM(predicted_failures_caught)",
+          "comment": "Total predicted failures successfully caught"
+        },
+        {
+          "name": "total_unplanned_downtime",
+          "expr": "SUM(unplanned_downtime_hours)",
+          "comment": "Total unplanned downtime hours"
+        },
+        {
+          "name": "total_avg_health_index",
+          "expr": "SUM(avg_health_index)",
+          "comment": "Total avg health index"
+        },
+        {
+          "name": "unique_asset_count",
+          "expr": "COUNT(DISTINCT asset_id)",
+          "comment": "Number of distinct assets"
+        },
+        {
+          "name": "max_avg_health_index",
+          "expr": "MAX(avg_health_index)",
+          "comment": "Maximum avg health index"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The condition_readings_metrics view (source: condition_readings) has dimensions: reading_date, asset_type, manufacturer. Measures: avg_vibration_velocity, avg_bearing_temp, avg_health_index, avg_rul_days. The asset_health_monthly_metrics view (source: asset_health_monthly) has dimensions: summary_month, asset_type, manufacturer. Measures: avg_availability, total_maintenance_cost, total_predicted_caught, total_unplanned_downtime. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. asset_id).",
+  "sample_questions": [
+    "What is the monthly trend in unique assets?",
+    "How has highest vibration velocity mm s changed over time?",
+    "What is the monthly trend in total oil temperature c?",
+    "How has average vibration velocity in mm/s changed over time?",
+    "What is the monthly trend in unique assets?",
+    "How has highest avg health index changed over time?",
+    "What is the monthly trend in total maintenance cost in usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total oil temperature c?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_oil_temperature_c) AS total_oil_temperature_c",
+        "FROM {fqn}.condition_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has average vibration velocity in mm/s changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_vibration_velocity) AS avg_vibration_velocity",
+        "FROM {fqn}.condition_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total avg health index?",
+      "sql_lines": [
+        "SELECT summary_month, MEASURE(total_avg_health_index) AS total_avg_health_index",
+        "FROM {fqn}.asset_health_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY summary_month"
+      ]
+    },
+    {
+      "question": "Rank asset types by total unplanned downtime hours",
+      "sql_lines": [
+        "SELECT asset_type, MEASURE(total_unplanned_downtime) AS total_unplanned_downtime",
+        "FROM {fqn}.asset_health_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_unplanned_downtime DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total bearing temperature in celsius over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(bearing_temperature_c) AS total_bearing_temperature_c",
+        "FROM {fqn}.condition_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total downtime caused by failure in hours over time?",
+      "sql_lines": [
+        "SELECT failure_date, SUM(downtime_hours) AS total_downtime_hours",
+        "FROM {fqn}.failure_events",
+        "GROUP BY failure_date ORDER BY failure_date"
+      ]
+    },
+    {
+      "question": "How has the average average health index for the month 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT summary_month, AVG(avg_health_index) AS avg_avg_health_index",
+        "FROM {fqn}.asset_health_monthly",
+        "GROUP BY summary_month ORDER BY summary_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "failure_events.severity = 'Critical'",
+        "display_name": "critical failures",
+        "synonyms": [
+          "critical events",
+          "critical severity"
+        ],
+        "instruction": "Use when filtering for the most severe failure events."
+      },
+      {
+        "sql": "failure_events.was_predicted = true",
+        "display_name": "predicted failures",
+        "synonyms": [
+          "ML predicted",
+          "anticipated failures"
+        ],
+        "instruction": "Use when analyzing the effectiveness of predictive maintenance."
+      },
+      {
+        "sql": "failure_events.detection_method = 'Breakdown'",
+        "display_name": "breakdown failures",
+        "synonyms": [
+          "undetected failures",
+          "surprise failures"
+        ],
+        "instruction": "Use when analyzing failures that were not caught by sensors or inspection."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', condition_readings.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "month of reading",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "vibration_zone",
+        "sql": "CASE WHEN condition_readings.vibration_velocity_mm_s < 4.5 THEN 'Good' WHEN condition_readings.vibration_velocity_mm_s < 11.2 THEN 'Alert' ELSE 'Danger' END",
+        "display_name": "vibration zone (ISO 10816)",
+        "synonyms": [
+          "vibration severity",
+          "vibration classification"
+        ]
+      },
+      {
+        "alias": "health_category",
+        "sql": "CASE WHEN condition_readings.health_index >= 80 THEN 'Healthy' WHEN condition_readings.health_index >= 50 THEN 'Watch' ELSE 'Critical' END",
+        "display_name": "health category",
+        "synonyms": [
+          "asset condition",
+          "health status"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_repair_cost",
+        "sql": "SUM(failure_events.repair_cost_usd)",
+        "display_name": "total repair cost",
+        "synonyms": [
+          "repair spend",
+          "failure cost"
+        ]
+      },
+      {
+        "alias": "total_downtime_hours",
+        "sql": "SUM(failure_events.downtime_hours)",
+        "display_name": "total downtime hours",
+        "synonyms": [
+          "downtime",
+          "hours lost"
+        ]
+      },
+      {
+        "alias": "avg_health_index",
+        "sql": "AVG(condition_readings.health_index)",
+        "display_name": "average health index",
+        "synonyms": [
+          "health score",
+          "asset health"
+        ]
+      },
+      {
+        "alias": "avg_availability",
+        "sql": "AVG(asset_health_monthly.availability_pct)",
+        "display_name": "average availability",
+        "synonyms": [
+          "uptime",
+          "availability rate"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique assets?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_asset_count) AS unique_asset_count",
+        "FROM {fqn}.condition_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest vibration velocity mm s changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_vibration_velocity_mm_s) AS max_vibration_velocity_mm_s",
+        "FROM {fqn}.condition_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest avg health index changed over time?",
+      "sql_lines": [
+        "SELECT summary_month, MEASURE(max_avg_health_index) AS max_avg_health_index",
+        "FROM {fqn}.asset_health_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY summary_month"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total maintenance cost in usd?",
+      "sql_lines": [
+        "SELECT summary_month, MEASURE(total_maintenance_cost) AS total_maintenance_cost",
+        "FROM {fqn}.asset_health_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY summary_month"
+      ]
+    },
+    {
+      "question": "What are the top industrial asset identifier by total bearing temperature in celsius?",
+      "sql_lines": [
+        "SELECT asset_id, SUM(bearing_temperature_c) AS total_bearing_temperature_c",
+        "FROM {fqn}.condition_readings",
+        "GROUP BY asset_id ORDER BY total_bearing_temperature_c DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date the failure was recorded?",
+      "sql_lines": [
+        "SELECT failure_date, COUNT(*) AS record_count",
+        "FROM {fqn}.failure_events",
+        "GROUP BY failure_date ORDER BY failure_date"
+      ]
+    },
+    {
+      "question": "How many records are there per month of the summary record?",
+      "sql_lines": [
+        "SELECT summary_month, COUNT(*) AS record_count",
+        "FROM {fqn}.asset_health_monthly",
+        "GROUP BY summary_month ORDER BY summary_month"
+      ]
+    }
+  ]
+}

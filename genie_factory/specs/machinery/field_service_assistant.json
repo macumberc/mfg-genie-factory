@@ -1,0 +1,954 @@
+{
+  "company_name": "FieldForce Machinery",
+  "industry": "Machinery",
+  "use_case": "Field service management and technician dispatch optimization",
+  "space_title": "FieldForce Machinery - Field Service Assistant 🛠️",
+  "space_description": "Field service analytics for FieldForce. Ask about ticket resolution, technician utilization, first-time fix rates, and service KPIs across 20 equipment models.",
+  "schema_basename": "mach_field_service",
+  "tables": [
+    {
+      "table_name": "service_tickets",
+      "description": "Individual field service ticket records with issue details, resolution times, and parts used.",
+      "columns": [
+        {
+          "name": "ticket_id",
+          "sql_type": "STRING",
+          "comment": "Unique service ticket identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ST-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "ticket_date",
+          "sql_type": "DATE",
+          "comment": "Date ticket was created",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "equipment_model",
+          "sql_type": "STRING",
+          "comment": "Equipment model at customer site",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_type",
+          "sql_type": "STRING",
+          "comment": "Equipment type category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "priority",
+          "sql_type": "STRING",
+          "comment": "Ticket priority: Low, Medium, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.88 THEN 'High' ELSE 'Critical' END"
+        },
+        {
+          "name": "issue_category",
+          "sql_type": "STRING",
+          "comment": "Issue category: Mechanical, Electrical, Hydraulic, Software, Preventive",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Mechanical' WHEN {status_noise} < 0.50 THEN 'Electrical' WHEN {status_noise} < 0.68 THEN 'Hydraulic' WHEN {status_noise} < 0.82 THEN 'Software' ELSE 'Preventive' END"
+        },
+        {
+          "name": "resolution_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Time to resolution in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 47.0), 1)"
+        },
+        {
+          "name": "parts_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Parts cost for the service visit in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 4950.0), 2)"
+        },
+        {
+          "name": "labor_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Labor cost for the service visit in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 2400.0), 2)"
+        },
+        {
+          "name": "first_time_fix",
+          "sql_type": "BOOLEAN",
+          "comment": "Whether the issue was resolved on the first visit",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN true ELSE false END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Excavator": {
+          "3,4,5": 0.06,
+          "9,10": 0.055
+        },
+        "Crane": {
+          "6,7,8": 0.06
+        },
+        "Generator": {
+          "12,1,2": 0.065
+        },
+        "Compressor": {
+          "6,7": 0.055
+        },
+        "Pump System": {
+          "4,5": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "equipment_model": "FF-EXC-100",
+          "equipment_type": "Excavator",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-EXC-200",
+          "equipment_type": "Excavator",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-EXC-300",
+          "equipment_type": "Excavator",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-EXC-400",
+          "equipment_type": "Excavator",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-CRN-100",
+          "equipment_type": "Crane",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-CRN-200",
+          "equipment_type": "Crane",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-CRN-300",
+          "equipment_type": "Crane",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-CRN-400",
+          "equipment_type": "Crane",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-GEN-100",
+          "equipment_type": "Generator",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-GEN-200",
+          "equipment_type": "Generator",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-GEN-300",
+          "equipment_type": "Generator",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-GEN-400",
+          "equipment_type": "Generator",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-CMP-100",
+          "equipment_type": "Compressor",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-CMP-200",
+          "equipment_type": "Compressor",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-CMP-300",
+          "equipment_type": "Compressor",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-CMP-400",
+          "equipment_type": "Compressor",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-PMP-100",
+          "equipment_type": "Pump System",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-PMP-200",
+          "equipment_type": "Pump System",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-PMP-300",
+          "equipment_type": "Pump System",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-PMP-400",
+          "equipment_type": "Pump System",
+          "region": "West"
+        }
+      ],
+      "category_distribution": {
+        "Excavator": 0.032,
+        "Crane": 0.03,
+        "Generator": 0.028,
+        "Compressor": 0.03,
+        "Pump System": 0.028
+      }
+    },
+    {
+      "table_name": "technician_snapshots",
+      "description": "Weekly technician performance snapshots with utilization, tickets closed, and satisfaction scores.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TS-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of snapshot",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "equipment_model",
+          "sql_type": "STRING",
+          "comment": "Primary equipment model serviced",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_type",
+          "sql_type": "STRING",
+          "comment": "Equipment type category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "technician_id",
+          "sql_type": "STRING",
+          "comment": "Technician identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TECH-', LPAD(CAST(FLOOR({qty_noise} * 50) AS STRING), 3, '0'))"
+        },
+        {
+          "name": "utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Technician utilization percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 1)"
+        },
+        {
+          "name": "tickets_closed",
+          "sql_type": "INT",
+          "comment": "Tickets closed in the period",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 14) AS INT)"
+        },
+        {
+          "name": "avg_resolution_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Average resolution time in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 22.0), 1)"
+        },
+        {
+          "name": "customer_satisfaction",
+          "sql_type": "DOUBLE",
+          "comment": "Customer satisfaction score 1-5",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.5 + ({qty_noise} * 2.5), 1)"
+        },
+        {
+          "name": "travel_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Travel time in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 15.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Excavator": {
+          "3,4,5": 0.06,
+          "9,10": 0.055
+        },
+        "Crane": {
+          "6,7,8": 0.06
+        },
+        "Generator": {
+          "12,1,2": 0.065
+        },
+        "Compressor": {
+          "6,7": 0.055
+        },
+        "Pump System": {
+          "4,5": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "equipment_model": "FF-EXC-100",
+          "equipment_type": "Excavator",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-EXC-200",
+          "equipment_type": "Excavator",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-EXC-300",
+          "equipment_type": "Excavator",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-EXC-400",
+          "equipment_type": "Excavator",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-CRN-100",
+          "equipment_type": "Crane",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-CRN-200",
+          "equipment_type": "Crane",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-CRN-300",
+          "equipment_type": "Crane",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-CRN-400",
+          "equipment_type": "Crane",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-GEN-100",
+          "equipment_type": "Generator",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-GEN-200",
+          "equipment_type": "Generator",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-GEN-300",
+          "equipment_type": "Generator",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-GEN-400",
+          "equipment_type": "Generator",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-CMP-100",
+          "equipment_type": "Compressor",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-CMP-200",
+          "equipment_type": "Compressor",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-CMP-300",
+          "equipment_type": "Compressor",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-CMP-400",
+          "equipment_type": "Compressor",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-PMP-100",
+          "equipment_type": "Pump System",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-PMP-200",
+          "equipment_type": "Pump System",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-PMP-300",
+          "equipment_type": "Pump System",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-PMP-400",
+          "equipment_type": "Pump System",
+          "region": "West"
+        }
+      ],
+      "category_distribution": {
+        "Excavator": 0.032,
+        "Crane": 0.03,
+        "Generator": 0.028,
+        "Compressor": 0.03,
+        "Pump System": 0.028
+      }
+    },
+    {
+      "table_name": "service_kpi_monthly",
+      "description": "Monthly service KPIs including first-time fix rate, SLA compliance, and cost per ticket.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SK-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month of the KPI record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "equipment_model",
+          "sql_type": "STRING",
+          "comment": "Equipment model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_type",
+          "sql_type": "STRING",
+          "comment": "Equipment type category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "first_time_fix_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "First-time fix rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(55.0 + ({qty_noise} * 40.0), 2)"
+        },
+        {
+          "name": "sla_compliance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "SLA compliance percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70.0 + ({qty_noise} * 28.0), 2)"
+        },
+        {
+          "name": "avg_cost_per_ticket_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Average total cost per service ticket",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 3800.0), 2)"
+        },
+        {
+          "name": "total_tickets",
+          "sql_type": "INT",
+          "comment": "Total tickets for the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 90) AS INT)"
+        },
+        {
+          "name": "repeat_visit_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Repeat visit percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "mean_time_to_dispatch_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Average time from ticket creation to technician dispatch",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 11.5), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Excavator": {
+          "3,4,5": 0.06,
+          "9,10": 0.055
+        },
+        "Crane": {
+          "6,7,8": 0.06
+        },
+        "Generator": {
+          "12,1,2": 0.065
+        },
+        "Compressor": {
+          "6,7": 0.055
+        },
+        "Pump System": {
+          "4,5": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "equipment_model": "FF-EXC-100",
+          "equipment_type": "Excavator",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-EXC-200",
+          "equipment_type": "Excavator",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-EXC-300",
+          "equipment_type": "Excavator",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-EXC-400",
+          "equipment_type": "Excavator",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-CRN-100",
+          "equipment_type": "Crane",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-CRN-200",
+          "equipment_type": "Crane",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-CRN-300",
+          "equipment_type": "Crane",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-CRN-400",
+          "equipment_type": "Crane",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-GEN-100",
+          "equipment_type": "Generator",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-GEN-200",
+          "equipment_type": "Generator",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-GEN-300",
+          "equipment_type": "Generator",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-GEN-400",
+          "equipment_type": "Generator",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-CMP-100",
+          "equipment_type": "Compressor",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-CMP-200",
+          "equipment_type": "Compressor",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-CMP-300",
+          "equipment_type": "Compressor",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-CMP-400",
+          "equipment_type": "Compressor",
+          "region": "West"
+        },
+        {
+          "equipment_model": "FF-PMP-100",
+          "equipment_type": "Pump System",
+          "region": "Northeast"
+        },
+        {
+          "equipment_model": "FF-PMP-200",
+          "equipment_type": "Pump System",
+          "region": "Southeast"
+        },
+        {
+          "equipment_model": "FF-PMP-300",
+          "equipment_type": "Pump System",
+          "region": "Midwest"
+        },
+        {
+          "equipment_model": "FF-PMP-400",
+          "equipment_type": "Pump System",
+          "region": "West"
+        }
+      ],
+      "category_distribution": {
+        "Excavator": 0.032,
+        "Crane": 0.03,
+        "Generator": 0.028,
+        "Compressor": 0.03,
+        "Pump System": 0.028
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "service_tickets_metrics",
+      "source_table": "service_tickets",
+      "dimensions": [
+        {
+          "name": "ticket_date",
+          "expr": "ticket_date"
+        },
+        {
+          "name": "equipment_type",
+          "expr": "equipment_type"
+        },
+        {
+          "name": "priority",
+          "expr": "priority"
+        },
+        {
+          "name": "issue_category",
+          "expr": "issue_category"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_tickets",
+          "expr": "COUNT(DISTINCT ticket_id)",
+          "comment": "Total service tickets"
+        },
+        {
+          "name": "avg_resolution_hours",
+          "expr": "AVG(resolution_hours)",
+          "comment": "Average time to resolution in hours"
+        },
+        {
+          "name": "total_service_cost",
+          "expr": "SUM(parts_cost_usd + labor_cost_usd)",
+          "comment": "Total service cost (parts + labor)"
+        },
+        {
+          "name": "first_time_fix_count",
+          "expr": "COUNT(DISTINCT CASE WHEN first_time_fix = true THEN ticket_id END)",
+          "comment": "Tickets resolved on first visit"
+        },
+        {
+          "name": "max_resolution_hours",
+          "expr": "MAX(resolution_hours)",
+          "comment": "Maximum resolution hours"
+        }
+      ]
+    },
+    {
+      "view_name": "service_kpi_metrics",
+      "source_table": "service_kpi_monthly",
+      "dimensions": [
+        {
+          "name": "kpi_month",
+          "expr": "kpi_month"
+        },
+        {
+          "name": "equipment_type",
+          "expr": "equipment_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_ftf_rate",
+          "expr": "AVG(first_time_fix_rate_pct)",
+          "comment": "Average first-time fix rate"
+        },
+        {
+          "name": "avg_sla_compliance",
+          "expr": "AVG(sla_compliance_pct)",
+          "comment": "Average SLA compliance percentage"
+        },
+        {
+          "name": "avg_cost_per_ticket",
+          "expr": "AVG(avg_cost_per_ticket_usd)",
+          "comment": "Average cost per service ticket"
+        },
+        {
+          "name": "total_tickets_monthly",
+          "expr": "SUM(total_tickets)",
+          "comment": "Total tickets across all models"
+        },
+        {
+          "name": "total_repeat_visit_percent",
+          "expr": "SUM(repeat_visit_pct)",
+          "comment": "Total repeat visit pct"
+        },
+        {
+          "name": "total_mean_time_to_dispatch_hours",
+          "expr": "SUM(mean_time_to_dispatch_hours)",
+          "comment": "Total mean time to dispatch hours"
+        },
+        {
+          "name": "max_first_time_fix_rate_percent",
+          "expr": "MAX(first_time_fix_rate_pct)",
+          "comment": "Maximum first time fix rate pct"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The service_tickets_metrics view (source: service_tickets) has dimensions: ticket_date, equipment_type, priority, issue_category. Measures: total_tickets, avg_resolution_hours, total_service_cost, first_time_fix_count. The service_kpi_metrics view (source: service_kpi_monthly) has dimensions: kpi_month, equipment_type. Measures: avg_ftf_rate, avg_sla_compliance, avg_cost_per_ticket, total_tickets_monthly. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_model).",
+  "sample_questions": [
+    "What is the monthly trend in first time fix count?",
+    "How has unique total ticketss changed over time?",
+    "What is the monthly trend in highest resolution hours?",
+    "How has total service cost (parts + labor) changed over time?",
+    "What is the monthly trend in highest first time fix rate percent?",
+    "How has total tickets across all models changed over time?",
+    "What is the monthly trend in total repeat visit pct?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest resolution hours?",
+      "sql_lines": [
+        "SELECT ticket_date, MEASURE(max_resolution_hours) AS max_resolution_hours",
+        "FROM {fqn}.service_tickets_metrics",
+        "GROUP BY ALL",
+        "ORDER BY ticket_date"
+      ]
+    },
+    {
+      "question": "How has total service cost (parts + labor) changed over time?",
+      "sql_lines": [
+        "SELECT ticket_date, MEASURE(total_service_cost) AS total_service_cost",
+        "FROM {fqn}.service_tickets_metrics",
+        "GROUP BY ALL",
+        "ORDER BY ticket_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total repeat visit pct?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_repeat_visit_percent) AS total_repeat_visit_percent",
+        "FROM {fqn}.service_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has total repeat visit pct changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_repeat_visit_percent) AS total_repeat_visit_percent",
+        "FROM {fqn}.service_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total time to resolution in hours over time?",
+      "sql_lines": [
+        "SELECT ticket_date, SUM(resolution_hours) AS total_resolution_hours",
+        "FROM {fqn}.service_tickets",
+        "GROUP BY ticket_date ORDER BY ticket_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total tickets closed in the period over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(tickets_closed) AS total_tickets_closed",
+        "FROM {fqn}.technician_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average first-time fix rate percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(first_time_fix_rate_pct) AS avg_first_time_fix_rate_pct",
+        "FROM {fqn}.service_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "service_tickets.priority = 'Critical'",
+        "display_name": "critical tickets",
+        "synonyms": [
+          "urgent",
+          "P1"
+        ],
+        "instruction": "Use when filtering for highest priority service tickets."
+      },
+      {
+        "sql": "service_tickets.first_time_fix = true",
+        "display_name": "first-time fixes",
+        "synonyms": [
+          "FTF",
+          "one-visit resolution"
+        ],
+        "instruction": "Use when analyzing first-visit resolution effectiveness."
+      },
+      {
+        "sql": "service_kpi_monthly.sla_compliance_pct < 90",
+        "display_name": "SLA breaches",
+        "synonyms": [
+          "missed SLA",
+          "non-compliant"
+        ],
+        "instruction": "Use when identifying months below the 90% SLA target."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "ticket_month",
+        "sql": "DATE_TRUNC('month', service_tickets.ticket_date)",
+        "display_name": "ticket month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "total_ticket_cost",
+        "sql": "service_tickets.parts_cost_usd + service_tickets.labor_cost_usd",
+        "display_name": "total ticket cost",
+        "synonyms": [
+          "service cost",
+          "visit cost"
+        ]
+      },
+      {
+        "alias": "ftf_miss_rate",
+        "sql": "100.0 - service_kpi_monthly.first_time_fix_rate_pct",
+        "display_name": "FTF miss rate",
+        "synonyms": [
+          "return visit rate",
+          "FTF failure"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_tickets",
+        "sql": "COUNT(DISTINCT service_tickets.ticket_id)",
+        "display_name": "total tickets",
+        "synonyms": [
+          "ticket count"
+        ]
+      },
+      {
+        "alias": "total_service_cost",
+        "sql": "SUM(service_tickets.parts_cost_usd + service_tickets.labor_cost_usd)",
+        "display_name": "total service cost",
+        "synonyms": [
+          "cost",
+          "spend"
+        ]
+      },
+      {
+        "alias": "avg_resolution_hours",
+        "sql": "AVG(service_tickets.resolution_hours)",
+        "display_name": "average resolution time",
+        "synonyms": [
+          "resolution time",
+          "MTTR"
+        ]
+      },
+      {
+        "alias": "avg_ftf_rate",
+        "sql": "AVG(service_kpi_monthly.first_time_fix_rate_pct)",
+        "display_name": "average FTF rate",
+        "synonyms": [
+          "first-time fix",
+          "FTF"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in first time fix count?",
+      "sql_lines": [
+        "SELECT ticket_date, MEASURE(first_time_fix_count) AS first_time_fix_count",
+        "FROM {fqn}.service_tickets_metrics",
+        "GROUP BY ALL",
+        "ORDER BY ticket_date"
+      ]
+    },
+    {
+      "question": "How has unique total ticketss changed over time?",
+      "sql_lines": [
+        "SELECT ticket_date, MEASURE(total_tickets) AS total_tickets",
+        "FROM {fqn}.service_tickets_metrics",
+        "GROUP BY ALL",
+        "ORDER BY ticket_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest first time fix rate percent?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_first_time_fix_rate_percent) AS max_first_time_fix_rate_percent",
+        "FROM {fqn}.service_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has total tickets across all models changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_tickets_monthly) AS total_tickets_monthly",
+        "FROM {fqn}.service_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What are the top equipment model at customer site by total time to resolution in hours?",
+      "sql_lines": [
+        "SELECT equipment_model, SUM(resolution_hours) AS total_resolution_hours",
+        "FROM {fqn}.service_tickets",
+        "GROUP BY equipment_model ORDER BY total_resolution_hours DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average technician utilization percentage by equipment type category?",
+      "sql_lines": [
+        "SELECT equipment_type, AVG(utilization_pct) AS avg_utilization_pct",
+        "FROM {fqn}.technician_snapshots",
+        "GROUP BY equipment_type ORDER BY avg_utilization_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of the kpi record?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.service_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

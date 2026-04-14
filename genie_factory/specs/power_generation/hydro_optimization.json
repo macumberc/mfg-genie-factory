@@ -1,0 +1,1016 @@
+{
+  "company_name": "HydroFlow Energy",
+  "industry": "Power Generation",
+  "use_case": "Hydroelectric turbine optimization and reservoir management",
+  "space_title": "HydroFlow Energy - Hydro Optimization & Reservoir Mgmt 💧",
+  "space_description": "Hydroelectric analytics for HydroFlow Energy. Ask about turbine efficiency, water flow rates, reservoir levels, and generation optimization across 20 hydro turbines.",
+  "schema_basename": "hydro_optimization",
+  "tables": [
+    {
+      "table_name": "turbine_units",
+      "description": "Daily turbine operational records with generation output, efficiency, and water usage.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique turbine record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TRB-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.turbine_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Date of operational record",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "turbine_id",
+          "sql_type": "STRING",
+          "comment": "Turbine unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "turbine_name",
+          "sql_type": "STRING",
+          "comment": "Turbine unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "turbine_type",
+          "sql_type": "STRING",
+          "comment": "Turbine type: Francis, Kaplan, Pelton, Bulb",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "dam_name",
+          "sql_type": "STRING",
+          "comment": "Associated dam name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "generation_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy generated in MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 2900.0), 2)"
+        },
+        {
+          "name": "efficiency_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Turbine efficiency percentage 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75.0 + ({qty_noise} * 20.0), 2)"
+        },
+        {
+          "name": "water_flow_m3s",
+          "sql_type": "DOUBLE",
+          "comment": "Water flow rate in cubic meters per second",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 450.0), 1)"
+        },
+        {
+          "name": "operating_status",
+          "sql_type": "STRING",
+          "comment": "Status: Generating, Standby, Maintenance, Spillway",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Maintenance' WHEN {status_noise} < 0.12 THEN 'Spillway' WHEN {status_noise} < 0.20 THEN 'Standby' ELSE 'Generating' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Francis": {
+          "4,5,6": 0.08,
+          "9,10": -0.03
+        },
+        "Kaplan": {
+          "4,5,6": 0.07,
+          "8,9": -0.02
+        },
+        "Pelton": {
+          "5,6,7": 0.06
+        },
+        "Bulb": {
+          "3,4,5": 0.07
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "turbine_id": "HT-FR-001",
+          "turbine_name": "Eagle Falls Francis 1",
+          "turbine_type": "Francis",
+          "dam_name": "Eagle Falls Dam"
+        },
+        {
+          "turbine_id": "HT-FR-002",
+          "turbine_name": "Eagle Falls Francis 2",
+          "turbine_type": "Francis",
+          "dam_name": "Eagle Falls Dam"
+        },
+        {
+          "turbine_id": "HT-FR-003",
+          "turbine_name": "Canyon Run Francis A",
+          "turbine_type": "Francis",
+          "dam_name": "Canyon Run Dam"
+        },
+        {
+          "turbine_id": "HT-FR-004",
+          "turbine_name": "Canyon Run Francis B",
+          "turbine_type": "Francis",
+          "dam_name": "Canyon Run Dam"
+        },
+        {
+          "turbine_id": "HT-FR-005",
+          "turbine_name": "Cascade Francis 1",
+          "turbine_type": "Francis",
+          "dam_name": "Cascade Dam"
+        },
+        {
+          "turbine_id": "HT-FR-006",
+          "turbine_name": "Cascade Francis 2",
+          "turbine_type": "Francis",
+          "dam_name": "Cascade Dam"
+        },
+        {
+          "turbine_id": "HT-KP-007",
+          "turbine_name": "Riverside Kaplan 1",
+          "turbine_type": "Kaplan",
+          "dam_name": "Riverside Dam"
+        },
+        {
+          "turbine_id": "HT-KP-008",
+          "turbine_name": "Riverside Kaplan 2",
+          "turbine_type": "Kaplan",
+          "dam_name": "Riverside Dam"
+        },
+        {
+          "turbine_id": "HT-KP-009",
+          "turbine_name": "Flatrock Kaplan A",
+          "turbine_type": "Kaplan",
+          "dam_name": "Flatrock Dam"
+        },
+        {
+          "turbine_id": "HT-KP-010",
+          "turbine_name": "Flatrock Kaplan B",
+          "turbine_type": "Kaplan",
+          "dam_name": "Flatrock Dam"
+        },
+        {
+          "turbine_id": "HT-KP-011",
+          "turbine_name": "Millpond Kaplan 1",
+          "turbine_type": "Kaplan",
+          "dam_name": "Millpond Dam"
+        },
+        {
+          "turbine_id": "HT-KP-012",
+          "turbine_name": "Millpond Kaplan 2",
+          "turbine_type": "Kaplan",
+          "dam_name": "Millpond Dam"
+        },
+        {
+          "turbine_id": "HT-PL-013",
+          "turbine_name": "Summit Pelton 1",
+          "turbine_type": "Pelton",
+          "dam_name": "Summit Dam"
+        },
+        {
+          "turbine_id": "HT-PL-014",
+          "turbine_name": "Summit Pelton 2",
+          "turbine_type": "Pelton",
+          "dam_name": "Summit Dam"
+        },
+        {
+          "turbine_id": "HT-PL-015",
+          "turbine_name": "Highland Pelton A",
+          "turbine_type": "Pelton",
+          "dam_name": "Highland Dam"
+        },
+        {
+          "turbine_id": "HT-PL-016",
+          "turbine_name": "Highland Pelton B",
+          "turbine_type": "Pelton",
+          "dam_name": "Highland Dam"
+        },
+        {
+          "turbine_id": "HT-BL-017",
+          "turbine_name": "Bayshore Bulb 1",
+          "turbine_type": "Bulb",
+          "dam_name": "Bayshore Dam"
+        },
+        {
+          "turbine_id": "HT-BL-018",
+          "turbine_name": "Bayshore Bulb 2",
+          "turbine_type": "Bulb",
+          "dam_name": "Bayshore Dam"
+        },
+        {
+          "turbine_id": "HT-BL-019",
+          "turbine_name": "Tidewater Bulb A",
+          "turbine_type": "Bulb",
+          "dam_name": "Tidewater Dam"
+        },
+        {
+          "turbine_id": "HT-BL-020",
+          "turbine_name": "Tidewater Bulb B",
+          "turbine_type": "Bulb",
+          "dam_name": "Tidewater Dam"
+        }
+      ],
+      "category_distribution": {
+        "Francis": 0.035,
+        "Kaplan": 0.032,
+        "Pelton": 0.028,
+        "Bulb": 0.025
+      }
+    },
+    {
+      "table_name": "flow_readings",
+      "description": "Inflow and outflow readings per dam with precipitation, snowmelt contribution, and environmental flow requirements.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique flow reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FL-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.turbine_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of flow reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "turbine_id",
+          "sql_type": "STRING",
+          "comment": "Turbine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "dam_name",
+          "sql_type": "STRING",
+          "comment": "Dam name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "inflow_m3s",
+          "sql_type": "DOUBLE",
+          "comment": "Water inflow rate in m3/s",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + ({qty_noise} * 570.0), 1)"
+        },
+        {
+          "name": "outflow_m3s",
+          "sql_type": "DOUBLE",
+          "comment": "Water outflow rate in m3/s",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25.0 + ({qty_noise} * 475.0), 1)"
+        },
+        {
+          "name": "precipitation_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Daily precipitation in millimeters",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 80.0, 1)"
+        },
+        {
+          "name": "snowmelt_contribution_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of inflow from snowmelt",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 60.0 * (CASE WHEN MONTH(d.dt) IN (3,4,5,6) THEN 1.5 ELSE 0.3 END), 1)"
+        },
+        {
+          "name": "env_flow_compliance",
+          "sql_type": "STRING",
+          "comment": "Environmental flow compliance: Compliant, Marginal, Non-Compliant",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Non-Compliant' WHEN {status_noise} < 0.12 THEN 'Marginal' ELSE 'Compliant' END"
+        },
+        {
+          "name": "head_meters",
+          "sql_type": "DOUBLE",
+          "comment": "Hydraulic head in meters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 280.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Francis": {
+          "4,5,6": 0.08
+        },
+        "Kaplan": {
+          "4,5,6": 0.07
+        },
+        "Pelton": {
+          "5,6,7": 0.06
+        },
+        "Bulb": {
+          "3,4,5": 0.07
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "turbine_id": "HT-FR-001",
+          "turbine_name": "Eagle Falls Francis 1",
+          "turbine_type": "Francis",
+          "dam_name": "Eagle Falls Dam"
+        },
+        {
+          "turbine_id": "HT-FR-002",
+          "turbine_name": "Eagle Falls Francis 2",
+          "turbine_type": "Francis",
+          "dam_name": "Eagle Falls Dam"
+        },
+        {
+          "turbine_id": "HT-FR-003",
+          "turbine_name": "Canyon Run Francis A",
+          "turbine_type": "Francis",
+          "dam_name": "Canyon Run Dam"
+        },
+        {
+          "turbine_id": "HT-FR-004",
+          "turbine_name": "Canyon Run Francis B",
+          "turbine_type": "Francis",
+          "dam_name": "Canyon Run Dam"
+        },
+        {
+          "turbine_id": "HT-FR-005",
+          "turbine_name": "Cascade Francis 1",
+          "turbine_type": "Francis",
+          "dam_name": "Cascade Dam"
+        },
+        {
+          "turbine_id": "HT-FR-006",
+          "turbine_name": "Cascade Francis 2",
+          "turbine_type": "Francis",
+          "dam_name": "Cascade Dam"
+        },
+        {
+          "turbine_id": "HT-KP-007",
+          "turbine_name": "Riverside Kaplan 1",
+          "turbine_type": "Kaplan",
+          "dam_name": "Riverside Dam"
+        },
+        {
+          "turbine_id": "HT-KP-008",
+          "turbine_name": "Riverside Kaplan 2",
+          "turbine_type": "Kaplan",
+          "dam_name": "Riverside Dam"
+        },
+        {
+          "turbine_id": "HT-KP-009",
+          "turbine_name": "Flatrock Kaplan A",
+          "turbine_type": "Kaplan",
+          "dam_name": "Flatrock Dam"
+        },
+        {
+          "turbine_id": "HT-KP-010",
+          "turbine_name": "Flatrock Kaplan B",
+          "turbine_type": "Kaplan",
+          "dam_name": "Flatrock Dam"
+        },
+        {
+          "turbine_id": "HT-KP-011",
+          "turbine_name": "Millpond Kaplan 1",
+          "turbine_type": "Kaplan",
+          "dam_name": "Millpond Dam"
+        },
+        {
+          "turbine_id": "HT-KP-012",
+          "turbine_name": "Millpond Kaplan 2",
+          "turbine_type": "Kaplan",
+          "dam_name": "Millpond Dam"
+        },
+        {
+          "turbine_id": "HT-PL-013",
+          "turbine_name": "Summit Pelton 1",
+          "turbine_type": "Pelton",
+          "dam_name": "Summit Dam"
+        },
+        {
+          "turbine_id": "HT-PL-014",
+          "turbine_name": "Summit Pelton 2",
+          "turbine_type": "Pelton",
+          "dam_name": "Summit Dam"
+        },
+        {
+          "turbine_id": "HT-PL-015",
+          "turbine_name": "Highland Pelton A",
+          "turbine_type": "Pelton",
+          "dam_name": "Highland Dam"
+        },
+        {
+          "turbine_id": "HT-PL-016",
+          "turbine_name": "Highland Pelton B",
+          "turbine_type": "Pelton",
+          "dam_name": "Highland Dam"
+        },
+        {
+          "turbine_id": "HT-BL-017",
+          "turbine_name": "Bayshore Bulb 1",
+          "turbine_type": "Bulb",
+          "dam_name": "Bayshore Dam"
+        },
+        {
+          "turbine_id": "HT-BL-018",
+          "turbine_name": "Bayshore Bulb 2",
+          "turbine_type": "Bulb",
+          "dam_name": "Bayshore Dam"
+        },
+        {
+          "turbine_id": "HT-BL-019",
+          "turbine_name": "Tidewater Bulb A",
+          "turbine_type": "Bulb",
+          "dam_name": "Tidewater Dam"
+        },
+        {
+          "turbine_id": "HT-BL-020",
+          "turbine_name": "Tidewater Bulb B",
+          "turbine_type": "Bulb",
+          "dam_name": "Tidewater Dam"
+        }
+      ],
+      "category_distribution": {
+        "Francis": 0.035,
+        "Kaplan": 0.032,
+        "Pelton": 0.028,
+        "Bulb": 0.025
+      }
+    },
+    {
+      "table_name": "reservoir_snapshots",
+      "description": "Weekly reservoir status snapshots with water levels, storage capacity, and spill events.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique reservoir snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RES-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.turbine_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of reservoir snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "turbine_id",
+          "sql_type": "STRING",
+          "comment": "Associated turbine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "dam_name",
+          "sql_type": "STRING",
+          "comment": "Dam name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "water_level_m",
+          "sql_type": "DOUBLE",
+          "comment": "Reservoir water level in meters above datum",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80.0 + ({qty_noise} * 120.0), 1)"
+        },
+        {
+          "name": "storage_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Reservoir storage as percentage of capacity",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + ({qty_noise} * 65.0) + (CASE WHEN MONTH(d.dt) IN (4,5,6) THEN 8.0 ELSE 0.0 END), 1)"
+        },
+        {
+          "name": "spill_volume_m3",
+          "sql_type": "DOUBLE",
+          "comment": "Volume spilled in cubic meters",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 50000.0, 0)"
+        },
+        {
+          "name": "generation_potential_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Available generation potential in MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 4500.0), 2)"
+        },
+        {
+          "name": "days_of_storage",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated days of generation at current storage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 185.0), 1)"
+        },
+        {
+          "name": "drought_risk",
+          "sql_type": "STRING",
+          "comment": "Drought risk: Low, Moderate, High, Severe",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Severe' WHEN {status_noise} < 0.15 THEN 'High' WHEN {status_noise} < 0.35 THEN 'Moderate' ELSE 'Low' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Francis": {
+          "4,5,6": 0.08,
+          "9,10": -0.04
+        },
+        "Kaplan": {
+          "4,5,6": 0.07
+        },
+        "Pelton": {
+          "5,6,7": 0.06
+        },
+        "Bulb": {
+          "3,4,5": 0.07
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "turbine_id": "HT-FR-001",
+          "turbine_name": "Eagle Falls Francis 1",
+          "turbine_type": "Francis",
+          "dam_name": "Eagle Falls Dam"
+        },
+        {
+          "turbine_id": "HT-FR-002",
+          "turbine_name": "Eagle Falls Francis 2",
+          "turbine_type": "Francis",
+          "dam_name": "Eagle Falls Dam"
+        },
+        {
+          "turbine_id": "HT-FR-003",
+          "turbine_name": "Canyon Run Francis A",
+          "turbine_type": "Francis",
+          "dam_name": "Canyon Run Dam"
+        },
+        {
+          "turbine_id": "HT-FR-004",
+          "turbine_name": "Canyon Run Francis B",
+          "turbine_type": "Francis",
+          "dam_name": "Canyon Run Dam"
+        },
+        {
+          "turbine_id": "HT-FR-005",
+          "turbine_name": "Cascade Francis 1",
+          "turbine_type": "Francis",
+          "dam_name": "Cascade Dam"
+        },
+        {
+          "turbine_id": "HT-FR-006",
+          "turbine_name": "Cascade Francis 2",
+          "turbine_type": "Francis",
+          "dam_name": "Cascade Dam"
+        },
+        {
+          "turbine_id": "HT-KP-007",
+          "turbine_name": "Riverside Kaplan 1",
+          "turbine_type": "Kaplan",
+          "dam_name": "Riverside Dam"
+        },
+        {
+          "turbine_id": "HT-KP-008",
+          "turbine_name": "Riverside Kaplan 2",
+          "turbine_type": "Kaplan",
+          "dam_name": "Riverside Dam"
+        },
+        {
+          "turbine_id": "HT-KP-009",
+          "turbine_name": "Flatrock Kaplan A",
+          "turbine_type": "Kaplan",
+          "dam_name": "Flatrock Dam"
+        },
+        {
+          "turbine_id": "HT-KP-010",
+          "turbine_name": "Flatrock Kaplan B",
+          "turbine_type": "Kaplan",
+          "dam_name": "Flatrock Dam"
+        },
+        {
+          "turbine_id": "HT-KP-011",
+          "turbine_name": "Millpond Kaplan 1",
+          "turbine_type": "Kaplan",
+          "dam_name": "Millpond Dam"
+        },
+        {
+          "turbine_id": "HT-KP-012",
+          "turbine_name": "Millpond Kaplan 2",
+          "turbine_type": "Kaplan",
+          "dam_name": "Millpond Dam"
+        },
+        {
+          "turbine_id": "HT-PL-013",
+          "turbine_name": "Summit Pelton 1",
+          "turbine_type": "Pelton",
+          "dam_name": "Summit Dam"
+        },
+        {
+          "turbine_id": "HT-PL-014",
+          "turbine_name": "Summit Pelton 2",
+          "turbine_type": "Pelton",
+          "dam_name": "Summit Dam"
+        },
+        {
+          "turbine_id": "HT-PL-015",
+          "turbine_name": "Highland Pelton A",
+          "turbine_type": "Pelton",
+          "dam_name": "Highland Dam"
+        },
+        {
+          "turbine_id": "HT-PL-016",
+          "turbine_name": "Highland Pelton B",
+          "turbine_type": "Pelton",
+          "dam_name": "Highland Dam"
+        },
+        {
+          "turbine_id": "HT-BL-017",
+          "turbine_name": "Bayshore Bulb 1",
+          "turbine_type": "Bulb",
+          "dam_name": "Bayshore Dam"
+        },
+        {
+          "turbine_id": "HT-BL-018",
+          "turbine_name": "Bayshore Bulb 2",
+          "turbine_type": "Bulb",
+          "dam_name": "Bayshore Dam"
+        },
+        {
+          "turbine_id": "HT-BL-019",
+          "turbine_name": "Tidewater Bulb A",
+          "turbine_type": "Bulb",
+          "dam_name": "Tidewater Dam"
+        },
+        {
+          "turbine_id": "HT-BL-020",
+          "turbine_name": "Tidewater Bulb B",
+          "turbine_type": "Bulb",
+          "dam_name": "Tidewater Dam"
+        }
+      ],
+      "category_distribution": {
+        "Francis": 0.035,
+        "Kaplan": 0.032,
+        "Pelton": 0.028,
+        "Bulb": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "generation_kpi_monthly",
+      "source_table": "turbine_units",
+      "dimensions": [
+        {
+          "name": "record_date",
+          "expr": "record_date"
+        },
+        {
+          "name": "turbine_type",
+          "expr": "turbine_type"
+        },
+        {
+          "name": "dam_name",
+          "expr": "dam_name"
+        },
+        {
+          "name": "operating_status",
+          "expr": "operating_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_generation_mwh",
+          "expr": "SUM(generation_mwh)",
+          "comment": "Total hydro generation in MWh"
+        },
+        {
+          "name": "avg_efficiency_pct",
+          "expr": "AVG(efficiency_pct)",
+          "comment": "Average turbine efficiency"
+        },
+        {
+          "name": "avg_water_flow",
+          "expr": "AVG(water_flow_m3s)",
+          "comment": "Average water flow rate m3/s"
+        },
+        {
+          "name": "generating_turbine_count",
+          "expr": "COUNT(DISTINCT CASE WHEN operating_status = 'Generating' THEN turbine_id END)",
+          "comment": "Number of generating turbines"
+        },
+        {
+          "name": "total_turbine_count",
+          "expr": "COUNT(DISTINCT turbine_id)",
+          "comment": "Total turbine count"
+        },
+        {
+          "name": "max_generation_mwh",
+          "expr": "MAX(generation_mwh)",
+          "comment": "Maximum generation mwh"
+        }
+      ]
+    },
+    {
+      "view_name": "reservoir_kpi_monthly",
+      "source_table": "reservoir_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "dam_name",
+          "expr": "dam_name"
+        },
+        {
+          "name": "drought_risk",
+          "expr": "drought_risk"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_storage_pct",
+          "expr": "AVG(storage_pct)",
+          "comment": "Average reservoir storage percentage"
+        },
+        {
+          "name": "total_spill_volume",
+          "expr": "SUM(spill_volume_m3)",
+          "comment": "Total water spilled in m3"
+        },
+        {
+          "name": "avg_generation_potential",
+          "expr": "AVG(generation_potential_mwh)",
+          "comment": "Average generation potential MWh"
+        },
+        {
+          "name": "avg_days_of_storage",
+          "expr": "AVG(days_of_storage)",
+          "comment": "Average days of storage remaining"
+        },
+        {
+          "name": "high_drought_risk_count",
+          "expr": "COUNT(DISTINCT CASE WHEN drought_risk IN ('High', 'Severe') THEN snapshot_id END)",
+          "comment": "Snapshots with high/severe drought risk"
+        },
+        {
+          "name": "total_water_level_m",
+          "expr": "SUM(water_level_m)",
+          "comment": "Total water level m"
+        },
+        {
+          "name": "unique_turbine_count",
+          "expr": "COUNT(DISTINCT turbine_id)",
+          "comment": "Number of distinct turbines"
+        },
+        {
+          "name": "max_water_level_m",
+          "expr": "MAX(water_level_m)",
+          "comment": "Maximum water level m"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The generation_kpi_monthly view (source: turbine_units) has dimensions: record_date, turbine_type, dam_name, operating_status. Measures: total_generation_mwh, avg_efficiency_pct, avg_water_flow, generating_turbine_count, total_turbine_count. The reservoir_kpi_monthly view (source: reservoir_snapshots) has dimensions: snapshot_date, dam_name, drought_risk. Measures: avg_storage_pct, total_spill_volume, avg_generation_potential, avg_days_of_storage, high_drought_risk_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. turbine_id, turbine_name).",
+  "sample_questions": [
+    "What is the monthly trend in generating turbine count?",
+    "How has unique total turbines changed over time?",
+    "What is the monthly trend in highest generation mwh?",
+    "How has total hydro generation in mwh changed over time?",
+    "What is the monthly trend in high drought risk count?",
+    "How has unique turbines changed over time?",
+    "What is the monthly trend in highest water level m?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest generation mwh?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(max_generation_mwh) AS max_generation_mwh",
+        "FROM {fqn}.generation_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has total hydro generation in mwh changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_generation_mwh) AS total_generation_mwh",
+        "FROM {fqn}.generation_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest water level m?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_water_level_m) AS max_water_level_m",
+        "FROM {fqn}.reservoir_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total water level m changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_water_level_m) AS total_water_level_m",
+        "FROM {fqn}.reservoir_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total water flow rate in cubic meters per second break down by turbine unit identifier for 'Maintenance' records?",
+      "sql_lines": [
+        "SELECT turbine_id, COUNT(*) AS record_count, SUM(water_flow_m3s) AS total_water_flow_m3s",
+        "FROM {fqn}.turbine_units",
+        "WHERE operating_status = 'Maintenance' GROUP BY turbine_id ORDER BY total_water_flow_m3s DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total water inflow rate in m3/s over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(inflow_m3s) AS total_inflow_m3s",
+        "FROM {fqn}.flow_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has the average reservoir storage as percentage of capacity changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, AVG(storage_pct) AS avg_storage_pct",
+        "FROM {fqn}.reservoir_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "turbine_units.operating_status = 'Generating'",
+        "display_name": "generating turbines",
+        "synonyms": [
+          "active turbines",
+          "online turbines"
+        ],
+        "instruction": "Use when filtering to actively generating turbines."
+      },
+      {
+        "sql": "reservoir_snapshots.drought_risk IN ('High', 'Severe')",
+        "display_name": "high drought risk",
+        "synonyms": [
+          "drought warning",
+          "water shortage"
+        ],
+        "instruction": "Use when filtering to reservoirs with elevated drought risk."
+      },
+      {
+        "sql": "flow_readings.env_flow_compliance = 'Non-Compliant'",
+        "display_name": "non-compliant flows",
+        "synonyms": [
+          "env flow violation"
+        ],
+        "instruction": "Use when filtering to environmental flow violations."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "gen_month",
+        "sql": "DATE_TRUNC('month', turbine_units.record_date)",
+        "display_name": "generation month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "net_flow_m3s",
+        "sql": "flow_readings.inflow_m3s - flow_readings.outflow_m3s",
+        "display_name": "net water flow m3/s",
+        "synonyms": [
+          "flow balance",
+          "net inflow"
+        ]
+      },
+      {
+        "alias": "generation_per_flow",
+        "sql": "turbine_units.generation_mwh / NULLIF(turbine_units.water_flow_m3s, 0)",
+        "display_name": "MWh per m3/s flow",
+        "synonyms": [
+          "water productivity",
+          "flow efficiency"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_generation",
+        "sql": "SUM(turbine_units.generation_mwh)",
+        "display_name": "total generation MWh",
+        "synonyms": [
+          "hydro output",
+          "energy generated"
+        ]
+      },
+      {
+        "alias": "avg_efficiency",
+        "sql": "AVG(turbine_units.efficiency_pct)",
+        "display_name": "average turbine efficiency",
+        "synonyms": [
+          "efficiency",
+          "conversion rate"
+        ]
+      },
+      {
+        "alias": "avg_storage",
+        "sql": "AVG(reservoir_snapshots.storage_pct)",
+        "display_name": "average storage percent",
+        "synonyms": [
+          "reservoir level",
+          "water storage"
+        ]
+      },
+      {
+        "alias": "total_spill",
+        "sql": "SUM(reservoir_snapshots.spill_volume_m3)",
+        "display_name": "total spill volume",
+        "synonyms": [
+          "water spilled",
+          "spillway volume"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in generating turbine count?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(generating_turbine_count) AS generating_turbine_count",
+        "FROM {fqn}.generation_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has unique total turbines changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_turbine_count) AS total_turbine_count",
+        "FROM {fqn}.generation_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in high drought risk count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(high_drought_risk_count) AS high_drought_risk_count",
+        "FROM {fqn}.reservoir_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique turbines changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_turbine_count) AS unique_turbine_count",
+        "FROM {fqn}.reservoir_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top turbine unit identifier by total water flow rate in cubic meters per second?",
+      "sql_lines": [
+        "SELECT turbine_id, SUM(water_flow_m3s) AS total_water_flow_m3s",
+        "FROM {fqn}.turbine_units",
+        "GROUP BY turbine_id ORDER BY total_water_flow_m3s DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average percentage of inflow from snowmelt by dam name?",
+      "sql_lines": [
+        "SELECT dam_name, AVG(snowmelt_contribution_pct) AS avg_snowmelt_contribution_pct",
+        "FROM {fqn}.flow_readings",
+        "GROUP BY dam_name ORDER BY avg_snowmelt_contribution_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per date of reservoir snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.reservoir_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

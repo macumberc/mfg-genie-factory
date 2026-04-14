@@ -1,0 +1,997 @@
+{
+  "company_name": "TraceCore Materials",
+  "industry": "Chemicals & Materials",
+  "use_case": "Product and process traceability for chemical manufacturing",
+  "space_title": "TraceCore Materials - Product & Process Traceability 📋",
+  "space_description": "Traceability analytics for TraceCore Materials. Ask about production events, lot tracking, material genealogy, supplier origins, traceability KPIs, and recall readiness across 20 products and 5 production facilities.",
+  "schema_basename": "product_traceability",
+  "tables": [
+    {
+      "table_name": "production_events",
+      "description": "Individual production event records capturing process steps, lot numbers, input materials, equipment, and quality checkpoints.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique production event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PEV-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date event occurred",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category: Resins, Pigments, Catalysts, Surfactants, Intermediates",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lot_number",
+          "sql_type": "STRING",
+          "comment": "Production lot number",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LOT-', LPAD(CAST(FLOOR({qty_noise} * 9999) AS STRING), 4, '0'))"
+        },
+        {
+          "name": "facility_id",
+          "sql_type": "STRING",
+          "comment": "Production facility",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'FAC-TX' WHEN {status_noise} < 0.40 THEN 'FAC-OH' WHEN {status_noise} < 0.60 THEN 'FAC-NJ' WHEN {status_noise} < 0.80 THEN 'FAC-CA' ELSE 'FAC-GA' END"
+        },
+        {
+          "name": "process_step",
+          "sql_type": "STRING",
+          "comment": "Process step: Mixing, Reaction, Purification, Drying, Packaging",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Mixing' WHEN {status_noise} < 0.44 THEN 'Reaction' WHEN {status_noise} < 0.62 THEN 'Purification' WHEN {status_noise} < 0.80 THEN 'Drying' ELSE 'Packaging' END"
+        },
+        {
+          "name": "supplier_id",
+          "sql_type": "STRING",
+          "comment": "Raw material supplier",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'SUP-01' WHEN {status_noise} < 0.30 THEN 'SUP-02' WHEN {status_noise} < 0.45 THEN 'SUP-03' WHEN {status_noise} < 0.60 THEN 'SUP-04' WHEN {status_noise} < 0.75 THEN 'SUP-05' WHEN {status_noise} < 0.88 THEN 'SUP-06' ELSE 'SUP-07' END"
+        },
+        {
+          "name": "input_quantity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Input material quantity in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50 + {qty_noise} * 4950, 1)"
+        },
+        {
+          "name": "output_quantity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Output product quantity in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND((50 + {qty_noise} * 4950) * (0.80 + {qty_noise} * 0.18), 1)"
+        },
+        {
+          "name": "quality_check_result",
+          "sql_type": "STRING",
+          "comment": "Quality checkpoint result: Pass, Fail, Hold",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.12 THEN 'Hold' ELSE 'Pass' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Resins": {
+          "3,4,5": 0.05,
+          "9,10": 0.045
+        },
+        "Pigments": {
+          "1,2,3": 0.05
+        },
+        "Catalysts": {
+          "6,7,8": 0.045
+        },
+        "Surfactants": {
+          "4,5,6": 0.05
+        },
+        "Intermediates": {
+          "9,10,11": 0.045
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "TC-001",
+          "product_name": "Epoxy Resin ER-100",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-002",
+          "product_name": "Polyester Resin PR-200",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-003",
+          "product_name": "Acrylic Resin AR-300",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-004",
+          "product_name": "Phenolic Resin PH-400",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-005",
+          "product_name": "Titanium White TW-110",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-006",
+          "product_name": "Iron Oxide Red IR-220",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-007",
+          "product_name": "Carbon Black CB-330",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-008",
+          "product_name": "Ultramarine Blue UB-440",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-009",
+          "product_name": "Platinum Catalyst PT-510",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-010",
+          "product_name": "Palladium Catalyst PD-520",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-011",
+          "product_name": "Zeolite Catalyst ZE-530",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-012",
+          "product_name": "Nickel Catalyst NI-540",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-013",
+          "product_name": "SLS Surfactant SF-610",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-014",
+          "product_name": "Alkyl Polyglucoside AP-620",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-015",
+          "product_name": "Betaine Surfactant BT-630",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-016",
+          "product_name": "Silicone Surfactant SI-640",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-017",
+          "product_name": "Ethylene Glycol EG-710",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-018",
+          "product_name": "Propylene Oxide PO-720",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-019",
+          "product_name": "Adipic Acid AA-730",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-020",
+          "product_name": "Caprolactam CL-740",
+          "product_category": "Intermediates"
+        }
+      ],
+      "category_distribution": {
+        "Resins": 0.04,
+        "Pigments": 0.035,
+        "Catalysts": 0.03,
+        "Surfactants": 0.03,
+        "Intermediates": 0.025
+      }
+    },
+    {
+      "table_name": "lot_tracking_snapshots",
+      "description": "Weekly lot tracking snapshots showing lot status, downstream customers, storage conditions, and shelf life remaining per product.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique lot tracking snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LTS-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Weekly snapshot date",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lot_number",
+          "sql_type": "STRING",
+          "comment": "Production lot number",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LOT-', LPAD(CAST(FLOOR({qty_noise} * 9999) AS STRING), 4, '0'))"
+        },
+        {
+          "name": "lot_status",
+          "sql_type": "STRING",
+          "comment": "Lot status: Released, Quarantine, Shipped, Expired, Recalled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Recalled' WHEN {status_noise} < 0.06 THEN 'Expired' WHEN {status_noise} < 0.15 THEN 'Quarantine' WHEN {status_noise} < 0.50 THEN 'Shipped' ELSE 'Released' END"
+        },
+        {
+          "name": "quantity_on_hand_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Quantity remaining in lot in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100 + {qty_noise} * 9900, 1)"
+        },
+        {
+          "name": "downstream_customers",
+          "sql_type": "INT",
+          "comment": "Number of downstream customers who received this lot",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 19) AS INT)"
+        },
+        {
+          "name": "shelf_life_remaining_days",
+          "sql_type": "INT",
+          "comment": "Estimated shelf life remaining in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 365) AS INT)"
+        },
+        {
+          "name": "storage_temp_c",
+          "sql_type": "DOUBLE",
+          "comment": "Storage temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-10 + {qty_noise} * 45, 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "TC-001",
+          "product_name": "Epoxy Resin ER-100",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-002",
+          "product_name": "Polyester Resin PR-200",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-003",
+          "product_name": "Acrylic Resin AR-300",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-004",
+          "product_name": "Phenolic Resin PH-400",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-005",
+          "product_name": "Titanium White TW-110",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-006",
+          "product_name": "Iron Oxide Red IR-220",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-007",
+          "product_name": "Carbon Black CB-330",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-008",
+          "product_name": "Ultramarine Blue UB-440",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-009",
+          "product_name": "Platinum Catalyst PT-510",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-010",
+          "product_name": "Palladium Catalyst PD-520",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-011",
+          "product_name": "Zeolite Catalyst ZE-530",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-012",
+          "product_name": "Nickel Catalyst NI-540",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-013",
+          "product_name": "SLS Surfactant SF-610",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-014",
+          "product_name": "Alkyl Polyglucoside AP-620",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-015",
+          "product_name": "Betaine Surfactant BT-630",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-016",
+          "product_name": "Silicone Surfactant SI-640",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-017",
+          "product_name": "Ethylene Glycol EG-710",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-018",
+          "product_name": "Propylene Oxide PO-720",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-019",
+          "product_name": "Adipic Acid AA-730",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-020",
+          "product_name": "Caprolactam CL-740",
+          "product_category": "Intermediates"
+        }
+      ],
+      "category_distribution": {
+        "Resins": 0.04,
+        "Pigments": 0.035,
+        "Catalysts": 0.03,
+        "Surfactants": 0.03,
+        "Intermediates": 0.025
+      }
+    },
+    {
+      "table_name": "traceability_monthly",
+      "description": "Monthly traceability KPIs per product including recall readiness, lot traceability score, supplier audit status, and genealogy completeness.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TKP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of reporting month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lots_produced",
+          "sql_type": "INT",
+          "comment": "Number of lots produced in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 35) AS INT)"
+        },
+        {
+          "name": "lots_with_full_genealogy",
+          "sql_type": "INT",
+          "comment": "Lots with complete material genealogy records",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR((5 + {qty_noise} * 35) * (0.80 + {qty_noise} * 0.19)) AS INT)"
+        },
+        {
+          "name": "traceability_score_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Traceability completeness score (0-100)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70 + {qty_noise} * 29, 2)"
+        },
+        {
+          "name": "recall_readiness_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated hours to complete a mock recall",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2 + {qty_noise} * 46, 1)"
+        },
+        {
+          "name": "supplier_audits_completed",
+          "sql_type": "INT",
+          "comment": "Number of supplier audits completed in month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 5) AS INT)"
+        },
+        {
+          "name": "quality_holds_count",
+          "sql_type": "INT",
+          "comment": "Lots placed on quality hold in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 4) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Resins": {
+          "3,4,5": 0.05
+        },
+        "Pigments": {
+          "1,2,3": 0.05
+        },
+        "Catalysts": {
+          "6,7,8": 0.045
+        },
+        "Surfactants": {
+          "4,5,6": 0.05
+        },
+        "Intermediates": {
+          "9,10,11": 0.045
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "TC-001",
+          "product_name": "Epoxy Resin ER-100",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-002",
+          "product_name": "Polyester Resin PR-200",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-003",
+          "product_name": "Acrylic Resin AR-300",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-004",
+          "product_name": "Phenolic Resin PH-400",
+          "product_category": "Resins"
+        },
+        {
+          "product_id": "TC-005",
+          "product_name": "Titanium White TW-110",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-006",
+          "product_name": "Iron Oxide Red IR-220",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-007",
+          "product_name": "Carbon Black CB-330",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-008",
+          "product_name": "Ultramarine Blue UB-440",
+          "product_category": "Pigments"
+        },
+        {
+          "product_id": "TC-009",
+          "product_name": "Platinum Catalyst PT-510",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-010",
+          "product_name": "Palladium Catalyst PD-520",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-011",
+          "product_name": "Zeolite Catalyst ZE-530",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-012",
+          "product_name": "Nickel Catalyst NI-540",
+          "product_category": "Catalysts"
+        },
+        {
+          "product_id": "TC-013",
+          "product_name": "SLS Surfactant SF-610",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-014",
+          "product_name": "Alkyl Polyglucoside AP-620",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-015",
+          "product_name": "Betaine Surfactant BT-630",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-016",
+          "product_name": "Silicone Surfactant SI-640",
+          "product_category": "Surfactants"
+        },
+        {
+          "product_id": "TC-017",
+          "product_name": "Ethylene Glycol EG-710",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-018",
+          "product_name": "Propylene Oxide PO-720",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-019",
+          "product_name": "Adipic Acid AA-730",
+          "product_category": "Intermediates"
+        },
+        {
+          "product_id": "TC-020",
+          "product_name": "Caprolactam CL-740",
+          "product_category": "Intermediates"
+        }
+      ],
+      "category_distribution": {
+        "Resins": 0.04,
+        "Pigments": 0.035,
+        "Catalysts": 0.03,
+        "Surfactants": 0.03,
+        "Intermediates": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "production_events_metrics",
+      "source_table": "production_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "facility_id",
+          "expr": "facility_id"
+        },
+        {
+          "name": "process_step",
+          "expr": "process_step"
+        },
+        {
+          "name": "supplier_id",
+          "expr": "supplier_id"
+        },
+        {
+          "name": "quality_check_result",
+          "expr": "quality_check_result"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_production_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total production events"
+        },
+        {
+          "name": "total_input_kg",
+          "expr": "SUM(input_quantity_kg)",
+          "comment": "Total input material in kg"
+        },
+        {
+          "name": "total_output_kg",
+          "expr": "SUM(output_quantity_kg)",
+          "comment": "Total output product in kg"
+        },
+        {
+          "name": "passed_quality_checks",
+          "expr": "COUNT(DISTINCT CASE WHEN quality_check_result = 'Pass' THEN event_id END)",
+          "comment": "Events passing quality checks"
+        },
+        {
+          "name": "failed_quality_checks",
+          "expr": "COUNT(DISTINCT CASE WHEN quality_check_result = 'Fail' THEN event_id END)",
+          "comment": "Events failing quality checks"
+        },
+        {
+          "name": "unique_lot_count",
+          "expr": "COUNT(DISTINCT lot_number)",
+          "comment": "Number of unique lots"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_input_quantity_kg",
+          "expr": "MAX(input_quantity_kg)",
+          "comment": "Maximum input quantity kg"
+        }
+      ]
+    },
+    {
+      "view_name": "traceability_monthly_metrics",
+      "source_table": "traceability_monthly",
+      "dimensions": [
+        {
+          "name": "report_month",
+          "expr": "report_month"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "product_id",
+          "expr": "product_id"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_lots_produced",
+          "expr": "SUM(lots_produced)",
+          "comment": "Total lots produced"
+        },
+        {
+          "name": "total_lots_full_genealogy",
+          "expr": "SUM(lots_with_full_genealogy)",
+          "comment": "Lots with complete genealogy"
+        },
+        {
+          "name": "avg_traceability_score",
+          "expr": "AVG(traceability_score_pct)",
+          "comment": "Average traceability score"
+        },
+        {
+          "name": "avg_recall_readiness_hours",
+          "expr": "AVG(recall_readiness_hours)",
+          "comment": "Average mock recall time in hours"
+        },
+        {
+          "name": "total_quality_holds",
+          "expr": "SUM(quality_holds_count)",
+          "comment": "Total lots on quality hold"
+        },
+        {
+          "name": "max_lots_produced",
+          "expr": "MAX(lots_produced)",
+          "comment": "Maximum lots produced"
+        },
+        {
+          "name": "total_supplier_audits_completed",
+          "expr": "SUM(supplier_audits_completed)",
+          "comment": "Total supplier audits completed"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_events_metrics view (source: production_events) has dimensions: event_date, product_category, facility_id, process_step, supplier_id, quality_check_result. Measures: total_production_events, total_input_kg, total_output_kg, passed_quality_checks, failed_quality_checks, unique_lot_count. The traceability_monthly_metrics view (source: traceability_monthly) has dimensions: report_month, product_category, product_id. Measures: total_lots_produced, total_lots_full_genealogy, avg_traceability_score, avg_recall_readiness_hours, total_quality_holds. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name).",
+  "sample_questions": [
+    "What is the monthly trend in passed quality checks count?",
+    "How has failed quality checks count changed over time?",
+    "What is the monthly trend in unique total production eventss?",
+    "How has unique lots changed over time?",
+    "What is the monthly trend in highest lots produced?",
+    "How has total lots produced changed over time?",
+    "What is the monthly trend in lots with complete genealogy?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total production eventss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_production_events) AS total_production_events",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique lots changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(unique_lot_count) AS unique_lot_count",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in lots with complete genealogy?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_lots_full_genealogy) AS total_lots_full_genealogy",
+        "FROM {fqn}.traceability_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total input material quantity in kg over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(input_quantity_kg) AS total_input_quantity_kg",
+        "FROM {fqn}.production_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total quantity remaining in lot in kg over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(quantity_on_hand_kg) AS total_quantity_on_hand_kg",
+        "FROM {fqn}.lot_tracking_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average traceability completeness score (0-100) changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(traceability_score_pct) AS avg_traceability_score_pct",
+        "FROM {fqn}.traceability_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How does failed quality checks count vary across product categories?",
+      "sql_lines": [
+        "SELECT product_category, MEASURE(failed_quality_checks) AS failed_quality_checks",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY failed_quality_checks DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "quality_check_result = 'Fail'",
+        "display_name": "failed quality checks",
+        "synonyms": [
+          "quality failures",
+          "failed inspections",
+          "QC fails"
+        ],
+        "instruction": "Use when analyzing production events that failed quality checkpoints."
+      },
+      {
+        "sql": "lot_status IN ('Quarantine', 'Recalled')",
+        "display_name": "quarantined or recalled lots",
+        "synonyms": [
+          "problem lots",
+          "held lots",
+          "recalled products"
+        ],
+        "instruction": "Use when identifying lots that are under investigation or have been recalled."
+      },
+      {
+        "sql": "process_step = 'Reaction'",
+        "display_name": "reaction step events",
+        "synonyms": [
+          "chemical reaction",
+          "synthesis step"
+        ],
+        "instruction": "Use when filtering to the reaction process step only."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month",
+          "production month"
+        ]
+      },
+      {
+        "alias": "process_yield_pct",
+        "sql": "output_quantity_kg / NULLIF(input_quantity_kg, 0) * 100",
+        "display_name": "process yield percentage",
+        "synonyms": [
+          "yield",
+          "conversion rate",
+          "step yield"
+        ]
+      },
+      {
+        "alias": "genealogy_completeness_pct",
+        "sql": "lots_with_full_genealogy * 100.0 / NULLIF(lots_produced, 0)",
+        "display_name": "genealogy completeness rate",
+        "synonyms": [
+          "genealogy rate",
+          "traceability completeness"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_production_output",
+        "sql": "SUM(output_quantity_kg)",
+        "display_name": "total production output",
+        "synonyms": [
+          "output",
+          "production volume",
+          "total yield"
+        ]
+      },
+      {
+        "alias": "quality_pass_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN quality_check_result = 'Pass' THEN event_id END) * 1.0 / NULLIF(COUNT(DISTINCT event_id), 0)",
+        "display_name": "quality pass rate",
+        "synonyms": [
+          "QC pass rate",
+          "inspection pass rate"
+        ]
+      },
+      {
+        "alias": "avg_traceability_score",
+        "sql": "AVG(traceability_score_pct)",
+        "display_name": "average traceability score",
+        "synonyms": [
+          "trace score",
+          "genealogy score"
+        ]
+      },
+      {
+        "alias": "avg_recall_readiness",
+        "sql": "AVG(recall_readiness_hours)",
+        "display_name": "average recall readiness time",
+        "synonyms": [
+          "recall time",
+          "mock recall hours"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in passed quality checks count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(passed_quality_checks) AS passed_quality_checks",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has failed quality checks count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(failed_quality_checks) AS failed_quality_checks",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest lots produced?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(max_lots_produced) AS max_lots_produced",
+        "FROM {fqn}.traceability_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has total lots produced changed over time?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_lots_produced) AS total_lots_produced",
+        "FROM {fqn}.traceability_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "What are the top product identifier by total input material quantity in kg?",
+      "sql_lines": [
+        "SELECT product_id, SUM(input_quantity_kg) AS total_input_quantity_kg",
+        "FROM {fqn}.production_events",
+        "GROUP BY product_id ORDER BY total_input_quantity_kg DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per weekly snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.lot_tracking_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of reporting month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.traceability_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1078 @@
+{
+  "company_name": "StockSmart Distribution",
+  "industry": "Industrial Distribution",
+  "use_case": "Warehouse inventory optimization and stock level management",
+  "space_title": "StockSmart Distribution - Inventory Optimization 📦",
+  "space_description": "Inventory analytics for StockSmart Distribution. Ask about stock levels, turnover rates, reorder points, and carrying costs across 20 warehouse-product combinations.",
+  "schema_basename": "distro_inventory_opt",
+  "tables": [
+    {
+      "table_name": "warehouse_products",
+      "description": "Daily inventory movement records per warehouse-product with receipts, issues, and adjustments.",
+      "columns": [
+        {
+          "name": "movement_id",
+          "sql_type": "STRING",
+          "comment": "Unique inventory movement identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('INV-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.wp_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "movement_date",
+          "sql_type": "DATE",
+          "comment": "Date of inventory movement",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "wp_id",
+          "sql_type": "STRING",
+          "comment": "Warehouse-product combo identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "warehouse",
+          "sql_type": "STRING",
+          "comment": "Warehouse location",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category: Pipe Fittings, Power Tools, Abrasives, Cutting Tools, Welding",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "quantity_moved",
+          "sql_type": "INT",
+          "comment": "Units moved (positive=receipt, negative=issue)",
+          "is_dimension": false,
+          "generation_expr": "CAST(({qty_noise} * 200) - 80 AS INT)"
+        },
+        {
+          "name": "unit_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Unit cost in USD",
+          "is_dimension": false,
+          "generation_expr": ""
+        },
+        {
+          "name": "movement_type",
+          "sql_type": "STRING",
+          "comment": "Type: Receipt, Issue, Return, Adjustment, Transfer",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Receipt' WHEN {status_noise} < 0.70 THEN 'Issue' WHEN {status_noise} < 0.82 THEN 'Return' WHEN {status_noise} < 0.92 THEN 'Transfer' ELSE 'Adjustment' END"
+        },
+        {
+          "name": "lot_number",
+          "sql_type": "STRING",
+          "comment": "Lot or batch number",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LOT-', LPAD(CAST(FLOOR({qty_noise} * 999) AS STRING), 4, '0'))"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pipe Fittings": {
+          "3,4,5": 0.06
+        },
+        "Power Tools": {
+          "4,5,9,10": 0.05
+        },
+        "Abrasives": {
+          "3,4": 0.04
+        },
+        "Cutting Tools": {
+          "5,6": 0.05
+        },
+        "Welding": {
+          "4,5,6": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "wp_id": "WP-PF-001",
+          "product_name": "90deg Elbow 2in SS316",
+          "warehouse": "Chicago DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 18.5
+        },
+        {
+          "wp_id": "WP-PF-002",
+          "product_name": "Tee Fitting 1.5in Carbon",
+          "warehouse": "Chicago DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 12.75
+        },
+        {
+          "wp_id": "WP-PF-003",
+          "product_name": "Flange 4in 150# RF",
+          "warehouse": "Houston DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 45.0
+        },
+        {
+          "wp_id": "WP-PF-004",
+          "product_name": "Coupling 3in Threaded",
+          "warehouse": "Houston DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 8.25
+        },
+        {
+          "wp_id": "WP-PT-005",
+          "product_name": "Impact Wrench 1/2in",
+          "warehouse": "Chicago DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 185.0
+        },
+        {
+          "wp_id": "WP-PT-006",
+          "product_name": "Angle Grinder 4.5in",
+          "warehouse": "Atlanta DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 95.0
+        },
+        {
+          "wp_id": "WP-PT-007",
+          "product_name": "Reciprocating Saw 12A",
+          "warehouse": "Houston DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 145.0
+        },
+        {
+          "wp_id": "WP-PT-008",
+          "product_name": "Heat Gun 1500W",
+          "warehouse": "Atlanta DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 65.0
+        },
+        {
+          "wp_id": "WP-AB-009",
+          "product_name": "Grinding Wheel 7in A24R",
+          "warehouse": "Chicago DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 4.5
+        },
+        {
+          "wp_id": "WP-AB-010",
+          "product_name": "Flap Disc 4.5in 60-Grit",
+          "warehouse": "Houston DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 3.25
+        },
+        {
+          "wp_id": "WP-AB-011",
+          "product_name": "Sanding Belt 4x24 80-Grit",
+          "warehouse": "Atlanta DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 6.75
+        },
+        {
+          "wp_id": "WP-AB-012",
+          "product_name": "Cut-Off Wheel 4.5in",
+          "warehouse": "Chicago DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 2.8
+        },
+        {
+          "wp_id": "WP-CT-013",
+          "product_name": "Carbide End Mill 1/2in",
+          "warehouse": "Houston DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 28.0
+        },
+        {
+          "wp_id": "WP-CT-014",
+          "product_name": "HSS Drill Bit Set 29pc",
+          "warehouse": "Chicago DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 42.0
+        },
+        {
+          "wp_id": "WP-CT-015",
+          "product_name": "Indexable Insert CNMG",
+          "warehouse": "Atlanta DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 8.5
+        },
+        {
+          "wp_id": "WP-CT-016",
+          "product_name": "Bandsaw Blade 1in Bi-Metal",
+          "warehouse": "Houston DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 35.0
+        },
+        {
+          "wp_id": "WP-WD-017",
+          "product_name": "MIG Wire 0.035 ER70S-6",
+          "warehouse": "Chicago DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 32.0
+        },
+        {
+          "wp_id": "WP-WD-018",
+          "product_name": "Stick Electrode 6011 5/32",
+          "warehouse": "Atlanta DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 18.0
+        },
+        {
+          "wp_id": "WP-WD-019",
+          "product_name": "TIG Rod SS308L 1/16",
+          "warehouse": "Houston DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 45.0
+        },
+        {
+          "wp_id": "WP-WD-020",
+          "product_name": "Welding Gas 75/25 Cylinder",
+          "warehouse": "Chicago DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 85.0
+        }
+      ],
+      "category_distribution": {
+        "Pipe Fittings": 0.035,
+        "Power Tools": 0.025,
+        "Abrasives": 0.04,
+        "Cutting Tools": 0.03,
+        "Welding": 0.032
+      }
+    },
+    {
+      "table_name": "inventory_transactions",
+      "description": "Weekly inventory position snapshots per warehouse-product with on-hand, reorder points, and carrying costs.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.wp_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of inventory snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "wp_id",
+          "sql_type": "STRING",
+          "comment": "Warehouse-product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "warehouse",
+          "sql_type": "STRING",
+          "comment": "Warehouse",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "on_hand_qty",
+          "sql_type": "INT",
+          "comment": "Units on hand",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 990) AS INT)"
+        },
+        {
+          "name": "reorder_point",
+          "sql_type": "INT",
+          "comment": "Reorder trigger quantity",
+          "is_dimension": false,
+          "generation_expr": "CAST(20 + FLOOR({qty_noise} * 180) AS INT)"
+        },
+        {
+          "name": "days_of_supply",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated days of stock remaining",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 85.0), 1)"
+        },
+        {
+          "name": "carrying_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Weekly inventory carrying cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 490.0), 2)"
+        },
+        {
+          "name": "stock_status",
+          "sql_type": "STRING",
+          "comment": "Status: Adequate, Low, Stockout, Overstock",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Stockout' WHEN {status_noise} < 0.18 THEN 'Low' WHEN {status_noise} < 0.30 THEN 'Overstock' ELSE 'Adequate' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pipe Fittings": {
+          "3,4,5": 0.06
+        },
+        "Power Tools": {
+          "4,5": 0.05
+        },
+        "Abrasives": {
+          "3,4": 0.04
+        },
+        "Cutting Tools": {
+          "5,6": 0.05
+        },
+        "Welding": {
+          "4,5,6": 0.06
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "wp_id": "WP-PF-001",
+          "product_name": "90deg Elbow 2in SS316",
+          "warehouse": "Chicago DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 18.5
+        },
+        {
+          "wp_id": "WP-PF-002",
+          "product_name": "Tee Fitting 1.5in Carbon",
+          "warehouse": "Chicago DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 12.75
+        },
+        {
+          "wp_id": "WP-PF-003",
+          "product_name": "Flange 4in 150# RF",
+          "warehouse": "Houston DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 45.0
+        },
+        {
+          "wp_id": "WP-PF-004",
+          "product_name": "Coupling 3in Threaded",
+          "warehouse": "Houston DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 8.25
+        },
+        {
+          "wp_id": "WP-PT-005",
+          "product_name": "Impact Wrench 1/2in",
+          "warehouse": "Chicago DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 185.0
+        },
+        {
+          "wp_id": "WP-PT-006",
+          "product_name": "Angle Grinder 4.5in",
+          "warehouse": "Atlanta DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 95.0
+        },
+        {
+          "wp_id": "WP-PT-007",
+          "product_name": "Reciprocating Saw 12A",
+          "warehouse": "Houston DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 145.0
+        },
+        {
+          "wp_id": "WP-PT-008",
+          "product_name": "Heat Gun 1500W",
+          "warehouse": "Atlanta DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 65.0
+        },
+        {
+          "wp_id": "WP-AB-009",
+          "product_name": "Grinding Wheel 7in A24R",
+          "warehouse": "Chicago DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 4.5
+        },
+        {
+          "wp_id": "WP-AB-010",
+          "product_name": "Flap Disc 4.5in 60-Grit",
+          "warehouse": "Houston DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 3.25
+        },
+        {
+          "wp_id": "WP-AB-011",
+          "product_name": "Sanding Belt 4x24 80-Grit",
+          "warehouse": "Atlanta DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 6.75
+        },
+        {
+          "wp_id": "WP-AB-012",
+          "product_name": "Cut-Off Wheel 4.5in",
+          "warehouse": "Chicago DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 2.8
+        },
+        {
+          "wp_id": "WP-CT-013",
+          "product_name": "Carbide End Mill 1/2in",
+          "warehouse": "Houston DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 28.0
+        },
+        {
+          "wp_id": "WP-CT-014",
+          "product_name": "HSS Drill Bit Set 29pc",
+          "warehouse": "Chicago DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 42.0
+        },
+        {
+          "wp_id": "WP-CT-015",
+          "product_name": "Indexable Insert CNMG",
+          "warehouse": "Atlanta DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 8.5
+        },
+        {
+          "wp_id": "WP-CT-016",
+          "product_name": "Bandsaw Blade 1in Bi-Metal",
+          "warehouse": "Houston DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 35.0
+        },
+        {
+          "wp_id": "WP-WD-017",
+          "product_name": "MIG Wire 0.035 ER70S-6",
+          "warehouse": "Chicago DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 32.0
+        },
+        {
+          "wp_id": "WP-WD-018",
+          "product_name": "Stick Electrode 6011 5/32",
+          "warehouse": "Atlanta DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 18.0
+        },
+        {
+          "wp_id": "WP-WD-019",
+          "product_name": "TIG Rod SS308L 1/16",
+          "warehouse": "Houston DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 45.0
+        },
+        {
+          "wp_id": "WP-WD-020",
+          "product_name": "Welding Gas 75/25 Cylinder",
+          "warehouse": "Chicago DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 85.0
+        }
+      ],
+      "category_distribution": {
+        "Pipe Fittings": 0.035,
+        "Power Tools": 0.025,
+        "Abrasives": 0.04,
+        "Cutting Tools": 0.03,
+        "Welding": 0.032
+      }
+    },
+    {
+      "table_name": "inventory_snapshots",
+      "description": "Monthly inventory performance snapshots with turnover ratios, stockout rates, and optimization recommendations.",
+      "columns": [
+        {
+          "name": "perf_id",
+          "sql_type": "STRING",
+          "comment": "Unique performance record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IP-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.wp_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "perf_month",
+          "sql_type": "DATE",
+          "comment": "Performance month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "wp_id",
+          "sql_type": "STRING",
+          "comment": "Warehouse-product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "warehouse",
+          "sql_type": "STRING",
+          "comment": "Warehouse",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "turnover_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Inventory turnover ratio",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 18.0), 2)"
+        },
+        {
+          "name": "stockout_days",
+          "sql_type": "INT",
+          "comment": "Number of stockout days in month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 8) AS INT)"
+        },
+        {
+          "name": "total_carrying_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly carrying cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 1950.0), 2)"
+        },
+        {
+          "name": "fill_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Order fill rate 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(82.0 + ({qty_noise} * 17.0), 2)"
+        },
+        {
+          "name": "optimization_action",
+          "sql_type": "STRING",
+          "comment": "Action: Rebalance, Increase Safety Stock, Reduce, No Action",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Increase Safety Stock' WHEN {status_noise} < 0.30 THEN 'Reduce' WHEN {status_noise} < 0.45 THEN 'Rebalance' ELSE 'No Action' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pipe Fittings": {
+          "3,4,5": 0.06
+        },
+        "Power Tools": {
+          "4,5": 0.05
+        },
+        "Abrasives": {
+          "3,4": 0.04
+        },
+        "Cutting Tools": {
+          "5,6": 0.05
+        },
+        "Welding": {
+          "4,5,6": 0.06
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "wp_id": "WP-PF-001",
+          "product_name": "90deg Elbow 2in SS316",
+          "warehouse": "Chicago DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 18.5
+        },
+        {
+          "wp_id": "WP-PF-002",
+          "product_name": "Tee Fitting 1.5in Carbon",
+          "warehouse": "Chicago DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 12.75
+        },
+        {
+          "wp_id": "WP-PF-003",
+          "product_name": "Flange 4in 150# RF",
+          "warehouse": "Houston DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 45.0
+        },
+        {
+          "wp_id": "WP-PF-004",
+          "product_name": "Coupling 3in Threaded",
+          "warehouse": "Houston DC",
+          "product_category": "Pipe Fittings",
+          "unit_cost_usd": 8.25
+        },
+        {
+          "wp_id": "WP-PT-005",
+          "product_name": "Impact Wrench 1/2in",
+          "warehouse": "Chicago DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 185.0
+        },
+        {
+          "wp_id": "WP-PT-006",
+          "product_name": "Angle Grinder 4.5in",
+          "warehouse": "Atlanta DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 95.0
+        },
+        {
+          "wp_id": "WP-PT-007",
+          "product_name": "Reciprocating Saw 12A",
+          "warehouse": "Houston DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 145.0
+        },
+        {
+          "wp_id": "WP-PT-008",
+          "product_name": "Heat Gun 1500W",
+          "warehouse": "Atlanta DC",
+          "product_category": "Power Tools",
+          "unit_cost_usd": 65.0
+        },
+        {
+          "wp_id": "WP-AB-009",
+          "product_name": "Grinding Wheel 7in A24R",
+          "warehouse": "Chicago DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 4.5
+        },
+        {
+          "wp_id": "WP-AB-010",
+          "product_name": "Flap Disc 4.5in 60-Grit",
+          "warehouse": "Houston DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 3.25
+        },
+        {
+          "wp_id": "WP-AB-011",
+          "product_name": "Sanding Belt 4x24 80-Grit",
+          "warehouse": "Atlanta DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 6.75
+        },
+        {
+          "wp_id": "WP-AB-012",
+          "product_name": "Cut-Off Wheel 4.5in",
+          "warehouse": "Chicago DC",
+          "product_category": "Abrasives",
+          "unit_cost_usd": 2.8
+        },
+        {
+          "wp_id": "WP-CT-013",
+          "product_name": "Carbide End Mill 1/2in",
+          "warehouse": "Houston DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 28.0
+        },
+        {
+          "wp_id": "WP-CT-014",
+          "product_name": "HSS Drill Bit Set 29pc",
+          "warehouse": "Chicago DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 42.0
+        },
+        {
+          "wp_id": "WP-CT-015",
+          "product_name": "Indexable Insert CNMG",
+          "warehouse": "Atlanta DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 8.5
+        },
+        {
+          "wp_id": "WP-CT-016",
+          "product_name": "Bandsaw Blade 1in Bi-Metal",
+          "warehouse": "Houston DC",
+          "product_category": "Cutting Tools",
+          "unit_cost_usd": 35.0
+        },
+        {
+          "wp_id": "WP-WD-017",
+          "product_name": "MIG Wire 0.035 ER70S-6",
+          "warehouse": "Chicago DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 32.0
+        },
+        {
+          "wp_id": "WP-WD-018",
+          "product_name": "Stick Electrode 6011 5/32",
+          "warehouse": "Atlanta DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 18.0
+        },
+        {
+          "wp_id": "WP-WD-019",
+          "product_name": "TIG Rod SS308L 1/16",
+          "warehouse": "Houston DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 45.0
+        },
+        {
+          "wp_id": "WP-WD-020",
+          "product_name": "Welding Gas 75/25 Cylinder",
+          "warehouse": "Chicago DC",
+          "product_category": "Welding",
+          "unit_cost_usd": 85.0
+        }
+      ],
+      "category_distribution": {
+        "Pipe Fittings": 0.035,
+        "Power Tools": 0.025,
+        "Abrasives": 0.04,
+        "Cutting Tools": 0.03,
+        "Welding": 0.032
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "inventory_kpi_monthly",
+      "source_table": "inventory_transactions",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "warehouse",
+          "expr": "warehouse"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "stock_status",
+          "expr": "stock_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_on_hand_qty",
+          "expr": "AVG(on_hand_qty)",
+          "comment": "Average units on hand"
+        },
+        {
+          "name": "total_carrying_cost",
+          "expr": "SUM(carrying_cost_usd)",
+          "comment": "Total carrying cost USD"
+        },
+        {
+          "name": "avg_days_of_supply",
+          "expr": "AVG(days_of_supply)",
+          "comment": "Average days of supply"
+        },
+        {
+          "name": "stockout_count",
+          "expr": "COUNT(DISTINCT CASE WHEN stock_status = 'Stockout' THEN snapshot_id END)",
+          "comment": "Stockout snapshot count"
+        },
+        {
+          "name": "total_snapshot_count",
+          "expr": "COUNT(DISTINCT snapshot_id)",
+          "comment": "Total snapshot count"
+        },
+        {
+          "name": "unique_wp_count",
+          "expr": "COUNT(DISTINCT wp_id)",
+          "comment": "Number of distinct wps"
+        },
+        {
+          "name": "max_on_hand_qty",
+          "expr": "MAX(on_hand_qty)",
+          "comment": "Maximum on hand qty"
+        },
+        {
+          "name": "total_reorder_point",
+          "expr": "SUM(reorder_point)",
+          "comment": "Total reorder point"
+        }
+      ]
+    },
+    {
+      "view_name": "inventory_perf_monthly",
+      "source_table": "inventory_snapshots",
+      "dimensions": [
+        {
+          "name": "perf_month",
+          "expr": "perf_month"
+        },
+        {
+          "name": "warehouse",
+          "expr": "warehouse"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_turnover_ratio",
+          "expr": "AVG(turnover_ratio)",
+          "comment": "Average inventory turnover"
+        },
+        {
+          "name": "total_stockout_days",
+          "expr": "SUM(stockout_days)",
+          "comment": "Total stockout days"
+        },
+        {
+          "name": "avg_fill_rate",
+          "expr": "AVG(fill_rate_pct)",
+          "comment": "Average fill rate"
+        },
+        {
+          "name": "total_monthly_carrying_cost",
+          "expr": "SUM(total_carrying_cost_usd)",
+          "comment": "Total monthly carrying cost"
+        },
+        {
+          "name": "item_count",
+          "expr": "COUNT(DISTINCT wp_id)",
+          "comment": "Number of items tracked"
+        },
+        {
+          "name": "max_turnover_ratio",
+          "expr": "MAX(turnover_ratio)",
+          "comment": "Maximum turnover ratio"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_kpi_monthly view (source: inventory_transactions) has dimensions: snapshot_date, warehouse, product_category, stock_status. Measures: avg_on_hand_qty, total_carrying_cost, avg_days_of_supply, stockout_count, total_snapshot_count. The inventory_perf_monthly view (source: inventory_snapshots) has dimensions: perf_month, warehouse, product_category. Measures: avg_turnover_ratio, total_stockout_days, avg_fill_rate, total_monthly_carrying_cost, item_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name, wp_id).",
+  "sample_questions": [
+    "What is the monthly trend in stockout count?",
+    "How has unique total snapshots changed over time?",
+    "What is the monthly trend in unique wps?",
+    "How has highest on hand qty changed over time?",
+    "What is the monthly trend in unique items?",
+    "How has highest turnover ratio changed over time?",
+    "What is the monthly trend in total stockout days?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique wps?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_wp_count) AS unique_wp_count",
+        "FROM {fqn}.inventory_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has highest on hand qty changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_on_hand_qty) AS max_on_hand_qty",
+        "FROM {fqn}.inventory_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total stockout days?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(total_stockout_days) AS total_stockout_days",
+        "FROM {fqn}.inventory_perf_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "How has total monthly carrying cost changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(total_monthly_carrying_cost) AS total_monthly_carrying_cost",
+        "FROM {fqn}.inventory_perf_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total units moved (positive=receipt, negative=issue) over time?",
+      "sql_lines": [
+        "SELECT movement_date, SUM(quantity_moved) AS total_quantity_moved",
+        "FROM {fqn}.warehouse_products",
+        "GROUP BY movement_date ORDER BY movement_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total units on hand over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(on_hand_qty) AS total_on_hand_qty",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average inventory turnover ratio changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, AVG(turnover_ratio) AS avg_turnover_ratio",
+        "FROM {fqn}.inventory_snapshots",
+        "GROUP BY perf_month ORDER BY perf_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "inventory_transactions.stock_status = 'Stockout'",
+        "display_name": "stockouts",
+        "synonyms": [
+          "out of stock"
+        ],
+        "instruction": "Filter to stockout items."
+      },
+      {
+        "sql": "inventory_transactions.stock_status = 'Overstock'",
+        "display_name": "overstocked",
+        "synonyms": [
+          "excess inventory"
+        ],
+        "instruction": "Filter to overstocked items."
+      },
+      {
+        "sql": "warehouse_products.movement_type = 'Issue'",
+        "display_name": "issues",
+        "synonyms": [
+          "outbound",
+          "shipments"
+        ],
+        "instruction": "Filter to inventory issues."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "movement_month",
+        "sql": "DATE_TRUNC('month', warehouse_products.movement_date)",
+        "display_name": "movement month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "inventory_value",
+        "sql": "inventory_transactions.on_hand_qty * warehouse_products.unit_cost_usd",
+        "display_name": "inventory value USD",
+        "synonyms": [
+          "stock value"
+        ]
+      },
+      {
+        "alias": "below_reorder",
+        "sql": "CASE WHEN inventory_transactions.on_hand_qty < inventory_transactions.reorder_point THEN 'Yes' ELSE 'No' END",
+        "display_name": "below reorder point",
+        "synonyms": [
+          "needs reorder"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_on_hand",
+        "sql": "AVG(inventory_transactions.on_hand_qty)",
+        "display_name": "average on-hand qty",
+        "synonyms": [
+          "stock level"
+        ]
+      },
+      {
+        "alias": "total_carrying_cost",
+        "sql": "SUM(inventory_transactions.carrying_cost_usd)",
+        "display_name": "total carrying cost",
+        "synonyms": [
+          "holding cost"
+        ]
+      },
+      {
+        "alias": "avg_turnover",
+        "sql": "AVG(inventory_snapshots.turnover_ratio)",
+        "display_name": "average turnover",
+        "synonyms": [
+          "turns"
+        ]
+      },
+      {
+        "alias": "avg_fill_rate",
+        "sql": "AVG(inventory_snapshots.fill_rate_pct)",
+        "display_name": "average fill rate",
+        "synonyms": [
+          "service level"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in stockout count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(stockout_count) AS stockout_count",
+        "FROM {fqn}.inventory_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique total snapshots changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_snapshot_count) AS total_snapshot_count",
+        "FROM {fqn}.inventory_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique items?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(item_count) AS item_count",
+        "FROM {fqn}.inventory_perf_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "How has highest turnover ratio changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(max_turnover_ratio) AS max_turnover_ratio",
+        "FROM {fqn}.inventory_perf_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "What are the top warehouse-product combo identifier by total units moved (positive=receipt, negative=issue)?",
+      "sql_lines": [
+        "SELECT wp_id, SUM(quantity_moved) AS total_quantity_moved",
+        "FROM {fqn}.warehouse_products",
+        "GROUP BY wp_id ORDER BY total_quantity_moved DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of inventory snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per performance month?",
+      "sql_lines": [
+        "SELECT perf_month, COUNT(*) AS record_count",
+        "FROM {fqn}.inventory_snapshots",
+        "GROUP BY perf_month ORDER BY perf_month"
+      ]
+    }
+  ]
+}

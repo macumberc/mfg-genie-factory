@@ -1,0 +1,940 @@
+{
+  "company_name": "AeroChain Logistics",
+  "industry": "Aerospace",
+  "use_case": "Aerospace supply chain and long-lead materials planning",
+  "space_title": "AeroChain Logistics - Supply & Materials Planning 🔗",
+  "space_description": "Supply chain analytics for AeroChain Logistics. Ask about procurement orders, material availability, supplier performance, lead times, and inventory health across 20 long-lead aerospace materials and 6 supplier regions.",
+  "schema_basename": "aerospace_supply_planning",
+  "tables": [
+    {
+      "table_name": "procurement_orders",
+      "description": "Daily procurement order records for aerospace materials with supplier, lead time, cost, and delivery status.",
+      "columns": [
+        {
+          "name": "po_id",
+          "sql_type": "STRING",
+          "comment": "Unique purchase order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PO-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.material_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "order_date",
+          "sql_type": "DATE",
+          "comment": "Date PO was placed",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "material_id",
+          "sql_type": "STRING",
+          "comment": "Material identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "material_name",
+          "sql_type": "STRING",
+          "comment": "Material descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "material_class",
+          "sql_type": "STRING",
+          "comment": "Material class: Titanium, Nickel Superalloy, Carbon Fiber, Aluminum, Specialty Steel, Ceramic Matrix",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "supplier_region",
+          "sql_type": "STRING",
+          "comment": "Supplier region: North America, Europe, Japan, China, South Korea, Australia",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'North America' WHEN {status_noise} < 0.55 THEN 'Europe' WHEN {status_noise} < 0.70 THEN 'Japan' WHEN {status_noise} < 0.82 THEN 'China' WHEN {status_noise} < 0.92 THEN 'South Korea' ELSE 'Australia' END"
+        },
+        {
+          "name": "order_quantity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Order quantity in kilograms",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 9900.0), 2)"
+        },
+        {
+          "name": "unit_cost_usd_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Cost per kilogram in USD",
+          "is_dimension": false,
+          "generation_expr": ""
+        },
+        {
+          "name": "lead_time_weeks",
+          "sql_type": "INT",
+          "comment": "Supplier-quoted lead time in weeks",
+          "is_dimension": false,
+          "generation_expr": "CAST(4 + FLOOR({qty_noise} * 48) AS INT)"
+        },
+        {
+          "name": "delivery_status",
+          "sql_type": "STRING",
+          "comment": "Delivery status: On Time, Late, Partial, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'On Time' WHEN {status_noise} < 0.82 THEN 'Late' WHEN {status_noise} < 0.95 THEN 'Partial' ELSE 'Cancelled' END"
+        },
+        {
+          "name": "quality_acceptance",
+          "sql_type": "STRING",
+          "comment": "Quality acceptance: Accepted, Conditional, Rejected",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Accepted' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Rejected' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Titanium": {
+          "3,4": 0.05
+        },
+        "Nickel Superalloy": {
+          "9,10": 0.045
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "material_id": "MAT-001",
+          "material_name": "Ti-6Al-4V Sheet",
+          "material_class": "Titanium",
+          "unit_cost_usd_kg": 85.0
+        },
+        {
+          "material_id": "MAT-002",
+          "material_name": "Ti-6Al-4V Bar Stock",
+          "material_class": "Titanium",
+          "unit_cost_usd_kg": 72.0
+        },
+        {
+          "material_id": "MAT-003",
+          "material_name": "Ti-6242 Forging Billet",
+          "material_class": "Titanium",
+          "unit_cost_usd_kg": 110.0
+        },
+        {
+          "material_id": "MAT-004",
+          "material_name": "Inconel 718 Bar",
+          "material_class": "Nickel Superalloy",
+          "unit_cost_usd_kg": 65.0
+        },
+        {
+          "material_id": "MAT-005",
+          "material_name": "Inconel 625 Sheet",
+          "material_class": "Nickel Superalloy",
+          "unit_cost_usd_kg": 78.0
+        },
+        {
+          "material_id": "MAT-006",
+          "material_name": "Waspaloy Forging",
+          "material_class": "Nickel Superalloy",
+          "unit_cost_usd_kg": 95.0
+        },
+        {
+          "material_id": "MAT-007",
+          "material_name": "T800 Carbon Fiber Prepreg",
+          "material_class": "Carbon Fiber",
+          "unit_cost_usd_kg": 120.0
+        },
+        {
+          "material_id": "MAT-008",
+          "material_name": "IM7 Carbon Fiber Tape",
+          "material_class": "Carbon Fiber",
+          "unit_cost_usd_kg": 145.0
+        },
+        {
+          "material_id": "MAT-009",
+          "material_name": "AS4 Carbon Fabric",
+          "material_class": "Carbon Fiber",
+          "unit_cost_usd_kg": 88.0
+        },
+        {
+          "material_id": "MAT-010",
+          "material_name": "7075-T6 Aluminum Plate",
+          "material_class": "Aluminum",
+          "unit_cost_usd_kg": 12.5
+        },
+        {
+          "material_id": "MAT-011",
+          "material_name": "2024-T3 Aluminum Sheet",
+          "material_class": "Aluminum",
+          "unit_cost_usd_kg": 10.8
+        },
+        {
+          "material_id": "MAT-012",
+          "material_name": "7050 Aluminum Forging",
+          "material_class": "Aluminum",
+          "unit_cost_usd_kg": 18.0
+        },
+        {
+          "material_id": "MAT-013",
+          "material_name": "300M Steel Bar",
+          "material_class": "Specialty Steel",
+          "unit_cost_usd_kg": 28.0
+        },
+        {
+          "material_id": "MAT-014",
+          "material_name": "4340 Steel Forging",
+          "material_class": "Specialty Steel",
+          "unit_cost_usd_kg": 22.0
+        },
+        {
+          "material_id": "MAT-015",
+          "material_name": "Maraging 250 Steel",
+          "material_class": "Specialty Steel",
+          "unit_cost_usd_kg": 45.0
+        },
+        {
+          "material_id": "MAT-016",
+          "material_name": "SiC/SiC CMC Panel",
+          "material_class": "Ceramic Matrix",
+          "unit_cost_usd_kg": 350.0
+        },
+        {
+          "material_id": "MAT-017",
+          "material_name": "Oxide-Oxide CMC Tube",
+          "material_class": "Ceramic Matrix",
+          "unit_cost_usd_kg": 280.0
+        },
+        {
+          "material_id": "MAT-018",
+          "material_name": "Ti-6Al-4V Wire (AM)",
+          "material_class": "Titanium",
+          "unit_cost_usd_kg": 130.0
+        },
+        {
+          "material_id": "MAT-019",
+          "material_name": "Inconel 718 Powder (AM)",
+          "material_class": "Nickel Superalloy",
+          "unit_cost_usd_kg": 160.0
+        },
+        {
+          "material_id": "MAT-020",
+          "material_name": "Al-Si10Mg Powder (AM)",
+          "material_class": "Aluminum",
+          "unit_cost_usd_kg": 55.0
+        }
+      ],
+      "category_distribution": {
+        "Titanium": 0.035,
+        "Nickel Superalloy": 0.035,
+        "Carbon Fiber": 0.03,
+        "Aluminum": 0.035,
+        "Specialty Steel": 0.03,
+        "Ceramic Matrix": 0.02
+      }
+    },
+    {
+      "table_name": "supply_snapshots",
+      "description": "Weekly supply position snapshot with on-hand inventory, committed stock, safety stock levels, and days of supply.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.material_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of supply snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "material_id",
+          "sql_type": "STRING",
+          "comment": "Material identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "material_class",
+          "sql_type": "STRING",
+          "comment": "Material class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "on_hand_kg",
+          "sql_type": "DOUBLE",
+          "comment": "On-hand inventory in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 19500.0), 2)"
+        },
+        {
+          "name": "committed_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Committed/allocated inventory in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 9800.0), 2)"
+        },
+        {
+          "name": "safety_stock_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Safety stock level in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 2900.0), 2)"
+        },
+        {
+          "name": "days_of_supply",
+          "sql_type": "DOUBLE",
+          "comment": "Days of supply remaining",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 170.0), 1)"
+        },
+        {
+          "name": "at_risk_flag",
+          "sql_type": "STRING",
+          "comment": "Supply risk flag: OK, Watch, At Risk, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'OK' WHEN {status_noise} < 0.78 THEN 'Watch' WHEN {status_noise} < 0.93 THEN 'At Risk' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "material_id": "MAT-001",
+          "material_name": "Ti-6Al-4V Sheet",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-002",
+          "material_name": "Ti-6Al-4V Bar Stock",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-003",
+          "material_name": "Ti-6242 Forging Billet",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-004",
+          "material_name": "Inconel 718 Bar",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-005",
+          "material_name": "Inconel 625 Sheet",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-006",
+          "material_name": "Waspaloy Forging",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-007",
+          "material_name": "T800 Carbon Fiber Prepreg",
+          "material_class": "Carbon Fiber"
+        },
+        {
+          "material_id": "MAT-008",
+          "material_name": "IM7 Carbon Fiber Tape",
+          "material_class": "Carbon Fiber"
+        },
+        {
+          "material_id": "MAT-009",
+          "material_name": "AS4 Carbon Fabric",
+          "material_class": "Carbon Fiber"
+        },
+        {
+          "material_id": "MAT-010",
+          "material_name": "7075-T6 Aluminum Plate",
+          "material_class": "Aluminum"
+        },
+        {
+          "material_id": "MAT-011",
+          "material_name": "2024-T3 Aluminum Sheet",
+          "material_class": "Aluminum"
+        },
+        {
+          "material_id": "MAT-012",
+          "material_name": "7050 Aluminum Forging",
+          "material_class": "Aluminum"
+        },
+        {
+          "material_id": "MAT-013",
+          "material_name": "300M Steel Bar",
+          "material_class": "Specialty Steel"
+        },
+        {
+          "material_id": "MAT-014",
+          "material_name": "4340 Steel Forging",
+          "material_class": "Specialty Steel"
+        },
+        {
+          "material_id": "MAT-015",
+          "material_name": "Maraging 250 Steel",
+          "material_class": "Specialty Steel"
+        },
+        {
+          "material_id": "MAT-016",
+          "material_name": "SiC/SiC CMC Panel",
+          "material_class": "Ceramic Matrix"
+        },
+        {
+          "material_id": "MAT-017",
+          "material_name": "Oxide-Oxide CMC Tube",
+          "material_class": "Ceramic Matrix"
+        },
+        {
+          "material_id": "MAT-018",
+          "material_name": "Ti-6Al-4V Wire (AM)",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-019",
+          "material_name": "Inconel 718 Powder (AM)",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-020",
+          "material_name": "Al-Si10Mg Powder (AM)",
+          "material_class": "Aluminum"
+        }
+      ],
+      "category_distribution": {
+        "Titanium": 0.035,
+        "Nickel Superalloy": 0.035,
+        "Carbon Fiber": 0.03,
+        "Aluminum": 0.035,
+        "Specialty Steel": 0.03,
+        "Ceramic Matrix": 0.02
+      }
+    },
+    {
+      "table_name": "supply_kpi_monthly",
+      "description": "Monthly supply chain KPIs including on-time delivery rate, supplier quality, spend, and lead time trends.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly record",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.material_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "material_id",
+          "sql_type": "STRING",
+          "comment": "Material identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "material_class",
+          "sql_type": "STRING",
+          "comment": "Material class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "on_time_delivery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Supplier on-time delivery rate",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, 65.0 + ({qty_noise} * 33.0)), 2)"
+        },
+        {
+          "name": "supplier_quality_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Supplier acceptance rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.5, 85.0 + ({qty_noise} * 14.0)), 2)"
+        },
+        {
+          "name": "monthly_spend_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly procurement spend in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 950000.0), 2)"
+        },
+        {
+          "name": "avg_lead_time_weeks",
+          "sql_type": "DOUBLE",
+          "comment": "Average actual lead time in weeks",
+          "is_dimension": false,
+          "generation_expr": "ROUND(4.0 + ({qty_noise} * 36.0), 1)"
+        },
+        {
+          "name": "single_source_flag",
+          "sql_type": "STRING",
+          "comment": "Single-source risk: Yes, No",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Yes' ELSE 'No' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "material_id": "MAT-001",
+          "material_name": "Ti-6Al-4V Sheet",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-002",
+          "material_name": "Ti-6Al-4V Bar Stock",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-003",
+          "material_name": "Ti-6242 Forging Billet",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-004",
+          "material_name": "Inconel 718 Bar",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-005",
+          "material_name": "Inconel 625 Sheet",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-006",
+          "material_name": "Waspaloy Forging",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-007",
+          "material_name": "T800 Carbon Fiber Prepreg",
+          "material_class": "Carbon Fiber"
+        },
+        {
+          "material_id": "MAT-008",
+          "material_name": "IM7 Carbon Fiber Tape",
+          "material_class": "Carbon Fiber"
+        },
+        {
+          "material_id": "MAT-009",
+          "material_name": "AS4 Carbon Fabric",
+          "material_class": "Carbon Fiber"
+        },
+        {
+          "material_id": "MAT-010",
+          "material_name": "7075-T6 Aluminum Plate",
+          "material_class": "Aluminum"
+        },
+        {
+          "material_id": "MAT-011",
+          "material_name": "2024-T3 Aluminum Sheet",
+          "material_class": "Aluminum"
+        },
+        {
+          "material_id": "MAT-012",
+          "material_name": "7050 Aluminum Forging",
+          "material_class": "Aluminum"
+        },
+        {
+          "material_id": "MAT-013",
+          "material_name": "300M Steel Bar",
+          "material_class": "Specialty Steel"
+        },
+        {
+          "material_id": "MAT-014",
+          "material_name": "4340 Steel Forging",
+          "material_class": "Specialty Steel"
+        },
+        {
+          "material_id": "MAT-015",
+          "material_name": "Maraging 250 Steel",
+          "material_class": "Specialty Steel"
+        },
+        {
+          "material_id": "MAT-016",
+          "material_name": "SiC/SiC CMC Panel",
+          "material_class": "Ceramic Matrix"
+        },
+        {
+          "material_id": "MAT-017",
+          "material_name": "Oxide-Oxide CMC Tube",
+          "material_class": "Ceramic Matrix"
+        },
+        {
+          "material_id": "MAT-018",
+          "material_name": "Ti-6Al-4V Wire (AM)",
+          "material_class": "Titanium"
+        },
+        {
+          "material_id": "MAT-019",
+          "material_name": "Inconel 718 Powder (AM)",
+          "material_class": "Nickel Superalloy"
+        },
+        {
+          "material_id": "MAT-020",
+          "material_name": "Al-Si10Mg Powder (AM)",
+          "material_class": "Aluminum"
+        }
+      ],
+      "category_distribution": {
+        "Titanium": 0.035,
+        "Nickel Superalloy": 0.035,
+        "Carbon Fiber": 0.03,
+        "Aluminum": 0.035,
+        "Specialty Steel": 0.03,
+        "Ceramic Matrix": 0.02
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "procurement_metrics",
+      "source_table": "procurement_orders",
+      "dimensions": [
+        {
+          "name": "order_date",
+          "expr": "order_date"
+        },
+        {
+          "name": "material_class",
+          "expr": "material_class"
+        },
+        {
+          "name": "supplier_region",
+          "expr": "supplier_region"
+        },
+        {
+          "name": "delivery_status",
+          "expr": "delivery_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_order_value",
+          "expr": "SUM(order_quantity_kg * unit_cost_usd_kg)",
+          "comment": "Total procurement value USD"
+        },
+        {
+          "name": "total_order_quantity_kg",
+          "expr": "SUM(order_quantity_kg)",
+          "comment": "Total ordered quantity in kg"
+        },
+        {
+          "name": "avg_lead_time_weeks",
+          "expr": "AVG(lead_time_weeks)",
+          "comment": "Average quoted lead time in weeks"
+        },
+        {
+          "name": "total_po_count",
+          "expr": "COUNT(DISTINCT po_id)",
+          "comment": "Total purchase orders"
+        },
+        {
+          "name": "late_delivery_count",
+          "expr": "COUNT(DISTINCT CASE WHEN delivery_status = 'Late' THEN po_id END)",
+          "comment": "Number of late deliveries"
+        },
+        {
+          "name": "unique_material_count",
+          "expr": "COUNT(DISTINCT material_id)",
+          "comment": "Number of distinct materials"
+        },
+        {
+          "name": "max_order_quantity_kg",
+          "expr": "MAX(order_quantity_kg)",
+          "comment": "Maximum order quantity kg"
+        }
+      ]
+    },
+    {
+      "view_name": "supply_position_metrics",
+      "source_table": "supply_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "material_class",
+          "expr": "material_class"
+        },
+        {
+          "name": "at_risk_flag",
+          "expr": "at_risk_flag"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_on_hand_kg",
+          "expr": "SUM(on_hand_kg)",
+          "comment": "Total on-hand inventory in kg"
+        },
+        {
+          "name": "avg_days_of_supply",
+          "expr": "AVG(days_of_supply)",
+          "comment": "Average days of supply"
+        },
+        {
+          "name": "critical_material_count",
+          "expr": "COUNT(DISTINCT CASE WHEN at_risk_flag = 'Critical' THEN material_id END)",
+          "comment": "Number of materials in critical supply"
+        },
+        {
+          "name": "total_committed_kg",
+          "expr": "SUM(committed_kg)",
+          "comment": "Total committed inventory in kg"
+        },
+        {
+          "name": "snapshot_count",
+          "expr": "COUNT(DISTINCT snapshot_id)",
+          "comment": "Total snapshots"
+        },
+        {
+          "name": "total_safety_stock_kg",
+          "expr": "SUM(safety_stock_kg)",
+          "comment": "Total safety stock kg"
+        },
+        {
+          "name": "max_on_hand_kg",
+          "expr": "MAX(on_hand_kg)",
+          "comment": "Maximum on hand kg"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The procurement_metrics view (source: procurement_orders) has dimensions: order_date, material_class, supplier_region, delivery_status. Measures: total_order_value, total_order_quantity_kg, avg_lead_time_weeks, total_po_count, late_delivery_count. The supply_position_metrics view (source: supply_snapshots) has dimensions: snapshot_date, material_class, at_risk_flag. Measures: total_on_hand_kg, avg_days_of_supply, critical_material_count, total_committed_kg, snapshot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. material_id, material_name).",
+  "sample_questions": [
+    "What is the monthly trend in late delivery count?",
+    "How has unique total pos changed over time?",
+    "What is the monthly trend in unique materials?",
+    "How has highest order quantity kg changed over time?",
+    "What is the monthly trend in critical material count?",
+    "How has unique snapshots changed over time?",
+    "What is the monthly trend in highest on hand kg?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique materials?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(unique_material_count) AS unique_material_count",
+        "FROM {fqn}.procurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has highest order quantity kg changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(max_order_quantity_kg) AS max_order_quantity_kg",
+        "FROM {fqn}.procurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest on hand kg?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_on_hand_kg) AS max_on_hand_kg",
+        "FROM {fqn}.supply_position_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total order quantity in kilograms break down by material identifier for 'On Time' records?",
+      "sql_lines": [
+        "SELECT material_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
+        "FROM {fqn}.procurement_orders",
+        "WHERE delivery_status = 'On Time' GROUP BY material_id ORDER BY total_order_quantity_kg DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total on-hand inventory in kg over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(on_hand_kg) AS total_on_hand_kg",
+        "FROM {fqn}.supply_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average supplier on-time delivery rate changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(on_time_delivery_pct) AS avg_on_time_delivery_pct",
+        "FROM {fqn}.supply_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has late delivery count changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(late_delivery_count) AS late_delivery_count",
+        "FROM {fqn}.procurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "procurement_orders.delivery_status = 'Late'",
+        "display_name": "late deliveries",
+        "synonyms": [
+          "overdue POs",
+          "late orders"
+        ],
+        "instruction": "Filter for late delivery purchase orders."
+      },
+      {
+        "sql": "supply_snapshots.at_risk_flag = 'Critical'",
+        "display_name": "critical supply",
+        "synonyms": [
+          "at-risk materials",
+          "supply shortage"
+        ],
+        "instruction": "Filter for materials in critical supply status."
+      },
+      {
+        "sql": "supply_kpi_monthly.single_source_flag = 'Yes'",
+        "display_name": "single-source materials",
+        "synonyms": [
+          "sole source",
+          "single supplier"
+        ],
+        "instruction": "Filter for materials with single-source risk."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "order_month",
+        "sql": "DATE_TRUNC('month', procurement_orders.order_date)",
+        "display_name": "order month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "available_inventory_kg",
+        "sql": "supply_snapshots.on_hand_kg - supply_snapshots.committed_kg",
+        "display_name": "available inventory kg",
+        "synonyms": [
+          "free stock",
+          "unallocated"
+        ]
+      },
+      {
+        "alias": "po_value_usd",
+        "sql": "procurement_orders.order_quantity_kg * procurement_orders.unit_cost_usd_kg",
+        "display_name": "PO value USD",
+        "synonyms": [
+          "order value",
+          "line value"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_procurement_value",
+        "sql": "SUM(procurement_orders.order_quantity_kg * procurement_orders.unit_cost_usd_kg)",
+        "display_name": "total procurement value",
+        "synonyms": [
+          "spend",
+          "procurement cost"
+        ]
+      },
+      {
+        "alias": "avg_lead_time_weeks",
+        "sql": "AVG(procurement_orders.lead_time_weeks)",
+        "display_name": "average lead time weeks",
+        "synonyms": [
+          "delivery lead time"
+        ]
+      },
+      {
+        "alias": "avg_days_of_supply",
+        "sql": "AVG(supply_snapshots.days_of_supply)",
+        "display_name": "average days of supply",
+        "synonyms": [
+          "DOS",
+          "inventory coverage"
+        ]
+      },
+      {
+        "alias": "total_on_hand_kg",
+        "sql": "SUM(supply_snapshots.on_hand_kg)",
+        "display_name": "total on-hand inventory kg",
+        "synonyms": [
+          "stock on hand",
+          "available inventory"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in late delivery count?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(late_delivery_count) AS late_delivery_count",
+        "FROM {fqn}.procurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has unique total pos changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_po_count) AS total_po_count",
+        "FROM {fqn}.procurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in critical material count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(critical_material_count) AS critical_material_count",
+        "FROM {fqn}.supply_position_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique snapshots changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(snapshot_count) AS snapshot_count",
+        "FROM {fqn}.supply_position_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top material identifier by total order quantity in kilograms?",
+      "sql_lines": [
+        "SELECT material_id, SUM(order_quantity_kg) AS total_order_quantity_kg",
+        "FROM {fqn}.procurement_orders",
+        "GROUP BY material_id ORDER BY total_order_quantity_kg DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of supply snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.supply_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.supply_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

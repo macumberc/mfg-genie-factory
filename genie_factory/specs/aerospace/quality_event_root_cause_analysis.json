@@ -1,0 +1,937 @@
+{
+  "company_name": "AeroQuality Corp",
+  "industry": "Aerospace",
+  "use_case": "Aerospace quality event tracking and root cause analysis",
+  "space_title": "AeroQuality Corp - Quality Event Root Cause Analysis 🔍",
+  "space_description": "Quality analytics for AeroQuality Corp. Ask about non-conformance reports, inspection findings, root cause trends, corrective actions, and escape rates across 20 aerospace components and 6 manufacturing processes.",
+  "schema_basename": "aerospace_quality_rca",
+  "tables": [
+    {
+      "table_name": "quality_events",
+      "description": "Individual quality event records including non-conformances, escapes, and customer complaints with severity and root cause classification.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique quality event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.component_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date quality event was reported",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "component_id",
+          "sql_type": "STRING",
+          "comment": "Component part number",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_name",
+          "sql_type": "STRING",
+          "comment": "Component descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_class",
+          "sql_type": "STRING",
+          "comment": "Component class: Structural, Engine, Avionics, Landing Gear, Interior, Hydraulic",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_area",
+          "sql_type": "STRING",
+          "comment": "Manufacturing process: Machining, Composites, Assembly, Heat Treatment, Surface Treatment, Testing",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Machining' WHEN {status_noise} < 0.40 THEN 'Composites' WHEN {status_noise} < 0.58 THEN 'Assembly' WHEN {status_noise} < 0.72 THEN 'Heat Treatment' WHEN {status_noise} < 0.86 THEN 'Surface Treatment' ELSE 'Testing' END"
+        },
+        {
+          "name": "event_type",
+          "sql_type": "STRING",
+          "comment": "Event type: Non-Conformance, Escape, Customer Complaint, Audit Finding",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Non-Conformance' WHEN {status_noise} < 0.70 THEN 'Escape' WHEN {status_noise} < 0.88 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Critical, Major, Minor, Observation",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.30 THEN 'Major' WHEN {status_noise} < 0.70 THEN 'Minor' ELSE 'Observation' END"
+        },
+        {
+          "name": "root_cause",
+          "sql_type": "STRING",
+          "comment": "Root cause: Tooling Wear, Operator Error, Material Defect, Process Drift, Design Gap, Supplier Quality, Environmental, Unknown",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Tooling Wear' WHEN {status_noise} < 0.28 THEN 'Operator Error' WHEN {status_noise} < 0.40 THEN 'Material Defect' WHEN {status_noise} < 0.52 THEN 'Process Drift' WHEN {status_noise} < 0.62 THEN 'Design Gap' WHEN {status_noise} < 0.75 THEN 'Supplier Quality' WHEN {status_noise} < 0.85 THEN 'Environmental' ELSE 'Unknown' END"
+        },
+        {
+          "name": "cost_of_quality_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cost of quality (rework, scrap, warranty) in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 99500.0), 2)"
+        },
+        {
+          "name": "days_to_closure",
+          "sql_type": "INT",
+          "comment": "Days from event to closure",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 89) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Structural": {
+          "3,4,9,10": 0.05
+        },
+        "Engine": {
+          "6,7": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "component_id": "PN-4001",
+          "component_name": "Wing Spar Cap",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4002",
+          "component_name": "Fuselage Frame Section",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4003",
+          "component_name": "Horizontal Stabilizer",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4004",
+          "component_name": "Fan Blade Set",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4005",
+          "component_name": "Turbine Disk",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4006",
+          "component_name": "Combustor Liner",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4007",
+          "component_name": "Flight Control Computer",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4008",
+          "component_name": "Navigation Display Unit",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4009",
+          "component_name": "TCAS Processor",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4010",
+          "component_name": "Main Landing Gear Strut",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4011",
+          "component_name": "Nose Gear Assembly",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4012",
+          "component_name": "Brake Assembly",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4013",
+          "component_name": "Overhead Bin Mechanism",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4014",
+          "component_name": "Seat Track Assembly",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4015",
+          "component_name": "Lavatory Module",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4016",
+          "component_name": "Hydraulic Pump",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4017",
+          "component_name": "Actuator Cylinder",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4018",
+          "component_name": "Pressure Regulator Valve",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4019",
+          "component_name": "Wing Skin Panel",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4020",
+          "component_name": "Engine Nacelle Cowl",
+          "component_class": "Engine"
+        }
+      ],
+      "category_distribution": {
+        "Structural": 0.035,
+        "Engine": 0.04,
+        "Avionics": 0.03,
+        "Landing Gear": 0.03,
+        "Interior": 0.025,
+        "Hydraulic": 0.03
+      }
+    },
+    {
+      "table_name": "inspection_records",
+      "description": "Inspection and audit records with pass/fail results, defect counts, and inspector details.",
+      "columns": [
+        {
+          "name": "inspection_id",
+          "sql_type": "STRING",
+          "comment": "Unique inspection record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('INS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.component_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "inspection_date",
+          "sql_type": "DATE",
+          "comment": "Date of inspection",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "component_id",
+          "sql_type": "STRING",
+          "comment": "Component part number",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_class",
+          "sql_type": "STRING",
+          "comment": "Component class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_area",
+          "sql_type": "STRING",
+          "comment": "Process area inspected",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Machining' WHEN {status_noise} < 0.40 THEN 'Composites' WHEN {status_noise} < 0.58 THEN 'Assembly' WHEN {status_noise} < 0.72 THEN 'Heat Treatment' WHEN {status_noise} < 0.86 THEN 'Surface Treatment' ELSE 'Testing' END"
+        },
+        {
+          "name": "inspection_type",
+          "sql_type": "STRING",
+          "comment": "Inspection type: First Article, In-Process, Final, Receiving, Audit",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'First Article' WHEN {status_noise} < 0.45 THEN 'In-Process' WHEN {status_noise} < 0.70 THEN 'Final' WHEN {status_noise} < 0.85 THEN 'Receiving' ELSE 'Audit' END"
+        },
+        {
+          "name": "units_inspected",
+          "sql_type": "INT",
+          "comment": "Number of units inspected",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 95) AS INT)"
+        },
+        {
+          "name": "defects_found",
+          "sql_type": "INT",
+          "comment": "Number of defects identified",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 8) AS INT)"
+        },
+        {
+          "name": "result",
+          "sql_type": "STRING",
+          "comment": "Overall result: Pass, Conditional, Fail",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Pass' WHEN {status_noise} < 0.88 THEN 'Conditional' ELSE 'Fail' END"
+        },
+        {
+          "name": "cycle_time_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Inspection cycle time in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 7.5), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "component_id": "PN-4001",
+          "component_name": "Wing Spar Cap",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4002",
+          "component_name": "Fuselage Frame Section",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4003",
+          "component_name": "Horizontal Stabilizer",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4004",
+          "component_name": "Fan Blade Set",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4005",
+          "component_name": "Turbine Disk",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4006",
+          "component_name": "Combustor Liner",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4007",
+          "component_name": "Flight Control Computer",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4008",
+          "component_name": "Navigation Display Unit",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4009",
+          "component_name": "TCAS Processor",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4010",
+          "component_name": "Main Landing Gear Strut",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4011",
+          "component_name": "Nose Gear Assembly",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4012",
+          "component_name": "Brake Assembly",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4013",
+          "component_name": "Overhead Bin Mechanism",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4014",
+          "component_name": "Seat Track Assembly",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4015",
+          "component_name": "Lavatory Module",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4016",
+          "component_name": "Hydraulic Pump",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4017",
+          "component_name": "Actuator Cylinder",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4018",
+          "component_name": "Pressure Regulator Valve",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4019",
+          "component_name": "Wing Skin Panel",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4020",
+          "component_name": "Engine Nacelle Cowl",
+          "component_class": "Engine"
+        }
+      ],
+      "category_distribution": {
+        "Structural": 0.035,
+        "Engine": 0.04,
+        "Avionics": 0.03,
+        "Landing Gear": 0.03,
+        "Interior": 0.025,
+        "Hydraulic": 0.03
+      }
+    },
+    {
+      "table_name": "quality_kpi_monthly",
+      "description": "Monthly quality KPIs including defect rates, escape rates, cost of quality, and corrective action closure rates.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.component_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "component_id",
+          "sql_type": "STRING",
+          "comment": "Component part number",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_class",
+          "sql_type": "STRING",
+          "comment": "Component class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "defect_rate_ppm",
+          "sql_type": "DOUBLE",
+          "comment": "Defect rate in parts per million",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 950.0), 1)"
+        },
+        {
+          "name": "escape_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Quality escape rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.1 + ({qty_noise} * 4.9), 2)"
+        },
+        {
+          "name": "cost_of_quality_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly cost of quality in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2000.0 + ({qty_noise} * 48000.0), 2)"
+        },
+        {
+          "name": "corrective_action_closure_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of corrective actions closed on time",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, 60.0 + ({qty_noise} * 38.0)), 2)"
+        },
+        {
+          "name": "first_pass_yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "First pass yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.8, 88.0 + ({qty_noise} * 11.5)), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "component_id": "PN-4001",
+          "component_name": "Wing Spar Cap",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4002",
+          "component_name": "Fuselage Frame Section",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4003",
+          "component_name": "Horizontal Stabilizer",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4004",
+          "component_name": "Fan Blade Set",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4005",
+          "component_name": "Turbine Disk",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4006",
+          "component_name": "Combustor Liner",
+          "component_class": "Engine"
+        },
+        {
+          "component_id": "PN-4007",
+          "component_name": "Flight Control Computer",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4008",
+          "component_name": "Navigation Display Unit",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4009",
+          "component_name": "TCAS Processor",
+          "component_class": "Avionics"
+        },
+        {
+          "component_id": "PN-4010",
+          "component_name": "Main Landing Gear Strut",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4011",
+          "component_name": "Nose Gear Assembly",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4012",
+          "component_name": "Brake Assembly",
+          "component_class": "Landing Gear"
+        },
+        {
+          "component_id": "PN-4013",
+          "component_name": "Overhead Bin Mechanism",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4014",
+          "component_name": "Seat Track Assembly",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4015",
+          "component_name": "Lavatory Module",
+          "component_class": "Interior"
+        },
+        {
+          "component_id": "PN-4016",
+          "component_name": "Hydraulic Pump",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4017",
+          "component_name": "Actuator Cylinder",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4018",
+          "component_name": "Pressure Regulator Valve",
+          "component_class": "Hydraulic"
+        },
+        {
+          "component_id": "PN-4019",
+          "component_name": "Wing Skin Panel",
+          "component_class": "Structural"
+        },
+        {
+          "component_id": "PN-4020",
+          "component_name": "Engine Nacelle Cowl",
+          "component_class": "Engine"
+        }
+      ],
+      "category_distribution": {
+        "Structural": 0.035,
+        "Engine": 0.04,
+        "Avionics": 0.03,
+        "Landing Gear": 0.03,
+        "Interior": 0.025,
+        "Hydraulic": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "quality_events_metrics",
+      "source_table": "quality_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "component_class",
+          "expr": "component_class"
+        },
+        {
+          "name": "event_type",
+          "expr": "event_type"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        },
+        {
+          "name": "root_cause",
+          "expr": "root_cause"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total quality events"
+        },
+        {
+          "name": "total_cost_of_quality",
+          "expr": "SUM(cost_of_quality_usd)",
+          "comment": "Total cost of quality USD"
+        },
+        {
+          "name": "avg_days_to_closure",
+          "expr": "AVG(days_to_closure)",
+          "comment": "Average days to close a quality event"
+        },
+        {
+          "name": "critical_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN severity = 'Critical' THEN event_id END)",
+          "comment": "Number of critical severity events"
+        },
+        {
+          "name": "escape_count",
+          "expr": "COUNT(DISTINCT CASE WHEN event_type = 'Escape' THEN event_id END)",
+          "comment": "Number of quality escapes"
+        },
+        {
+          "name": "unique_component_count",
+          "expr": "COUNT(DISTINCT component_id)",
+          "comment": "Number of distinct components"
+        },
+        {
+          "name": "max_cost_of_quality",
+          "expr": "MAX(cost_of_quality_usd)",
+          "comment": "Maximum cost of quality usd"
+        }
+      ]
+    },
+    {
+      "view_name": "inspection_metrics",
+      "source_table": "inspection_records",
+      "dimensions": [
+        {
+          "name": "inspection_date",
+          "expr": "inspection_date"
+        },
+        {
+          "name": "component_class",
+          "expr": "component_class"
+        },
+        {
+          "name": "inspection_type",
+          "expr": "inspection_type"
+        },
+        {
+          "name": "result",
+          "expr": "result"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_units_inspected",
+          "expr": "SUM(units_inspected)",
+          "comment": "Total units inspected"
+        },
+        {
+          "name": "total_defects_found",
+          "expr": "SUM(defects_found)",
+          "comment": "Total defects found"
+        },
+        {
+          "name": "fail_count",
+          "expr": "COUNT(DISTINCT CASE WHEN result = 'Fail' THEN inspection_id END)",
+          "comment": "Number of failed inspections"
+        },
+        {
+          "name": "total_inspections",
+          "expr": "COUNT(DISTINCT inspection_id)",
+          "comment": "Total inspections performed"
+        },
+        {
+          "name": "avg_cycle_time_hours",
+          "expr": "AVG(cycle_time_hours)",
+          "comment": "Average inspection cycle time in hours"
+        },
+        {
+          "name": "unique_component_count",
+          "expr": "COUNT(DISTINCT component_id)",
+          "comment": "Number of distinct components"
+        },
+        {
+          "name": "max_units_inspected",
+          "expr": "MAX(units_inspected)",
+          "comment": "Maximum units inspected"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, component_class, event_type, severity, root_cause. Measures: total_events, total_cost_of_quality, avg_days_to_closure, critical_event_count, escape_count. The inspection_metrics view (source: inspection_records) has dimensions: inspection_date, component_class, inspection_type, result. Measures: total_units_inspected, total_defects_found, fail_count, total_inspections, avg_cycle_time_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. component_id, component_name).",
+  "sample_questions": [
+    "What is the monthly trend in critical event count?",
+    "How has escape count changed over time?",
+    "What is the monthly trend in unique total eventss?",
+    "How has unique components changed over time?",
+    "What is the monthly trend in fail count?",
+    "How has unique total inspectionss changed over time?",
+    "What is the monthly trend in unique components?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total eventss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique components changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(unique_component_count) AS unique_component_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique components?",
+      "sql_lines": [
+        "SELECT inspection_date, MEASURE(unique_component_count) AS unique_component_count",
+        "FROM {fqn}.inspection_metrics",
+        "GROUP BY ALL",
+        "ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total cost of quality (rework, scrap, warranty) in usd over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
+        "FROM {fqn}.quality_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total number of units inspected over time?",
+      "sql_lines": [
+        "SELECT inspection_date, SUM(units_inspected) AS total_units_inspected",
+        "FROM {fqn}.inspection_records",
+        "GROUP BY inspection_date ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "How has the average defect rate in parts per million changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(defect_rate_ppm) AS avg_defect_rate_ppm",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How does critical event count vary across component classes?",
+      "sql_lines": [
+        "SELECT component_class, MEASURE(critical_event_count) AS critical_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY critical_event_count DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "quality_events.severity = 'Critical'",
+        "display_name": "critical severity",
+        "synonyms": [
+          "critical events",
+          "highest severity"
+        ],
+        "instruction": "Use when filtering for critical-severity quality events."
+      },
+      {
+        "sql": "quality_events.event_type = 'Escape'",
+        "display_name": "quality escapes",
+        "synonyms": [
+          "escaped defects",
+          "customer escapes"
+        ],
+        "instruction": "Use when analyzing defects that escaped to the customer."
+      },
+      {
+        "sql": "inspection_records.result = 'Fail'",
+        "display_name": "failed inspections",
+        "synonyms": [
+          "inspection failures",
+          "rejected lots"
+        ],
+        "instruction": "Use when filtering for failed inspection results."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', quality_events.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month of event",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "defect_rate_per_inspection",
+        "sql": "inspection_records.defects_found / NULLIF(inspection_records.units_inspected, 0)",
+        "display_name": "defect rate per unit",
+        "synonyms": [
+          "defect density",
+          "defects per unit"
+        ]
+      },
+      {
+        "alias": "cost_severity",
+        "sql": "CASE WHEN quality_events.cost_of_quality_usd > 50000 THEN 'High' WHEN quality_events.cost_of_quality_usd > 10000 THEN 'Medium' ELSE 'Low' END",
+        "display_name": "cost severity",
+        "synonyms": [
+          "cost tier",
+          "expense level"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_quality_events",
+        "sql": "COUNT(DISTINCT quality_events.event_id)",
+        "display_name": "total quality events",
+        "synonyms": [
+          "NCR count",
+          "non-conformance count"
+        ]
+      },
+      {
+        "alias": "total_cost_of_quality",
+        "sql": "SUM(quality_events.cost_of_quality_usd)",
+        "display_name": "total cost of quality",
+        "synonyms": [
+          "COQ",
+          "quality cost"
+        ]
+      },
+      {
+        "alias": "total_defects",
+        "sql": "SUM(inspection_records.defects_found)",
+        "display_name": "total defects found",
+        "synonyms": [
+          "defect count",
+          "findings"
+        ]
+      },
+      {
+        "alias": "avg_first_pass_yield",
+        "sql": "AVG(quality_kpi_monthly.first_pass_yield_pct)",
+        "display_name": "average first pass yield",
+        "synonyms": [
+          "FPY",
+          "yield rate"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical event count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(critical_event_count) AS critical_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has escape count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(escape_count) AS escape_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in fail count?",
+      "sql_lines": [
+        "SELECT inspection_date, MEASURE(fail_count) AS fail_count",
+        "FROM {fqn}.inspection_metrics",
+        "GROUP BY ALL",
+        "ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "How has unique total inspectionss changed over time?",
+      "sql_lines": [
+        "SELECT inspection_date, MEASURE(total_inspections) AS total_inspections",
+        "FROM {fqn}.inspection_metrics",
+        "GROUP BY ALL",
+        "ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "What are the top component part number by total cost of quality (rework, scrap, warranty) in usd?",
+      "sql_lines": [
+        "SELECT component_id, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
+        "FROM {fqn}.quality_events",
+        "GROUP BY component_id ORDER BY total_cost_of_quality_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of inspection?",
+      "sql_lines": [
+        "SELECT inspection_date, COUNT(*) AS record_count",
+        "FROM {fqn}.inspection_records",
+        "GROUP BY inspection_date ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

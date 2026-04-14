@@ -1,0 +1,1142 @@
+{
+  "company_name": "SafeDesign Automotive",
+  "industry": "Automotive",
+  "use_case": "Design space exploration and simulation for vehicle safety optimization",
+  "space_title": "SafeDesign - Safety Simulation Analytics 🧪",
+  "space_description": "Safety simulation and design space analytics for SafeDesign Automotive. Ask questions about crash simulation runs, parameter exploration states, simulation KPIs, and safety score trends across 20 vehicle configurations and 5 crash test types.",
+  "schema_basename": "safety_simulation",
+  "tables": [
+    {
+      "table_name": "simulation_runs",
+      "description": "Daily crash simulation runs capturing impact forces, deformation measurements, injury risk scores, and pass/fail outcomes for various crash test configurations.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Unique simulation run identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SIM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.config_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Date the simulation was executed",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "config_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle configuration identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model_name",
+          "sql_type": "STRING",
+          "comment": "Vehicle model being simulated",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "body_type",
+          "sql_type": "STRING",
+          "comment": "Vehicle body type classification",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "crash_test_type",
+          "sql_type": "STRING",
+          "comment": "Type of crash test simulated",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "impact_speed_kmh",
+          "sql_type": "DOUBLE",
+          "comment": "Impact speed in km/h",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + {qty_noise} * 90.0, 1)"
+        },
+        {
+          "name": "peak_deceleration_g",
+          "sql_type": "DOUBLE",
+          "comment": "Peak deceleration in g-force",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + {qty_noise} * 55.0, 2)"
+        },
+        {
+          "name": "cabin_intrusion_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Maximum cabin intrusion in millimeters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 120.0 - 10.0), 1)"
+        },
+        {
+          "name": "injury_risk_score",
+          "sql_type": "DOUBLE",
+          "comment": "Computed injury risk probability 0-1",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(0.95, GREATEST(0.02, 0.25 + ({qty_noise} - 0.5) * 0.50)), 3)"
+        },
+        {
+          "name": "safety_rating",
+          "sql_type": "STRING",
+          "comment": "Overall safety rating outcome",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN '5-Star' WHEN {status_noise} < 0.65 THEN '4-Star' WHEN {status_noise} < 0.85 THEN '3-Star' ELSE '2-Star' END"
+        },
+        {
+          "name": "pass_fail",
+          "sql_type": "STRING",
+          "comment": "Whether the simulation passed regulatory thresholds",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Pass' WHEN {status_noise} < 0.90 THEN 'Marginal' ELSE 'Fail' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Sedan": {
+          "1,2": 0.055,
+          "9,10": 0.06
+        },
+        "SUV": {
+          "3,4": 0.05,
+          "7,8": 0.045
+        },
+        "Truck": {
+          "5,6": 0.04,
+          "11,12": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "config_id": "SD-CFG-001",
+          "model_name": "Guardian Sedan",
+          "body_type": "Sedan",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-002",
+          "model_name": "Guardian Sedan",
+          "body_type": "Sedan",
+          "safety_package": "Standard",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-003",
+          "model_name": "Fortress SUV",
+          "body_type": "SUV",
+          "safety_package": "Advanced",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-004",
+          "model_name": "Fortress SUV",
+          "body_type": "SUV",
+          "safety_package": "Premium",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-005",
+          "model_name": "Ironclad Truck",
+          "body_type": "Truck",
+          "safety_package": "Standard",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-006",
+          "model_name": "Ironclad Truck",
+          "body_type": "Truck",
+          "safety_package": "Advanced",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-007",
+          "model_name": "Shield EV",
+          "body_type": "EV Sedan",
+          "safety_package": "Premium",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-008",
+          "model_name": "Shield EV",
+          "body_type": "EV Sedan",
+          "safety_package": "Advanced",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-009",
+          "model_name": "Rampart Crossover",
+          "body_type": "Crossover",
+          "safety_package": "Standard",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-010",
+          "model_name": "Rampart Crossover",
+          "body_type": "Crossover",
+          "safety_package": "Advanced",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-011",
+          "model_name": "Aegis Wagon",
+          "body_type": "Wagon",
+          "safety_package": "Premium",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-012",
+          "model_name": "Aegis Wagon",
+          "body_type": "Wagon",
+          "safety_package": "Standard",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-013",
+          "model_name": "Sentinel Coupe",
+          "body_type": "Coupe",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-014",
+          "model_name": "Sentinel Coupe",
+          "body_type": "Coupe",
+          "safety_package": "Premium",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-015",
+          "model_name": "Bulwark Van",
+          "body_type": "Van",
+          "safety_package": "Standard",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-016",
+          "model_name": "Bulwark Van",
+          "body_type": "Van",
+          "safety_package": "Advanced",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-017",
+          "model_name": "Fortress SUV Hybrid",
+          "body_type": "SUV",
+          "safety_package": "Premium",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-018",
+          "model_name": "Guardian Sedan Hybrid",
+          "body_type": "Sedan",
+          "safety_package": "Premium",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-019",
+          "model_name": "Titan Pickup",
+          "body_type": "Truck",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-020",
+          "model_name": "Titan Pickup",
+          "body_type": "Truck",
+          "safety_package": "Premium",
+          "crash_test_type": "Full Frontal"
+        }
+      ],
+      "category_distribution": {
+        "Sedan": 0.03,
+        "SUV": 0.035,
+        "Truck": 0.025,
+        "EV Sedan": 0.028,
+        "Crossover": 0.025,
+        "Wagon": 0.02,
+        "Coupe": 0.02,
+        "Van": 0.02
+      }
+    },
+    {
+      "table_name": "parameter_snapshots",
+      "description": "Weekly snapshots of design parameter exploration states, capturing material choices, structural thicknesses, airbag configurations, and resulting safety scores.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique parameter snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.config_id) + 5000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of the parameter snapshot",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', d.dt)"
+        },
+        {
+          "name": "config_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle configuration identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model_name",
+          "sql_type": "STRING",
+          "comment": "Vehicle model being explored",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "body_type",
+          "sql_type": "STRING",
+          "comment": "Vehicle body type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "safety_package",
+          "sql_type": "STRING",
+          "comment": "Safety equipment package level",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "material_type",
+          "sql_type": "STRING",
+          "comment": "Primary structural material used",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'High-Strength Steel' WHEN {status_noise} < 0.50 THEN 'Aluminum Alloy' WHEN {status_noise} < 0.70 THEN 'Carbon Fiber Composite' WHEN {status_noise} < 0.85 THEN 'Boron Steel' ELSE 'Magnesium Alloy' END"
+        },
+        {
+          "name": "structural_thickness_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Average structural panel thickness in mm",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.2 + {qty_noise} * 3.8, 2)"
+        },
+        {
+          "name": "airbag_count",
+          "sql_type": "INT",
+          "comment": "Number of airbags in configuration",
+          "is_dimension": false,
+          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.20 THEN 6 WHEN {status_noise} < 0.50 THEN 8 WHEN {status_noise} < 0.80 THEN 10 ELSE 12 END AS INT)"
+        },
+        {
+          "name": "weight_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Total vehicle weight in kilograms",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1200.0 + {qty_noise} * 1300.0, 1)"
+        },
+        {
+          "name": "composite_safety_score",
+          "sql_type": "DOUBLE",
+          "comment": "Composite safety score 0-100 from parameter combination",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(40.0, 72.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "exploration_status",
+          "sql_type": "STRING",
+          "comment": "Design exploration convergence status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Converged' WHEN {status_noise} < 0.65 THEN 'Exploring' ELSE 'Divergent' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Sedan": {
+          "1,2": 0.045,
+          "9,10": 0.05
+        },
+        "SUV": {
+          "3,4": 0.04,
+          "7,8": 0.045
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "config_id": "SD-CFG-001",
+          "model_name": "Guardian Sedan",
+          "body_type": "Sedan",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-002",
+          "model_name": "Guardian Sedan",
+          "body_type": "Sedan",
+          "safety_package": "Standard",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-003",
+          "model_name": "Fortress SUV",
+          "body_type": "SUV",
+          "safety_package": "Advanced",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-004",
+          "model_name": "Fortress SUV",
+          "body_type": "SUV",
+          "safety_package": "Premium",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-005",
+          "model_name": "Ironclad Truck",
+          "body_type": "Truck",
+          "safety_package": "Standard",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-006",
+          "model_name": "Ironclad Truck",
+          "body_type": "Truck",
+          "safety_package": "Advanced",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-007",
+          "model_name": "Shield EV",
+          "body_type": "EV Sedan",
+          "safety_package": "Premium",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-008",
+          "model_name": "Shield EV",
+          "body_type": "EV Sedan",
+          "safety_package": "Advanced",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-009",
+          "model_name": "Rampart Crossover",
+          "body_type": "Crossover",
+          "safety_package": "Standard",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-010",
+          "model_name": "Rampart Crossover",
+          "body_type": "Crossover",
+          "safety_package": "Advanced",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-011",
+          "model_name": "Aegis Wagon",
+          "body_type": "Wagon",
+          "safety_package": "Premium",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-012",
+          "model_name": "Aegis Wagon",
+          "body_type": "Wagon",
+          "safety_package": "Standard",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-013",
+          "model_name": "Sentinel Coupe",
+          "body_type": "Coupe",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-014",
+          "model_name": "Sentinel Coupe",
+          "body_type": "Coupe",
+          "safety_package": "Premium",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-015",
+          "model_name": "Bulwark Van",
+          "body_type": "Van",
+          "safety_package": "Standard",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-016",
+          "model_name": "Bulwark Van",
+          "body_type": "Van",
+          "safety_package": "Advanced",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-017",
+          "model_name": "Fortress SUV Hybrid",
+          "body_type": "SUV",
+          "safety_package": "Premium",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-018",
+          "model_name": "Guardian Sedan Hybrid",
+          "body_type": "Sedan",
+          "safety_package": "Premium",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-019",
+          "model_name": "Titan Pickup",
+          "body_type": "Truck",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-020",
+          "model_name": "Titan Pickup",
+          "body_type": "Truck",
+          "safety_package": "Premium",
+          "crash_test_type": "Full Frontal"
+        }
+      ],
+      "category_distribution": {
+        "Sedan": 0.03,
+        "SUV": 0.035,
+        "Truck": 0.025,
+        "EV Sedan": 0.028,
+        "Crossover": 0.025,
+        "Wagon": 0.02,
+        "Coupe": 0.02,
+        "Van": 0.02
+      }
+    },
+    {
+      "table_name": "simulation_summary_monthly",
+      "description": "Monthly simulation KPI summaries with forecasted vs actual safety scores, pass rates, and model accuracy tracking.",
+      "columns": [
+        {
+          "name": "summary_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly summary record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SSM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.config_id) + 20000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "summary_month",
+          "sql_type": "DATE",
+          "comment": "Month the summary covers",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "config_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle configuration identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model_name",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "body_type",
+          "sql_type": "STRING",
+          "comment": "Vehicle body type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_safety_score",
+          "sql_type": "DOUBLE",
+          "comment": "Predicted composite safety score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(45.0, 75.0 + ({qty_noise} - 0.5) * 35.0)), 1)"
+        },
+        {
+          "name": "actual_safety_score",
+          "sql_type": "DOUBLE",
+          "comment": "Actual realized composite safety score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(40.0, 75.0 + ({qty_noise} - 0.5) * 40.0 + ({status_noise} - 0.5) * 8.0)), 1)"
+        },
+        {
+          "name": "forecast_error_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Absolute safety score forecast error in pct points",
+          "is_dimension": false,
+          "generation_expr": "ROUND(ABS((75.0 + ({qty_noise} - 0.5) * 35.0) - (75.0 + ({qty_noise} - 0.5) * 40.0 + ({status_noise} - 0.5) * 8.0)), 1)"
+        },
+        {
+          "name": "simulation_model_version",
+          "sql_type": "STRING",
+          "comment": "Safety simulation model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'FEA-v4.0' WHEN {status_noise} < 0.60 THEN 'FEA-v4.1' ELSE 'FEA-v4.2' END"
+        },
+        {
+          "name": "regulatory_compliance",
+          "sql_type": "STRING",
+          "comment": "Regulatory compliance status for the month",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Compliant' WHEN {status_noise} < 0.88 THEN 'Under Review' ELSE 'Non-Compliant' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Sedan": {
+          "9,10,11": 0.055
+        },
+        "SUV": {
+          "1,2,3": 0.05
+        },
+        "Truck": {
+          "5,6,7": 0.045
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "config_id": "SD-CFG-001",
+          "model_name": "Guardian Sedan",
+          "body_type": "Sedan",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-002",
+          "model_name": "Guardian Sedan",
+          "body_type": "Sedan",
+          "safety_package": "Standard",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-003",
+          "model_name": "Fortress SUV",
+          "body_type": "SUV",
+          "safety_package": "Advanced",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-004",
+          "model_name": "Fortress SUV",
+          "body_type": "SUV",
+          "safety_package": "Premium",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-005",
+          "model_name": "Ironclad Truck",
+          "body_type": "Truck",
+          "safety_package": "Standard",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-006",
+          "model_name": "Ironclad Truck",
+          "body_type": "Truck",
+          "safety_package": "Advanced",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-007",
+          "model_name": "Shield EV",
+          "body_type": "EV Sedan",
+          "safety_package": "Premium",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-008",
+          "model_name": "Shield EV",
+          "body_type": "EV Sedan",
+          "safety_package": "Advanced",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-009",
+          "model_name": "Rampart Crossover",
+          "body_type": "Crossover",
+          "safety_package": "Standard",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-010",
+          "model_name": "Rampart Crossover",
+          "body_type": "Crossover",
+          "safety_package": "Advanced",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-011",
+          "model_name": "Aegis Wagon",
+          "body_type": "Wagon",
+          "safety_package": "Premium",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-012",
+          "model_name": "Aegis Wagon",
+          "body_type": "Wagon",
+          "safety_package": "Standard",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-013",
+          "model_name": "Sentinel Coupe",
+          "body_type": "Coupe",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-014",
+          "model_name": "Sentinel Coupe",
+          "body_type": "Coupe",
+          "safety_package": "Premium",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-015",
+          "model_name": "Bulwark Van",
+          "body_type": "Van",
+          "safety_package": "Standard",
+          "crash_test_type": "Side Impact"
+        },
+        {
+          "config_id": "SD-CFG-016",
+          "model_name": "Bulwark Van",
+          "body_type": "Van",
+          "safety_package": "Advanced",
+          "crash_test_type": "Full Frontal"
+        },
+        {
+          "config_id": "SD-CFG-017",
+          "model_name": "Fortress SUV Hybrid",
+          "body_type": "SUV",
+          "safety_package": "Premium",
+          "crash_test_type": "Rollover"
+        },
+        {
+          "config_id": "SD-CFG-018",
+          "model_name": "Guardian Sedan Hybrid",
+          "body_type": "Sedan",
+          "safety_package": "Premium",
+          "crash_test_type": "Rear Impact"
+        },
+        {
+          "config_id": "SD-CFG-019",
+          "model_name": "Titan Pickup",
+          "body_type": "Truck",
+          "safety_package": "Advanced",
+          "crash_test_type": "Frontal Offset"
+        },
+        {
+          "config_id": "SD-CFG-020",
+          "model_name": "Titan Pickup",
+          "body_type": "Truck",
+          "safety_package": "Premium",
+          "crash_test_type": "Full Frontal"
+        }
+      ],
+      "category_distribution": {
+        "Sedan": 0.03,
+        "SUV": 0.035,
+        "Truck": 0.025,
+        "EV Sedan": 0.028,
+        "Crossover": 0.025,
+        "Wagon": 0.02,
+        "Coupe": 0.02,
+        "Van": 0.02
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "simulation_runs_metrics",
+      "source_table": "simulation_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "model_name",
+          "expr": "model_name"
+        },
+        {
+          "name": "body_type",
+          "expr": "body_type"
+        },
+        {
+          "name": "crash_test_type",
+          "expr": "crash_test_type"
+        },
+        {
+          "name": "safety_rating",
+          "expr": "safety_rating"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_simulation_runs",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total crash simulation runs executed"
+        },
+        {
+          "name": "avg_injury_risk_score",
+          "expr": "AVG(injury_risk_score)",
+          "comment": "Average injury risk probability"
+        },
+        {
+          "name": "avg_peak_deceleration",
+          "expr": "AVG(peak_deceleration_g)",
+          "comment": "Average peak deceleration in g-force"
+        },
+        {
+          "name": "fail_count",
+          "expr": "COUNT(DISTINCT CASE WHEN pass_fail = 'Fail' THEN run_id END)",
+          "comment": "Simulation runs that failed regulatory thresholds"
+        },
+        {
+          "name": "five_star_count",
+          "expr": "COUNT(DISTINCT CASE WHEN safety_rating = '5-Star' THEN run_id END)",
+          "comment": "Simulation runs achieving 5-star rating"
+        },
+        {
+          "name": "total_impact_speed_kmh",
+          "expr": "SUM(impact_speed_kmh)",
+          "comment": "Total impact speed kmh"
+        },
+        {
+          "name": "total_cabin_intrusion_mm",
+          "expr": "SUM(cabin_intrusion_mm)",
+          "comment": "Total cabin intrusion mm"
+        },
+        {
+          "name": "unique_config_count",
+          "expr": "COUNT(DISTINCT config_id)",
+          "comment": "Number of distinct configs"
+        },
+        {
+          "name": "max_impact_speed_kmh",
+          "expr": "MAX(impact_speed_kmh)",
+          "comment": "Maximum impact speed kmh"
+        }
+      ]
+    },
+    {
+      "view_name": "parameter_snapshots_metrics",
+      "source_table": "parameter_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "model_name",
+          "expr": "model_name"
+        },
+        {
+          "name": "body_type",
+          "expr": "body_type"
+        },
+        {
+          "name": "material_type",
+          "expr": "material_type"
+        },
+        {
+          "name": "exploration_status",
+          "expr": "exploration_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_composite_safety_score",
+          "expr": "AVG(composite_safety_score)",
+          "comment": "Average composite safety score"
+        },
+        {
+          "name": "avg_structural_thickness",
+          "expr": "AVG(structural_thickness_mm)",
+          "comment": "Average structural panel thickness in mm"
+        },
+        {
+          "name": "avg_vehicle_weight",
+          "expr": "AVG(weight_kg)",
+          "comment": "Average vehicle weight in kg"
+        },
+        {
+          "name": "converged_count",
+          "expr": "COUNT(DISTINCT CASE WHEN exploration_status = 'Converged' THEN snapshot_id END)",
+          "comment": "Parameter snapshots that have converged"
+        },
+        {
+          "name": "total_snapshots",
+          "expr": "COUNT(DISTINCT snapshot_id)",
+          "comment": "Total parameter exploration snapshots"
+        },
+        {
+          "name": "unique_config_count",
+          "expr": "COUNT(DISTINCT config_id)",
+          "comment": "Number of distinct configs"
+        },
+        {
+          "name": "max_structural_thickness_mm",
+          "expr": "MAX(structural_thickness_mm)",
+          "comment": "Maximum structural thickness mm"
+        },
+        {
+          "name": "total_airbag_count",
+          "expr": "SUM(airbag_count)",
+          "comment": "Total airbag count"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, model_name, body_type, crash_test_type, safety_rating. Measures: total_simulation_runs, avg_injury_risk_score, avg_peak_deceleration, fail_count, five_star_count. The parameter_snapshots_metrics view (source: parameter_snapshots) has dimensions: snapshot_date, model_name, body_type, material_type, exploration_status. Measures: avg_composite_safety_score, avg_structural_thickness, avg_vehicle_weight, converged_count, total_snapshots. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. config_id, safety_package).",
+  "sample_questions": [
+    "What is the monthly trend in fail count?",
+    "How has five star count changed over time?",
+    "What is the monthly trend in unique total simulation runss?",
+    "How has unique configs changed over time?",
+    "What is the monthly trend in converged count?",
+    "How has unique total snapshotss changed over time?",
+    "What is the monthly trend in unique configs?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total simulation runss?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_simulation_runs) AS total_simulation_runs",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique configs changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(unique_config_count) AS unique_config_count",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique configs?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_config_count) AS unique_config_count",
+        "FROM {fqn}.parameter_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total impact speed in km/h over time?",
+      "sql_lines": [
+        "SELECT run_date, SUM(impact_speed_kmh) AS total_impact_speed_kmh",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY run_date ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total average structural panel thickness in mm over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(structural_thickness_mm) AS total_structural_thickness_mm",
+        "FROM {fqn}.parameter_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average predicted composite safety score 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT summary_month, AVG(forecasted_safety_score) AS avg_forecasted_safety_score",
+        "FROM {fqn}.simulation_summary_monthly",
+        "GROUP BY summary_month ORDER BY summary_month"
+      ]
+    },
+    {
+      "question": "How has total cabin intrusion mm changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_cabin_intrusion_mm) AS total_cabin_intrusion_mm",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "simulation_runs.pass_fail = 'Fail'",
+        "display_name": "failed simulations",
+        "synonyms": [
+          "failed tests",
+          "failed crash tests",
+          "non-passing runs"
+        ],
+        "instruction": "Use when analyzing simulation runs that did not meet regulatory safety thresholds."
+      },
+      {
+        "sql": "parameter_snapshots.exploration_status = 'Converged'",
+        "display_name": "converged designs",
+        "synonyms": [
+          "finalized designs",
+          "stable parameters",
+          "optimized configurations"
+        ],
+        "instruction": "Use when filtering for design parameter sets that have converged to an optimal state."
+      },
+      {
+        "sql": "simulation_runs.run_date >= ADD_MONTHS(CURRENT_DATE(), -90)",
+        "display_name": "last 90 days",
+        "synonyms": [
+          "recent simulations",
+          "past 3 months",
+          "trailing quarter"
+        ],
+        "instruction": "Use to restrict simulation analysis to the most recent 90-day window."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
+        "display_name": "simulation month",
+        "synonyms": [
+          "month of simulation",
+          "run month"
+        ]
+      },
+      {
+        "alias": "safety_forecast_gap",
+        "sql": "simulation_summary_monthly.forecasted_safety_score - simulation_summary_monthly.actual_safety_score",
+        "display_name": "safety forecast gap",
+        "synonyms": [
+          "forecast vs actual safety",
+          "prediction error"
+        ]
+      },
+      {
+        "alias": "weight_to_safety_ratio",
+        "sql": "parameter_snapshots.weight_kg / NULLIF(parameter_snapshots.composite_safety_score, 0)",
+        "display_name": "weight to safety ratio",
+        "synonyms": [
+          "mass efficiency",
+          "weight per safety point"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_simulation_runs",
+        "sql": "COUNT(DISTINCT simulation_runs.run_id)",
+        "display_name": "total simulation runs",
+        "synonyms": [
+          "run count",
+          "simulation count",
+          "test count"
+        ]
+      },
+      {
+        "alias": "avg_injury_risk",
+        "sql": "AVG(simulation_runs.injury_risk_score)",
+        "display_name": "average injury risk",
+        "synonyms": [
+          "mean injury risk",
+          "risk score",
+          "injury probability"
+        ]
+      },
+      {
+        "alias": "avg_safety_score",
+        "sql": "AVG(parameter_snapshots.composite_safety_score)",
+        "display_name": "average safety score",
+        "synonyms": [
+          "mean safety score",
+          "composite safety",
+          "safety rating"
+        ]
+      },
+      {
+        "alias": "fail_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN simulation_runs.pass_fail = 'Fail' THEN simulation_runs.run_id END)",
+        "display_name": "failed simulation count",
+        "synonyms": [
+          "failure count",
+          "failed runs",
+          "non-passing count"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in fail count?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(fail_count) AS fail_count",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has five star count changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(five_star_count) AS five_star_count",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in converged count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(converged_count) AS converged_count",
+        "FROM {fqn}.parameter_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique total snapshotss changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_snapshots) AS total_snapshots",
+        "FROM {fqn}.parameter_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top vehicle configuration identifier by total impact speed in km/h?",
+      "sql_lines": [
+        "SELECT config_id, SUM(impact_speed_kmh) AS total_impact_speed_kmh",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY config_id ORDER BY total_impact_speed_kmh DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average composite safety score 0-100 from parameter combination by vehicle model being explored?",
+      "sql_lines": [
+        "SELECT model_name, AVG(composite_safety_score) AS avg_composite_safety_score",
+        "FROM {fqn}.parameter_snapshots",
+        "GROUP BY model_name ORDER BY avg_composite_safety_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month the summary covers?",
+      "sql_lines": [
+        "SELECT summary_month, COUNT(*) AS record_count",
+        "FROM {fqn}.simulation_summary_monthly",
+        "GROUP BY summary_month ORDER BY summary_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,977 @@
+{
+  "company_name": "ChemFlow Industries",
+  "industry": "Chemicals & Materials",
+  "use_case": "Chemical product demand forecasting and inventory optimization",
+  "space_title": "ChemFlow Industries - Demand Forecasting & Inventory Optimization 📈",
+  "space_description": "Demand and inventory analytics for ChemFlow Industries. Ask about chemical product orders, demand forecasts, inventory positions, safety stock levels, and forecast accuracy across 20 chemical products and 6 manufacturing plants.",
+  "schema_basename": "chem_demand_forecast",
+  "tables": [
+    {
+      "table_name": "chemical_orders",
+      "description": "Daily chemical product order records with quantities, pricing, customer segments, plant origins, and fulfillment status.",
+      "columns": [
+        {
+          "name": "order_id",
+          "sql_type": "STRING",
+          "comment": "Unique order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ORD-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "order_date",
+          "sql_type": "DATE",
+          "comment": "Date order was placed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Chemical product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Chemical product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category: Solvents, Polymers, Specialty Chemicals, Coatings, Adhesives",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "plant_id",
+          "sql_type": "STRING",
+          "comment": "Manufacturing plant identifier",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END"
+        },
+        {
+          "name": "customer_segment",
+          "sql_type": "STRING",
+          "comment": "Customer segment: Industrial, Automotive, Construction, Consumer, Pharmaceutical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Industrial' WHEN {status_noise} < 0.45 THEN 'Automotive' WHEN {status_noise} < 0.65 THEN 'Construction' WHEN {status_noise} < 0.82 THEN 'Consumer' ELSE 'Pharmaceutical' END"
+        },
+        {
+          "name": "order_quantity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Order quantity in kilograms",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100 + {qty_noise} * 9900, 1)"
+        },
+        {
+          "name": "unit_price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Price per kilogram in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.50 + {qty_noise} * 47.50, 2)"
+        },
+        {
+          "name": "order_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total order value in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((100 + {qty_noise} * 9900) * (2.50 + {qty_noise} * 47.50), 2)"
+        },
+        {
+          "name": "fulfillment_status",
+          "sql_type": "STRING",
+          "comment": "Fulfillment status: Fulfilled, Partial, Backorder, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Cancelled' WHEN {status_noise} < 0.08 THEN 'Backorder' WHEN {status_noise} < 0.15 THEN 'Partial' ELSE 'Fulfilled' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Solvents": {
+          "6,7,8": 0.055,
+          "11,12": 0.05
+        },
+        "Polymers": {
+          "3,4,5": 0.05,
+          "9,10": 0.045
+        },
+        "Specialty Chemicals": {
+          "1,2": 0.04
+        },
+        "Coatings": {
+          "3,4,5,6": 0.055
+        },
+        "Adhesives": {
+          "9,10,11": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "CF-001",
+          "product_name": "Industrial Acetone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-002",
+          "product_name": "Methyl Ethyl Ketone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-003",
+          "product_name": "Isopropyl Alcohol",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-004",
+          "product_name": "Toluene Grade A",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-005",
+          "product_name": "Polyethylene HD Resin",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-006",
+          "product_name": "Polypropylene Copolymer",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-007",
+          "product_name": "PVC Suspension Resin",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-008",
+          "product_name": "Nylon 6 Pellets",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-009",
+          "product_name": "Titanium Dioxide Pigment",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-010",
+          "product_name": "Sodium Hydroxide 50%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-011",
+          "product_name": "Hydrochloric Acid 32%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-012",
+          "product_name": "Sulfuric Acid 98%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-013",
+          "product_name": "Epoxy Primer Coat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-014",
+          "product_name": "Polyurethane Topcoat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-015",
+          "product_name": "Acrylic Latex Paint",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-016",
+          "product_name": "Marine Anti-Fouling Coat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-017",
+          "product_name": "Structural Epoxy Adhesive",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-018",
+          "product_name": "Cyanoacrylate Instant Bond",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-019",
+          "product_name": "Hot Melt Packaging Adhesive",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-020",
+          "product_name": "Silicone Sealant Pro",
+          "product_category": "Adhesives"
+        }
+      ],
+      "category_distribution": {
+        "Solvents": 0.04,
+        "Polymers": 0.035,
+        "Specialty Chemicals": 0.03,
+        "Coatings": 0.03,
+        "Adhesives": 0.025
+      }
+    },
+    {
+      "table_name": "demand_forecasts",
+      "description": "Monthly demand forecasts vs actuals by product and plant, including model version and accuracy metrics.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique forecast record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FCST-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Month being forecasted",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Chemical product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "plant_id",
+          "sql_type": "STRING",
+          "comment": "Manufacturing plant",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Forecast model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v4.0' WHEN {status_noise} < 0.66 THEN 'v4.1' ELSE 'v4.2' END"
+        },
+        {
+          "name": "forecasted_quantity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Predicted demand quantity in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000 + {qty_noise} * 95000, 1)"
+        },
+        {
+          "name": "actual_quantity_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Actual demand quantity in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND((5000 + {qty_noise} * 95000) * (0.85 + {qty_noise} * 0.30), 1)"
+        },
+        {
+          "name": "forecasted_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Predicted revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((5000 + {qty_noise} * 95000) * (5.0 + {qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "actual_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((5000 + {qty_noise} * 95000) * (5.0 + {qty_noise} * 25.0) * (0.88 + {qty_noise} * 0.24), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Solvents": {
+          "6,7,8": 0.055
+        },
+        "Polymers": {
+          "3,4,5": 0.05
+        },
+        "Specialty Chemicals": {
+          "1,2": 0.04
+        },
+        "Coatings": {
+          "3,4,5,6": 0.055
+        },
+        "Adhesives": {
+          "9,10,11": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "CF-001",
+          "product_name": "Industrial Acetone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-002",
+          "product_name": "Methyl Ethyl Ketone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-003",
+          "product_name": "Isopropyl Alcohol",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-004",
+          "product_name": "Toluene Grade A",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-005",
+          "product_name": "Polyethylene HD Resin",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-006",
+          "product_name": "Polypropylene Copolymer",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-007",
+          "product_name": "PVC Suspension Resin",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-008",
+          "product_name": "Nylon 6 Pellets",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-009",
+          "product_name": "Titanium Dioxide Pigment",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-010",
+          "product_name": "Sodium Hydroxide 50%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-011",
+          "product_name": "Hydrochloric Acid 32%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-012",
+          "product_name": "Sulfuric Acid 98%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-013",
+          "product_name": "Epoxy Primer Coat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-014",
+          "product_name": "Polyurethane Topcoat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-015",
+          "product_name": "Acrylic Latex Paint",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-016",
+          "product_name": "Marine Anti-Fouling Coat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-017",
+          "product_name": "Structural Epoxy Adhesive",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-018",
+          "product_name": "Cyanoacrylate Instant Bond",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-019",
+          "product_name": "Hot Melt Packaging Adhesive",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-020",
+          "product_name": "Silicone Sealant Pro",
+          "product_category": "Adhesives"
+        }
+      ],
+      "category_distribution": {
+        "Solvents": 0.04,
+        "Polymers": 0.035,
+        "Specialty Chemicals": 0.03,
+        "Coatings": 0.03,
+        "Adhesives": 0.025
+      }
+    },
+    {
+      "table_name": "inventory_positions",
+      "description": "Weekly inventory position snapshots per product and plant, including on-hand stock, safety stock levels, days of supply, and reorder status.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique inventory snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('INV-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Weekly snapshot date",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Chemical product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Chemical product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "plant_id",
+          "sql_type": "STRING",
+          "comment": "Plant where inventory is held",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END"
+        },
+        {
+          "name": "on_hand_qty_kg",
+          "sql_type": "DOUBLE",
+          "comment": "On-hand inventory in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1000 + {qty_noise} * 49000, 1)"
+        },
+        {
+          "name": "safety_stock_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Safety stock level in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500 + {qty_noise} * 9500, 1)"
+        },
+        {
+          "name": "days_of_supply",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated days of supply remaining",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5 + {qty_noise} * 55, 1)"
+        },
+        {
+          "name": "reorder_status",
+          "sql_type": "STRING",
+          "comment": "Reorder status: Adequate, Low, Critical, Reorder Placed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.15 THEN 'Reorder Placed' WHEN {status_noise} < 0.30 THEN 'Low' ELSE 'Adequate' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "CF-001",
+          "product_name": "Industrial Acetone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-002",
+          "product_name": "Methyl Ethyl Ketone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-003",
+          "product_name": "Isopropyl Alcohol",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-004",
+          "product_name": "Toluene Grade A",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "CF-005",
+          "product_name": "Polyethylene HD Resin",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-006",
+          "product_name": "Polypropylene Copolymer",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-007",
+          "product_name": "PVC Suspension Resin",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-008",
+          "product_name": "Nylon 6 Pellets",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "CF-009",
+          "product_name": "Titanium Dioxide Pigment",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-010",
+          "product_name": "Sodium Hydroxide 50%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-011",
+          "product_name": "Hydrochloric Acid 32%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-012",
+          "product_name": "Sulfuric Acid 98%",
+          "product_category": "Specialty Chemicals"
+        },
+        {
+          "product_id": "CF-013",
+          "product_name": "Epoxy Primer Coat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-014",
+          "product_name": "Polyurethane Topcoat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-015",
+          "product_name": "Acrylic Latex Paint",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-016",
+          "product_name": "Marine Anti-Fouling Coat",
+          "product_category": "Coatings"
+        },
+        {
+          "product_id": "CF-017",
+          "product_name": "Structural Epoxy Adhesive",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-018",
+          "product_name": "Cyanoacrylate Instant Bond",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-019",
+          "product_name": "Hot Melt Packaging Adhesive",
+          "product_category": "Adhesives"
+        },
+        {
+          "product_id": "CF-020",
+          "product_name": "Silicone Sealant Pro",
+          "product_category": "Adhesives"
+        }
+      ],
+      "category_distribution": {
+        "Solvents": 0.04,
+        "Polymers": 0.035,
+        "Specialty Chemicals": 0.03,
+        "Coatings": 0.03,
+        "Adhesives": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "chemical_orders_metrics",
+      "source_table": "chemical_orders",
+      "dimensions": [
+        {
+          "name": "order_date",
+          "expr": "order_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "customer_segment",
+          "expr": "customer_segment"
+        },
+        {
+          "name": "plant_id",
+          "expr": "plant_id"
+        },
+        {
+          "name": "fulfillment_status",
+          "expr": "fulfillment_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_order_value_usd",
+          "expr": "SUM(order_value_usd)",
+          "comment": "Total order value in USD"
+        },
+        {
+          "name": "total_order_quantity_kg",
+          "expr": "SUM(order_quantity_kg)",
+          "comment": "Total order quantity in kg"
+        },
+        {
+          "name": "fulfilled_order_count",
+          "expr": "COUNT(DISTINCT CASE WHEN fulfillment_status = 'Fulfilled' THEN order_id END)",
+          "comment": "Count of fulfilled orders"
+        },
+        {
+          "name": "total_order_count",
+          "expr": "COUNT(DISTINCT order_id)",
+          "comment": "Total orders placed"
+        },
+        {
+          "name": "backorder_count",
+          "expr": "COUNT(DISTINCT CASE WHEN fulfillment_status = 'Backorder' THEN order_id END)",
+          "comment": "Count of backorders"
+        },
+        {
+          "name": "avg_unit_price_usd",
+          "expr": "AVG(unit_price_usd)",
+          "comment": "Average price per kg in USD"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_order_quantity_kg",
+          "expr": "MAX(order_quantity_kg)",
+          "comment": "Maximum order quantity kg"
+        }
+      ]
+    },
+    {
+      "view_name": "demand_forecasts_metrics",
+      "source_table": "demand_forecasts",
+      "dimensions": [
+        {
+          "name": "forecast_month",
+          "expr": "forecast_month"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "plant_id",
+          "expr": "plant_id"
+        },
+        {
+          "name": "model_version",
+          "expr": "model_version"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_forecasted_qty_kg",
+          "expr": "SUM(forecasted_quantity_kg)",
+          "comment": "Total forecasted demand in kg"
+        },
+        {
+          "name": "total_actual_qty_kg",
+          "expr": "SUM(actual_quantity_kg)",
+          "comment": "Total actual demand in kg"
+        },
+        {
+          "name": "total_forecasted_revenue",
+          "expr": "SUM(forecasted_revenue_usd)",
+          "comment": "Total forecasted revenue in USD"
+        },
+        {
+          "name": "total_actual_revenue",
+          "expr": "SUM(actual_revenue_usd)",
+          "comment": "Total actual revenue in USD"
+        },
+        {
+          "name": "forecast_record_count",
+          "expr": "COUNT(DISTINCT forecast_id)",
+          "comment": "Number of forecast records"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_forecasted_quantity_kg",
+          "expr": "MAX(forecasted_quantity_kg)",
+          "comment": "Maximum forecasted quantity kg"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The chemical_orders_metrics view (source: chemical_orders) has dimensions: order_date, product_category, customer_segment, plant_id, fulfillment_status. Measures: total_order_value_usd, total_order_quantity_kg, fulfilled_order_count, total_order_count, backorder_count, avg_unit_price_usd. The demand_forecasts_metrics view (source: demand_forecasts) has dimensions: forecast_month, product_category, plant_id, model_version. Measures: total_forecasted_qty_kg, total_actual_qty_kg, total_forecasted_revenue, total_actual_revenue, forecast_record_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "sample_questions": [
+    "What is the monthly trend in fulfilled order count?",
+    "How has backorder count changed over time?",
+    "What is the monthly trend in unique total orders?",
+    "How has unique products changed over time?",
+    "What is the monthly trend in unique forecast records?",
+    "How has unique products changed over time?",
+    "What is the monthly trend in highest forecasted quantity kg?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total orders?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_order_count) AS total_order_count",
+        "FROM {fqn}.chemical_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has unique products changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(unique_product_count) AS unique_product_count",
+        "FROM {fqn}.chemical_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has average price per kg in usd changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(avg_unit_price_usd) AS avg_unit_price_usd",
+        "FROM {fqn}.chemical_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How does backorder count vary across product categories?",
+      "sql_lines": [
+        "SELECT product_category, MEASURE(backorder_count) AS backorder_count",
+        "FROM {fqn}.chemical_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY backorder_count DESC"
+      ]
+    },
+    {
+      "question": "How does total order quantity in kilograms break down by chemical product identifier for 'Backorder' records?",
+      "sql_lines": [
+        "SELECT product_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
+        "FROM {fqn}.chemical_orders",
+        "WHERE fulfillment_status = 'Backorder' GROUP BY product_id ORDER BY total_order_quantity_kg DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total predicted demand quantity in kg over time?",
+      "sql_lines": [
+        "SELECT forecast_month, SUM(forecasted_quantity_kg) AS total_forecasted_quantity_kg",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How many distinct unique inventory snapshot id are there per product category?",
+      "sql_lines": [
+        "SELECT product_category, COUNT(DISTINCT snapshot_id) AS distinct_count",
+        "FROM {fqn}.inventory_positions",
+        "GROUP BY product_category ORDER BY distinct_count DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "fulfillment_status = 'Fulfilled'",
+        "display_name": "fulfilled orders",
+        "synonyms": [
+          "completed orders",
+          "shipped orders"
+        ],
+        "instruction": "Use when calculating fulfillment rate or revenue from completed orders."
+      },
+      {
+        "sql": "reorder_status IN ('Critical', 'Low')",
+        "display_name": "low inventory",
+        "synonyms": [
+          "stockout risk",
+          "below safety stock",
+          "inventory alert"
+        ],
+        "instruction": "Use when identifying products at risk of stockout."
+      },
+      {
+        "sql": "product_category = 'Polymers'",
+        "display_name": "polymer products",
+        "synonyms": [
+          "resins",
+          "plastics",
+          "polymer resins"
+        ],
+        "instruction": "Use when filtering to polymer product category only."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "order_month",
+        "sql": "DATE_TRUNC('month', order_date)",
+        "display_name": "order month",
+        "synonyms": [
+          "month",
+          "booking month"
+        ]
+      },
+      {
+        "alias": "forecast_error_kg",
+        "sql": "actual_quantity_kg - forecasted_quantity_kg",
+        "display_name": "forecast error (kg)",
+        "synonyms": [
+          "demand forecast miss",
+          "prediction error"
+        ]
+      },
+      {
+        "alias": "inventory_coverage_ratio",
+        "sql": "on_hand_qty_kg / NULLIF(safety_stock_kg, 0)",
+        "display_name": "inventory coverage ratio",
+        "synonyms": [
+          "stock coverage",
+          "safety stock ratio"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_order_value",
+        "sql": "SUM(order_value_usd)",
+        "display_name": "total order value",
+        "synonyms": [
+          "revenue",
+          "order revenue",
+          "total sales"
+        ]
+      },
+      {
+        "alias": "fulfillment_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN fulfillment_status = 'Fulfilled' THEN order_id END) * 1.0 / NULLIF(COUNT(DISTINCT order_id), 0)",
+        "display_name": "fulfillment rate",
+        "synonyms": [
+          "fill rate",
+          "order completion rate"
+        ]
+      },
+      {
+        "alias": "avg_days_of_supply",
+        "sql": "AVG(days_of_supply)",
+        "display_name": "average days of supply",
+        "synonyms": [
+          "DOS",
+          "inventory days",
+          "supply coverage"
+        ]
+      },
+      {
+        "alias": "forecast_quantity_accuracy",
+        "sql": "SUM(actual_quantity_kg) * 1.0 / NULLIF(SUM(forecasted_quantity_kg), 0)",
+        "display_name": "forecast quantity accuracy",
+        "synonyms": [
+          "forecast accuracy",
+          "demand accuracy"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in fulfilled order count?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(fulfilled_order_count) AS fulfilled_order_count",
+        "FROM {fqn}.chemical_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has backorder count changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(backorder_count) AS backorder_count",
+        "FROM {fqn}.chemical_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique forecast records?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(forecast_record_count) AS forecast_record_count",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest forecasted quantity kg?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(max_forecasted_quantity_kg) AS max_forecasted_quantity_kg",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What are the top chemical product identifier by total order quantity in kilograms?",
+      "sql_lines": [
+        "SELECT product_id, SUM(order_quantity_kg) AS total_order_quantity_kg",
+        "FROM {fqn}.chemical_orders",
+        "GROUP BY product_id ORDER BY total_order_quantity_kg DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per month being forecasted?",
+      "sql_lines": [
+        "SELECT forecast_month, COUNT(*) AS record_count",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How many records are there per weekly snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.inventory_positions",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

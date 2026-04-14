@@ -1,0 +1,902 @@
+{
+  "company_name": "QualityRefine Analytics",
+  "industry": "Oil & Gas Refining",
+  "use_case": "Quality event root cause analysis for refinery product quality and process deviations",
+  "space_title": "QualityRefine Analytics - Quality Event Root Cause Analysis 🔍",
+  "space_description": "Quality analytics for QualityRefine Analytics. Ask questions about quality events, off-spec product batches, root cause analysis, and quality KPIs across 20 process units spanning crude distillation, catalytic cracking, reforming, and blending operations.",
+  "schema_basename": "og_refining_quality",
+  "tables": [
+    {
+      "table_name": "quality_events",
+      "description": "Quality deviation events including off-spec product, process upsets, and contamination incidents.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique quality event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date of the quality event",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Process unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_name",
+          "sql_type": "STRING",
+          "comment": "Process unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_grade",
+          "sql_type": "STRING",
+          "comment": "Product grade: Premium Gasoline, Regular Gasoline, Diesel, Jet Fuel, Fuel Oil, Naphtha",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "deviation_type",
+          "sql_type": "STRING",
+          "comment": "Type: Off-Spec, Process Upset, Contamination, Yield Loss, Temperature Excursion",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Off-Spec' WHEN {status_noise} < 0.50 THEN 'Process Upset' WHEN {status_noise} < 0.65 THEN 'Contamination' WHEN {status_noise} < 0.82 THEN 'Yield Loss' ELSE 'Temperature Excursion' END"
+        },
+        {
+          "name": "root_cause",
+          "sql_type": "STRING",
+          "comment": "Root cause category",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Catalyst Degradation' WHEN {status_noise} < 0.28 THEN 'Feedstock Variation' WHEN {status_noise} < 0.42 THEN 'Equipment Malfunction' WHEN {status_noise} < 0.56 THEN 'Operator Error' WHEN {status_noise} < 0.68 THEN 'Process Control Drift' WHEN {status_noise} < 0.80 THEN 'Fouling Accumulation' WHEN {status_noise} < 0.90 THEN 'Corrosion Product' ELSE 'Unknown' END"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Minor, Moderate, Major, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Minor' WHEN {status_noise} < 0.70 THEN 'Moderate' WHEN {status_noise} < 0.90 THEN 'Major' ELSE 'Critical' END"
+        },
+        {
+          "name": "off_spec_volume_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Off-spec product volume in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 5000.0), 0)"
+        },
+        {
+          "name": "financial_impact_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Financial impact in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, {qty_noise} * 250000.0), 2)"
+        },
+        {
+          "name": "resolution_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Time to resolution in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.5, 1.0 + {qty_noise} * 48.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Crude Distillation Unit 1": {
+          "3,4,9,10": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "unit_id": "QR-CDU-01",
+          "unit_name": "Crude Distillation Unit 1",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-CDU-02",
+          "unit_name": "Crude Distillation Unit 2",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-VDU-03",
+          "unit_name": "Vacuum Distillation Unit",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-FCC-04",
+          "unit_name": "FCC Unit",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-FCC-05",
+          "unit_name": "FCC Gasoline Treater",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-HDS-06",
+          "unit_name": "Hydrodesulfurization Unit",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-HDS-07",
+          "unit_name": "Naphtha Hydrotreater",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-REF-08",
+          "unit_name": "Catalytic Reformer",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-REF-09",
+          "unit_name": "Isomerization Unit",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-ALK-10",
+          "unit_name": "Alkylation Unit",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-COK-11",
+          "unit_name": "Coker Unit",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-MRX-12",
+          "unit_name": "Merox Treating Unit",
+          "product_grade": "Jet Fuel"
+        },
+        {
+          "unit_id": "QR-BLD-13",
+          "unit_name": "Gasoline Blending",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-BLD-14",
+          "unit_name": "Diesel Blending",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-BLD-15",
+          "unit_name": "Jet Fuel Blending",
+          "product_grade": "Jet Fuel"
+        },
+        {
+          "unit_id": "QR-SRU-16",
+          "unit_name": "Sulfur Recovery Unit",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-UTL-17",
+          "unit_name": "Hydrogen Plant",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-UTL-18",
+          "unit_name": "Amine Treating Unit",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-STR-19",
+          "unit_name": "Storage & Loading",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-LAB-20",
+          "unit_name": "Quality Lab Operations",
+          "product_grade": "Premium Gasoline"
+        }
+      ],
+      "category_distribution": {
+        "Naphtha": 0.05,
+        "Diesel": 0.06,
+        "Regular Gasoline": 0.055,
+        "Premium Gasoline": 0.06,
+        "Jet Fuel": 0.05,
+        "Fuel Oil": 0.045
+      }
+    },
+    {
+      "table_name": "batch_records",
+      "description": "Production batch records with quality test results and process parameters.",
+      "columns": [
+        {
+          "name": "batch_id",
+          "sql_type": "STRING",
+          "comment": "Unique batch identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "batch_date",
+          "sql_type": "DATE",
+          "comment": "Date of the batch",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Process unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "unit_name",
+          "sql_type": "STRING",
+          "comment": "Process unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_grade",
+          "sql_type": "STRING",
+          "comment": "Product grade",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "volume_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Batch volume in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, 2000.0 + {qty_noise} * 18000.0), 0)"
+        },
+        {
+          "name": "octane_rating",
+          "sql_type": "DOUBLE",
+          "comment": "Octane rating (gasoline only)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(85.0, 87.0 + {qty_noise} * 8.0), 1)"
+        },
+        {
+          "name": "sulfur_ppm",
+          "sql_type": "DOUBLE",
+          "comment": "Sulfur content in PPM",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 5.0 + {qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "pass_fail",
+          "sql_type": "STRING",
+          "comment": "Quality status: Pass, Fail, Marginal",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.78 THEN 'Pass' WHEN {status_noise} < 0.92 THEN 'Marginal' ELSE 'Fail' END"
+        },
+        {
+          "name": "yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Product yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(60.0, 85.0 + ({qty_noise} - 0.5) * 25.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "unit_id": "QR-CDU-01",
+          "unit_name": "Crude Distillation Unit 1",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-CDU-02",
+          "unit_name": "Crude Distillation Unit 2",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-VDU-03",
+          "unit_name": "Vacuum Distillation Unit",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-FCC-04",
+          "unit_name": "FCC Unit",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-FCC-05",
+          "unit_name": "FCC Gasoline Treater",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-HDS-06",
+          "unit_name": "Hydrodesulfurization Unit",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-HDS-07",
+          "unit_name": "Naphtha Hydrotreater",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-REF-08",
+          "unit_name": "Catalytic Reformer",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-REF-09",
+          "unit_name": "Isomerization Unit",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-ALK-10",
+          "unit_name": "Alkylation Unit",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-COK-11",
+          "unit_name": "Coker Unit",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-MRX-12",
+          "unit_name": "Merox Treating Unit",
+          "product_grade": "Jet Fuel"
+        },
+        {
+          "unit_id": "QR-BLD-13",
+          "unit_name": "Gasoline Blending",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-BLD-14",
+          "unit_name": "Diesel Blending",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-BLD-15",
+          "unit_name": "Jet Fuel Blending",
+          "product_grade": "Jet Fuel"
+        },
+        {
+          "unit_id": "QR-SRU-16",
+          "unit_name": "Sulfur Recovery Unit",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-UTL-17",
+          "unit_name": "Hydrogen Plant",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-UTL-18",
+          "unit_name": "Amine Treating Unit",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-STR-19",
+          "unit_name": "Storage & Loading",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-LAB-20",
+          "unit_name": "Quality Lab Operations",
+          "product_grade": "Premium Gasoline"
+        }
+      ],
+      "category_distribution": {
+        "Naphtha": 0.05,
+        "Diesel": 0.06,
+        "Regular Gasoline": 0.055,
+        "Premium Gasoline": 0.06,
+        "Jet Fuel": 0.05,
+        "Fuel Oil": 0.045
+      }
+    },
+    {
+      "table_name": "quality_kpi_monthly",
+      "description": "Monthly quality KPIs including first-pass yield, off-spec rates, and quality cost metrics.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.unit_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "First day of the KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "unit_id",
+          "sql_type": "STRING",
+          "comment": "Process unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_grade",
+          "sql_type": "STRING",
+          "comment": "Product grade",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "first_pass_yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "First-pass quality yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(70.0, 90.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+        },
+        {
+          "name": "off_spec_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Off-spec product rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(15.0, GREATEST(0.5, 3.0 + ({qty_noise} - 0.5) * 8.0)), 2)"
+        },
+        {
+          "name": "quality_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total quality-related costs in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5000.0, {qty_noise} * 500000.0), 2)"
+        },
+        {
+          "name": "total_batches",
+          "sql_type": "INT",
+          "comment": "Total batches produced",
+          "is_dimension": false,
+          "generation_expr": "CAST(20 + FLOOR({qty_noise} * 80) AS INT)"
+        },
+        {
+          "name": "rework_batches",
+          "sql_type": "INT",
+          "comment": "Batches requiring rework",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 10) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "unit_id": "QR-CDU-01",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-CDU-02",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-VDU-03",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-FCC-04",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-FCC-05",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-HDS-06",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-HDS-07",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-REF-08",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-REF-09",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-ALK-10",
+          "product_grade": "Premium Gasoline"
+        },
+        {
+          "unit_id": "QR-COK-11",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-MRX-12",
+          "product_grade": "Jet Fuel"
+        },
+        {
+          "unit_id": "QR-BLD-13",
+          "product_grade": "Regular Gasoline"
+        },
+        {
+          "unit_id": "QR-BLD-14",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-BLD-15",
+          "product_grade": "Jet Fuel"
+        },
+        {
+          "unit_id": "QR-SRU-16",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-UTL-17",
+          "product_grade": "Naphtha"
+        },
+        {
+          "unit_id": "QR-UTL-18",
+          "product_grade": "Fuel Oil"
+        },
+        {
+          "unit_id": "QR-STR-19",
+          "product_grade": "Diesel"
+        },
+        {
+          "unit_id": "QR-LAB-20",
+          "product_grade": "Premium Gasoline"
+        }
+      ],
+      "category_distribution": {
+        "Naphtha": 0.05,
+        "Diesel": 0.06,
+        "Regular Gasoline": 0.055,
+        "Premium Gasoline": 0.06,
+        "Jet Fuel": 0.05,
+        "Fuel Oil": 0.045
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "quality_events_metrics",
+      "source_table": "quality_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "unit_id",
+          "expr": "unit_id"
+        },
+        {
+          "name": "product_grade",
+          "expr": "product_grade"
+        },
+        {
+          "name": "deviation_type",
+          "expr": "deviation_type"
+        },
+        {
+          "name": "root_cause",
+          "expr": "root_cause"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total quality events"
+        },
+        {
+          "name": "total_off_spec_bbl",
+          "expr": "SUM(off_spec_volume_bbl)",
+          "comment": "Total off-spec volume in barrels"
+        },
+        {
+          "name": "total_financial_impact_usd",
+          "expr": "SUM(financial_impact_usd)",
+          "comment": "Total financial impact in USD"
+        },
+        {
+          "name": "avg_resolution_hours",
+          "expr": "AVG(resolution_hours)",
+          "comment": "Average resolution time in hours"
+        },
+        {
+          "name": "max_off_spec_volume_bbl",
+          "expr": "MAX(off_spec_volume_bbl)",
+          "comment": "Maximum off spec volume bbl"
+        }
+      ]
+    },
+    {
+      "view_name": "batch_records_metrics",
+      "source_table": "batch_records",
+      "dimensions": [
+        {
+          "name": "batch_date",
+          "expr": "batch_date"
+        },
+        {
+          "name": "unit_id",
+          "expr": "unit_id"
+        },
+        {
+          "name": "product_grade",
+          "expr": "product_grade"
+        },
+        {
+          "name": "pass_fail",
+          "expr": "pass_fail"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_volume_bbl",
+          "expr": "SUM(volume_bbl)",
+          "comment": "Total batch volume in barrels"
+        },
+        {
+          "name": "avg_octane",
+          "expr": "AVG(octane_rating)",
+          "comment": "Average octane rating"
+        },
+        {
+          "name": "avg_sulfur_ppm",
+          "expr": "AVG(sulfur_ppm)",
+          "comment": "Average sulfur content PPM"
+        },
+        {
+          "name": "avg_yield_pct",
+          "expr": "AVG(yield_pct)",
+          "comment": "Average product yield percentage"
+        },
+        {
+          "name": "total_batches",
+          "expr": "COUNT(DISTINCT batch_id)",
+          "comment": "Total batches"
+        },
+        {
+          "name": "max_volume_bbl",
+          "expr": "MAX(volume_bbl)",
+          "comment": "Maximum volume bbl"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, unit_id, product_grade, deviation_type, root_cause, severity. Measures: total_events, total_off_spec_bbl, total_financial_impact_usd, avg_resolution_hours. The batch_records_metrics view (source: batch_records) has dimensions: batch_date, unit_id, product_grade, pass_fail. Measures: total_volume_bbl, avg_octane, avg_sulfur_ppm, avg_yield_pct, total_batches. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total eventss?",
+    "How has highest off spec volume bbl changed over time?",
+    "What is the monthly trend in total off-spec volume in barrels?",
+    "How has total financial impact in usd changed over time?",
+    "What is the monthly trend in unique total batchess?",
+    "How has highest volume bbl changed over time?",
+    "What is the monthly trend in total batch volume in barrels?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total off-spec volume in barrels?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_off_spec_bbl) AS total_off_spec_bbl",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has total financial impact in usd changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_financial_impact_usd) AS total_financial_impact_usd",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total batch volume in barrels?",
+      "sql_lines": [
+        "SELECT batch_date, MEASURE(total_volume_bbl) AS total_volume_bbl",
+        "FROM {fqn}.batch_records_metrics",
+        "GROUP BY ALL",
+        "ORDER BY batch_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total off-spec product volume in barrels over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
+        "FROM {fqn}.quality_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total batch volume in barrels over time?",
+      "sql_lines": [
+        "SELECT batch_date, SUM(volume_bbl) AS total_volume_bbl",
+        "FROM {fqn}.batch_records",
+        "GROUP BY batch_date ORDER BY batch_date"
+      ]
+    },
+    {
+      "question": "How has the average first-pass quality yield percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(first_pass_yield_pct) AS avg_first_pass_yield_pct",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "Which unit ids have the highest total off-spec volume in barrels?",
+      "sql_lines": [
+        "SELECT unit_id, MEASURE(total_off_spec_bbl) AS total_off_spec_bbl",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_off_spec_bbl DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "severity IN ('Major', 'Critical')",
+        "display_name": "major quality events",
+        "synonyms": [
+          "critical quality",
+          "serious deviations"
+        ],
+        "instruction": "Filter to major and critical quality events."
+      },
+      {
+        "sql": "pass_fail = 'Fail'",
+        "display_name": "failed batches",
+        "synonyms": [
+          "off-spec",
+          "rejected"
+        ],
+        "instruction": "Filter batch records to failed quality tests."
+      },
+      {
+        "sql": "sulfur_ppm > 15",
+        "display_name": "high sulfur",
+        "synonyms": [
+          "sulfur exceedance",
+          "high S content"
+        ],
+        "instruction": "Filter to batches with sulfur above 15 PPM."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "fail_rate_pct",
+        "sql": "ROUND(100.0 * COUNT(DISTINCT CASE WHEN batch_records.pass_fail = 'Fail' THEN batch_records.batch_id END) / NULLIF(COUNT(DISTINCT batch_records.batch_id), 0), 2)",
+        "display_name": "fail rate",
+        "synonyms": [
+          "rejection rate",
+          "off-spec rate"
+        ]
+      },
+      {
+        "alias": "avg_resolution_time",
+        "sql": "AVG(quality_events.resolution_hours)",
+        "display_name": "average resolution time",
+        "synonyms": [
+          "MTTR",
+          "fix time"
+        ]
+      },
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', quality_events.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_quality_impact",
+        "sql": "SUM(quality_events.financial_impact_usd)",
+        "display_name": "total quality impact",
+        "synonyms": [
+          "quality cost",
+          "financial impact"
+        ]
+      },
+      {
+        "alias": "total_off_spec_volume",
+        "sql": "SUM(quality_events.off_spec_volume_bbl)",
+        "display_name": "total off-spec volume",
+        "synonyms": [
+          "off-spec barrels",
+          "rejected volume"
+        ]
+      },
+      {
+        "alias": "total_batch_volume",
+        "sql": "SUM(batch_records.volume_bbl)",
+        "display_name": "total batch volume",
+        "synonyms": [
+          "production volume",
+          "throughput"
+        ]
+      },
+      {
+        "alias": "avg_sulfur",
+        "sql": "AVG(batch_records.sulfur_ppm)",
+        "display_name": "average sulfur",
+        "synonyms": [
+          "sulfur content",
+          "S content"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total eventss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest off spec volume bbl changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_off_spec_volume_bbl) AS max_off_spec_volume_bbl",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique total batchess?",
+      "sql_lines": [
+        "SELECT batch_date, MEASURE(total_batches) AS total_batches",
+        "FROM {fqn}.batch_records_metrics",
+        "GROUP BY ALL",
+        "ORDER BY batch_date"
+      ]
+    },
+    {
+      "question": "How has highest volume bbl changed over time?",
+      "sql_lines": [
+        "SELECT batch_date, MEASURE(max_volume_bbl) AS max_volume_bbl",
+        "FROM {fqn}.batch_records_metrics",
+        "GROUP BY ALL",
+        "ORDER BY batch_date"
+      ]
+    },
+    {
+      "question": "What are the top process unit identifier by total off-spec product volume in barrels?",
+      "sql_lines": [
+        "SELECT unit_id, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
+        "FROM {fqn}.quality_events",
+        "GROUP BY unit_id ORDER BY total_off_spec_volume_bbl DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average product yield percentage by process unit name?",
+      "sql_lines": [
+        "SELECT unit_name, AVG(yield_pct) AS avg_yield_pct",
+        "FROM {fqn}.batch_records",
+        "GROUP BY unit_name ORDER BY avg_yield_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

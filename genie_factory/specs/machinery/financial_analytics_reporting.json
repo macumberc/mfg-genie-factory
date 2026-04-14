@@ -1,0 +1,971 @@
+{
+  "company_name": "LedgerView Industrial",
+  "industry": "Machinery",
+  "use_case": "Financial analytics and management reporting",
+  "space_title": "LedgerView Industrial - Financial Analytics 💰",
+  "space_description": "Financial analytics for LedgerView. Ask about budget variance, cost center performance, revenue trends, and financial KPIs across 20 cost centers.",
+  "schema_basename": "mach_financial_analytics",
+  "tables": [
+    {
+      "table_name": "financial_transactions",
+      "description": "General ledger financial transactions with account codes and amounts.",
+      "columns": [
+        {
+          "name": "txn_id",
+          "sql_type": "STRING",
+          "comment": "Unique transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FT-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "txn_date",
+          "sql_type": "DATE",
+          "comment": "Transaction posting date",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_type",
+          "sql_type": "STRING",
+          "comment": "Cost center type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "account_category",
+          "sql_type": "STRING",
+          "comment": "Account: Revenue, COGS, Opex, Capex, Other",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Revenue' WHEN {status_noise} < 0.45 THEN 'COGS' WHEN {status_noise} < 0.72 THEN 'Opex' WHEN {status_noise} < 0.88 THEN 'Capex' ELSE 'Other' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 99500.0), 2)"
+        },
+        {
+          "name": "debit_credit",
+          "sql_type": "STRING",
+          "comment": "Debit or Credit",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Debit' ELSE 'Credit' END"
+        },
+        {
+          "name": "fiscal_period",
+          "sql_type": "STRING",
+          "comment": "Fiscal period",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FY26-P', LPAD(CAST(MONTH(dt) AS STRING), 2, '0'))"
+        },
+        {
+          "name": "gl_account",
+          "sql_type": "STRING",
+          "comment": "GL account code",
+          "is_dimension": false,
+          "generation_expr": "CONCAT(CAST(4000 + FLOOR({qty_noise} * 4000) AS STRING))"
+        },
+        {
+          "name": "posting_status",
+          "sql_type": "STRING",
+          "comment": "Status: Posted, Pending, Reversed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.88 THEN 'Posted' WHEN {status_noise} < 0.96 THEN 'Pending' ELSE 'Reversed' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Manufacturing": {
+          "9,10,11": 0.06,
+          "3,4": 0.05
+        },
+        "R&D": {
+          "1,2,3": 0.055
+        },
+        "Sales & Marketing": {
+          "6,7,8": 0.06,
+          "11,12": 0.065
+        },
+        "G&A": {
+          "1,2": 0.05
+        },
+        "IT": {
+          "4,5": 0.05,
+          "10,11": 0.055
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "cost_center_id": "LV-CC-001",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-002",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-003",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-004",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-005",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-006",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-007",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-008",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-009",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-010",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-011",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-012",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-013",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-014",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-015",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-016",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-017",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-018",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-019",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-020",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        }
+      ],
+      "category_distribution": {
+        "Manufacturing": 0.035,
+        "R&D": 0.03,
+        "Sales & Marketing": 0.03,
+        "G&A": 0.028,
+        "IT": 0.025
+      }
+    },
+    {
+      "table_name": "budget_snapshots",
+      "description": "Budget vs actual snapshots by cost center and period.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BS-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_type",
+          "sql_type": "STRING",
+          "comment": "Cost center type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "budget_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budgeted amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 450000.0), 2)"
+        },
+        {
+          "name": "actual_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual spend in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40000.0 + ({qty_noise} * 510000.0), 2)"
+        },
+        {
+          "name": "variance_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budget variance (negative = over budget)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-30000.0 + ({qty_noise} * 60000.0), 2)"
+        },
+        {
+          "name": "variance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Variance percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-15.0 + ({qty_noise} * 30.0), 2)"
+        },
+        {
+          "name": "forecast_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Latest forecast amount",
+          "is_dimension": false,
+          "generation_expr": "ROUND(45000.0 + ({qty_noise} * 480000.0), 2)"
+        },
+        {
+          "name": "headcount",
+          "sql_type": "INT",
+          "comment": "Headcount for the cost center",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 95) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Manufacturing": {
+          "9,10,11": 0.06,
+          "3,4": 0.05
+        },
+        "R&D": {
+          "1,2,3": 0.055
+        },
+        "Sales & Marketing": {
+          "6,7,8": 0.06,
+          "11,12": 0.065
+        },
+        "G&A": {
+          "1,2": 0.05
+        },
+        "IT": {
+          "4,5": 0.05,
+          "10,11": 0.055
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "cost_center_id": "LV-CC-001",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-002",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-003",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-004",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-005",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-006",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-007",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-008",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-009",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-010",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-011",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-012",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-013",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-014",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-015",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-016",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-017",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-018",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-019",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-020",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        }
+      ],
+      "category_distribution": {
+        "Manufacturing": 0.035,
+        "R&D": 0.03,
+        "Sales & Marketing": 0.03,
+        "G&A": 0.028,
+        "IT": 0.025
+      }
+    },
+    {
+      "table_name": "financial_kpi_monthly",
+      "description": "Monthly financial KPIs including margin, EBITDA, and efficiency ratios.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FK-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month of KPI record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_type",
+          "sql_type": "STRING",
+          "comment": "Cost center type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "gross_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Gross margin percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25.0 + ({qty_noise} * 30.0), 2)"
+        },
+        {
+          "name": "operating_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Operating margin percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly revenue",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100000.0 + ({qty_noise} * 900000.0), 2)"
+        },
+        {
+          "name": "total_expense_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total expenses",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80000.0 + ({qty_noise} * 720000.0), 2)"
+        },
+        {
+          "name": "cost_per_headcount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cost per headcount",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000.0 + ({qty_noise} * 10000.0), 2)"
+        },
+        {
+          "name": "budget_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Budget utilization percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60.0 + ({qty_noise} * 45.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Manufacturing": {
+          "9,10,11": 0.06,
+          "3,4": 0.05
+        },
+        "R&D": {
+          "1,2,3": 0.055
+        },
+        "Sales & Marketing": {
+          "6,7,8": 0.06,
+          "11,12": 0.065
+        },
+        "G&A": {
+          "1,2": 0.05
+        },
+        "IT": {
+          "4,5": 0.05,
+          "10,11": 0.055
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "cost_center_id": "LV-CC-001",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-002",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-003",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-004",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-005",
+          "cost_center_type": "Manufacturing",
+          "division": "Industrial"
+        },
+        {
+          "cost_center_id": "LV-CC-006",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-007",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-008",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-009",
+          "cost_center_type": "R&D",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-010",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-011",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-012",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-013",
+          "cost_center_type": "Sales & Marketing",
+          "division": "Commercial"
+        },
+        {
+          "cost_center_id": "LV-CC-014",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-015",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-016",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-017",
+          "cost_center_type": "G&A",
+          "division": "Corporate"
+        },
+        {
+          "cost_center_id": "LV-CC-018",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-019",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        },
+        {
+          "cost_center_id": "LV-CC-020",
+          "cost_center_type": "IT",
+          "division": "Technology"
+        }
+      ],
+      "category_distribution": {
+        "Manufacturing": 0.035,
+        "R&D": 0.03,
+        "Sales & Marketing": 0.03,
+        "G&A": 0.028,
+        "IT": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "financial_txn_metrics",
+      "source_table": "financial_transactions",
+      "dimensions": [
+        {
+          "name": "txn_date",
+          "expr": "txn_date"
+        },
+        {
+          "name": "cost_center_type",
+          "expr": "cost_center_type"
+        },
+        {
+          "name": "account_category",
+          "expr": "account_category"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_amount",
+          "expr": "SUM(amount_usd)",
+          "comment": "Total transaction amount"
+        },
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT txn_id)",
+          "comment": "Total transaction count"
+        },
+        {
+          "name": "total_revenue",
+          "expr": "SUM(CASE WHEN account_category = 'Revenue' THEN amount_usd ELSE 0 END)",
+          "comment": "Total revenue"
+        },
+        {
+          "name": "total_opex",
+          "expr": "SUM(CASE WHEN account_category = 'Opex' THEN amount_usd ELSE 0 END)",
+          "comment": "Total operating expenses"
+        },
+        {
+          "name": "unique_cost_center_count",
+          "expr": "COUNT(DISTINCT cost_center_id)",
+          "comment": "Number of distinct cost centers"
+        },
+        {
+          "name": "open_financial_transaction_count",
+          "expr": "COUNT(DISTINCT CASE WHEN posting_status = 'Open' THEN txn_id END)",
+          "comment": "Count where posting status is Open"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        }
+      ]
+    },
+    {
+      "view_name": "financial_kpi_metrics",
+      "source_table": "financial_kpi_monthly",
+      "dimensions": [
+        {
+          "name": "kpi_month",
+          "expr": "kpi_month"
+        },
+        {
+          "name": "cost_center_type",
+          "expr": "cost_center_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_gross_margin",
+          "expr": "AVG(gross_margin_pct)",
+          "comment": "Average gross margin percentage"
+        },
+        {
+          "name": "avg_operating_margin",
+          "expr": "AVG(operating_margin_pct)",
+          "comment": "Average operating margin percentage"
+        },
+        {
+          "name": "total_revenue",
+          "expr": "SUM(revenue_usd)",
+          "comment": "Total monthly revenue"
+        },
+        {
+          "name": "total_expenses",
+          "expr": "SUM(total_expense_usd)",
+          "comment": "Total expenses"
+        },
+        {
+          "name": "total_cost_per_headcount",
+          "expr": "SUM(cost_per_headcount_usd)",
+          "comment": "Total cost per headcount usd"
+        },
+        {
+          "name": "total_budget_utilization_percent",
+          "expr": "SUM(budget_utilization_pct)",
+          "comment": "Total budget utilization pct"
+        },
+        {
+          "name": "unique_cost_center_count",
+          "expr": "COUNT(DISTINCT cost_center_id)",
+          "comment": "Number of distinct cost centers"
+        },
+        {
+          "name": "max_gross_margin_percent",
+          "expr": "MAX(gross_margin_pct)",
+          "comment": "Maximum gross margin pct"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_txn_metrics view (source: financial_transactions) has dimensions: txn_date, cost_center_type, account_category. Measures: total_amount, total_transactions, total_revenue, total_opex. The financial_kpi_metrics view (source: financial_kpi_monthly) has dimensions: kpi_month, cost_center_type. Measures: avg_gross_margin, avg_operating_margin, total_revenue, total_expenses. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id).",
+  "sample_questions": [
+    "What is the monthly trend in total monthly revenue?",
+    "How has total opex count changed over time?",
+    "What is the monthly trend in open posting status count?",
+    "How has unique total transactionss changed over time?",
+    "What is the monthly trend in unique cost centers?",
+    "How has highest gross margin percent changed over time?",
+    "What is the monthly trend in total monthly revenue?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in open posting status count?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(open_financial_transaction_count) AS open_financial_transaction_count",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "How has unique total transactionss changed over time?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total budget utilization pct?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_budget_utilization_percent) AS total_budget_utilization_percent",
+        "FROM {fqn}.financial_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "Rank cost center types by total cost per headcount usd",
+      "sql_lines": [
+        "SELECT cost_center_type, MEASURE(total_cost_per_headcount) AS total_cost_per_headcount",
+        "FROM {fqn}.financial_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_cost_per_headcount DESC"
+      ]
+    },
+    {
+      "question": "How does total transaction amount in usd break down by cost center identifier for 'Posted' records?",
+      "sql_lines": [
+        "SELECT cost_center_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions",
+        "WHERE posting_status = 'Posted' GROUP BY cost_center_id ORDER BY total_amount_usd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total budgeted amount in usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(budget_amount_usd) AS total_budget_amount_usd",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average gross margin percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(gross_margin_pct) AS avg_gross_margin_pct",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "budget_snapshots.variance_usd < 0",
+        "display_name": "over budget",
+        "synonyms": [
+          "budget overrun",
+          "negative variance"
+        ],
+        "instruction": "Use when identifying cost centers exceeding budget."
+      },
+      {
+        "sql": "financial_transactions.account_category = 'Revenue'",
+        "display_name": "revenue transactions",
+        "synonyms": [
+          "sales",
+          "income"
+        ],
+        "instruction": "Use when analyzing revenue line items."
+      },
+      {
+        "sql": "financial_transactions.posting_status = 'Posted'",
+        "display_name": "posted transactions",
+        "synonyms": [
+          "confirmed",
+          "final"
+        ],
+        "instruction": "Use when filtering to finalized GL entries."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "txn_month",
+        "sql": "DATE_TRUNC('month', financial_transactions.txn_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "variance_pct",
+        "sql": "100.0 * budget_snapshots.variance_usd / NULLIF(budget_snapshots.budget_amount_usd, 0)",
+        "display_name": "variance percentage",
+        "synonyms": [
+          "budget deviation"
+        ]
+      },
+      {
+        "alias": "margin_spread",
+        "sql": "financial_kpi_monthly.gross_margin_pct - financial_kpi_monthly.operating_margin_pct",
+        "display_name": "margin spread",
+        "synonyms": [
+          "opex drag",
+          "overhead impact"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(CASE WHEN financial_transactions.account_category = 'Revenue' THEN financial_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total revenue",
+        "synonyms": [
+          "sales",
+          "income"
+        ]
+      },
+      {
+        "alias": "total_expenses",
+        "sql": "SUM(financial_kpi_monthly.total_expense_usd)",
+        "display_name": "total expenses",
+        "synonyms": [
+          "spend",
+          "cost"
+        ]
+      },
+      {
+        "alias": "avg_gross_margin",
+        "sql": "AVG(financial_kpi_monthly.gross_margin_pct)",
+        "display_name": "average gross margin",
+        "synonyms": [
+          "margin",
+          "GM"
+        ]
+      },
+      {
+        "alias": "total_budget_variance",
+        "sql": "SUM(budget_snapshots.variance_usd)",
+        "display_name": "total budget variance",
+        "synonyms": [
+          "variance",
+          "over/under"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in total monthly revenue?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_revenue) AS total_revenue",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "How has total opex count changed over time?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_opex) AS total_opex",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique cost centers?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(unique_cost_center_count) AS unique_cost_center_count",
+        "FROM {fqn}.financial_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has highest gross margin percent changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_gross_margin_percent) AS max_gross_margin_percent",
+        "FROM {fqn}.financial_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "sql_lines": [
+        "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY cost_center_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average variance percentage by cost center type?",
+      "sql_lines": [
+        "SELECT cost_center_type, AVG(variance_pct) AS avg_variance_pct",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY cost_center_type ORDER BY avg_variance_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of kpi record?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

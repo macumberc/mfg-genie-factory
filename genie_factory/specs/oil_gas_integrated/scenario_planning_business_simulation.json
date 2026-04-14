@@ -1,0 +1,907 @@
+{
+  "company_name": "StratOil Dynamics",
+  "industry": "Oil & Gas Integrated",
+  "use_case": "Scenario planning and business simulation for strategic decision-making",
+  "space_title": "StratOil Dynamics - Scenario Planning & Business Simulation 🎯",
+  "space_description": "Scenario planning analytics for StratOil Dynamics. Ask questions about simulation outcomes, scenario comparisons, sensitivity analysis, and strategic KPIs across 20 business scenarios covering oil price, production, and capital allocation strategies.",
+  "schema_basename": "og_integrated_scenario",
+  "tables": [
+    {
+      "table_name": "simulation_runs",
+      "description": "Individual simulation run results with input parameters and output metrics for each scenario.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Unique simulation run identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SIM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.scenario_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Date of the simulation run",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "scenario_id",
+          "sql_type": "STRING",
+          "comment": "Scenario identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_name",
+          "sql_type": "STRING",
+          "comment": "Scenario descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_category",
+          "sql_type": "STRING",
+          "comment": "Category: Price Stress, Production Upside, Capital Realloc, Transition, Baseline",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "oil_price_assumption",
+          "sql_type": "DOUBLE",
+          "comment": "Assumed WTI oil price USD per barrel",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(30.0, 45.0 + {qty_noise} * 80.0), 2)"
+        },
+        {
+          "name": "production_growth_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Assumed annual production growth rate",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-5.0 + {qty_noise} * 15.0, 2)"
+        },
+        {
+          "name": "capex_allocation_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Capital expenditure allocation in millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100.0, 500.0 + {qty_noise} * 4500.0), 1)"
+        },
+        {
+          "name": "npv_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Net present value in millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-500.0 + {qty_noise} * 5500.0, 1)"
+        },
+        {
+          "name": "irr_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Internal rate of return percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-10.0, -5.0 + {qty_noise} * 35.0), 2)"
+        },
+        {
+          "name": "probability_weight",
+          "sql_type": "DOUBLE",
+          "comment": "Probability weight for this scenario 0-1",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.02, {qty_noise} * 0.30), 3)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "scenario_id": "SC-BASE-01",
+          "scenario_name": "Baseline - Current Trajectory",
+          "scenario_category": "Baseline"
+        },
+        {
+          "scenario_id": "SC-BASE-02",
+          "scenario_name": "Baseline - Conservative Growth",
+          "scenario_category": "Baseline"
+        },
+        {
+          "scenario_id": "SC-PRICE-01",
+          "scenario_name": "Oil at $40 Sustained",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-02",
+          "scenario_name": "Oil at $100 Spike",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-03",
+          "scenario_name": "Oil Price Volatility +/-30%",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-04",
+          "scenario_name": "Gas Price Surge 2x",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PROD-01",
+          "scenario_name": "GOM Production Ramp +15%",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-02",
+          "scenario_name": "Permian Basin Expansion",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-03",
+          "scenario_name": "Deepwater Tie-Back Program",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-04",
+          "scenario_name": "Enhanced Oil Recovery Pilots",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-CAP-01",
+          "scenario_name": "Aggressive Exploration Budget",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-02",
+          "scenario_name": "Infrastructure Maintenance Focus",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-03",
+          "scenario_name": "Divest Non-Core Assets",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-04",
+          "scenario_name": "Shareholder Return Priority",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-TRANS-01",
+          "scenario_name": "LNG Pivot Strategy",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-02",
+          "scenario_name": "Carbon Capture Integration",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-03",
+          "scenario_name": "Renewable Energy Diversification",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-04",
+          "scenario_name": "Hydrogen Production Launch",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-05",
+          "scenario_name": "Net Zero 2050 Pathway",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-BASE-03",
+          "scenario_name": "Baseline - Optimistic Outlook",
+          "scenario_category": "Baseline"
+        }
+      ],
+      "category_distribution": {
+        "Baseline": 0.05,
+        "Price Stress": 0.055,
+        "Production Upside": 0.055,
+        "Capital Realloc": 0.05,
+        "Transition": 0.05
+      }
+    },
+    {
+      "table_name": "outcome_snapshots",
+      "description": "Periodic outcome snapshots comparing scenario projections to actuals across financial and operational metrics.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.scenario_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of the outcome snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "scenario_id",
+          "sql_type": "STRING",
+          "comment": "Scenario identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_name",
+          "sql_type": "STRING",
+          "comment": "Scenario descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_category",
+          "sql_type": "STRING",
+          "comment": "Scenario category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "projected_revenue_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Projected revenue in millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, 2000.0 + {qty_noise} * 8000.0), 1)"
+        },
+        {
+          "name": "projected_ebitda_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Projected EBITDA in millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100.0, 500.0 + {qty_noise} * 3500.0), 1)"
+        },
+        {
+          "name": "projected_production_mboed",
+          "sql_type": "DOUBLE",
+          "comment": "Projected production in thousand BOE per day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50.0, 150.0 + {qty_noise} * 350.0), 1)"
+        },
+        {
+          "name": "co2_intensity_kg_boe",
+          "sql_type": "DOUBLE",
+          "comment": "CO2 intensity in kg per BOE",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 15.0 + {qty_noise} * 25.0), 1)"
+        },
+        {
+          "name": "breakeven_price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Breakeven oil price USD per barrel",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(20.0, 30.0 + {qty_noise} * 35.0), 2)"
+        },
+        {
+          "name": "confidence_level",
+          "sql_type": "STRING",
+          "comment": "Confidence: High, Medium, Low",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'High' WHEN {status_noise} < 0.70 THEN 'Medium' ELSE 'Low' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "scenario_id": "SC-BASE-01",
+          "scenario_name": "Baseline - Current Trajectory",
+          "scenario_category": "Baseline"
+        },
+        {
+          "scenario_id": "SC-BASE-02",
+          "scenario_name": "Baseline - Conservative Growth",
+          "scenario_category": "Baseline"
+        },
+        {
+          "scenario_id": "SC-PRICE-01",
+          "scenario_name": "Oil at $40 Sustained",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-02",
+          "scenario_name": "Oil at $100 Spike",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-03",
+          "scenario_name": "Oil Price Volatility +/-30%",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-04",
+          "scenario_name": "Gas Price Surge 2x",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PROD-01",
+          "scenario_name": "GOM Production Ramp +15%",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-02",
+          "scenario_name": "Permian Basin Expansion",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-03",
+          "scenario_name": "Deepwater Tie-Back Program",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-04",
+          "scenario_name": "Enhanced Oil Recovery Pilots",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-CAP-01",
+          "scenario_name": "Aggressive Exploration Budget",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-02",
+          "scenario_name": "Infrastructure Maintenance Focus",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-03",
+          "scenario_name": "Divest Non-Core Assets",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-04",
+          "scenario_name": "Shareholder Return Priority",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-TRANS-01",
+          "scenario_name": "LNG Pivot Strategy",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-02",
+          "scenario_name": "Carbon Capture Integration",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-03",
+          "scenario_name": "Renewable Energy Diversification",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-04",
+          "scenario_name": "Hydrogen Production Launch",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-05",
+          "scenario_name": "Net Zero 2050 Pathway",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-BASE-03",
+          "scenario_name": "Baseline - Optimistic Outlook",
+          "scenario_category": "Baseline"
+        }
+      ],
+      "category_distribution": {
+        "Baseline": 0.05,
+        "Price Stress": 0.055,
+        "Production Upside": 0.055,
+        "Capital Realloc": 0.05,
+        "Transition": 0.05
+      }
+    },
+    {
+      "table_name": "scenario_kpi_monthly",
+      "description": "Monthly aggregated scenario KPIs for tracking probability-weighted outcomes and variance analysis.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.scenario_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "First day of the KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "scenario_id",
+          "sql_type": "STRING",
+          "comment": "Scenario identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_category",
+          "sql_type": "STRING",
+          "comment": "Scenario category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "weighted_npv_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Probability-weighted NPV in millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-100.0 + {qty_noise} * 1500.0, 1)"
+        },
+        {
+          "name": "weighted_irr_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Probability-weighted IRR percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-2.0 + {qty_noise} * 22.0, 2)"
+        },
+        {
+          "name": "risk_score",
+          "sql_type": "DOUBLE",
+          "comment": "Composite risk score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(5.0, 35.0 + {qty_noise} * 55.0)), 1)"
+        },
+        {
+          "name": "simulation_count",
+          "sql_type": "INT",
+          "comment": "Number of simulations run this month",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 90) AS INT)"
+        },
+        {
+          "name": "variance_to_baseline_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage variance from baseline scenario",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-30.0 + {qty_noise} * 60.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "scenario_id": "SC-BASE-01",
+          "scenario_category": "Baseline"
+        },
+        {
+          "scenario_id": "SC-BASE-02",
+          "scenario_category": "Baseline"
+        },
+        {
+          "scenario_id": "SC-PRICE-01",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-02",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-03",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PRICE-04",
+          "scenario_category": "Price Stress"
+        },
+        {
+          "scenario_id": "SC-PROD-01",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-02",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-03",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-PROD-04",
+          "scenario_category": "Production Upside"
+        },
+        {
+          "scenario_id": "SC-CAP-01",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-02",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-03",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-CAP-04",
+          "scenario_category": "Capital Realloc"
+        },
+        {
+          "scenario_id": "SC-TRANS-01",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-02",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-03",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-04",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-TRANS-05",
+          "scenario_category": "Transition"
+        },
+        {
+          "scenario_id": "SC-BASE-03",
+          "scenario_category": "Baseline"
+        }
+      ],
+      "category_distribution": {
+        "Baseline": 0.05,
+        "Price Stress": 0.055,
+        "Production Upside": 0.055,
+        "Capital Realloc": 0.05,
+        "Transition": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "simulation_runs_metrics",
+      "source_table": "simulation_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "scenario_id",
+          "expr": "scenario_id"
+        },
+        {
+          "name": "scenario_category",
+          "expr": "scenario_category"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_npv_mm",
+          "expr": "AVG(npv_mm)",
+          "comment": "Average NPV in millions USD"
+        },
+        {
+          "name": "avg_irr_pct",
+          "expr": "AVG(irr_pct)",
+          "comment": "Average internal rate of return"
+        },
+        {
+          "name": "total_capex_mm",
+          "expr": "SUM(capex_allocation_mm)",
+          "comment": "Total capital expenditure allocation in millions"
+        },
+        {
+          "name": "total_runs",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total simulation runs"
+        },
+        {
+          "name": "avg_oil_price",
+          "expr": "AVG(oil_price_assumption)",
+          "comment": "Average assumed oil price"
+        },
+        {
+          "name": "total_production_growth_percent",
+          "expr": "SUM(production_growth_pct)",
+          "comment": "Total production growth pct"
+        },
+        {
+          "name": "total_probability_weight",
+          "expr": "SUM(probability_weight)",
+          "comment": "Total probability weight"
+        },
+        {
+          "name": "max_oil_price_assumption",
+          "expr": "MAX(oil_price_assumption)",
+          "comment": "Maximum oil price assumption"
+        }
+      ]
+    },
+    {
+      "view_name": "outcome_snapshots_metrics",
+      "source_table": "outcome_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "scenario_id",
+          "expr": "scenario_id"
+        },
+        {
+          "name": "scenario_category",
+          "expr": "scenario_category"
+        },
+        {
+          "name": "confidence_level",
+          "expr": "confidence_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_projected_revenue_mm",
+          "expr": "AVG(projected_revenue_mm)",
+          "comment": "Average projected revenue in millions USD"
+        },
+        {
+          "name": "avg_projected_ebitda_mm",
+          "expr": "AVG(projected_ebitda_mm)",
+          "comment": "Average projected EBITDA in millions USD"
+        },
+        {
+          "name": "avg_breakeven_price",
+          "expr": "AVG(breakeven_price_usd)",
+          "comment": "Average breakeven oil price USD"
+        },
+        {
+          "name": "avg_co2_intensity",
+          "expr": "AVG(co2_intensity_kg_boe)",
+          "comment": "Average CO2 intensity kg per BOE"
+        },
+        {
+          "name": "avg_production_mboed",
+          "expr": "AVG(projected_production_mboed)",
+          "comment": "Average projected production in MBOE/d"
+        },
+        {
+          "name": "max_projected_revenue_mm",
+          "expr": "MAX(projected_revenue_mm)",
+          "comment": "Maximum projected revenue mm"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, scenario_id, scenario_category. Measures: avg_npv_mm, avg_irr_pct, total_capex_mm, total_runs, avg_oil_price. The outcome_snapshots_metrics view (source: outcome_snapshots) has dimensions: snapshot_date, scenario_id, scenario_category, confidence_level. Measures: avg_projected_revenue_mm, avg_projected_ebitda_mm, avg_breakeven_price, avg_co2_intensity, avg_production_mboed. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. scenario_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total runss?",
+    "How has highest oil price assumption changed over time?",
+    "What is the monthly trend in total capital expenditure allocation in millions?",
+    "How has total production growth pct changed over time?",
+    "What is the monthly trend in highest projected revenue mm?",
+    "How has average projected revenue in millions usd changed over time?",
+    "What is the monthly trend in average projected ebitda in millions usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total capital expenditure allocation in millions?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_capex_mm) AS total_capex_mm",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has total production growth pct changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_production_growth_percent) AS total_production_growth_percent",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in average projected ebitda in millions usd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_projected_ebitda_mm) AS avg_projected_ebitda_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in average co2 intensity kg per boe?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_co2_intensity) AS avg_co2_intensity",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total assumed wti oil price usd per barrel over time?",
+      "sql_lines": [
+        "SELECT run_date, SUM(oil_price_assumption) AS total_oil_price_assumption",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY run_date ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total projected revenue in millions usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(projected_revenue_mm) AS total_projected_revenue_mm",
+        "FROM {fqn}.outcome_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average probability-weighted irr percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(weighted_irr_pct) AS avg_weighted_irr_pct",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "scenario_category = 'Transition'",
+        "display_name": "transition scenarios",
+        "synonyms": [
+          "energy transition",
+          "net zero",
+          "carbon"
+        ],
+        "instruction": "Use to filter to energy transition strategy scenarios."
+      },
+      {
+        "sql": "irr_pct > 10.0",
+        "display_name": "attractive IRR",
+        "synonyms": [
+          "high return",
+          "above threshold"
+        ],
+        "instruction": "Use to filter to simulation runs with IRR above 10%."
+      },
+      {
+        "sql": "confidence_level = 'High'",
+        "display_name": "high confidence",
+        "synonyms": [
+          "reliable",
+          "strong confidence"
+        ],
+        "instruction": "Use to filter outcome snapshots to high confidence projections."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "npv_per_capex",
+        "sql": "ROUND(simulation_runs.npv_mm / NULLIF(simulation_runs.capex_allocation_mm, 0), 3)",
+        "display_name": "NPV per capex dollar",
+        "synonyms": [
+          "capital efficiency",
+          "NPV ratio"
+        ]
+      },
+      {
+        "alias": "ebitda_margin_pct",
+        "sql": "ROUND(100.0 * outcome_snapshots.projected_ebitda_mm / NULLIF(outcome_snapshots.projected_revenue_mm, 0), 2)",
+        "display_name": "EBITDA margin percent",
+        "synonyms": [
+          "margin",
+          "profitability"
+        ]
+      },
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
+        "display_name": "simulation month",
+        "synonyms": [
+          "month",
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_npv_mm",
+        "sql": "AVG(simulation_runs.npv_mm)",
+        "display_name": "average NPV",
+        "synonyms": [
+          "NPV",
+          "net present value"
+        ]
+      },
+      {
+        "alias": "avg_irr_pct",
+        "sql": "AVG(simulation_runs.irr_pct)",
+        "display_name": "average IRR",
+        "synonyms": [
+          "IRR",
+          "internal rate of return"
+        ]
+      },
+      {
+        "alias": "total_capex_mm",
+        "sql": "SUM(simulation_runs.capex_allocation_mm)",
+        "display_name": "total capex",
+        "synonyms": [
+          "capital expenditure",
+          "investment"
+        ]
+      },
+      {
+        "alias": "avg_breakeven_price",
+        "sql": "AVG(outcome_snapshots.breakeven_price_usd)",
+        "display_name": "average breakeven price",
+        "synonyms": [
+          "breakeven",
+          "floor price"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total runss?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_runs) AS total_runs",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has highest oil price assumption changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_oil_price_assumption) AS max_oil_price_assumption",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest projected revenue mm?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_projected_revenue_mm) AS max_projected_revenue_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has average projected revenue in millions usd changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_projected_revenue_mm) AS avg_projected_revenue_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top scenario identifier by total assumed wti oil price usd per barrel?",
+      "sql_lines": [
+        "SELECT scenario_id, SUM(oil_price_assumption) AS total_oil_price_assumption",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY scenario_id ORDER BY total_oil_price_assumption DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of the outcome snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.outcome_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

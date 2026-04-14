@@ -1,0 +1,1114 @@
+{
+  "company_name": "AutoMetrics Corp",
+  "industry": "Automotive",
+  "use_case": "In-vehicle feature adoption tracking and customer usage pattern analytics",
+  "space_title": "AutoMetrics - Feature Usage & Adoption Analytics 📱",
+  "space_description": "In-vehicle feature usage analytics for AutoMetrics Corp. Ask questions about feature activation events, engagement scores, adoption rates, and usage trends across 20 connected vehicles spanning Basic, Premium, and Elite feature tiers.",
+  "schema_basename": "feature_usage",
+  "tables": [
+    {
+      "table_name": "feature_events",
+      "description": "Daily feature activation and usage events from connected vehicles, tracking which in-vehicle features are used, session duration, and user interactions.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique feature event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date the feature event occurred",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "make",
+          "sql_type": "STRING",
+          "comment": "Vehicle manufacturer brand",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model_year",
+          "sql_type": "INT",
+          "comment": "Vehicle model year",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feature_tier",
+          "sql_type": "STRING",
+          "comment": "Feature subscription tier (Basic, Premium, Elite)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feature_name",
+          "sql_type": "STRING",
+          "comment": "Name of the in-vehicle feature used",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Adaptive Cruise Control' WHEN {status_noise} < 0.22 THEN 'Lane Keep Assist' WHEN {status_noise} < 0.30 THEN 'Auto Park' WHEN {status_noise} < 0.40 THEN 'Voice Assistant' WHEN {status_noise} < 0.50 THEN 'Remote Start' WHEN {status_noise} < 0.58 THEN 'Heads-Up Display' WHEN {status_noise} < 0.66 THEN 'Surround View Camera' WHEN {status_noise} < 0.74 THEN 'Wireless CarPlay' WHEN {status_noise} < 0.82 THEN 'Over-the-Air Update' WHEN {status_noise} < 0.90 THEN 'Driver Drowsiness Alert' ELSE 'Traffic Sign Recognition' END"
+        },
+        {
+          "name": "feature_category",
+          "sql_type": "STRING",
+          "comment": "Category of the feature",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'ADAS' WHEN {status_noise} < 0.55 THEN 'Infotainment' WHEN {status_noise} < 0.75 THEN 'Convenience' ELSE 'Safety' END"
+        },
+        {
+          "name": "session_duration_sec",
+          "sql_type": "INT",
+          "comment": "Feature session duration in seconds",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 3590) AS INT)"
+        },
+        {
+          "name": "interaction_count",
+          "sql_type": "INT",
+          "comment": "Number of user interactions during the session",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 24) AS INT)"
+        },
+        {
+          "name": "activation_status",
+          "sql_type": "STRING",
+          "comment": "Whether the feature activated successfully",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Success' WHEN {status_noise} < 0.94 THEN 'Partial' ELSE 'Failed' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "ADAS": {
+          "11,12": 0.055,
+          "6,7": 0.04
+        },
+        "Infotainment": {
+          "6,7,8": 0.06,
+          "12,1": 0.05
+        },
+        "Convenience": {
+          "1,2": 0.04,
+          "7,8": 0.045
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "vehicle_id": "AM-V001",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V002",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V003",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V004",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V005",
+          "make": "AutoMetrics",
+          "model": "Hauler Truck",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V006",
+          "make": "AutoMetrics",
+          "model": "Hauler Truck",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V007",
+          "make": "AutoMetrics",
+          "model": "Volt EV",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V008",
+          "make": "AutoMetrics",
+          "model": "Volt EV",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V009",
+          "make": "AutoMetrics",
+          "model": "Metro Compact",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V010",
+          "make": "AutoMetrics",
+          "model": "Metro Compact",
+          "model_year": 2025,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V011",
+          "make": "AutoMetrics",
+          "model": "Voyager Wagon",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V012",
+          "make": "AutoMetrics",
+          "model": "Voyager Wagon",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V013",
+          "make": "AutoMetrics",
+          "model": "Sprint Coupe",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V014",
+          "make": "AutoMetrics",
+          "model": "Sprint Coupe",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V015",
+          "make": "AutoMetrics",
+          "model": "Cargo Van",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V016",
+          "make": "AutoMetrics",
+          "model": "Cargo Van",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V017",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV Hybrid",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V018",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan Hybrid",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V019",
+          "make": "AutoMetrics",
+          "model": "Ridgeline Pickup",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V020",
+          "make": "AutoMetrics",
+          "model": "Ridgeline Pickup",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        }
+      ],
+      "category_distribution": {
+        "ADAS": 0.03,
+        "Infotainment": 0.035,
+        "Convenience": 0.025,
+        "Safety": 0.022
+      }
+    },
+    {
+      "table_name": "user_engagement_snapshots",
+      "description": "Weekly engagement score snapshots per vehicle, capturing feature breadth, frequency, and depth metrics.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique engagement snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ENG-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 5000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of the engagement snapshot",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', d.dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feature_tier",
+          "sql_type": "STRING",
+          "comment": "Feature subscription tier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "features_used_count",
+          "sql_type": "INT",
+          "comment": "Number of distinct features used during the week",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 10) AS INT)"
+        },
+        {
+          "name": "total_sessions",
+          "sql_type": "INT",
+          "comment": "Total feature sessions during the week",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 95) AS INT)"
+        },
+        {
+          "name": "avg_session_duration_sec",
+          "sql_type": "INT",
+          "comment": "Average session duration in seconds for the week",
+          "is_dimension": false,
+          "generation_expr": "CAST(30 + FLOOR({qty_noise} * 570) AS INT)"
+        },
+        {
+          "name": "engagement_score",
+          "sql_type": "DOUBLE",
+          "comment": "Composite engagement score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(10.0, 55.0 + ({qty_noise} - 0.5) * 60.0)), 1)"
+        },
+        {
+          "name": "engagement_tier",
+          "sql_type": "STRING",
+          "comment": "Engagement classification",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 80.0 THEN 'Power User' WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 50.0 THEN 'Active' WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 30.0 THEN 'Casual' ELSE 'Dormant' END"
+        },
+        {
+          "name": "churn_risk_flag",
+          "sql_type": "STRING",
+          "comment": "Whether the vehicle owner is at churn risk for subscription renewal",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'High' WHEN {status_noise} < 0.35 THEN 'Medium' ELSE 'Low' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Premium": {
+          "6,7": 0.05,
+          "11,12": 0.045
+        },
+        "Elite": {
+          "3,4": 0.04,
+          "9,10": 0.05
+        },
+        "Basic": {
+          "1,2": 0.035
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "vehicle_id": "AM-V001",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V002",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V003",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V004",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V005",
+          "make": "AutoMetrics",
+          "model": "Hauler Truck",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V006",
+          "make": "AutoMetrics",
+          "model": "Hauler Truck",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V007",
+          "make": "AutoMetrics",
+          "model": "Volt EV",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V008",
+          "make": "AutoMetrics",
+          "model": "Volt EV",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V009",
+          "make": "AutoMetrics",
+          "model": "Metro Compact",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V010",
+          "make": "AutoMetrics",
+          "model": "Metro Compact",
+          "model_year": 2025,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V011",
+          "make": "AutoMetrics",
+          "model": "Voyager Wagon",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V012",
+          "make": "AutoMetrics",
+          "model": "Voyager Wagon",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V013",
+          "make": "AutoMetrics",
+          "model": "Sprint Coupe",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V014",
+          "make": "AutoMetrics",
+          "model": "Sprint Coupe",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V015",
+          "make": "AutoMetrics",
+          "model": "Cargo Van",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V016",
+          "make": "AutoMetrics",
+          "model": "Cargo Van",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V017",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV Hybrid",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V018",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan Hybrid",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V019",
+          "make": "AutoMetrics",
+          "model": "Ridgeline Pickup",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V020",
+          "make": "AutoMetrics",
+          "model": "Ridgeline Pickup",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        }
+      ],
+      "category_distribution": {
+        "Premium": 0.035,
+        "Elite": 0.03,
+        "Basic": 0.025
+      }
+    },
+    {
+      "table_name": "feature_adoption_monthly",
+      "description": "Monthly feature adoption rate forecasts vs actuals, tracking predicted and realized adoption percentages per feature category and tier.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly adoption forecast identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FA-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 20000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Month the adoption forecast covers",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feature_tier",
+          "sql_type": "STRING",
+          "comment": "Feature subscription tier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_adoption_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Predicted feature adoption rate 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(95.0, GREATEST(15.0, 55.0 + ({qty_noise} - 0.5) * 50.0)), 1)"
+        },
+        {
+          "name": "actual_adoption_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Actual realized feature adoption rate 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(10.0, 55.0 + ({qty_noise} - 0.5) * 55.0 + ({status_noise} - 0.5) * 10.0)), 1)"
+        },
+        {
+          "name": "adoption_error_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Absolute adoption forecast error in pct points",
+          "is_dimension": false,
+          "generation_expr": "ROUND(ABS((55.0 + ({qty_noise} - 0.5) * 50.0) - (55.0 + ({qty_noise} - 0.5) * 55.0 + ({status_noise} - 0.5) * 10.0)), 1)"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Adoption prediction model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v1.0' WHEN {status_noise} < 0.65 THEN 'v1.1' ELSE 'v1.2' END"
+        },
+        {
+          "name": "renewal_likelihood",
+          "sql_type": "STRING",
+          "comment": "Predicted subscription renewal likelihood",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Low' WHEN {status_noise} < 0.55 THEN 'Medium' ELSE 'High' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Premium": {
+          "9,10,11": 0.055
+        },
+        "Elite": {
+          "1,2,3": 0.05
+        },
+        "Basic": {
+          "6,7,8": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "vehicle_id": "AM-V001",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V002",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V003",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V004",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V005",
+          "make": "AutoMetrics",
+          "model": "Hauler Truck",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V006",
+          "make": "AutoMetrics",
+          "model": "Hauler Truck",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V007",
+          "make": "AutoMetrics",
+          "model": "Volt EV",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V008",
+          "make": "AutoMetrics",
+          "model": "Volt EV",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V009",
+          "make": "AutoMetrics",
+          "model": "Metro Compact",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V010",
+          "make": "AutoMetrics",
+          "model": "Metro Compact",
+          "model_year": 2025,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V011",
+          "make": "AutoMetrics",
+          "model": "Voyager Wagon",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V012",
+          "make": "AutoMetrics",
+          "model": "Voyager Wagon",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V013",
+          "make": "AutoMetrics",
+          "model": "Sprint Coupe",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V014",
+          "make": "AutoMetrics",
+          "model": "Sprint Coupe",
+          "model_year": 2024,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V015",
+          "make": "AutoMetrics",
+          "model": "Cargo Van",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V016",
+          "make": "AutoMetrics",
+          "model": "Cargo Van",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        },
+        {
+          "vehicle_id": "AM-V017",
+          "make": "AutoMetrics",
+          "model": "Trailblazer SUV Hybrid",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V018",
+          "make": "AutoMetrics",
+          "model": "Nexus Sedan Hybrid",
+          "model_year": 2025,
+          "feature_tier": "Elite"
+        },
+        {
+          "vehicle_id": "AM-V019",
+          "make": "AutoMetrics",
+          "model": "Ridgeline Pickup",
+          "model_year": 2024,
+          "feature_tier": "Basic"
+        },
+        {
+          "vehicle_id": "AM-V020",
+          "make": "AutoMetrics",
+          "model": "Ridgeline Pickup",
+          "model_year": 2025,
+          "feature_tier": "Premium"
+        }
+      ],
+      "category_distribution": {
+        "Premium": 0.035,
+        "Elite": 0.03,
+        "Basic": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "feature_events_metrics",
+      "source_table": "feature_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "model",
+          "expr": "model"
+        },
+        {
+          "name": "feature_tier",
+          "expr": "feature_tier"
+        },
+        {
+          "name": "feature_category",
+          "expr": "feature_category"
+        },
+        {
+          "name": "activation_status",
+          "expr": "activation_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_feature_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total feature activation events"
+        },
+        {
+          "name": "avg_session_duration_sec",
+          "expr": "AVG(session_duration_sec)",
+          "comment": "Average feature session duration in seconds"
+        },
+        {
+          "name": "total_interactions",
+          "expr": "SUM(interaction_count)",
+          "comment": "Total user interactions across sessions"
+        },
+        {
+          "name": "failed_activation_count",
+          "expr": "COUNT(DISTINCT CASE WHEN activation_status = 'Failed' THEN event_id END)",
+          "comment": "Feature activations that failed"
+        },
+        {
+          "name": "avg_interaction_count",
+          "expr": "AVG(interaction_count)",
+          "comment": "Average interactions per session"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "max_session_duration_sec",
+          "expr": "MAX(session_duration_sec)",
+          "comment": "Maximum session duration sec"
+        }
+      ]
+    },
+    {
+      "view_name": "user_engagement_metrics",
+      "source_table": "user_engagement_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "model",
+          "expr": "model"
+        },
+        {
+          "name": "feature_tier",
+          "expr": "feature_tier"
+        },
+        {
+          "name": "engagement_tier",
+          "expr": "engagement_tier"
+        },
+        {
+          "name": "churn_risk_flag",
+          "expr": "churn_risk_flag"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_engagement_score",
+          "expr": "AVG(engagement_score)",
+          "comment": "Average engagement score"
+        },
+        {
+          "name": "total_sessions",
+          "expr": "SUM(total_sessions)",
+          "comment": "Total feature sessions across vehicles"
+        },
+        {
+          "name": "avg_features_used",
+          "expr": "AVG(features_used_count)",
+          "comment": "Average distinct features used per week"
+        },
+        {
+          "name": "high_churn_risk_count",
+          "expr": "COUNT(DISTINCT CASE WHEN churn_risk_flag = 'High' THEN snapshot_id END)",
+          "comment": "Snapshots flagged as high churn risk"
+        },
+        {
+          "name": "power_user_count",
+          "expr": "COUNT(DISTINCT CASE WHEN engagement_tier = 'Power User' THEN snapshot_id END)",
+          "comment": "Snapshots classified as power users"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "max_features_used_count",
+          "expr": "MAX(features_used_count)",
+          "comment": "Maximum features used count"
+        },
+        {
+          "name": "total_avg_session_duration_sec",
+          "expr": "SUM(avg_session_duration_sec)",
+          "comment": "Total avg session duration sec"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The feature_events_metrics view (source: feature_events) has dimensions: event_date, model, feature_tier, feature_category, activation_status. Measures: total_feature_events, avg_session_duration_sec, total_interactions, failed_activation_count, avg_interaction_count. The user_engagement_metrics view (source: user_engagement_snapshots) has dimensions: snapshot_date, model, feature_tier, engagement_tier, churn_risk_flag. Measures: avg_engagement_score, total_sessions, avg_features_used, high_churn_risk_count, power_user_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. make, model_year, vehicle_id).",
+  "sample_questions": [
+    "What is the monthly trend in failed activation count?",
+    "How has unique total feature eventss changed over time?",
+    "What is the monthly trend in unique vehicles?",
+    "How has highest session duration sec changed over time?",
+    "What is the monthly trend in high churn risk count?",
+    "How has power user count changed over time?",
+    "What is the monthly trend in unique vehicles?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique vehicles?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "FROM {fqn}.feature_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest session duration sec changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_session_duration_sec) AS max_session_duration_sec",
+        "FROM {fqn}.feature_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has average interactions per session changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(avg_interaction_count) AS avg_interaction_count",
+        "FROM {fqn}.feature_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How does failed activation count vary across models?",
+      "sql_lines": [
+        "SELECT model, MEASURE(failed_activation_count) AS failed_activation_count",
+        "FROM {fqn}.feature_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY failed_activation_count DESC"
+      ]
+    },
+    {
+      "question": "How does total number of user interactions during the session break down by unique vehicle identifier for 'Success' records?",
+      "sql_lines": [
+        "SELECT vehicle_id, COUNT(*) AS record_count, SUM(interaction_count) AS total_interaction_count",
+        "FROM {fqn}.feature_events",
+        "WHERE activation_status = 'Success' GROUP BY vehicle_id ORDER BY total_interaction_count DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total number of distinct features used during the week over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(features_used_count) AS total_features_used_count",
+        "FROM {fqn}.user_engagement_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average predicted feature adoption rate 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, AVG(forecasted_adoption_pct) AS avg_forecasted_adoption_pct",
+        "FROM {fqn}.feature_adoption_monthly",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "feature_events.activation_status = 'Failed'",
+        "display_name": "failed activations",
+        "synonyms": [
+          "activation failures",
+          "failed features",
+          "broken activations"
+        ],
+        "instruction": "Use when analyzing feature activation failures and reliability issues."
+      },
+      {
+        "sql": "user_engagement_snapshots.churn_risk_flag = 'High'",
+        "display_name": "high churn risk",
+        "synonyms": [
+          "at-risk subscribers",
+          "likely churners",
+          "high attrition risk"
+        ],
+        "instruction": "Use when filtering for vehicles whose owners are at high risk of subscription cancellation."
+      },
+      {
+        "sql": "feature_events.event_date >= ADD_MONTHS(CURRENT_DATE(), -90)",
+        "display_name": "last 90 days",
+        "synonyms": [
+          "recent events",
+          "past 3 months",
+          "trailing quarter"
+        ],
+        "instruction": "Use to restrict feature event analysis to the most recent 90-day window."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', feature_events.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month of event",
+          "feature event month"
+        ]
+      },
+      {
+        "alias": "adoption_gap_pct",
+        "sql": "feature_adoption_monthly.forecasted_adoption_pct - feature_adoption_monthly.actual_adoption_pct",
+        "display_name": "adoption forecast gap",
+        "synonyms": [
+          "forecast vs actual adoption",
+          "adoption prediction error"
+        ]
+      },
+      {
+        "alias": "session_duration_minutes",
+        "sql": "feature_events.session_duration_sec / 60.0",
+        "display_name": "session duration in minutes",
+        "synonyms": [
+          "session minutes",
+          "usage time in minutes"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_feature_events",
+        "sql": "COUNT(DISTINCT feature_events.event_id)",
+        "display_name": "total feature events",
+        "synonyms": [
+          "event count",
+          "feature activations",
+          "usage events"
+        ]
+      },
+      {
+        "alias": "avg_engagement_score",
+        "sql": "AVG(user_engagement_snapshots.engagement_score)",
+        "display_name": "average engagement score",
+        "synonyms": [
+          "mean engagement",
+          "engagement rating",
+          "user engagement"
+        ]
+      },
+      {
+        "alias": "total_interactions",
+        "sql": "SUM(feature_events.interaction_count)",
+        "display_name": "total interactions",
+        "synonyms": [
+          "interaction volume",
+          "user interactions",
+          "touch count"
+        ]
+      },
+      {
+        "alias": "failed_activation_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN feature_events.activation_status = 'Failed' THEN feature_events.event_id END)",
+        "display_name": "failed activation count",
+        "synonyms": [
+          "failure count",
+          "failed activations",
+          "activation errors"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in failed activation count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(failed_activation_count) AS failed_activation_count",
+        "FROM {fqn}.feature_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique total feature eventss changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_feature_events) AS total_feature_events",
+        "FROM {fqn}.feature_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in high churn risk count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(high_churn_risk_count) AS high_churn_risk_count",
+        "FROM {fqn}.user_engagement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has power user count changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(power_user_count) AS power_user_count",
+        "FROM {fqn}.user_engagement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top unique vehicle identifier by total number of user interactions during the session?",
+      "sql_lines": [
+        "SELECT vehicle_id, SUM(interaction_count) AS total_interaction_count",
+        "FROM {fqn}.feature_events",
+        "GROUP BY vehicle_id ORDER BY total_interaction_count DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average average session duration in seconds for the week by vehicle model name?",
+      "sql_lines": [
+        "SELECT model, AVG(avg_session_duration_sec) AS avg_avg_session_duration_sec",
+        "FROM {fqn}.user_engagement_snapshots",
+        "GROUP BY model ORDER BY avg_avg_session_duration_sec DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month the adoption forecast covers?",
+      "sql_lines": [
+        "SELECT forecast_month, COUNT(*) AS record_count",
+        "FROM {fqn}.feature_adoption_monthly",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,962 @@
+{
+  "company_name": "PetroLedger Corp",
+  "industry": "Oil & Gas Integrated",
+  "use_case": "Financial analytics and reporting for integrated oil and gas operations",
+  "space_title": "PetroLedger Corp - Financial Analytics & Reporting 💰",
+  "space_description": "Financial analytics for PetroLedger Corp. Ask questions about revenue, operating costs, margin analysis, budget variance, and financial KPIs across 20 cost centers spanning upstream, downstream, and corporate divisions.",
+  "schema_basename": "og_integrated_finance",
+  "tables": [
+    {
+      "table_name": "financial_transactions",
+      "description": "Daily financial transactions including revenue, operating expenses, and capital expenditures by cost center.",
+      "columns": [
+        {
+          "name": "transaction_id",
+          "sql_type": "STRING",
+          "comment": "Unique financial transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "transaction_date",
+          "sql_type": "DATE",
+          "comment": "Date of the financial transaction",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_name",
+          "sql_type": "STRING",
+          "comment": "Cost center name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "division",
+          "sql_type": "STRING",
+          "comment": "Division: Upstream, Downstream, Midstream, Corporate",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "account_type",
+          "sql_type": "STRING",
+          "comment": "Account: Revenue, OPEX, CAPEX, Depreciation, G&A",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Revenue' WHEN {status_noise} < 0.55 THEN 'OPEX' WHEN {status_noise} < 0.72 THEN 'CAPEX' WHEN {status_noise} < 0.85 THEN 'Depreciation' ELSE 'G&A' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1000.0, {qty_noise} * 5000000.0), 2)"
+        },
+        {
+          "name": "budget_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budgeted amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1000.0, {qty_noise} * 5200000.0), 2)"
+        },
+        {
+          "name": "gl_category",
+          "sql_type": "STRING",
+          "comment": "GL category: Production, Exploration, Refining, Marketing, Transportation, Admin",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Production' WHEN {status_noise} < 0.38 THEN 'Exploration' WHEN {status_noise} < 0.55 THEN 'Refining' WHEN {status_noise} < 0.70 THEN 'Marketing' WHEN {status_noise} < 0.85 THEN 'Transportation' ELSE 'Admin' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Upstream": {
+          "3,4,9,10": 0.05
+        },
+        "Downstream": {
+          "6,7,8,12": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "cost_center_id": "PL-UP-001",
+          "cost_center_name": "GOM Deepwater Operations",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-002",
+          "cost_center_name": "Permian Basin Operations",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-003",
+          "cost_center_name": "Alaska North Slope",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-004",
+          "cost_center_name": "North Sea Operations",
+          "division": "Upstream",
+          "region": "Europe"
+        },
+        {
+          "cost_center_id": "PL-UP-005",
+          "cost_center_name": "West Africa Exploration",
+          "division": "Upstream",
+          "region": "Africa"
+        },
+        {
+          "cost_center_id": "PL-DS-006",
+          "cost_center_name": "Gulf Coast Refining Complex",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-007",
+          "cost_center_name": "Midwest Refinery Operations",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-008",
+          "cost_center_name": "Petrochemicals Division",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-009",
+          "cost_center_name": "Retail & Marketing",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-010",
+          "cost_center_name": "Lubricants & Specialty",
+          "division": "Downstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-MS-011",
+          "cost_center_name": "Pipeline Operations Gulf",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-MS-012",
+          "cost_center_name": "NGL Processing",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-MS-013",
+          "cost_center_name": "Marine Transportation",
+          "division": "Midstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-MS-014",
+          "cost_center_name": "Storage & Terminals",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-CO-015",
+          "cost_center_name": "Corporate Finance",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-016",
+          "cost_center_name": "IT & Digital",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-017",
+          "cost_center_name": "HSE & Compliance",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-018",
+          "cost_center_name": "Human Resources",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-UP-019",
+          "cost_center_name": "LNG Trading & Marketing",
+          "division": "Upstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-DS-020",
+          "cost_center_name": "Renewable Fuels Division",
+          "division": "Downstream",
+          "region": "North America"
+        }
+      ],
+      "category_distribution": {
+        "Upstream": 0.06,
+        "Downstream": 0.055,
+        "Midstream": 0.05,
+        "Corporate": 0.04
+      }
+    },
+    {
+      "table_name": "budget_snapshots",
+      "description": "Monthly budget snapshots comparing planned vs actual spend across all cost centers and GL categories.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique budget snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_month",
+          "sql_type": "DATE",
+          "comment": "First day of the snapshot month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_name",
+          "sql_type": "STRING",
+          "comment": "Cost center name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "division",
+          "sql_type": "STRING",
+          "comment": "Division",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "planned_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Planned monthly revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 80000000.0), 2)"
+        },
+        {
+          "name": "actual_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual monthly revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 85000000.0 * (0.85 + {status_noise} * 0.30)), 2)"
+        },
+        {
+          "name": "planned_opex_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Planned monthly OPEX in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, {qty_noise} * 35000000.0), 2)"
+        },
+        {
+          "name": "actual_opex_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual monthly OPEX in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, {qty_noise} * 37000000.0 * (0.90 + {status_noise} * 0.20)), 2)"
+        },
+        {
+          "name": "ebitda_usd",
+          "sql_type": "DOUBLE",
+          "comment": "EBITDA in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-5000000.0, {qty_noise} * 30000000.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "cost_center_id": "PL-UP-001",
+          "cost_center_name": "GOM Deepwater Operations",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-002",
+          "cost_center_name": "Permian Basin Operations",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-003",
+          "cost_center_name": "Alaska North Slope",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-004",
+          "cost_center_name": "North Sea Operations",
+          "division": "Upstream",
+          "region": "Europe"
+        },
+        {
+          "cost_center_id": "PL-UP-005",
+          "cost_center_name": "West Africa Exploration",
+          "division": "Upstream",
+          "region": "Africa"
+        },
+        {
+          "cost_center_id": "PL-DS-006",
+          "cost_center_name": "Gulf Coast Refining Complex",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-007",
+          "cost_center_name": "Midwest Refinery Operations",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-008",
+          "cost_center_name": "Petrochemicals Division",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-009",
+          "cost_center_name": "Retail & Marketing",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-010",
+          "cost_center_name": "Lubricants & Specialty",
+          "division": "Downstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-MS-011",
+          "cost_center_name": "Pipeline Operations Gulf",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-MS-012",
+          "cost_center_name": "NGL Processing",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-MS-013",
+          "cost_center_name": "Marine Transportation",
+          "division": "Midstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-MS-014",
+          "cost_center_name": "Storage & Terminals",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-CO-015",
+          "cost_center_name": "Corporate Finance",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-016",
+          "cost_center_name": "IT & Digital",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-017",
+          "cost_center_name": "HSE & Compliance",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-018",
+          "cost_center_name": "Human Resources",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-UP-019",
+          "cost_center_name": "LNG Trading & Marketing",
+          "division": "Upstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-DS-020",
+          "cost_center_name": "Renewable Fuels Division",
+          "division": "Downstream",
+          "region": "North America"
+        }
+      ],
+      "category_distribution": {
+        "Upstream": 0.06,
+        "Downstream": 0.055,
+        "Midstream": 0.05,
+        "Corporate": 0.04
+      }
+    },
+    {
+      "table_name": "financial_kpi_monthly",
+      "description": "Monthly financial KPIs including operating margin, ROIC, and efficiency ratios by division.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "First day of the KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "division",
+          "sql_type": "STRING",
+          "comment": "Division",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "operating_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Operating margin percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-10.0, 5.0 + {qty_noise} * 30.0), 2)"
+        },
+        {
+          "name": "roic_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Return on invested capital",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-5.0, 3.0 + {qty_noise} * 17.0), 2)"
+        },
+        {
+          "name": "opex_per_boe",
+          "sql_type": "DOUBLE",
+          "comment": "Operating expense per barrel of oil equivalent",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 8.0 + {qty_noise} * 22.0), 2)"
+        },
+        {
+          "name": "headcount",
+          "sql_type": "INT",
+          "comment": "Full-time equivalent headcount",
+          "is_dimension": false,
+          "generation_expr": "CAST(50 + FLOOR({qty_noise} * 450) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "cost_center_id": "PL-UP-001",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-002",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-003",
+          "division": "Upstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-UP-004",
+          "division": "Upstream",
+          "region": "Europe"
+        },
+        {
+          "cost_center_id": "PL-UP-005",
+          "division": "Upstream",
+          "region": "Africa"
+        },
+        {
+          "cost_center_id": "PL-DS-006",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-007",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-008",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-009",
+          "division": "Downstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-DS-010",
+          "division": "Downstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-MS-011",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-MS-012",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-MS-013",
+          "division": "Midstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-MS-014",
+          "division": "Midstream",
+          "region": "North America"
+        },
+        {
+          "cost_center_id": "PL-CO-015",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-016",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-017",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-CO-018",
+          "division": "Corporate",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-UP-019",
+          "division": "Upstream",
+          "region": "Global"
+        },
+        {
+          "cost_center_id": "PL-DS-020",
+          "division": "Downstream",
+          "region": "North America"
+        }
+      ],
+      "category_distribution": {
+        "Upstream": 0.06,
+        "Downstream": 0.055,
+        "Midstream": 0.05,
+        "Corporate": 0.04
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "financial_transactions_metrics",
+      "source_table": "financial_transactions",
+      "dimensions": [
+        {
+          "name": "transaction_date",
+          "expr": "transaction_date"
+        },
+        {
+          "name": "cost_center_id",
+          "expr": "cost_center_id"
+        },
+        {
+          "name": "division",
+          "expr": "division"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "account_type",
+          "expr": "account_type"
+        },
+        {
+          "name": "gl_category",
+          "expr": "gl_category"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_amount_usd",
+          "expr": "SUM(amount_usd)",
+          "comment": "Total transaction amount in USD"
+        },
+        {
+          "name": "total_budget_usd",
+          "expr": "SUM(budget_amount_usd)",
+          "comment": "Total budgeted amount in USD"
+        },
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT transaction_id)",
+          "comment": "Total financial transactions"
+        },
+        {
+          "name": "avg_transaction_usd",
+          "expr": "AVG(amount_usd)",
+          "comment": "Average transaction amount"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        }
+      ]
+    },
+    {
+      "view_name": "budget_snapshots_metrics",
+      "source_table": "budget_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_month",
+          "expr": "snapshot_month"
+        },
+        {
+          "name": "cost_center_id",
+          "expr": "cost_center_id"
+        },
+        {
+          "name": "division",
+          "expr": "division"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_actual_revenue",
+          "expr": "SUM(actual_revenue_usd)",
+          "comment": "Total actual revenue in USD"
+        },
+        {
+          "name": "total_planned_revenue",
+          "expr": "SUM(planned_revenue_usd)",
+          "comment": "Total planned revenue in USD"
+        },
+        {
+          "name": "total_actual_opex",
+          "expr": "SUM(actual_opex_usd)",
+          "comment": "Total actual OPEX in USD"
+        },
+        {
+          "name": "total_ebitda",
+          "expr": "SUM(ebitda_usd)",
+          "comment": "Total EBITDA in USD"
+        },
+        {
+          "name": "total_planned_opex",
+          "expr": "SUM(planned_opex_usd)",
+          "comment": "Total planned opex usd"
+        },
+        {
+          "name": "max_planned_revenue",
+          "expr": "MAX(planned_revenue_usd)",
+          "comment": "Maximum planned revenue usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_transactions_metrics view (source: financial_transactions) has dimensions: transaction_date, cost_center_id, division, region, account_type, gl_category. Measures: total_amount_usd, total_budget_usd, total_transactions, avg_transaction_usd. The budget_snapshots_metrics view (source: budget_snapshots) has dimensions: snapshot_month, cost_center_id, division, region. Measures: total_actual_revenue, total_planned_revenue, total_actual_opex, total_ebitda. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total transactionss?",
+    "How has highest amount changed over time?",
+    "What is the monthly trend in total transaction amount in usd?",
+    "How has total budgeted amount in usd changed over time?",
+    "What is the monthly trend in highest planned revenue?",
+    "How has total actual revenue in usd changed over time?",
+    "What is the monthly trend in total planned revenue in usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total transaction amount in usd?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has total budgeted amount in usd changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_budget_usd) AS total_budget_usd",
+        "FROM {fqn}.financial_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total planned revenue in usd?",
+      "sql_lines": [
+        "SELECT snapshot_month, MEASURE(total_planned_revenue) AS total_planned_revenue",
+        "FROM {fqn}.budget_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total transaction amount in usd over time?",
+      "sql_lines": [
+        "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY transaction_date ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total planned monthly revenue in usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_month, SUM(planned_revenue_usd) AS total_planned_revenue_usd",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY snapshot_month ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "How has the average operating margin percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(operating_margin_pct) AS avg_operating_margin_pct",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has unique total transactionss changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.financial_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "account_type = 'Revenue'",
+        "display_name": "revenue transactions",
+        "synonyms": [
+          "revenue",
+          "sales",
+          "income"
+        ],
+        "instruction": "Use to filter financial transactions to revenue items."
+      },
+      {
+        "sql": "division = 'Upstream'",
+        "display_name": "upstream division",
+        "synonyms": [
+          "exploration",
+          "production",
+          "E&P"
+        ],
+        "instruction": "Use to filter to upstream division cost centers."
+      },
+      {
+        "sql": "actual_opex_usd > planned_opex_usd",
+        "display_name": "over budget OPEX",
+        "synonyms": [
+          "overrun",
+          "budget exceeded"
+        ],
+        "instruction": "Use to find cost centers where actual OPEX exceeds planned."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "budget_variance_usd",
+        "sql": "financial_transactions.amount_usd - financial_transactions.budget_amount_usd",
+        "display_name": "budget variance",
+        "synonyms": [
+          "variance",
+          "over/under budget"
+        ]
+      },
+      {
+        "alias": "revenue_variance_pct",
+        "sql": "ROUND(100.0 * (budget_snapshots.actual_revenue_usd - budget_snapshots.planned_revenue_usd) / NULLIF(budget_snapshots.planned_revenue_usd, 0), 2)",
+        "display_name": "revenue variance percent",
+        "synonyms": [
+          "revenue gap",
+          "plan vs actual"
+        ]
+      },
+      {
+        "alias": "transaction_month",
+        "sql": "DATE_TRUNC('month', financial_transactions.transaction_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "month",
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue_usd",
+        "sql": "SUM(CASE WHEN financial_transactions.account_type = 'Revenue' THEN financial_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total revenue",
+        "synonyms": [
+          "revenue",
+          "income"
+        ]
+      },
+      {
+        "alias": "total_opex_usd",
+        "sql": "SUM(CASE WHEN financial_transactions.account_type = 'OPEX' THEN financial_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total OPEX",
+        "synonyms": [
+          "operating expense",
+          "costs"
+        ]
+      },
+      {
+        "alias": "total_ebitda",
+        "sql": "SUM(budget_snapshots.ebitda_usd)",
+        "display_name": "total EBITDA",
+        "synonyms": [
+          "EBITDA",
+          "earnings"
+        ]
+      },
+      {
+        "alias": "avg_operating_margin",
+        "sql": "AVG(financial_kpi_monthly.operating_margin_pct)",
+        "display_name": "average operating margin",
+        "synonyms": [
+          "margin",
+          "profitability"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total transactionss?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.financial_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has highest amount changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "FROM {fqn}.financial_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest planned revenue?",
+      "sql_lines": [
+        "SELECT snapshot_month, MEASURE(max_planned_revenue) AS max_planned_revenue",
+        "FROM {fqn}.budget_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "How has total actual revenue in usd changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_month, MEASURE(total_actual_revenue) AS total_actual_revenue",
+        "FROM {fqn}.budget_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "sql_lines": [
+        "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY cost_center_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the snapshot month?",
+      "sql_lines": [
+        "SELECT snapshot_month, COUNT(*) AS record_count",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY snapshot_month ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1015 @@
+{
+  "company_name": "SolarEdge Power",
+  "industry": "Power Generation",
+  "use_case": "Behind-the-meter solar and battery storage optimization",
+  "space_title": "SolarEdge Power - Solar & Storage Optimization ☀️",
+  "space_description": "Solar and battery storage analytics for SolarEdge Power. Ask about solar generation, battery state of charge, demand response events, and net metering across 20 solar+storage sites.",
+  "schema_basename": "solar_behind_meter",
+  "tables": [
+    {
+      "table_name": "solar_installations",
+      "description": "Daily solar generation records per site with irradiance, panel output, and inverter performance.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique generation record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SOL-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.site_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Date of generation record",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "site_id",
+          "sql_type": "STRING",
+          "comment": "Solar+storage site identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "site_name",
+          "sql_type": "STRING",
+          "comment": "Site name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "site_type",
+          "sql_type": "STRING",
+          "comment": "Site type: Commercial, Industrial, Municipal, Campus",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "solar_generation_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Solar energy generated in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 4800.0) * (CASE WHEN MONTH(d.dt) IN (5,6,7,8) THEN 1.3 WHEN MONTH(d.dt) IN (11,12,1) THEN 0.6 ELSE 1.0 END), 2)"
+        },
+        {
+          "name": "irradiance_kwh_m2",
+          "sql_type": "DOUBLE",
+          "comment": "Solar irradiance in kWh/m2",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 6.0) * (CASE WHEN MONTH(d.dt) IN (5,6,7,8) THEN 1.3 WHEN MONTH(d.dt) IN (11,12,1) THEN 0.6 ELSE 1.0 END), 2)"
+        },
+        {
+          "name": "panel_efficiency_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Panel conversion efficiency 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(16.0 + ({qty_noise} * 8.0), 2)"
+        },
+        {
+          "name": "inverter_status",
+          "sql_type": "STRING",
+          "comment": "Inverter status: Online, Degraded, Offline, Clipping",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Offline' WHEN {status_noise} < 0.08 THEN 'Degraded' WHEN {status_noise} < 0.15 THEN 'Clipping' ELSE 'Online' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Commercial": {
+          "5,6,7,8": 0.08,
+          "11,12,1": -0.04
+        },
+        "Industrial": {
+          "5,6,7,8": 0.07,
+          "11,12,1": -0.04
+        },
+        "Municipal": {
+          "6,7,8": 0.07
+        },
+        "Campus": {
+          "5,6,7": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "site_id": "SS-COM-001",
+          "site_name": "Sunbelt Office Park",
+          "site_type": "Commercial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-COM-002",
+          "site_name": "Metro Tower Complex",
+          "site_type": "Commercial",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-COM-003",
+          "site_name": "Parkway Business Center",
+          "site_type": "Commercial",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-COM-004",
+          "site_name": "Harbor Point Retail",
+          "site_type": "Commercial",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-COM-005",
+          "site_name": "Valley Green Mall",
+          "site_type": "Commercial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-IND-006",
+          "site_name": "Desert Manufacturing Hub",
+          "site_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-IND-007",
+          "site_name": "Lakefront Warehouse Dist",
+          "site_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-IND-008",
+          "site_name": "Ridgeline Data Center",
+          "site_type": "Industrial",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-IND-009",
+          "site_name": "Ironworks Industrial Park",
+          "site_type": "Industrial",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-IND-010",
+          "site_name": "Prairie Logistics Depot",
+          "site_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-MUN-011",
+          "site_name": "City Hall Solar Array",
+          "site_type": "Municipal",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-MUN-012",
+          "site_name": "Civic Center Rooftop",
+          "site_type": "Municipal",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-MUN-013",
+          "site_name": "Water Treatment Solar",
+          "site_type": "Municipal",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-MUN-014",
+          "site_name": "Fire Station 7 Solar",
+          "site_type": "Municipal",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-MUN-015",
+          "site_name": "Community Recreation Center",
+          "site_type": "Municipal",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-CAM-016",
+          "site_name": "State University North",
+          "site_type": "Campus",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-CAM-017",
+          "site_name": "Tech Institute Solar",
+          "site_type": "Campus",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-CAM-018",
+          "site_name": "Medical Center Campus",
+          "site_type": "Campus",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-CAM-019",
+          "site_name": "Research Park Solar",
+          "site_type": "Campus",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-CAM-020",
+          "site_name": "Community College Array",
+          "site_type": "Campus",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Commercial": 0.035,
+        "Industrial": 0.03,
+        "Municipal": 0.028,
+        "Campus": 0.027
+      }
+    },
+    {
+      "table_name": "generation_readings",
+      "description": "Real-time generation readings with grid export, self-consumption, and demand charge data.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('GR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.site_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "site_id",
+          "sql_type": "STRING",
+          "comment": "Site identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "site_type",
+          "sql_type": "STRING",
+          "comment": "Site type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "grid_export_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy exported to grid in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 2000.0, 2)"
+        },
+        {
+          "name": "self_consumption_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy consumed on-site in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 3900.0), 2)"
+        },
+        {
+          "name": "grid_import_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy imported from grid in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 1950.0), 2)"
+        },
+        {
+          "name": "peak_demand_kw",
+          "sql_type": "DOUBLE",
+          "comment": "Peak demand in kW",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 900.0), 2)"
+        },
+        {
+          "name": "demand_charge_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Demand charge in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 950.0), 2)"
+        },
+        {
+          "name": "net_meter_credit_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Net metering credit in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 1500.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Commercial": {
+          "5,6,7,8": 0.08,
+          "11,12,1": -0.04
+        },
+        "Industrial": {
+          "5,6,7,8": 0.07
+        },
+        "Municipal": {
+          "6,7,8": 0.07
+        },
+        "Campus": {
+          "5,6,7": 0.06
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "site_id": "SS-COM-001",
+          "site_name": "Sunbelt Office Park",
+          "site_type": "Commercial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-COM-002",
+          "site_name": "Metro Tower Complex",
+          "site_type": "Commercial",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-COM-003",
+          "site_name": "Parkway Business Center",
+          "site_type": "Commercial",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-COM-004",
+          "site_name": "Harbor Point Retail",
+          "site_type": "Commercial",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-COM-005",
+          "site_name": "Valley Green Mall",
+          "site_type": "Commercial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-IND-006",
+          "site_name": "Desert Manufacturing Hub",
+          "site_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-IND-007",
+          "site_name": "Lakefront Warehouse Dist",
+          "site_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-IND-008",
+          "site_name": "Ridgeline Data Center",
+          "site_type": "Industrial",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-IND-009",
+          "site_name": "Ironworks Industrial Park",
+          "site_type": "Industrial",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-IND-010",
+          "site_name": "Prairie Logistics Depot",
+          "site_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-MUN-011",
+          "site_name": "City Hall Solar Array",
+          "site_type": "Municipal",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-MUN-012",
+          "site_name": "Civic Center Rooftop",
+          "site_type": "Municipal",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-MUN-013",
+          "site_name": "Water Treatment Solar",
+          "site_type": "Municipal",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-MUN-014",
+          "site_name": "Fire Station 7 Solar",
+          "site_type": "Municipal",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-MUN-015",
+          "site_name": "Community Recreation Center",
+          "site_type": "Municipal",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-CAM-016",
+          "site_name": "State University North",
+          "site_type": "Campus",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-CAM-017",
+          "site_name": "Tech Institute Solar",
+          "site_type": "Campus",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-CAM-018",
+          "site_name": "Medical Center Campus",
+          "site_type": "Campus",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-CAM-019",
+          "site_name": "Research Park Solar",
+          "site_type": "Campus",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-CAM-020",
+          "site_name": "Community College Array",
+          "site_type": "Campus",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Commercial": 0.035,
+        "Industrial": 0.03,
+        "Municipal": 0.028,
+        "Campus": 0.027
+      }
+    },
+    {
+      "table_name": "battery_snapshots",
+      "description": "Weekly battery storage snapshots with state of charge, cycle counts, and degradation tracking.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique battery snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BAT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.site_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of battery snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "site_id",
+          "sql_type": "STRING",
+          "comment": "Site identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "site_type",
+          "sql_type": "STRING",
+          "comment": "Site type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "state_of_charge_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Battery state of charge 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 85.0), 1)"
+        },
+        {
+          "name": "cycle_count",
+          "sql_type": "INT",
+          "comment": "Cumulative charge/discharge cycles",
+          "is_dimension": false,
+          "generation_expr": "CAST(50 + FLOOR({qty_noise} * 2950) AS INT)"
+        },
+        {
+          "name": "health_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Battery health as percentage of original capacity",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80.0 + ({qty_noise} * 20.0), 1)"
+        },
+        {
+          "name": "discharge_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy discharged during period in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 1950.0), 2)"
+        },
+        {
+          "name": "charge_kwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy charged during period in kWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(55.0 + ({qty_noise} * 2045.0), 2)"
+        },
+        {
+          "name": "battery_status",
+          "sql_type": "STRING",
+          "comment": "Battery status: Charging, Discharging, Idle, Fault",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fault' WHEN {status_noise} < 0.25 THEN 'Discharging' WHEN {status_noise} < 0.50 THEN 'Charging' ELSE 'Idle' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Commercial": {
+          "6,7,8": 0.07
+        },
+        "Industrial": {
+          "6,7,8": 0.06
+        },
+        "Municipal": {
+          "7,8": 0.05
+        },
+        "Campus": {
+          "9,10": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "site_id": "SS-COM-001",
+          "site_name": "Sunbelt Office Park",
+          "site_type": "Commercial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-COM-002",
+          "site_name": "Metro Tower Complex",
+          "site_type": "Commercial",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-COM-003",
+          "site_name": "Parkway Business Center",
+          "site_type": "Commercial",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-COM-004",
+          "site_name": "Harbor Point Retail",
+          "site_type": "Commercial",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-COM-005",
+          "site_name": "Valley Green Mall",
+          "site_type": "Commercial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-IND-006",
+          "site_name": "Desert Manufacturing Hub",
+          "site_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-IND-007",
+          "site_name": "Lakefront Warehouse Dist",
+          "site_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-IND-008",
+          "site_name": "Ridgeline Data Center",
+          "site_type": "Industrial",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-IND-009",
+          "site_name": "Ironworks Industrial Park",
+          "site_type": "Industrial",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-IND-010",
+          "site_name": "Prairie Logistics Depot",
+          "site_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-MUN-011",
+          "site_name": "City Hall Solar Array",
+          "site_type": "Municipal",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-MUN-012",
+          "site_name": "Civic Center Rooftop",
+          "site_type": "Municipal",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-MUN-013",
+          "site_name": "Water Treatment Solar",
+          "site_type": "Municipal",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-MUN-014",
+          "site_name": "Fire Station 7 Solar",
+          "site_type": "Municipal",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-MUN-015",
+          "site_name": "Community Recreation Center",
+          "site_type": "Municipal",
+          "region": "Midwest"
+        },
+        {
+          "site_id": "SS-CAM-016",
+          "site_name": "State University North",
+          "site_type": "Campus",
+          "region": "Southeast"
+        },
+        {
+          "site_id": "SS-CAM-017",
+          "site_name": "Tech Institute Solar",
+          "site_type": "Campus",
+          "region": "West"
+        },
+        {
+          "site_id": "SS-CAM-018",
+          "site_name": "Medical Center Campus",
+          "site_type": "Campus",
+          "region": "Northeast"
+        },
+        {
+          "site_id": "SS-CAM-019",
+          "site_name": "Research Park Solar",
+          "site_type": "Campus",
+          "region": "Southwest"
+        },
+        {
+          "site_id": "SS-CAM-020",
+          "site_name": "Community College Array",
+          "site_type": "Campus",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Commercial": 0.035,
+        "Industrial": 0.03,
+        "Municipal": 0.028,
+        "Campus": 0.027
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "solar_kpi_monthly",
+      "source_table": "solar_installations",
+      "dimensions": [
+        {
+          "name": "record_date",
+          "expr": "record_date"
+        },
+        {
+          "name": "site_type",
+          "expr": "site_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "inverter_status",
+          "expr": "inverter_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_solar_generation_kwh",
+          "expr": "SUM(solar_generation_kwh)",
+          "comment": "Total solar generation in kWh"
+        },
+        {
+          "name": "avg_panel_efficiency",
+          "expr": "AVG(panel_efficiency_pct)",
+          "comment": "Average panel efficiency percentage"
+        },
+        {
+          "name": "avg_irradiance",
+          "expr": "AVG(irradiance_kwh_m2)",
+          "comment": "Average solar irradiance kWh/m2"
+        },
+        {
+          "name": "online_site_count",
+          "expr": "COUNT(DISTINCT CASE WHEN inverter_status = 'Online' THEN site_id END)",
+          "comment": "Sites with online inverters"
+        },
+        {
+          "name": "total_site_count",
+          "expr": "COUNT(DISTINCT site_id)",
+          "comment": "Total site count"
+        },
+        {
+          "name": "max_solar_generation_kwh",
+          "expr": "MAX(solar_generation_kwh)",
+          "comment": "Maximum solar generation kwh"
+        }
+      ]
+    },
+    {
+      "view_name": "battery_kpi_monthly",
+      "source_table": "battery_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "site_type",
+          "expr": "site_type"
+        },
+        {
+          "name": "battery_status",
+          "expr": "battery_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_state_of_charge",
+          "expr": "AVG(state_of_charge_pct)",
+          "comment": "Average battery state of charge"
+        },
+        {
+          "name": "avg_battery_health",
+          "expr": "AVG(health_pct)",
+          "comment": "Average battery health percentage"
+        },
+        {
+          "name": "total_discharge_kwh",
+          "expr": "SUM(discharge_kwh)",
+          "comment": "Total energy discharged kWh"
+        },
+        {
+          "name": "total_charge_kwh",
+          "expr": "SUM(charge_kwh)",
+          "comment": "Total energy charged kWh"
+        },
+        {
+          "name": "fault_count",
+          "expr": "COUNT(DISTINCT CASE WHEN battery_status = 'Fault' THEN snapshot_id END)",
+          "comment": "Battery fault count"
+        },
+        {
+          "name": "unique_site_count",
+          "expr": "COUNT(DISTINCT site_id)",
+          "comment": "Number of distinct sites"
+        },
+        {
+          "name": "max_state_of_charge_percent",
+          "expr": "MAX(state_of_charge_pct)",
+          "comment": "Maximum state of charge pct"
+        },
+        {
+          "name": "total_cycle_count",
+          "expr": "SUM(cycle_count)",
+          "comment": "Total cycle count"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The solar_kpi_monthly view (source: solar_installations) has dimensions: record_date, site_type, region, inverter_status. Measures: total_solar_generation_kwh, avg_panel_efficiency, avg_irradiance, online_site_count, total_site_count. The battery_kpi_monthly view (source: battery_snapshots) has dimensions: snapshot_date, site_type, battery_status. Measures: avg_state_of_charge, avg_battery_health, total_discharge_kwh, total_charge_kwh, fault_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. site_id, site_name).",
+  "sample_questions": [
+    "What is the monthly trend in online site count?",
+    "How has unique total sites changed over time?",
+    "What is the monthly trend in highest solar generation kwh?",
+    "How has total solar generation in kwh changed over time?",
+    "What is the monthly trend in fault count?",
+    "How has unique sites changed over time?",
+    "What is the monthly trend in highest state of charge percent?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest solar generation kwh?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(max_solar_generation_kwh) AS max_solar_generation_kwh",
+        "FROM {fqn}.solar_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has total solar generation in kwh changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_solar_generation_kwh) AS total_solar_generation_kwh",
+        "FROM {fqn}.solar_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest state of charge percent?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_state_of_charge_percent) AS max_state_of_charge_percent",
+        "FROM {fqn}.battery_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total solar irradiance in kwh/m2 break down by solar+storage site identifier for 'Offline' records?",
+      "sql_lines": [
+        "SELECT site_id, COUNT(*) AS record_count, SUM(irradiance_kwh_m2) AS total_irradiance_kwh_m2",
+        "FROM {fqn}.solar_installations",
+        "WHERE inverter_status = 'Offline' GROUP BY site_id ORDER BY total_irradiance_kwh_m2 DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total energy exported to grid in kwh over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(grid_export_kwh) AS total_grid_export_kwh",
+        "FROM {fqn}.generation_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has the average battery state of charge 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, AVG(state_of_charge_pct) AS avg_state_of_charge_pct",
+        "FROM {fqn}.battery_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has online site count changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(online_site_count) AS online_site_count",
+        "FROM {fqn}.solar_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "solar_installations.inverter_status = 'Online'",
+        "display_name": "online inverters",
+        "synonyms": [
+          "active sites",
+          "generating sites"
+        ],
+        "instruction": "Use when filtering to sites with fully operational inverters."
+      },
+      {
+        "sql": "battery_snapshots.battery_status = 'Fault'",
+        "display_name": "battery faults",
+        "synonyms": [
+          "failed batteries",
+          "battery errors"
+        ],
+        "instruction": "Use when filtering to batteries with fault status."
+      },
+      {
+        "sql": "battery_snapshots.health_pct < 85",
+        "display_name": "degraded batteries",
+        "synonyms": [
+          "aging batteries",
+          "low health"
+        ],
+        "instruction": "Use when filtering to batteries below 85% health."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "gen_month",
+        "sql": "DATE_TRUNC('month', solar_installations.record_date)",
+        "display_name": "generation month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "self_consumption_ratio",
+        "sql": "generation_readings.self_consumption_kwh / NULLIF(generation_readings.self_consumption_kwh + generation_readings.grid_export_kwh, 0)",
+        "display_name": "self-consumption ratio",
+        "synonyms": [
+          "on-site usage ratio"
+        ]
+      },
+      {
+        "alias": "round_trip_efficiency",
+        "sql": "battery_snapshots.discharge_kwh / NULLIF(battery_snapshots.charge_kwh, 0)",
+        "display_name": "battery round-trip efficiency",
+        "synonyms": [
+          "storage efficiency"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_solar_gen",
+        "sql": "SUM(solar_installations.solar_generation_kwh)",
+        "display_name": "total solar generation kWh",
+        "synonyms": [
+          "solar output",
+          "PV generation"
+        ]
+      },
+      {
+        "alias": "total_demand_charges",
+        "sql": "SUM(generation_readings.demand_charge_usd)",
+        "display_name": "total demand charges USD",
+        "synonyms": [
+          "demand costs",
+          "peak charges"
+        ]
+      },
+      {
+        "alias": "avg_battery_health",
+        "sql": "AVG(battery_snapshots.health_pct)",
+        "display_name": "average battery health",
+        "synonyms": [
+          "battery degradation",
+          "storage health"
+        ]
+      },
+      {
+        "alias": "total_grid_export",
+        "sql": "SUM(generation_readings.grid_export_kwh)",
+        "display_name": "total grid export kWh",
+        "synonyms": [
+          "energy exported",
+          "net metering"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in online site count?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(online_site_count) AS online_site_count",
+        "FROM {fqn}.solar_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has unique total sites changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_site_count) AS total_site_count",
+        "FROM {fqn}.solar_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in fault count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(fault_count) AS fault_count",
+        "FROM {fqn}.battery_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique sites changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_site_count) AS unique_site_count",
+        "FROM {fqn}.battery_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top solar+storage site identifier by total solar irradiance in kwh/m2?",
+      "sql_lines": [
+        "SELECT site_id, SUM(irradiance_kwh_m2) AS total_irradiance_kwh_m2",
+        "FROM {fqn}.solar_installations",
+        "GROUP BY site_id ORDER BY total_irradiance_kwh_m2 DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of reading?",
+      "sql_lines": [
+        "SELECT reading_date, COUNT(*) AS record_count",
+        "FROM {fqn}.generation_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How many records are there per date of battery snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.battery_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

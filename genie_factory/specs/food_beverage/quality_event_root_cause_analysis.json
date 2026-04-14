@@ -1,0 +1,1021 @@
+{
+  "company_name": "FreshGuard Foods",
+  "industry": "Food & Beverage",
+  "use_case": "Quality event tracking and root cause analysis for food production",
+  "space_title": "FreshGuard Foods - Quality Event Root Cause Analysis 🔍",
+  "space_description": "Food quality analytics for FreshGuard Foods. Ask about quality events, root causes, corrective actions, and trend analysis across 20 food product lines.",
+  "schema_basename": "fb_quality_rca",
+  "tables": [
+    {
+      "table_name": "product_lines",
+      "description": "Daily quality event records per product line with severity, root cause, and disposition.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Quality event ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.product_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Event date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Production line",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Minor, Major, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.25 THEN 'Major' ELSE 'Minor' END"
+        },
+        {
+          "name": "root_cause",
+          "sql_type": "STRING",
+          "comment": "Cause: Equipment, Ingredient, Process, Contamination, Packaging, Handling",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Equipment' WHEN {status_noise} < 0.40 THEN 'Process' WHEN {status_noise} < 0.55 THEN 'Ingredient' WHEN {status_noise} < 0.70 THEN 'Contamination' WHEN {status_noise} < 0.85 THEN 'Packaging' ELSE 'Handling' END"
+        },
+        {
+          "name": "units_affected",
+          "sql_type": "INT",
+          "comment": "Units affected",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 4990) AS INT)"
+        },
+        {
+          "name": "cost_impact_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cost impact USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 49900.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "FP-001",
+          "product_name": "Whole Wheat Bread 24oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-002",
+          "product_name": "Sourdough Loaf 20oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-003",
+          "product_name": "Cinnamon Rolls 6pk",
+          "product_category": "Bakery",
+          "production_line": "Line B"
+        },
+        {
+          "product_id": "FP-004",
+          "product_name": "2% Milk Gallon",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-005",
+          "product_name": "Greek Yogurt 32oz",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-006",
+          "product_name": "Cheddar Cheese Block 16oz",
+          "product_category": "Dairy",
+          "production_line": "Line D"
+        },
+        {
+          "product_id": "FP-007",
+          "product_name": "Orange Juice 64oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-008",
+          "product_name": "Apple Juice 48oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-009",
+          "product_name": "Deli Turkey Breast 8oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-010",
+          "product_name": "Roast Beef Sliced 6oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-011",
+          "product_name": "Ham Off-the-Bone 10oz",
+          "product_category": "Deli",
+          "production_line": "Line G"
+        },
+        {
+          "product_id": "FP-012",
+          "product_name": "Mixed Salad Greens 10oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-013",
+          "product_name": "Baby Carrots 16oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-014",
+          "product_name": "Fresh Strawberries 1lb",
+          "product_category": "Produce",
+          "production_line": "Line I"
+        },
+        {
+          "product_id": "FP-015",
+          "product_name": "Ground Beef 80/20 1lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-016",
+          "product_name": "Chicken Breast Boneless 1.5lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-017",
+          "product_name": "Atlantic Salmon Fillet 8oz",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-018",
+          "product_name": "Shrimp 21-25ct 1lb",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-019",
+          "product_name": "Frozen Pizza Pepperoni 12in",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        },
+        {
+          "product_id": "FP-020",
+          "product_name": "Ice Cream Vanilla 48oz",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.04,
+        "Protein": 0.032,
+        "Seafood": 0.022,
+        "Frozen": 0.025
+      }
+    },
+    {
+      "table_name": "quality_events",
+      "description": "Weekly quality inspection records with test results and compliance scores.",
+      "columns": [
+        {
+          "name": "inspection_id",
+          "sql_type": "STRING",
+          "comment": "Inspection ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QI-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.product_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "inspection_date",
+          "sql_type": "DATE",
+          "comment": "Inspection date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Line",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "microbe_count_cfu",
+          "sql_type": "INT",
+          "comment": "Microbial count CFU/g",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 1000) AS INT)"
+        },
+        {
+          "name": "ph_level",
+          "sql_type": "DOUBLE",
+          "comment": "pH level",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.5 + ({qty_noise} * 4.0), 2)"
+        },
+        {
+          "name": "temperature_compliance",
+          "sql_type": "STRING",
+          "comment": "Temp compliance: Pass, Marginal, Fail",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fail' WHEN {status_noise} < 0.12 THEN 'Marginal' ELSE 'Pass' END"
+        },
+        {
+          "name": "overall_score",
+          "sql_type": "DOUBLE",
+          "comment": "Overall quality score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(65.0 + ({qty_noise} * 35.0), 1)"
+        },
+        {
+          "name": "disposition",
+          "sql_type": "STRING",
+          "comment": "Disposition: Released, Hold, Rework, Rejected",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Rejected' WHEN {status_noise} < 0.10 THEN 'Rework' WHEN {status_noise} < 0.20 THEN 'Hold' ELSE 'Released' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "FP-001",
+          "product_name": "Whole Wheat Bread 24oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-002",
+          "product_name": "Sourdough Loaf 20oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-003",
+          "product_name": "Cinnamon Rolls 6pk",
+          "product_category": "Bakery",
+          "production_line": "Line B"
+        },
+        {
+          "product_id": "FP-004",
+          "product_name": "2% Milk Gallon",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-005",
+          "product_name": "Greek Yogurt 32oz",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-006",
+          "product_name": "Cheddar Cheese Block 16oz",
+          "product_category": "Dairy",
+          "production_line": "Line D"
+        },
+        {
+          "product_id": "FP-007",
+          "product_name": "Orange Juice 64oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-008",
+          "product_name": "Apple Juice 48oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-009",
+          "product_name": "Deli Turkey Breast 8oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-010",
+          "product_name": "Roast Beef Sliced 6oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-011",
+          "product_name": "Ham Off-the-Bone 10oz",
+          "product_category": "Deli",
+          "production_line": "Line G"
+        },
+        {
+          "product_id": "FP-012",
+          "product_name": "Mixed Salad Greens 10oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-013",
+          "product_name": "Baby Carrots 16oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-014",
+          "product_name": "Fresh Strawberries 1lb",
+          "product_category": "Produce",
+          "production_line": "Line I"
+        },
+        {
+          "product_id": "FP-015",
+          "product_name": "Ground Beef 80/20 1lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-016",
+          "product_name": "Chicken Breast Boneless 1.5lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-017",
+          "product_name": "Atlantic Salmon Fillet 8oz",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-018",
+          "product_name": "Shrimp 21-25ct 1lb",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-019",
+          "product_name": "Frozen Pizza Pepperoni 12in",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        },
+        {
+          "product_id": "FP-020",
+          "product_name": "Ice Cream Vanilla 48oz",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.04,
+        "Protein": 0.032,
+        "Seafood": 0.022,
+        "Frozen": 0.025
+      }
+    },
+    {
+      "table_name": "inspection_records",
+      "description": "Monthly quality KPI summaries with CAPA tracking and regulatory audit results.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.product_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Line",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "events_count",
+          "sql_type": "INT",
+          "comment": "Quality events in month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 20) AS INT)"
+        },
+        {
+          "name": "capa_open",
+          "sql_type": "INT",
+          "comment": "Open CAPAs",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 10) AS INT)"
+        },
+        {
+          "name": "capa_closed",
+          "sql_type": "INT",
+          "comment": "Closed CAPAs",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 15) AS INT)"
+        },
+        {
+          "name": "audit_score",
+          "sql_type": "DOUBLE",
+          "comment": "Regulatory audit score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70.0 + ({qty_noise} * 30.0), 1)"
+        },
+        {
+          "name": "compliance_status",
+          "sql_type": "STRING",
+          "comment": "Status: Compliant, Observation, Non-Conformance",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Non-Conformance' WHEN {status_noise} < 0.20 THEN 'Observation' ELSE 'Compliant' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "FP-001",
+          "product_name": "Whole Wheat Bread 24oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-002",
+          "product_name": "Sourdough Loaf 20oz",
+          "product_category": "Bakery",
+          "production_line": "Line A"
+        },
+        {
+          "product_id": "FP-003",
+          "product_name": "Cinnamon Rolls 6pk",
+          "product_category": "Bakery",
+          "production_line": "Line B"
+        },
+        {
+          "product_id": "FP-004",
+          "product_name": "2% Milk Gallon",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-005",
+          "product_name": "Greek Yogurt 32oz",
+          "product_category": "Dairy",
+          "production_line": "Line C"
+        },
+        {
+          "product_id": "FP-006",
+          "product_name": "Cheddar Cheese Block 16oz",
+          "product_category": "Dairy",
+          "production_line": "Line D"
+        },
+        {
+          "product_id": "FP-007",
+          "product_name": "Orange Juice 64oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-008",
+          "product_name": "Apple Juice 48oz",
+          "product_category": "Beverages",
+          "production_line": "Line E"
+        },
+        {
+          "product_id": "FP-009",
+          "product_name": "Deli Turkey Breast 8oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-010",
+          "product_name": "Roast Beef Sliced 6oz",
+          "product_category": "Deli",
+          "production_line": "Line F"
+        },
+        {
+          "product_id": "FP-011",
+          "product_name": "Ham Off-the-Bone 10oz",
+          "product_category": "Deli",
+          "production_line": "Line G"
+        },
+        {
+          "product_id": "FP-012",
+          "product_name": "Mixed Salad Greens 10oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-013",
+          "product_name": "Baby Carrots 16oz",
+          "product_category": "Produce",
+          "production_line": "Line H"
+        },
+        {
+          "product_id": "FP-014",
+          "product_name": "Fresh Strawberries 1lb",
+          "product_category": "Produce",
+          "production_line": "Line I"
+        },
+        {
+          "product_id": "FP-015",
+          "product_name": "Ground Beef 80/20 1lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-016",
+          "product_name": "Chicken Breast Boneless 1.5lb",
+          "product_category": "Protein",
+          "production_line": "Line J"
+        },
+        {
+          "product_id": "FP-017",
+          "product_name": "Atlantic Salmon Fillet 8oz",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-018",
+          "product_name": "Shrimp 21-25ct 1lb",
+          "product_category": "Seafood",
+          "production_line": "Line K"
+        },
+        {
+          "product_id": "FP-019",
+          "product_name": "Frozen Pizza Pepperoni 12in",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        },
+        {
+          "product_id": "FP-020",
+          "product_name": "Ice Cream Vanilla 48oz",
+          "product_category": "Frozen",
+          "production_line": "Line L"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.04,
+        "Protein": 0.032,
+        "Seafood": 0.022,
+        "Frozen": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "quality_kpi_monthly",
+      "source_table": "product_lines",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        },
+        {
+          "name": "root_cause",
+          "expr": "root_cause"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total quality events"
+        },
+        {
+          "name": "total_units_affected",
+          "expr": "SUM(units_affected)",
+          "comment": "Total units affected"
+        },
+        {
+          "name": "total_cost_impact",
+          "expr": "SUM(cost_impact_usd)",
+          "comment": "Total cost impact USD"
+        },
+        {
+          "name": "critical_events",
+          "expr": "COUNT(DISTINCT CASE WHEN severity = 'Critical' THEN event_id END)",
+          "comment": "Critical event count"
+        },
+        {
+          "name": "avg_cost_per_event",
+          "expr": "AVG(cost_impact_usd)",
+          "comment": "Avg cost per event"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_units_affected",
+          "expr": "MAX(units_affected)",
+          "comment": "Maximum units affected"
+        }
+      ]
+    },
+    {
+      "view_name": "inspection_kpi_monthly",
+      "source_table": "inspection_records",
+      "dimensions": [
+        {
+          "name": "kpi_month",
+          "expr": "kpi_month"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "production_line",
+          "expr": "production_line"
+        },
+        {
+          "name": "compliance_status",
+          "expr": "compliance_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events_count",
+          "expr": "SUM(events_count)",
+          "comment": "Total monthly events"
+        },
+        {
+          "name": "total_capa_open",
+          "expr": "SUM(capa_open)",
+          "comment": "Total open CAPAs"
+        },
+        {
+          "name": "total_capa_closed",
+          "expr": "SUM(capa_closed)",
+          "comment": "Total closed CAPAs"
+        },
+        {
+          "name": "avg_audit_score",
+          "expr": "AVG(audit_score)",
+          "comment": "Avg audit score"
+        },
+        {
+          "name": "nc_count",
+          "expr": "COUNT(DISTINCT CASE WHEN compliance_status = 'Non-Conformance' THEN kpi_id END)",
+          "comment": "Non-conformance count"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_events_count",
+          "expr": "MAX(events_count)",
+          "comment": "Maximum events count"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_kpi_monthly view (source: product_lines) has dimensions: event_date, product_category, severity, root_cause. Measures: total_events, total_units_affected, total_cost_impact, critical_events, avg_cost_per_event. The inspection_kpi_monthly view (source: inspection_records) has dimensions: kpi_month, product_category, production_line, compliance_status. Measures: total_events_count, total_capa_open, total_capa_closed, avg_audit_score, nc_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "sample_questions": [
+    "What is the monthly trend in critical events count?",
+    "How has unique total eventss changed over time?",
+    "What is the monthly trend in unique products?",
+    "How has highest units affected changed over time?",
+    "What is the monthly trend in nc count?",
+    "How has unique products changed over time?",
+    "What is the monthly trend in highest events count?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique products?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(unique_product_count) AS unique_product_count",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest units affected changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_units_affected) AS max_units_affected",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest events count?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_events_count) AS max_events_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has nc count changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(nc_count) AS nc_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total units affected over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(units_affected) AS total_units_affected",
+        "FROM {fqn}.product_lines",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total microbial count cfu/g over time?",
+      "sql_lines": [
+        "SELECT inspection_date, SUM(microbe_count_cfu) AS total_microbe_count_cfu",
+        "FROM {fqn}.quality_events",
+        "GROUP BY inspection_date ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "How has the average regulatory audit score 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(audit_score) AS avg_audit_score",
+        "FROM {fqn}.inspection_records",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "product_lines.severity = 'Critical'",
+        "display_name": "critical events",
+        "synonyms": [
+          "severe"
+        ],
+        "instruction": "Filter critical."
+      },
+      {
+        "sql": "quality_events.disposition = 'Rejected'",
+        "display_name": "rejected",
+        "synonyms": [
+          "failed"
+        ],
+        "instruction": "Filter rejected."
+      },
+      {
+        "sql": "inspection_records.compliance_status = 'Non-Conformance'",
+        "display_name": "non-conformances",
+        "synonyms": [
+          "NC"
+        ],
+        "instruction": "Filter NCs."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', product_lines.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "capa_closure_rate",
+        "sql": "inspection_records.capa_closed * 100.0 / NULLIF(inspection_records.capa_open + inspection_records.capa_closed, 0)",
+        "display_name": "CAPA closure rate",
+        "synonyms": [
+          "closure pct"
+        ]
+      },
+      {
+        "alias": "defect_rate",
+        "sql": "product_lines.units_affected * 1.0 / 5000",
+        "display_name": "defect rate",
+        "synonyms": [
+          "quality rate"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_events",
+        "sql": "COUNT(DISTINCT product_lines.event_id)",
+        "display_name": "total events",
+        "synonyms": [
+          "quality events"
+        ]
+      },
+      {
+        "alias": "total_cost",
+        "sql": "SUM(product_lines.cost_impact_usd)",
+        "display_name": "total cost impact",
+        "synonyms": [
+          "quality cost"
+        ]
+      },
+      {
+        "alias": "avg_audit",
+        "sql": "AVG(inspection_records.audit_score)",
+        "display_name": "avg audit score",
+        "synonyms": [
+          "compliance score"
+        ]
+      },
+      {
+        "alias": "total_open_capa",
+        "sql": "SUM(inspection_records.capa_open)",
+        "display_name": "total open CAPAs",
+        "synonyms": [
+          "open actions"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical events count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(critical_events) AS critical_events",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique total eventss changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in nc count?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(nc_count) AS nc_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has unique products changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(unique_product_count) AS unique_product_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What are the top product id by total units affected?",
+      "sql_lines": [
+        "SELECT product_id, SUM(units_affected) AS total_units_affected",
+        "FROM {fqn}.product_lines",
+        "GROUP BY product_id ORDER BY total_units_affected DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average overall quality score 0-100 by category?",
+      "sql_lines": [
+        "SELECT product_category, AVG(overall_score) AS avg_overall_score",
+        "FROM {fqn}.quality_events",
+        "GROUP BY product_category ORDER BY avg_overall_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.inspection_records",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1029 @@
+{
+  "company_name": "FoodPlan Analytics",
+  "industry": "Food & Beverage",
+  "use_case": "Scenario planning and business simulation for food product portfolios",
+  "space_title": "FoodPlan Analytics - Scenario Planning & Simulation 🎯",
+  "space_description": "Scenario planning analytics for FoodPlan Analytics. Ask about market scenarios, portfolio performance, pricing simulations, and demand sensitivity across 20 product categories.",
+  "schema_basename": "fb_scenario_planning",
+  "tables": [
+    {
+      "table_name": "product_categories",
+      "description": "Daily scenario simulation runs with demand, pricing, and margin assumptions.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Scenario run ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.category_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Run date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "category_id",
+          "sql_type": "STRING",
+          "comment": "Category ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "category_name",
+          "sql_type": "STRING",
+          "comment": "Category name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment",
+          "sql_type": "STRING",
+          "comment": "Segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "channel",
+          "sql_type": "STRING",
+          "comment": "Channel",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_type",
+          "sql_type": "STRING",
+          "comment": "Scenario: Base, Optimistic, Pessimistic, Disruption",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Disruption' WHEN {status_noise} < 0.30 THEN 'Pessimistic' WHEN {status_noise} < 0.55 THEN 'Optimistic' ELSE 'Base' END"
+        },
+        {
+          "name": "simulated_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Simulated revenue USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10000.0 + ({qty_noise} * 190000.0), 2)"
+        },
+        {
+          "name": "simulated_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Simulated margin 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 40.0), 2)"
+        },
+        {
+          "name": "price_change_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Price change from baseline pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(({qty_noise} - 0.5) * 20.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "category_id": "PC-001",
+          "category_name": "Premium Artisan Bread",
+          "segment": "Bakery",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-002",
+          "category_name": "Value White Bread",
+          "segment": "Bakery",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-003",
+          "category_name": "Organic Sourdough",
+          "segment": "Bakery",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-004",
+          "category_name": "Whole Milk Family",
+          "segment": "Dairy",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-005",
+          "category_name": "Plant-Based Yogurt",
+          "segment": "Dairy",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-006",
+          "category_name": "Aged Cheese Selection",
+          "segment": "Dairy",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-007",
+          "category_name": "Fresh Squeezed Juice",
+          "segment": "Beverages",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-008",
+          "category_name": "Sparkling Water Line",
+          "segment": "Beverages",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-009",
+          "category_name": "Natural Deli Meats",
+          "segment": "Deli",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-010",
+          "category_name": "Budget Lunch Packs",
+          "segment": "Deli",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-011",
+          "category_name": "Organic Salad Kits",
+          "segment": "Produce",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-012",
+          "category_name": "Seasonal Fruit Box",
+          "segment": "Produce",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-013",
+          "category_name": "Grass-Fed Beef",
+          "segment": "Protein",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-014",
+          "category_name": "Free-Range Chicken",
+          "segment": "Protein",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-015",
+          "category_name": "Wild-Caught Seafood",
+          "segment": "Seafood",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-016",
+          "category_name": "Frozen Shrimp Value",
+          "segment": "Seafood",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-017",
+          "category_name": "Gourmet Frozen Meals",
+          "segment": "Frozen",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-018",
+          "category_name": "Family Frozen Pizza",
+          "segment": "Frozen",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-019",
+          "category_name": "Kids Snack Packs",
+          "segment": "Snacks",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-020",
+          "category_name": "Trail Mix Variety",
+          "segment": "Snacks",
+          "channel": "Specialty"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.032,
+        "Protein": 0.03,
+        "Seafood": 0.022,
+        "Frozen": 0.025,
+        "Snacks": 0.028
+      }
+    },
+    {
+      "table_name": "scenario_runs",
+      "description": "Weekly market condition snapshots with input costs, consumer trends, and competitive dynamics.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('MS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.category_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "category_id",
+          "sql_type": "STRING",
+          "comment": "Category ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment",
+          "sql_type": "STRING",
+          "comment": "Segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "channel",
+          "sql_type": "STRING",
+          "comment": "Channel",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "input_cost_index",
+          "sql_type": "DOUBLE",
+          "comment": "Input cost index (100=baseline)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(85.0 + ({qty_noise} * 30.0), 1)"
+        },
+        {
+          "name": "consumer_sentiment_index",
+          "sql_type": "DOUBLE",
+          "comment": "Consumer sentiment 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 1)"
+        },
+        {
+          "name": "competitive_pressure",
+          "sql_type": "STRING",
+          "comment": "Pressure: Low, Moderate, High, Intense",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Intense' WHEN {status_noise} < 0.30 THEN 'High' WHEN {status_noise} < 0.60 THEN 'Moderate' ELSE 'Low' END"
+        },
+        {
+          "name": "market_share_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated market share 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+        },
+        {
+          "name": "demand_elasticity",
+          "sql_type": "DOUBLE",
+          "comment": "Price elasticity of demand",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.3 + ({qty_noise} * 2.2), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "category_id": "PC-001",
+          "category_name": "Premium Artisan Bread",
+          "segment": "Bakery",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-002",
+          "category_name": "Value White Bread",
+          "segment": "Bakery",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-003",
+          "category_name": "Organic Sourdough",
+          "segment": "Bakery",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-004",
+          "category_name": "Whole Milk Family",
+          "segment": "Dairy",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-005",
+          "category_name": "Plant-Based Yogurt",
+          "segment": "Dairy",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-006",
+          "category_name": "Aged Cheese Selection",
+          "segment": "Dairy",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-007",
+          "category_name": "Fresh Squeezed Juice",
+          "segment": "Beverages",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-008",
+          "category_name": "Sparkling Water Line",
+          "segment": "Beverages",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-009",
+          "category_name": "Natural Deli Meats",
+          "segment": "Deli",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-010",
+          "category_name": "Budget Lunch Packs",
+          "segment": "Deli",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-011",
+          "category_name": "Organic Salad Kits",
+          "segment": "Produce",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-012",
+          "category_name": "Seasonal Fruit Box",
+          "segment": "Produce",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-013",
+          "category_name": "Grass-Fed Beef",
+          "segment": "Protein",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-014",
+          "category_name": "Free-Range Chicken",
+          "segment": "Protein",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-015",
+          "category_name": "Wild-Caught Seafood",
+          "segment": "Seafood",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-016",
+          "category_name": "Frozen Shrimp Value",
+          "segment": "Seafood",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-017",
+          "category_name": "Gourmet Frozen Meals",
+          "segment": "Frozen",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-018",
+          "category_name": "Family Frozen Pizza",
+          "segment": "Frozen",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-019",
+          "category_name": "Kids Snack Packs",
+          "segment": "Snacks",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-020",
+          "category_name": "Trail Mix Variety",
+          "segment": "Snacks",
+          "channel": "Specialty"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.032,
+        "Protein": 0.03,
+        "Seafood": 0.022,
+        "Frozen": 0.025,
+        "Snacks": 0.028
+      }
+    },
+    {
+      "table_name": "market_snapshots",
+      "description": "Monthly scenario outcome aggregates with portfolio mix optimization and investment recommendations.",
+      "columns": [
+        {
+          "name": "outcome_id",
+          "sql_type": "STRING",
+          "comment": "Outcome ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SO-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.category_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "outcome_month",
+          "sql_type": "DATE",
+          "comment": "Outcome month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "category_id",
+          "sql_type": "STRING",
+          "comment": "Category ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment",
+          "sql_type": "STRING",
+          "comment": "Segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "channel",
+          "sql_type": "STRING",
+          "comment": "Channel",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "expected_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Expected monthly revenue USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 450000.0), 2)"
+        },
+        {
+          "name": "revenue_at_risk_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue at risk from downside scenarios",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 100000.0, 2)"
+        },
+        {
+          "name": "optimal_price_change_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Recommended price change pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(({qty_noise} - 0.4) * 15.0, 2)"
+        },
+        {
+          "name": "investment_priority",
+          "sql_type": "STRING",
+          "comment": "Priority: Invest, Maintain, Harvest, Divest",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Divest' WHEN {status_noise} < 0.25 THEN 'Harvest' WHEN {status_noise} < 0.55 THEN 'Maintain' ELSE 'Invest' END"
+        },
+        {
+          "name": "confidence_level_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Scenario confidence 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 45.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Produce": {
+          "5,6,7,8": 0.06
+        },
+        "Dairy": {
+          "3,4": 0.04
+        },
+        "Frozen": {
+          "6,7,8": 0.06
+        },
+        "Beverages": {
+          "6,7": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "category_id": "PC-001",
+          "category_name": "Premium Artisan Bread",
+          "segment": "Bakery",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-002",
+          "category_name": "Value White Bread",
+          "segment": "Bakery",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-003",
+          "category_name": "Organic Sourdough",
+          "segment": "Bakery",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-004",
+          "category_name": "Whole Milk Family",
+          "segment": "Dairy",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-005",
+          "category_name": "Plant-Based Yogurt",
+          "segment": "Dairy",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-006",
+          "category_name": "Aged Cheese Selection",
+          "segment": "Dairy",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-007",
+          "category_name": "Fresh Squeezed Juice",
+          "segment": "Beverages",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-008",
+          "category_name": "Sparkling Water Line",
+          "segment": "Beverages",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-009",
+          "category_name": "Natural Deli Meats",
+          "segment": "Deli",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-010",
+          "category_name": "Budget Lunch Packs",
+          "segment": "Deli",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-011",
+          "category_name": "Organic Salad Kits",
+          "segment": "Produce",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-012",
+          "category_name": "Seasonal Fruit Box",
+          "segment": "Produce",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-013",
+          "category_name": "Grass-Fed Beef",
+          "segment": "Protein",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-014",
+          "category_name": "Free-Range Chicken",
+          "segment": "Protein",
+          "channel": "Specialty"
+        },
+        {
+          "category_id": "PC-015",
+          "category_name": "Wild-Caught Seafood",
+          "segment": "Seafood",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-016",
+          "category_name": "Frozen Shrimp Value",
+          "segment": "Seafood",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-017",
+          "category_name": "Gourmet Frozen Meals",
+          "segment": "Frozen",
+          "channel": "Premium"
+        },
+        {
+          "category_id": "PC-018",
+          "category_name": "Family Frozen Pizza",
+          "segment": "Frozen",
+          "channel": "Value"
+        },
+        {
+          "category_id": "PC-019",
+          "category_name": "Kids Snack Packs",
+          "segment": "Snacks",
+          "channel": "Retail"
+        },
+        {
+          "category_id": "PC-020",
+          "category_name": "Trail Mix Variety",
+          "segment": "Snacks",
+          "channel": "Specialty"
+        }
+      ],
+      "category_distribution": {
+        "Bakery": 0.03,
+        "Dairy": 0.035,
+        "Beverages": 0.025,
+        "Deli": 0.028,
+        "Produce": 0.032,
+        "Protein": 0.03,
+        "Seafood": 0.022,
+        "Frozen": 0.025,
+        "Snacks": 0.028
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "scenario_kpi_monthly",
+      "source_table": "product_categories",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "segment",
+          "expr": "segment"
+        },
+        {
+          "name": "channel",
+          "expr": "channel"
+        },
+        {
+          "name": "scenario_type",
+          "expr": "scenario_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_simulated_revenue",
+          "expr": "AVG(simulated_revenue_usd)",
+          "comment": "Avg simulated revenue"
+        },
+        {
+          "name": "avg_simulated_margin",
+          "expr": "AVG(simulated_margin_pct)",
+          "comment": "Avg simulated margin pct"
+        },
+        {
+          "name": "total_simulated_revenue",
+          "expr": "SUM(simulated_revenue_usd)",
+          "comment": "Total simulated revenue"
+        },
+        {
+          "name": "run_count",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total simulation runs"
+        },
+        {
+          "name": "disruption_count",
+          "expr": "COUNT(DISTINCT CASE WHEN scenario_type = 'Disruption' THEN run_id END)",
+          "comment": "Disruption scenario count"
+        },
+        {
+          "name": "total_price_change_percent",
+          "expr": "SUM(price_change_pct)",
+          "comment": "Total price change pct"
+        },
+        {
+          "name": "unique_category_count",
+          "expr": "COUNT(DISTINCT category_id)",
+          "comment": "Number of distinct categorys"
+        },
+        {
+          "name": "max_simulated_revenue",
+          "expr": "MAX(simulated_revenue_usd)",
+          "comment": "Maximum simulated revenue usd"
+        }
+      ]
+    },
+    {
+      "view_name": "portfolio_kpi_monthly",
+      "source_table": "market_snapshots",
+      "dimensions": [
+        {
+          "name": "outcome_month",
+          "expr": "outcome_month"
+        },
+        {
+          "name": "segment",
+          "expr": "segment"
+        },
+        {
+          "name": "channel",
+          "expr": "channel"
+        },
+        {
+          "name": "investment_priority",
+          "expr": "investment_priority"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_expected_revenue",
+          "expr": "SUM(expected_revenue_usd)",
+          "comment": "Total expected revenue"
+        },
+        {
+          "name": "total_revenue_at_risk",
+          "expr": "SUM(revenue_at_risk_usd)",
+          "comment": "Total revenue at risk"
+        },
+        {
+          "name": "avg_optimal_price_change",
+          "expr": "AVG(optimal_price_change_pct)",
+          "comment": "Avg optimal price change"
+        },
+        {
+          "name": "avg_confidence",
+          "expr": "AVG(confidence_level_pct)",
+          "comment": "Avg confidence level"
+        },
+        {
+          "name": "invest_count",
+          "expr": "COUNT(DISTINCT CASE WHEN investment_priority = 'Invest' THEN outcome_id END)",
+          "comment": "Invest priority count"
+        },
+        {
+          "name": "unique_category_count",
+          "expr": "COUNT(DISTINCT category_id)",
+          "comment": "Number of distinct categorys"
+        },
+        {
+          "name": "max_expected_revenue",
+          "expr": "MAX(expected_revenue_usd)",
+          "comment": "Maximum expected revenue usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The scenario_kpi_monthly view (source: product_categories) has dimensions: run_date, segment, channel, scenario_type. Measures: avg_simulated_revenue, avg_simulated_margin, total_simulated_revenue, run_count, disruption_count. The portfolio_kpi_monthly view (source: market_snapshots) has dimensions: outcome_month, segment, channel, investment_priority. Measures: total_expected_revenue, total_revenue_at_risk, avg_optimal_price_change, avg_confidence, invest_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. category_id, category_name).",
+  "sample_questions": [
+    "What is the monthly trend in disruption count?",
+    "How has unique runs changed over time?",
+    "What is the monthly trend in unique categorys?",
+    "How has highest simulated revenue changed over time?",
+    "What is the monthly trend in invest count?",
+    "How has unique categorys changed over time?",
+    "What is the monthly trend in highest expected revenue?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique categorys?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(unique_category_count) AS unique_category_count",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has highest simulated revenue changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_simulated_revenue) AS max_simulated_revenue",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest expected revenue?",
+      "sql_lines": [
+        "SELECT outcome_month, MEASURE(max_expected_revenue) AS max_expected_revenue",
+        "FROM {fqn}.portfolio_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY outcome_month"
+      ]
+    },
+    {
+      "question": "How has invest count changed over time?",
+      "sql_lines": [
+        "SELECT outcome_month, MEASURE(invest_count) AS invest_count",
+        "FROM {fqn}.portfolio_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY outcome_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total simulated revenue usd over time?",
+      "sql_lines": [
+        "SELECT run_date, SUM(simulated_revenue_usd) AS total_simulated_revenue_usd",
+        "FROM {fqn}.product_categories",
+        "GROUP BY run_date ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total price elasticity of demand over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(demand_elasticity) AS total_demand_elasticity",
+        "FROM {fqn}.scenario_runs",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average recommended price change pct changed over time?",
+      "sql_lines": [
+        "SELECT outcome_month, AVG(optimal_price_change_pct) AS avg_optimal_price_change_pct",
+        "FROM {fqn}.market_snapshots",
+        "GROUP BY outcome_month ORDER BY outcome_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "product_categories.scenario_type = 'Disruption'",
+        "display_name": "disruption scenarios",
+        "synonyms": [
+          "worst case"
+        ],
+        "instruction": "Filter disruption."
+      },
+      {
+        "sql": "market_snapshots.investment_priority = 'Invest'",
+        "display_name": "invest priorities",
+        "synonyms": [
+          "growth"
+        ],
+        "instruction": "Filter invest."
+      },
+      {
+        "sql": "scenario_runs.competitive_pressure IN ('High', 'Intense')",
+        "display_name": "high competition",
+        "synonyms": [
+          "competitive"
+        ],
+        "instruction": "Filter high competition."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', product_categories.run_date)",
+        "display_name": "run month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "risk_ratio",
+        "sql": "market_snapshots.revenue_at_risk_usd / NULLIF(market_snapshots.expected_revenue_usd, 0) * 100",
+        "display_name": "risk ratio pct",
+        "synonyms": [
+          "VaR ratio"
+        ]
+      },
+      {
+        "alias": "margin_dollars",
+        "sql": "product_categories.simulated_revenue_usd * product_categories.simulated_margin_pct / 100",
+        "display_name": "margin dollars",
+        "synonyms": [
+          "profit"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(product_categories.simulated_revenue_usd)",
+        "display_name": "total simulated revenue",
+        "synonyms": [
+          "scenario revenue"
+        ]
+      },
+      {
+        "alias": "avg_margin",
+        "sql": "AVG(product_categories.simulated_margin_pct)",
+        "display_name": "avg margin",
+        "synonyms": [
+          "profitability"
+        ]
+      },
+      {
+        "alias": "total_risk",
+        "sql": "SUM(market_snapshots.revenue_at_risk_usd)",
+        "display_name": "total revenue at risk",
+        "synonyms": [
+          "downside risk"
+        ]
+      },
+      {
+        "alias": "avg_elasticity",
+        "sql": "AVG(scenario_runs.demand_elasticity)",
+        "display_name": "avg price elasticity",
+        "synonyms": [
+          "demand sensitivity"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in disruption count?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(disruption_count) AS disruption_count",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique runs changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(run_count) AS run_count",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in invest count?",
+      "sql_lines": [
+        "SELECT outcome_month, MEASURE(invest_count) AS invest_count",
+        "FROM {fqn}.portfolio_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY outcome_month"
+      ]
+    },
+    {
+      "question": "How has unique categorys changed over time?",
+      "sql_lines": [
+        "SELECT outcome_month, MEASURE(unique_category_count) AS unique_category_count",
+        "FROM {fqn}.portfolio_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY outcome_month"
+      ]
+    },
+    {
+      "question": "What are the top category id by total simulated revenue usd?",
+      "sql_lines": [
+        "SELECT category_id, SUM(simulated_revenue_usd) AS total_simulated_revenue_usd",
+        "FROM {fqn}.product_categories",
+        "GROUP BY category_id ORDER BY total_simulated_revenue_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average input cost index (100=baseline) by segment?",
+      "sql_lines": [
+        "SELECT segment, AVG(input_cost_index) AS avg_input_cost_index",
+        "FROM {fqn}.scenario_runs",
+        "GROUP BY segment ORDER BY avg_input_cost_index DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per outcome month?",
+      "sql_lines": [
+        "SELECT outcome_month, COUNT(*) AS record_count",
+        "FROM {fqn}.market_snapshots",
+        "GROUP BY outcome_month ORDER BY outcome_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,964 @@
+{
+  "company_name": "CapitalFlow Machinery",
+  "industry": "Machinery",
+  "use_case": "Working capital and cash flow optimization",
+  "space_title": "CapitalFlow Machinery - Working Capital Optimization 💰",
+  "space_description": "Cash flow analytics for CapitalFlow. Ask about DSO, DPO, cash conversion cycle, and working capital KPIs across 20 business units.",
+  "schema_basename": "mach_working_capital",
+  "tables": [
+    {
+      "table_name": "cash_flow_transactions",
+      "description": "Cash inflow and outflow transaction records.",
+      "columns": [
+        {
+          "name": "txn_id",
+          "sql_type": "STRING",
+          "comment": "Unique transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CF-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "txn_date",
+          "sql_type": "DATE",
+          "comment": "Transaction date",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "business_unit_id",
+          "sql_type": "STRING",
+          "comment": "Business unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_unit_type",
+          "sql_type": "STRING",
+          "comment": "Business unit type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "txn_type",
+          "sql_type": "STRING",
+          "comment": "Type: AR Collection, AP Payment, Capex, Operating Expense, Revenue",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'AR Collection' WHEN {status_noise} < 0.45 THEN 'AP Payment' WHEN {status_noise} < 0.55 THEN 'Capex' WHEN {status_noise} < 0.75 THEN 'Operating Expense' ELSE 'Revenue' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1000.0 + ({qty_noise} * 499000.0), 2)"
+        },
+        {
+          "name": "direction",
+          "sql_type": "STRING",
+          "comment": "Cash direction: Inflow or Outflow",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Inflow' ELSE 'Outflow' END"
+        },
+        {
+          "name": "payment_terms_days",
+          "sql_type": "INT",
+          "comment": "Payment terms in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.25 THEN 30 WHEN {status_noise} < 0.55 THEN 45 WHEN {status_noise} < 0.80 THEN 60 ELSE 90 END AS INT)"
+        },
+        {
+          "name": "days_outstanding",
+          "sql_type": "INT",
+          "comment": "Days the amount was outstanding",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 85) AS INT)"
+        },
+        {
+          "name": "currency",
+          "sql_type": "STRING",
+          "comment": "Transaction currency",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'USD' WHEN {status_noise} < 0.80 THEN 'EUR' WHEN {status_noise} < 0.92 THEN 'GBP' ELSE 'JPY' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Operations": {
+          "1,2,3": 0.06
+        },
+        "Sales": {
+          "9,10,11": 0.065
+        },
+        "Engineering": {
+          "4,5": 0.05
+        },
+        "Supply Chain": {
+          "6,7": 0.055
+        },
+        "Corporate": {
+          "12,1": 0.055
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "business_unit_id": "CF-BU-001",
+          "business_unit_type": "Operations",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-002",
+          "business_unit_type": "Operations",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-003",
+          "business_unit_type": "Operations",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-004",
+          "business_unit_type": "Operations",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-005",
+          "business_unit_type": "Sales",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-006",
+          "business_unit_type": "Sales",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-007",
+          "business_unit_type": "Sales",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-008",
+          "business_unit_type": "Sales",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-009",
+          "business_unit_type": "Engineering",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-010",
+          "business_unit_type": "Engineering",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-011",
+          "business_unit_type": "Engineering",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-012",
+          "business_unit_type": "Engineering",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-013",
+          "business_unit_type": "Supply Chain",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-014",
+          "business_unit_type": "Supply Chain",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-015",
+          "business_unit_type": "Supply Chain",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-016",
+          "business_unit_type": "Supply Chain",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-017",
+          "business_unit_type": "Corporate",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-018",
+          "business_unit_type": "Corporate",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-019",
+          "business_unit_type": "Corporate",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-020",
+          "business_unit_type": "Corporate",
+          "region": "LATAM"
+        }
+      ],
+      "category_distribution": {
+        "Operations": 0.035,
+        "Sales": 0.032,
+        "Engineering": 0.028,
+        "Supply Chain": 0.028,
+        "Corporate": 0.025
+      }
+    },
+    {
+      "table_name": "working_capital_snapshots",
+      "description": "Monthly working capital position snapshots.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WC-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "business_unit_id",
+          "sql_type": "STRING",
+          "comment": "Business unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_unit_type",
+          "sql_type": "STRING",
+          "comment": "Business unit type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "accounts_receivable_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total AR balance in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100000.0 + ({qty_noise} * 900000.0), 2)"
+        },
+        {
+          "name": "accounts_payable_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total AP balance in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80000.0 + ({qty_noise} * 720000.0), 2)"
+        },
+        {
+          "name": "inventory_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Inventory value in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200000.0 + ({qty_noise} * 800000.0), 2)"
+        },
+        {
+          "name": "dso_days",
+          "sql_type": "DOUBLE",
+          "comment": "Days sales outstanding",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25.0 + ({qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "dpo_days",
+          "sql_type": "DOUBLE",
+          "comment": "Days payable outstanding",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 50.0), 1)"
+        },
+        {
+          "name": "cash_conversion_cycle_days",
+          "sql_type": "DOUBLE",
+          "comment": "Cash conversion cycle in days",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 65.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Operations": {
+          "1,2,3": 0.06
+        },
+        "Sales": {
+          "9,10,11": 0.065
+        },
+        "Engineering": {
+          "4,5": 0.05
+        },
+        "Supply Chain": {
+          "6,7": 0.055
+        },
+        "Corporate": {
+          "12,1": 0.055
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "business_unit_id": "CF-BU-001",
+          "business_unit_type": "Operations",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-002",
+          "business_unit_type": "Operations",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-003",
+          "business_unit_type": "Operations",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-004",
+          "business_unit_type": "Operations",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-005",
+          "business_unit_type": "Sales",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-006",
+          "business_unit_type": "Sales",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-007",
+          "business_unit_type": "Sales",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-008",
+          "business_unit_type": "Sales",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-009",
+          "business_unit_type": "Engineering",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-010",
+          "business_unit_type": "Engineering",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-011",
+          "business_unit_type": "Engineering",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-012",
+          "business_unit_type": "Engineering",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-013",
+          "business_unit_type": "Supply Chain",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-014",
+          "business_unit_type": "Supply Chain",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-015",
+          "business_unit_type": "Supply Chain",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-016",
+          "business_unit_type": "Supply Chain",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-017",
+          "business_unit_type": "Corporate",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-018",
+          "business_unit_type": "Corporate",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-019",
+          "business_unit_type": "Corporate",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-020",
+          "business_unit_type": "Corporate",
+          "region": "LATAM"
+        }
+      ],
+      "category_distribution": {
+        "Operations": 0.035,
+        "Sales": 0.032,
+        "Engineering": 0.028,
+        "Supply Chain": 0.028,
+        "Corporate": 0.025
+      }
+    },
+    {
+      "table_name": "cash_flow_monthly",
+      "description": "Monthly cash flow KPIs and forecasts.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CFK-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month of KPI record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "business_unit_id",
+          "sql_type": "STRING",
+          "comment": "Business unit identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_unit_type",
+          "sql_type": "STRING",
+          "comment": "Business unit type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "net_cash_flow_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Net cash flow for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-100000.0 + ({qty_noise} * 400000.0), 2)"
+        },
+        {
+          "name": "operating_cash_flow_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Operating cash flow",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 450000.0), 2)"
+        },
+        {
+          "name": "free_cash_flow_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Free cash flow",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-50000.0 + ({qty_noise} * 350000.0), 2)"
+        },
+        {
+          "name": "working_capital_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Net working capital",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100000.0 + ({qty_noise} * 900000.0), 2)"
+        },
+        {
+          "name": "collection_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "AR collection rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75.0 + ({qty_noise} * 24.0), 2)"
+        },
+        {
+          "name": "forecast_variance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Cash flow forecast vs actual variance",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-10.0 + ({qty_noise} * 20.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Operations": {
+          "1,2,3": 0.06
+        },
+        "Sales": {
+          "9,10,11": 0.065
+        },
+        "Engineering": {
+          "4,5": 0.05
+        },
+        "Supply Chain": {
+          "6,7": 0.055
+        },
+        "Corporate": {
+          "12,1": 0.055
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "business_unit_id": "CF-BU-001",
+          "business_unit_type": "Operations",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-002",
+          "business_unit_type": "Operations",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-003",
+          "business_unit_type": "Operations",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-004",
+          "business_unit_type": "Operations",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-005",
+          "business_unit_type": "Sales",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-006",
+          "business_unit_type": "Sales",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-007",
+          "business_unit_type": "Sales",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-008",
+          "business_unit_type": "Sales",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-009",
+          "business_unit_type": "Engineering",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-010",
+          "business_unit_type": "Engineering",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-011",
+          "business_unit_type": "Engineering",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-012",
+          "business_unit_type": "Engineering",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-013",
+          "business_unit_type": "Supply Chain",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-014",
+          "business_unit_type": "Supply Chain",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-015",
+          "business_unit_type": "Supply Chain",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-016",
+          "business_unit_type": "Supply Chain",
+          "region": "LATAM"
+        },
+        {
+          "business_unit_id": "CF-BU-017",
+          "business_unit_type": "Corporate",
+          "region": "Americas"
+        },
+        {
+          "business_unit_id": "CF-BU-018",
+          "business_unit_type": "Corporate",
+          "region": "EMEA"
+        },
+        {
+          "business_unit_id": "CF-BU-019",
+          "business_unit_type": "Corporate",
+          "region": "APAC"
+        },
+        {
+          "business_unit_id": "CF-BU-020",
+          "business_unit_type": "Corporate",
+          "region": "LATAM"
+        }
+      ],
+      "category_distribution": {
+        "Operations": 0.035,
+        "Sales": 0.032,
+        "Engineering": 0.028,
+        "Supply Chain": 0.028,
+        "Corporate": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "cash_flow_txn_metrics",
+      "source_table": "cash_flow_transactions",
+      "dimensions": [
+        {
+          "name": "txn_date",
+          "expr": "txn_date"
+        },
+        {
+          "name": "business_unit_type",
+          "expr": "business_unit_type"
+        },
+        {
+          "name": "txn_type",
+          "expr": "txn_type"
+        },
+        {
+          "name": "direction",
+          "expr": "direction"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_inflow",
+          "expr": "SUM(CASE WHEN direction = 'Inflow' THEN amount_usd ELSE 0 END)",
+          "comment": "Total cash inflows"
+        },
+        {
+          "name": "total_outflow",
+          "expr": "SUM(CASE WHEN direction = 'Outflow' THEN amount_usd ELSE 0 END)",
+          "comment": "Total cash outflows"
+        },
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT txn_id)",
+          "comment": "Total transactions"
+        },
+        {
+          "name": "avg_days_outstanding",
+          "expr": "AVG(days_outstanding)",
+          "comment": "Average days outstanding"
+        },
+        {
+          "name": "unique_business_unit_count",
+          "expr": "COUNT(DISTINCT business_unit_id)",
+          "comment": "Number of distinct business units"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        },
+        {
+          "name": "total_payment_terms_days",
+          "expr": "SUM(payment_terms_days)",
+          "comment": "Total payment terms days"
+        }
+      ]
+    },
+    {
+      "view_name": "cash_flow_kpi_metrics",
+      "source_table": "cash_flow_monthly",
+      "dimensions": [
+        {
+          "name": "kpi_month",
+          "expr": "kpi_month"
+        },
+        {
+          "name": "business_unit_type",
+          "expr": "business_unit_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_net_cash_flow",
+          "expr": "SUM(net_cash_flow_usd)",
+          "comment": "Total net cash flow"
+        },
+        {
+          "name": "total_operating_cf",
+          "expr": "SUM(operating_cash_flow_usd)",
+          "comment": "Total operating cash flow"
+        },
+        {
+          "name": "avg_collection_rate",
+          "expr": "AVG(collection_rate_pct)",
+          "comment": "Average AR collection rate"
+        },
+        {
+          "name": "total_working_capital",
+          "expr": "SUM(working_capital_usd)",
+          "comment": "Total net working capital"
+        },
+        {
+          "name": "total_free_cash_flow",
+          "expr": "SUM(free_cash_flow_usd)",
+          "comment": "Total free cash flow usd"
+        },
+        {
+          "name": "total_forecast_variance_percent",
+          "expr": "SUM(forecast_variance_pct)",
+          "comment": "Total forecast variance pct"
+        },
+        {
+          "name": "unique_business_unit_count",
+          "expr": "COUNT(DISTINCT business_unit_id)",
+          "comment": "Number of distinct business units"
+        },
+        {
+          "name": "max_net_cash_flow",
+          "expr": "MAX(net_cash_flow_usd)",
+          "comment": "Maximum net cash flow usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cash_flow_txn_metrics view (source: cash_flow_transactions) has dimensions: txn_date, business_unit_type, txn_type, direction. Measures: total_inflow, total_outflow, total_transactions, avg_days_outstanding. The cash_flow_kpi_metrics view (source: cash_flow_monthly) has dimensions: kpi_month, business_unit_type. Measures: total_net_cash_flow, total_operating_cf, avg_collection_rate, total_working_capital. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. business_unit_id).",
+  "sample_questions": [
+    "What is the monthly trend in total inflow count?",
+    "How has total outflow count changed over time?",
+    "What is the monthly trend in unique total transactionss?",
+    "How has unique business units changed over time?",
+    "What is the monthly trend in unique business units?",
+    "How has highest net cash flow changed over time?",
+    "What is the monthly trend in total net cash flow?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total transactionss?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.cash_flow_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "How has unique business units changed over time?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(unique_business_unit_count) AS unique_business_unit_count",
+        "FROM {fqn}.cash_flow_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total net cash flow?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_net_cash_flow) AS total_net_cash_flow",
+        "FROM {fqn}.cash_flow_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has total forecast variance pct changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_forecast_variance_percent) AS total_forecast_variance_percent",
+        "FROM {fqn}.cash_flow_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total transaction amount in usd over time?",
+      "sql_lines": [
+        "SELECT txn_date, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.cash_flow_transactions",
+        "GROUP BY txn_date ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total total ar balance in usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(accounts_receivable_usd) AS total_accounts_receivable_usd",
+        "FROM {fqn}.working_capital_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average ar collection rate percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(collection_rate_pct) AS avg_collection_rate_pct",
+        "FROM {fqn}.cash_flow_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "cash_flow_transactions.direction = 'Inflow'",
+        "display_name": "cash inflows",
+        "synonyms": [
+          "collections",
+          "receipts"
+        ],
+        "instruction": "Use when analyzing cash received."
+      },
+      {
+        "sql": "cash_flow_transactions.direction = 'Outflow'",
+        "display_name": "cash outflows",
+        "synonyms": [
+          "payments",
+          "disbursements"
+        ],
+        "instruction": "Use when analyzing cash spent."
+      },
+      {
+        "sql": "working_capital_snapshots.cash_conversion_cycle_days > 60",
+        "display_name": "long CCC",
+        "synonyms": [
+          "slow cash cycle",
+          "extended CCC"
+        ],
+        "instruction": "Use when identifying BUs with slow cash conversion."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "txn_month",
+        "sql": "DATE_TRUNC('month', cash_flow_transactions.txn_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "net_working_capital",
+        "sql": "working_capital_snapshots.accounts_receivable_usd + working_capital_snapshots.inventory_value_usd - working_capital_snapshots.accounts_payable_usd",
+        "display_name": "net working capital",
+        "synonyms": [
+          "NWC"
+        ]
+      },
+      {
+        "alias": "ar_ap_ratio",
+        "sql": "working_capital_snapshots.accounts_receivable_usd / NULLIF(working_capital_snapshots.accounts_payable_usd, 0)",
+        "display_name": "AR to AP ratio",
+        "synonyms": [
+          "receivables to payables"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_inflow",
+        "sql": "SUM(CASE WHEN cash_flow_transactions.direction = 'Inflow' THEN cash_flow_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total inflows",
+        "synonyms": [
+          "cash in",
+          "collections"
+        ]
+      },
+      {
+        "alias": "total_outflow",
+        "sql": "SUM(CASE WHEN cash_flow_transactions.direction = 'Outflow' THEN cash_flow_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total outflows",
+        "synonyms": [
+          "cash out",
+          "payments"
+        ]
+      },
+      {
+        "alias": "avg_dso",
+        "sql": "AVG(working_capital_snapshots.dso_days)",
+        "display_name": "average DSO",
+        "synonyms": [
+          "days sales outstanding"
+        ]
+      },
+      {
+        "alias": "total_net_cf",
+        "sql": "SUM(cash_flow_monthly.net_cash_flow_usd)",
+        "display_name": "total net cash flow",
+        "synonyms": [
+          "net cash",
+          "cash position"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in total inflow count?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_inflow) AS total_inflow",
+        "FROM {fqn}.cash_flow_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "How has total outflow count changed over time?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_outflow) AS total_outflow",
+        "FROM {fqn}.cash_flow_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique business units?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(unique_business_unit_count) AS unique_business_unit_count",
+        "FROM {fqn}.cash_flow_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has highest net cash flow changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_net_cash_flow) AS max_net_cash_flow",
+        "FROM {fqn}.cash_flow_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What are the top business unit identifier by total transaction amount in usd?",
+      "sql_lines": [
+        "SELECT business_unit_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.cash_flow_transactions",
+        "GROUP BY business_unit_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.working_capital_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per month of kpi record?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.cash_flow_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

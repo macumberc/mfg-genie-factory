@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genie-factory"
+version = "0.2.0"
+description = "Generate industry-specific synthetic data and deploy Databricks Genie rooms"
+requires-python = ">=3.10"
+dependencies = [
+    "databricks-sdk>=0.20.0",
+]
+
+[project.optional-dependencies]
+app = [
+    "dash-bootstrap-components",
+    "databricks-connect",
+]
+test = [
+    "pytest>=8.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["genie_factory*"]
+
+[tool.setuptools.package-data]
+genie_factory = ["specs/**/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]

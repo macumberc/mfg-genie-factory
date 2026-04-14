@@ -1,0 +1,852 @@
+{
+  "company_name": "MidStream Dynamics",
+  "industry": "Oil & Gas Midstream",
+  "use_case": "Scenario planning and business simulation for midstream pipeline operations",
+  "space_title": "MidStream Dynamics - Scenario Planning & Simulation 🎯",
+  "space_description": "Scenario planning for MidStream Dynamics. Ask questions about simulation outcomes, scenario comparisons, and strategic KPIs across 20 pipeline business scenarios.",
+  "schema_basename": "og_midstream_scenario",
+  "tables": [
+    {
+      "table_name": "simulation_runs",
+      "description": "Simulation run results with financial and operational outcomes.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Run ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.scenario_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Run date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "scenario_id",
+          "sql_type": "STRING",
+          "comment": "Scenario ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_name",
+          "sql_type": "STRING",
+          "comment": "Scenario name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_type",
+          "sql_type": "STRING",
+          "comment": "Type: Baseline, Price, Volume, Infrastructure, Regulatory, Market, Risk, Strategic",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "throughput_change_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Throughput change pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-20.0 + {qty_noise} * 50.0, 2)"
+        },
+        {
+          "name": "revenue_impact_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue impact millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-100.0 + {qty_noise} * 400.0, 1)"
+        },
+        {
+          "name": "npv_mm",
+          "sql_type": "DOUBLE",
+          "comment": "NPV millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-200.0 + {qty_noise} * 1500.0, 1)"
+        },
+        {
+          "name": "capex_required_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Capex required millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 500.0), 1)"
+        },
+        {
+          "name": "probability_weight",
+          "sql_type": "DOUBLE",
+          "comment": "Probability weight 0-1",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.02, {qty_noise} * 0.25), 3)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "scenario_id": "MS-SC-001",
+          "scenario_name": "Baseline Operations",
+          "scenario_type": "Baseline"
+        },
+        {
+          "scenario_id": "MS-SC-002",
+          "scenario_name": "Gas Price Surge",
+          "scenario_type": "Price"
+        },
+        {
+          "scenario_id": "MS-SC-003",
+          "scenario_name": "Crude Volume Increase 20%",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-004",
+          "scenario_name": "Pipeline Capacity Expansion",
+          "scenario_type": "Infrastructure"
+        },
+        {
+          "scenario_id": "MS-SC-005",
+          "scenario_name": "NGL Price Collapse",
+          "scenario_type": "Price"
+        },
+        {
+          "scenario_id": "MS-SC-006",
+          "scenario_name": "Permian Growth Scenario",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-007",
+          "scenario_name": "Regulatory Cost Increase",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-008",
+          "scenario_name": "Carbon Tax Impact",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-009",
+          "scenario_name": "New Pipeline Route",
+          "scenario_type": "Infrastructure"
+        },
+        {
+          "scenario_id": "MS-SC-010",
+          "scenario_name": "Competitor Pipeline Entry",
+          "scenario_type": "Market"
+        },
+        {
+          "scenario_id": "MS-SC-011",
+          "scenario_name": "Demand Destruction Scenario",
+          "scenario_type": "Market"
+        },
+        {
+          "scenario_id": "MS-SC-012",
+          "scenario_name": "Hurricane Disruption",
+          "scenario_type": "Risk"
+        },
+        {
+          "scenario_id": "MS-SC-013",
+          "scenario_name": "Cyber Attack Recovery",
+          "scenario_type": "Risk"
+        },
+        {
+          "scenario_id": "MS-SC-014",
+          "scenario_name": "Rate Case Outcome A",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-015",
+          "scenario_name": "Rate Case Outcome B",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-016",
+          "scenario_name": "M&A Target Integration",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-017",
+          "scenario_name": "Divestiture Scenario",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-018",
+          "scenario_name": "LNG Export Ramp",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-019",
+          "scenario_name": "Hydrogen Blending Pilot",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-020",
+          "scenario_name": "Baseline Conservative",
+          "scenario_type": "Baseline"
+        }
+      ],
+      "category_distribution": {
+        "Baseline": 0.04,
+        "Price": 0.055,
+        "Volume": 0.06,
+        "Infrastructure": 0.05,
+        "Regulatory": 0.06,
+        "Market": 0.04,
+        "Risk": 0.04,
+        "Strategic": 0.05
+      }
+    },
+    {
+      "table_name": "outcome_snapshots",
+      "description": "Periodic outcome projections by scenario.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.scenario_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "scenario_id",
+          "sql_type": "STRING",
+          "comment": "Scenario ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_name",
+          "sql_type": "STRING",
+          "comment": "Scenario name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_type",
+          "sql_type": "STRING",
+          "comment": "Scenario type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "projected_ebitda_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Projected EBITDA millions",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50.0, 200.0 + {qty_noise} * 600.0), 1)"
+        },
+        {
+          "name": "projected_throughput_mbpd",
+          "sql_type": "DOUBLE",
+          "comment": "Projected throughput MBPD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100.0, 300.0 + {qty_noise} * 700.0), 0)"
+        },
+        {
+          "name": "regulatory_risk_score",
+          "sql_type": "DOUBLE",
+          "comment": "Regulatory risk 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(5.0, 30.0 + {qty_noise} * 60.0)), 1)"
+        },
+        {
+          "name": "confidence_level",
+          "sql_type": "STRING",
+          "comment": "Confidence: High, Medium, Low",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'High' WHEN {status_noise} < 0.70 THEN 'Medium' ELSE 'Low' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "scenario_id": "MS-SC-001",
+          "scenario_name": "Baseline Operations",
+          "scenario_type": "Baseline"
+        },
+        {
+          "scenario_id": "MS-SC-002",
+          "scenario_name": "Gas Price Surge",
+          "scenario_type": "Price"
+        },
+        {
+          "scenario_id": "MS-SC-003",
+          "scenario_name": "Crude Volume Increase 20%",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-004",
+          "scenario_name": "Pipeline Capacity Expansion",
+          "scenario_type": "Infrastructure"
+        },
+        {
+          "scenario_id": "MS-SC-005",
+          "scenario_name": "NGL Price Collapse",
+          "scenario_type": "Price"
+        },
+        {
+          "scenario_id": "MS-SC-006",
+          "scenario_name": "Permian Growth Scenario",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-007",
+          "scenario_name": "Regulatory Cost Increase",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-008",
+          "scenario_name": "Carbon Tax Impact",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-009",
+          "scenario_name": "New Pipeline Route",
+          "scenario_type": "Infrastructure"
+        },
+        {
+          "scenario_id": "MS-SC-010",
+          "scenario_name": "Competitor Pipeline Entry",
+          "scenario_type": "Market"
+        },
+        {
+          "scenario_id": "MS-SC-011",
+          "scenario_name": "Demand Destruction Scenario",
+          "scenario_type": "Market"
+        },
+        {
+          "scenario_id": "MS-SC-012",
+          "scenario_name": "Hurricane Disruption",
+          "scenario_type": "Risk"
+        },
+        {
+          "scenario_id": "MS-SC-013",
+          "scenario_name": "Cyber Attack Recovery",
+          "scenario_type": "Risk"
+        },
+        {
+          "scenario_id": "MS-SC-014",
+          "scenario_name": "Rate Case Outcome A",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-015",
+          "scenario_name": "Rate Case Outcome B",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-016",
+          "scenario_name": "M&A Target Integration",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-017",
+          "scenario_name": "Divestiture Scenario",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-018",
+          "scenario_name": "LNG Export Ramp",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-019",
+          "scenario_name": "Hydrogen Blending Pilot",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-020",
+          "scenario_name": "Baseline Conservative",
+          "scenario_type": "Baseline"
+        }
+      ],
+      "category_distribution": {
+        "Baseline": 0.04,
+        "Price": 0.055,
+        "Volume": 0.06,
+        "Infrastructure": 0.05,
+        "Regulatory": 0.06,
+        "Market": 0.04,
+        "Risk": 0.04,
+        "Strategic": 0.05
+      }
+    },
+    {
+      "table_name": "scenario_kpi_monthly",
+      "description": "Monthly scenario KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.scenario_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "scenario_id",
+          "sql_type": "STRING",
+          "comment": "Scenario ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "scenario_type",
+          "sql_type": "STRING",
+          "comment": "Scenario type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "weighted_npv_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Weighted NPV millions",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-50.0 + {qty_noise} * 500.0, 1)"
+        },
+        {
+          "name": "risk_score",
+          "sql_type": "DOUBLE",
+          "comment": "Risk score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(5.0, 35.0 + {qty_noise} * 55.0)), 1)"
+        },
+        {
+          "name": "variance_to_baseline_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Variance from baseline pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-25.0 + {qty_noise} * 50.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "scenario_id": "MS-SC-001",
+          "scenario_type": "Baseline"
+        },
+        {
+          "scenario_id": "MS-SC-002",
+          "scenario_type": "Price"
+        },
+        {
+          "scenario_id": "MS-SC-003",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-004",
+          "scenario_type": "Infrastructure"
+        },
+        {
+          "scenario_id": "MS-SC-005",
+          "scenario_type": "Price"
+        },
+        {
+          "scenario_id": "MS-SC-006",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-007",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-008",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-009",
+          "scenario_type": "Infrastructure"
+        },
+        {
+          "scenario_id": "MS-SC-010",
+          "scenario_type": "Market"
+        },
+        {
+          "scenario_id": "MS-SC-011",
+          "scenario_type": "Market"
+        },
+        {
+          "scenario_id": "MS-SC-012",
+          "scenario_type": "Risk"
+        },
+        {
+          "scenario_id": "MS-SC-013",
+          "scenario_type": "Risk"
+        },
+        {
+          "scenario_id": "MS-SC-014",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-015",
+          "scenario_type": "Regulatory"
+        },
+        {
+          "scenario_id": "MS-SC-016",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-017",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-018",
+          "scenario_type": "Volume"
+        },
+        {
+          "scenario_id": "MS-SC-019",
+          "scenario_type": "Strategic"
+        },
+        {
+          "scenario_id": "MS-SC-020",
+          "scenario_type": "Baseline"
+        }
+      ],
+      "category_distribution": {
+        "Baseline": 0.04,
+        "Price": 0.055,
+        "Volume": 0.06,
+        "Infrastructure": 0.05,
+        "Regulatory": 0.06
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "simulation_runs_metrics",
+      "source_table": "simulation_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "scenario_id",
+          "expr": "scenario_id"
+        },
+        {
+          "name": "scenario_type",
+          "expr": "scenario_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_npv_mm",
+          "expr": "AVG(npv_mm)",
+          "comment": "Avg NPV millions"
+        },
+        {
+          "name": "avg_revenue_impact_mm",
+          "expr": "AVG(revenue_impact_mm)",
+          "comment": "Avg revenue impact millions"
+        },
+        {
+          "name": "total_runs",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total simulation runs"
+        },
+        {
+          "name": "total_capex_mm",
+          "expr": "SUM(capex_required_mm)",
+          "comment": "Total capex millions"
+        },
+        {
+          "name": "total_throughput_change_percent",
+          "expr": "SUM(throughput_change_pct)",
+          "comment": "Total throughput change pct"
+        },
+        {
+          "name": "total_probability_weight",
+          "expr": "SUM(probability_weight)",
+          "comment": "Total probability weight"
+        },
+        {
+          "name": "max_throughput_change_percent",
+          "expr": "MAX(throughput_change_pct)",
+          "comment": "Maximum throughput change pct"
+        }
+      ]
+    },
+    {
+      "view_name": "outcome_snapshots_metrics",
+      "source_table": "outcome_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "scenario_id",
+          "expr": "scenario_id"
+        },
+        {
+          "name": "scenario_type",
+          "expr": "scenario_type"
+        },
+        {
+          "name": "confidence_level",
+          "expr": "confidence_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_ebitda_mm",
+          "expr": "AVG(projected_ebitda_mm)",
+          "comment": "Avg EBITDA millions"
+        },
+        {
+          "name": "avg_throughput_mbpd",
+          "expr": "AVG(projected_throughput_mbpd)",
+          "comment": "Avg throughput MBPD"
+        },
+        {
+          "name": "avg_regulatory_risk",
+          "expr": "AVG(regulatory_risk_score)",
+          "comment": "Avg regulatory risk score"
+        },
+        {
+          "name": "max_projected_ebitda_mm",
+          "expr": "MAX(projected_ebitda_mm)",
+          "comment": "Maximum projected ebitda mm"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, scenario_id, scenario_type. Measures: avg_npv_mm, avg_revenue_impact_mm, total_runs, total_capex_mm. The outcome_snapshots_metrics view (source: outcome_snapshots) has dimensions: snapshot_date, scenario_id, scenario_type, confidence_level. Measures: avg_ebitda_mm, avg_throughput_mbpd, avg_regulatory_risk. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. scenario_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total runss?",
+    "How has highest throughput change percent changed over time?",
+    "What is the monthly trend in total capex millions?",
+    "How has total throughput change pct changed over time?",
+    "What is the monthly trend in highest projected ebitda mm?",
+    "How has avg ebitda millions changed over time?",
+    "What is the monthly trend in avg throughput mbpd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total capex millions?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_capex_mm) AS total_capex_mm",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has total throughput change pct changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_throughput_change_percent) AS total_throughput_change_percent",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in avg throughput mbpd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_throughput_mbpd) AS avg_throughput_mbpd",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "Rank scenario ids by avg ebitda millions",
+      "sql_lines": [
+        "SELECT scenario_id, MEASURE(avg_ebitda_mm) AS avg_ebitda_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_ebitda_mm DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total revenue impact millions usd over time?",
+      "sql_lines": [
+        "SELECT run_date, SUM(revenue_impact_mm) AS total_revenue_impact_mm",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY run_date ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total projected ebitda millions over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(projected_ebitda_mm) AS total_projected_ebitda_mm",
+        "FROM {fqn}.outcome_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average risk score 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(risk_score) AS avg_risk_score",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "scenario_type = 'Regulatory'",
+        "display_name": "regulatory scenarios",
+        "synonyms": [
+          "regulatory"
+        ],
+        "instruction": "Filter to regulatory scenarios."
+      },
+      {
+        "sql": "npv_mm > 0",
+        "display_name": "positive NPV",
+        "synonyms": [
+          "profitable"
+        ],
+        "instruction": "Positive NPV only."
+      },
+      {
+        "sql": "confidence_level = 'High'",
+        "display_name": "high confidence",
+        "synonyms": [
+          "reliable"
+        ],
+        "instruction": "High confidence projections."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "npv_per_capex",
+        "sql": "ROUND(simulation_runs.npv_mm / NULLIF(simulation_runs.capex_required_mm, 0), 3)",
+        "display_name": "NPV per capex",
+        "synonyms": [
+          "capital efficiency"
+        ]
+      },
+      {
+        "alias": "ebitda_margin",
+        "sql": "ROUND(outcome_snapshots.projected_ebitda_mm / NULLIF(outcome_snapshots.projected_throughput_mbpd * 365 * 0.05, 0), 2)",
+        "display_name": "EBITDA per unit",
+        "synonyms": [
+          "unit economics"
+        ]
+      },
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_npv",
+        "sql": "AVG(simulation_runs.npv_mm)",
+        "display_name": "avg NPV",
+        "synonyms": [
+          "NPV"
+        ]
+      },
+      {
+        "alias": "total_capex",
+        "sql": "SUM(simulation_runs.capex_required_mm)",
+        "display_name": "total capex",
+        "synonyms": [
+          "investment"
+        ]
+      },
+      {
+        "alias": "avg_ebitda",
+        "sql": "AVG(outcome_snapshots.projected_ebitda_mm)",
+        "display_name": "avg EBITDA",
+        "synonyms": [
+          "earnings"
+        ]
+      },
+      {
+        "alias": "avg_risk",
+        "sql": "AVG(scenario_kpi_monthly.risk_score)",
+        "display_name": "avg risk",
+        "synonyms": [
+          "risk score"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total runss?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_runs) AS total_runs",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has highest throughput change percent changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_throughput_change_percent) AS max_throughput_change_percent",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest projected ebitda mm?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_projected_ebitda_mm) AS max_projected_ebitda_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has avg ebitda millions changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_ebitda_mm) AS avg_ebitda_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top scenario id by total revenue impact millions usd?",
+      "sql_lines": [
+        "SELECT scenario_id, SUM(revenue_impact_mm) AS total_revenue_impact_mm",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY scenario_id ORDER BY total_revenue_impact_mm DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average regulatory risk 0-100 by scenario name?",
+      "sql_lines": [
+        "SELECT scenario_name, AVG(regulatory_risk_score) AS avg_regulatory_risk_score",
+        "FROM {fqn}.outcome_snapshots",
+        "GROUP BY scenario_name ORDER BY avg_regulatory_risk_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.scenario_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

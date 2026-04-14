@@ -1,0 +1,959 @@
+{
+  "company_name": "ForecastPro Machinery",
+  "industry": "Machinery",
+  "use_case": "Demand forecasting and order backlog management",
+  "space_title": "ForecastPro Machinery - Demand Forecasting 📈",
+  "space_description": "Demand analytics for ForecastPro. Ask about order backlog, forecast accuracy, demand trends, and KPIs across 20 equipment models.",
+  "schema_basename": "mach_demand_forecast",
+  "tables": [
+    {
+      "table_name": "customer_orders",
+      "description": "Customer order records with quantities, pricing, and fulfillment status.",
+      "columns": [
+        {
+          "name": "order_id",
+          "sql_type": "STRING",
+          "comment": "Unique order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CO-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "order_date",
+          "sql_type": "DATE",
+          "comment": "Date order was placed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "equipment_model",
+          "sql_type": "STRING",
+          "comment": "Equipment model ordered",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_family",
+          "sql_type": "STRING",
+          "comment": "Product family",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "order_quantity",
+          "sql_type": "INT",
+          "comment": "Units ordered",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 49) AS INT)"
+        },
+        {
+          "name": "unit_price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Price per unit in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000.0 + ({qty_noise} * 495000.0), 2)"
+        },
+        {
+          "name": "customer_region",
+          "sql_type": "STRING",
+          "comment": "Customer region",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Americas' WHEN {status_noise} < 0.50 THEN 'EMEA' WHEN {status_noise} < 0.75 THEN 'APAC' ELSE 'LATAM' END"
+        },
+        {
+          "name": "order_status",
+          "sql_type": "STRING",
+          "comment": "Status: Confirmed, Shipped, Backlog, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Cancelled' WHEN {status_noise} < 0.20 THEN 'Backlog' WHEN {status_noise} < 0.35 THEN 'Confirmed' ELSE 'Shipped' END"
+        },
+        {
+          "name": "lead_time_days",
+          "sql_type": "INT",
+          "comment": "Promised lead time in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(14 + FLOOR({qty_noise} * 166) AS INT)"
+        },
+        {
+          "name": "discount_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Discount percentage applied",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 15.0, 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Heavy Excavators": {
+          "3,4,5": 0.065
+        },
+        "Mobile Cranes": {
+          "6,7,8": 0.06
+        },
+        "Industrial Generators": {
+          "9,10,11": 0.055
+        },
+        "Centrifugal Pumps": {
+          "1,2,3": 0.05
+        },
+        "Control Valves": {
+          "4,5": 0.045,
+          "10,11": 0.055
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "equipment_model": "FP-HEX-001",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-002",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-003",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-004",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-005",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-006",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-007",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-008",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-009",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-010",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-011",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-012",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-013",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-014",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-015",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-016",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-017",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-018",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-019",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-020",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        }
+      ],
+      "category_distribution": {
+        "Heavy Excavators": 0.032,
+        "Mobile Cranes": 0.03,
+        "Industrial Generators": 0.03,
+        "Centrifugal Pumps": 0.028,
+        "Control Valves": 0.028
+      }
+    },
+    {
+      "table_name": "demand_forecasts",
+      "description": "Demand forecast snapshots with model-predicted vs actual demand.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique forecast record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DF-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "forecast_date",
+          "sql_type": "DATE",
+          "comment": "Date of forecast snapshot",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "equipment_model",
+          "sql_type": "STRING",
+          "comment": "Equipment model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_family",
+          "sql_type": "STRING",
+          "comment": "Product family",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_units",
+          "sql_type": "INT",
+          "comment": "Forecasted demand units",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 95) AS INT)"
+        },
+        {
+          "name": "actual_units",
+          "sql_type": "INT",
+          "comment": "Actual units ordered",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(0, (5 + FLOOR({qty_noise} * 95)) * (0.75 + {status_noise} * 0.50)) AS INT)"
+        },
+        {
+          "name": "forecast_bias",
+          "sql_type": "DOUBLE",
+          "comment": "Forecast bias (positive = over-forecast)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-15.0 + ({qty_noise} * 30.0), 1)"
+        },
+        {
+          "name": "mape_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Mean absolute percentage error",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 28.0), 2)"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Forecast model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v4.0' WHEN {status_noise} < 0.60 THEN 'v4.1' ELSE 'v4.2' END"
+        },
+        {
+          "name": "confidence_interval_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Forecast confidence interval width",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 35.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Heavy Excavators": {
+          "3,4,5": 0.065
+        },
+        "Mobile Cranes": {
+          "6,7,8": 0.06
+        },
+        "Industrial Generators": {
+          "9,10,11": 0.055
+        },
+        "Centrifugal Pumps": {
+          "1,2,3": 0.05
+        },
+        "Control Valves": {
+          "4,5": 0.045,
+          "10,11": 0.055
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "equipment_model": "FP-HEX-001",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-002",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-003",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-004",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-005",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-006",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-007",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-008",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-009",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-010",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-011",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-012",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-013",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-014",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-015",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-016",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-017",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-018",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-019",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-020",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        }
+      ],
+      "category_distribution": {
+        "Heavy Excavators": 0.032,
+        "Mobile Cranes": 0.03,
+        "Industrial Generators": 0.03,
+        "Centrifugal Pumps": 0.028,
+        "Control Valves": 0.028
+      }
+    },
+    {
+      "table_name": "demand_kpi_monthly",
+      "description": "Monthly demand KPIs including forecast accuracy, fill rate, and backlog.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DKM-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month of KPI record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "equipment_model",
+          "sql_type": "STRING",
+          "comment": "Equipment model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_family",
+          "sql_type": "STRING",
+          "comment": "Product family",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecast_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Forecast accuracy percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(65.0 + ({qty_noise} * 33.0), 2)"
+        },
+        {
+          "name": "fill_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Order fill rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75.0 + ({qty_noise} * 24.0), 2)"
+        },
+        {
+          "name": "backlog_units",
+          "sql_type": "INT",
+          "comment": "Units in backlog",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 200) AS INT)"
+        },
+        {
+          "name": "total_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total revenue for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 950000.0), 2)"
+        },
+        {
+          "name": "new_orders",
+          "sql_type": "INT",
+          "comment": "New orders received",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 45) AS INT)"
+        },
+        {
+          "name": "cancelled_orders",
+          "sql_type": "INT",
+          "comment": "Orders cancelled",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 5) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Heavy Excavators": {
+          "3,4,5": 0.065
+        },
+        "Mobile Cranes": {
+          "6,7,8": 0.06
+        },
+        "Industrial Generators": {
+          "9,10,11": 0.055
+        },
+        "Centrifugal Pumps": {
+          "1,2,3": 0.05
+        },
+        "Control Valves": {
+          "4,5": 0.045,
+          "10,11": 0.055
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "equipment_model": "FP-HEX-001",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-002",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-003",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-004",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-005",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-006",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-007",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-008",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-009",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-010",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-011",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-012",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-013",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-014",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-015",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        },
+        {
+          "equipment_model": "FP-HEX-016",
+          "product_family": "Heavy Excavators",
+          "market_segment": "Mining"
+        },
+        {
+          "equipment_model": "FP-CRN-017",
+          "product_family": "Mobile Cranes",
+          "market_segment": "Construction"
+        },
+        {
+          "equipment_model": "FP-GEN-018",
+          "product_family": "Industrial Generators",
+          "market_segment": "Energy"
+        },
+        {
+          "equipment_model": "FP-PMP-019",
+          "product_family": "Centrifugal Pumps",
+          "market_segment": "Water/Waste"
+        },
+        {
+          "equipment_model": "FP-VLV-020",
+          "product_family": "Control Valves",
+          "market_segment": "Oil & Gas"
+        }
+      ],
+      "category_distribution": {
+        "Heavy Excavators": 0.032,
+        "Mobile Cranes": 0.03,
+        "Industrial Generators": 0.03,
+        "Centrifugal Pumps": 0.028,
+        "Control Valves": 0.028
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "customer_orders_metrics",
+      "source_table": "customer_orders",
+      "dimensions": [
+        {
+          "name": "order_date",
+          "expr": "order_date"
+        },
+        {
+          "name": "product_family",
+          "expr": "product_family"
+        },
+        {
+          "name": "customer_region",
+          "expr": "customer_region"
+        },
+        {
+          "name": "order_status",
+          "expr": "order_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_order_revenue",
+          "expr": "SUM(order_quantity * unit_price_usd)",
+          "comment": "Total order revenue in USD"
+        },
+        {
+          "name": "total_order_quantity",
+          "expr": "SUM(order_quantity)",
+          "comment": "Total units ordered"
+        },
+        {
+          "name": "total_orders",
+          "expr": "COUNT(DISTINCT order_id)",
+          "comment": "Total number of orders"
+        },
+        {
+          "name": "avg_lead_time",
+          "expr": "AVG(lead_time_days)",
+          "comment": "Average lead time in days"
+        },
+        {
+          "name": "total_discount_percent",
+          "expr": "SUM(discount_pct)",
+          "comment": "Total discount pct"
+        },
+        {
+          "name": "max_order_quantity",
+          "expr": "MAX(order_quantity)",
+          "comment": "Maximum order quantity"
+        }
+      ]
+    },
+    {
+      "view_name": "demand_kpi_metrics",
+      "source_table": "demand_kpi_monthly",
+      "dimensions": [
+        {
+          "name": "kpi_month",
+          "expr": "kpi_month"
+        },
+        {
+          "name": "product_family",
+          "expr": "product_family"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_forecast_accuracy",
+          "expr": "AVG(forecast_accuracy_pct)",
+          "comment": "Average forecast accuracy"
+        },
+        {
+          "name": "avg_fill_rate",
+          "expr": "AVG(fill_rate_pct)",
+          "comment": "Average order fill rate"
+        },
+        {
+          "name": "total_backlog",
+          "expr": "SUM(backlog_units)",
+          "comment": "Total backlog units"
+        },
+        {
+          "name": "total_revenue",
+          "expr": "SUM(total_revenue_usd)",
+          "comment": "Total monthly revenue"
+        },
+        {
+          "name": "max_forecast_accuracy_percent",
+          "expr": "MAX(forecast_accuracy_pct)",
+          "comment": "Maximum forecast accuracy pct"
+        },
+        {
+          "name": "total_new_orders",
+          "expr": "SUM(new_orders)",
+          "comment": "Total new orders"
+        },
+        {
+          "name": "total_cancelled_orders",
+          "expr": "SUM(cancelled_orders)",
+          "comment": "Total cancelled orders"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The customer_orders_metrics view (source: customer_orders) has dimensions: order_date, product_family, customer_region, order_status. Measures: total_order_revenue, total_order_quantity, total_orders, avg_lead_time. The demand_kpi_metrics view (source: demand_kpi_monthly) has dimensions: kpi_month, product_family. Measures: avg_forecast_accuracy, avg_fill_rate, total_backlog, total_revenue. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_model).",
+  "sample_questions": [
+    "What is the monthly trend in unique total orderss?",
+    "How has highest order quantity changed over time?",
+    "What is the monthly trend in total order revenue in usd?",
+    "How has total units ordered changed over time?",
+    "What is the monthly trend in highest forecast accuracy percent?",
+    "How has total backlog units changed over time?",
+    "What is the monthly trend in total monthly revenue?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total order revenue in usd?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_order_revenue) AS total_order_revenue",
+        "FROM {fqn}.customer_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has total units ordered changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_order_quantity) AS total_order_quantity",
+        "FROM {fqn}.customer_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total monthly revenue?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_revenue) AS total_revenue",
+        "FROM {fqn}.demand_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has highest forecast accuracy percent changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_forecast_accuracy_percent) AS max_forecast_accuracy_percent",
+        "FROM {fqn}.demand_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How does total units ordered break down by equipment model ordered for 'Backlog' records?",
+      "sql_lines": [
+        "SELECT equipment_model, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
+        "FROM {fqn}.customer_orders",
+        "WHERE order_status = 'Backlog' GROUP BY equipment_model ORDER BY total_order_quantity DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total forecasted demand units over time?",
+      "sql_lines": [
+        "SELECT forecast_date, SUM(forecasted_units) AS total_forecasted_units",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_date ORDER BY forecast_date"
+      ]
+    },
+    {
+      "question": "How has the average forecast accuracy percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(forecast_accuracy_pct) AS avg_forecast_accuracy_pct",
+        "FROM {fqn}.demand_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "customer_orders.order_status = 'Backlog'",
+        "display_name": "backlog orders",
+        "synonyms": [
+          "unfulfilled",
+          "pending"
+        ],
+        "instruction": "Use when analyzing order backlog."
+      },
+      {
+        "sql": "demand_forecasts.model_version = 'v4.2'",
+        "display_name": "latest forecast model",
+        "synonyms": [
+          "v4.2",
+          "newest model"
+        ],
+        "instruction": "Use for latest model version forecasts."
+      },
+      {
+        "sql": "demand_kpi_monthly.fill_rate_pct < 95",
+        "display_name": "below target fill rate",
+        "synonyms": [
+          "low fill rate",
+          "underperforming"
+        ],
+        "instruction": "Use when identifying products below the 95% fill rate target."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "order_month",
+        "sql": "DATE_TRUNC('month', customer_orders.order_date)",
+        "display_name": "order month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "order_value",
+        "sql": "customer_orders.order_quantity * customer_orders.unit_price_usd",
+        "display_name": "order value",
+        "synonyms": [
+          "revenue",
+          "order revenue"
+        ]
+      },
+      {
+        "alias": "forecast_error",
+        "sql": "ABS(demand_forecasts.forecasted_units - demand_forecasts.actual_units)",
+        "display_name": "forecast error units",
+        "synonyms": [
+          "miss",
+          "deviation"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(customer_orders.order_quantity * customer_orders.unit_price_usd)",
+        "display_name": "total revenue",
+        "synonyms": [
+          "sales",
+          "order value"
+        ]
+      },
+      {
+        "alias": "total_backlog",
+        "sql": "SUM(demand_kpi_monthly.backlog_units)",
+        "display_name": "total backlog",
+        "synonyms": [
+          "backlog volume"
+        ]
+      },
+      {
+        "alias": "avg_forecast_accuracy",
+        "sql": "AVG(demand_kpi_monthly.forecast_accuracy_pct)",
+        "display_name": "average forecast accuracy",
+        "synonyms": [
+          "accuracy",
+          "forecast performance"
+        ]
+      },
+      {
+        "alias": "avg_mape",
+        "sql": "AVG(demand_forecasts.mape_pct)",
+        "display_name": "average MAPE",
+        "synonyms": [
+          "forecast error",
+          "MAPE"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total orderss?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_orders) AS total_orders",
+        "FROM {fqn}.customer_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has highest order quantity changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(max_order_quantity) AS max_order_quantity",
+        "FROM {fqn}.customer_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest forecast accuracy percent?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_forecast_accuracy_percent) AS max_forecast_accuracy_percent",
+        "FROM {fqn}.demand_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has total backlog units changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_backlog) AS total_backlog",
+        "FROM {fqn}.demand_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What are the top equipment model ordered by total units ordered?",
+      "sql_lines": [
+        "SELECT equipment_model, SUM(order_quantity) AS total_order_quantity",
+        "FROM {fqn}.customer_orders",
+        "GROUP BY equipment_model ORDER BY total_order_quantity DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average mean absolute percentage error by product family?",
+      "sql_lines": [
+        "SELECT product_family, AVG(mape_pct) AS avg_mape_pct",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY product_family ORDER BY avg_mape_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of kpi record?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.demand_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

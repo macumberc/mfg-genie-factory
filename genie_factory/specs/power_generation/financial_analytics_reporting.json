@@ -1,0 +1,1016 @@
+{
+  "company_name": "PowerLedger Corp",
+  "industry": "Power Generation",
+  "use_case": "Power generation financial analytics and budget reporting",
+  "space_title": "PowerLedger Corp - Financial Analytics & Reporting 💰",
+  "space_description": "Financial analytics for PowerLedger Corp. Ask about cost center performance, budget variance, operating expenses, and capital expenditure across 20 cost centers in power generation.",
+  "schema_basename": "power_financial_analytics",
+  "tables": [
+    {
+      "table_name": "cost_centers",
+      "description": "Daily financial transaction records per cost center with expense categories and approval status.",
+      "columns": [
+        {
+          "name": "transaction_id",
+          "sql_type": "STRING",
+          "comment": "Unique financial transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FIN-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "transaction_date",
+          "sql_type": "DATE",
+          "comment": "Date of transaction",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_name",
+          "sql_type": "STRING",
+          "comment": "Cost center name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "department",
+          "sql_type": "STRING",
+          "comment": "Department: Operations, Maintenance, Fuel, Admin, Capital Projects",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Operating region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 99500.0), 2)"
+        },
+        {
+          "name": "expense_category",
+          "sql_type": "STRING",
+          "comment": "Category: Labor, Materials, Fuel, Utilities, Services, CapEx",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Labor' WHEN {status_noise} < 0.40 THEN 'Materials' WHEN {status_noise} < 0.55 THEN 'Fuel' WHEN {status_noise} < 0.68 THEN 'Utilities' WHEN {status_noise} < 0.82 THEN 'Services' ELSE 'CapEx' END"
+        },
+        {
+          "name": "budget_line_item",
+          "sql_type": "STRING",
+          "comment": "Budget line item reference",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BLI-', LPAD(CAST(FLOOR({qty_noise} * 200) AS STRING), 4, '0'))"
+        },
+        {
+          "name": "approval_status",
+          "sql_type": "STRING",
+          "comment": "Approval status: Approved, Pending, Rejected",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Rejected' WHEN {status_noise} < 0.12 THEN 'Pending' ELSE 'Approved' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Operations": {
+          "6,7,8": 0.06,
+          "12": 0.05
+        },
+        "Maintenance": {
+          "3,4": 0.07,
+          "9,10": 0.06
+        },
+        "Fuel": {
+          "6,7,8": 0.08,
+          "12,1,2": 0.07
+        },
+        "Capital Projects": {
+          "4,5,6": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "cost_center_id": "CC-OPS-001",
+          "cost_center_name": "Northeast Generation Ops",
+          "department": "Operations",
+          "region": "Northeast"
+        },
+        {
+          "cost_center_id": "CC-OPS-002",
+          "cost_center_name": "Southeast Generation Ops",
+          "department": "Operations",
+          "region": "Southeast"
+        },
+        {
+          "cost_center_id": "CC-OPS-003",
+          "cost_center_name": "Midwest Generation Ops",
+          "department": "Operations",
+          "region": "Midwest"
+        },
+        {
+          "cost_center_id": "CC-OPS-004",
+          "cost_center_name": "West Generation Ops",
+          "department": "Operations",
+          "region": "West"
+        },
+        {
+          "cost_center_id": "CC-MNT-005",
+          "cost_center_name": "Northeast Maintenance",
+          "department": "Maintenance",
+          "region": "Northeast"
+        },
+        {
+          "cost_center_id": "CC-MNT-006",
+          "cost_center_name": "Southeast Maintenance",
+          "department": "Maintenance",
+          "region": "Southeast"
+        },
+        {
+          "cost_center_id": "CC-MNT-007",
+          "cost_center_name": "Midwest Maintenance",
+          "department": "Maintenance",
+          "region": "Midwest"
+        },
+        {
+          "cost_center_id": "CC-MNT-008",
+          "cost_center_name": "West Maintenance",
+          "department": "Maintenance",
+          "region": "West"
+        },
+        {
+          "cost_center_id": "CC-FUL-009",
+          "cost_center_name": "Gas Procurement",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-010",
+          "cost_center_name": "Coal Procurement",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-011",
+          "cost_center_name": "Nuclear Fuel Services",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-012",
+          "cost_center_name": "Fuel Logistics",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-013",
+          "cost_center_name": "Corporate Finance",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-014",
+          "cost_center_name": "Human Resources",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-015",
+          "cost_center_name": "IT & Technology",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-016",
+          "cost_center_name": "Regulatory & Compliance",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-017",
+          "cost_center_name": "Renewable Expansion",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-018",
+          "cost_center_name": "Grid Modernization",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-019",
+          "cost_center_name": "Plant Upgrades",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-020",
+          "cost_center_name": "Battery Storage Projects",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        }
+      ],
+      "category_distribution": {
+        "Operations": 0.035,
+        "Maintenance": 0.03,
+        "Fuel": 0.04,
+        "Admin": 0.025,
+        "Capital Projects": 0.03
+      }
+    },
+    {
+      "table_name": "financial_transactions",
+      "description": "Monthly revenue and cost allocation records with actual vs budget comparisons.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique financial record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Record date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "department",
+          "sql_type": "STRING",
+          "comment": "Department",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue in USD (generation cost centers only)",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 500000.0, 2)"
+        },
+        {
+          "name": "actual_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10000.0 + ({qty_noise} * 290000.0), 2)"
+        },
+        {
+          "name": "budget_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budgeted cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(12000.0 + ({qty_noise} * 288000.0), 2)"
+        },
+        {
+          "name": "variance_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budget variance (budget - actual) in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(({qty_noise} - 0.5) * 50000.0, 2)"
+        },
+        {
+          "name": "variance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Variance as percentage of budget",
+          "is_dimension": false,
+          "generation_expr": "ROUND(({qty_noise} - 0.5) * 30.0, 2)"
+        },
+        {
+          "name": "fiscal_quarter",
+          "sql_type": "STRING",
+          "comment": "Fiscal quarter: Q1, Q2, Q3, Q4",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN MONTH(d.dt) IN (1,2,3) THEN 'Q1' WHEN MONTH(d.dt) IN (4,5,6) THEN 'Q2' WHEN MONTH(d.dt) IN (7,8,9) THEN 'Q3' ELSE 'Q4' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Operations": {
+          "6,7,8": 0.06
+        },
+        "Maintenance": {
+          "3,4": 0.07
+        },
+        "Fuel": {
+          "6,7,8": 0.08
+        },
+        "Capital Projects": {
+          "4,5,6": 0.06
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "cost_center_id": "CC-OPS-001",
+          "cost_center_name": "Northeast Generation Ops",
+          "department": "Operations",
+          "region": "Northeast"
+        },
+        {
+          "cost_center_id": "CC-OPS-002",
+          "cost_center_name": "Southeast Generation Ops",
+          "department": "Operations",
+          "region": "Southeast"
+        },
+        {
+          "cost_center_id": "CC-OPS-003",
+          "cost_center_name": "Midwest Generation Ops",
+          "department": "Operations",
+          "region": "Midwest"
+        },
+        {
+          "cost_center_id": "CC-OPS-004",
+          "cost_center_name": "West Generation Ops",
+          "department": "Operations",
+          "region": "West"
+        },
+        {
+          "cost_center_id": "CC-MNT-005",
+          "cost_center_name": "Northeast Maintenance",
+          "department": "Maintenance",
+          "region": "Northeast"
+        },
+        {
+          "cost_center_id": "CC-MNT-006",
+          "cost_center_name": "Southeast Maintenance",
+          "department": "Maintenance",
+          "region": "Southeast"
+        },
+        {
+          "cost_center_id": "CC-MNT-007",
+          "cost_center_name": "Midwest Maintenance",
+          "department": "Maintenance",
+          "region": "Midwest"
+        },
+        {
+          "cost_center_id": "CC-MNT-008",
+          "cost_center_name": "West Maintenance",
+          "department": "Maintenance",
+          "region": "West"
+        },
+        {
+          "cost_center_id": "CC-FUL-009",
+          "cost_center_name": "Gas Procurement",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-010",
+          "cost_center_name": "Coal Procurement",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-011",
+          "cost_center_name": "Nuclear Fuel Services",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-012",
+          "cost_center_name": "Fuel Logistics",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-013",
+          "cost_center_name": "Corporate Finance",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-014",
+          "cost_center_name": "Human Resources",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-015",
+          "cost_center_name": "IT & Technology",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-016",
+          "cost_center_name": "Regulatory & Compliance",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-017",
+          "cost_center_name": "Renewable Expansion",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-018",
+          "cost_center_name": "Grid Modernization",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-019",
+          "cost_center_name": "Plant Upgrades",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-020",
+          "cost_center_name": "Battery Storage Projects",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        }
+      ],
+      "category_distribution": {
+        "Operations": 0.035,
+        "Maintenance": 0.03,
+        "Fuel": 0.04,
+        "Admin": 0.025,
+        "Capital Projects": 0.03
+      }
+    },
+    {
+      "table_name": "budget_snapshots",
+      "description": "Quarterly budget forecast snapshots with CapEx tracking and operating margin projections.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique budget snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BGT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of budget snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "department",
+          "sql_type": "STRING",
+          "comment": "Department",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "annual_budget_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Annual budget allocation in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500000.0 + ({qty_noise} * 4500000.0), 2)"
+        },
+        {
+          "name": "ytd_spend_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Year-to-date spend in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100000.0 + ({qty_noise} * 2900000.0), 2)"
+        },
+        {
+          "name": "remaining_budget_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Remaining budget in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 2450000.0), 2)"
+        },
+        {
+          "name": "capex_committed_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Capital expenditure committed in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 1500000.0, 2)"
+        },
+        {
+          "name": "operating_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Operating margin percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 30.0), 2)"
+        },
+        {
+          "name": "budget_status",
+          "sql_type": "STRING",
+          "comment": "Budget status: On Track, At Risk, Over Budget, Under Budget",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Over Budget' WHEN {status_noise} < 0.25 THEN 'At Risk' WHEN {status_noise} < 0.40 THEN 'Under Budget' ELSE 'On Track' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Operations": {
+          "12": 0.06
+        },
+        "Maintenance": {
+          "3": 0.05
+        },
+        "Fuel": {
+          "6": 0.05
+        },
+        "Capital Projects": {
+          "6,12": 0.06
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "cost_center_id": "CC-OPS-001",
+          "cost_center_name": "Northeast Generation Ops",
+          "department": "Operations",
+          "region": "Northeast"
+        },
+        {
+          "cost_center_id": "CC-OPS-002",
+          "cost_center_name": "Southeast Generation Ops",
+          "department": "Operations",
+          "region": "Southeast"
+        },
+        {
+          "cost_center_id": "CC-OPS-003",
+          "cost_center_name": "Midwest Generation Ops",
+          "department": "Operations",
+          "region": "Midwest"
+        },
+        {
+          "cost_center_id": "CC-OPS-004",
+          "cost_center_name": "West Generation Ops",
+          "department": "Operations",
+          "region": "West"
+        },
+        {
+          "cost_center_id": "CC-MNT-005",
+          "cost_center_name": "Northeast Maintenance",
+          "department": "Maintenance",
+          "region": "Northeast"
+        },
+        {
+          "cost_center_id": "CC-MNT-006",
+          "cost_center_name": "Southeast Maintenance",
+          "department": "Maintenance",
+          "region": "Southeast"
+        },
+        {
+          "cost_center_id": "CC-MNT-007",
+          "cost_center_name": "Midwest Maintenance",
+          "department": "Maintenance",
+          "region": "Midwest"
+        },
+        {
+          "cost_center_id": "CC-MNT-008",
+          "cost_center_name": "West Maintenance",
+          "department": "Maintenance",
+          "region": "West"
+        },
+        {
+          "cost_center_id": "CC-FUL-009",
+          "cost_center_name": "Gas Procurement",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-010",
+          "cost_center_name": "Coal Procurement",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-011",
+          "cost_center_name": "Nuclear Fuel Services",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-FUL-012",
+          "cost_center_name": "Fuel Logistics",
+          "department": "Fuel",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-013",
+          "cost_center_name": "Corporate Finance",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-014",
+          "cost_center_name": "Human Resources",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-015",
+          "cost_center_name": "IT & Technology",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-ADM-016",
+          "cost_center_name": "Regulatory & Compliance",
+          "department": "Admin",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-017",
+          "cost_center_name": "Renewable Expansion",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-018",
+          "cost_center_name": "Grid Modernization",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-019",
+          "cost_center_name": "Plant Upgrades",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        },
+        {
+          "cost_center_id": "CC-CAP-020",
+          "cost_center_name": "Battery Storage Projects",
+          "department": "Capital Projects",
+          "region": "Corporate"
+        }
+      ],
+      "category_distribution": {
+        "Operations": 0.035,
+        "Maintenance": 0.03,
+        "Fuel": 0.04,
+        "Admin": 0.025,
+        "Capital Projects": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "financial_kpi_monthly",
+      "source_table": "financial_transactions",
+      "dimensions": [
+        {
+          "name": "record_date",
+          "expr": "record_date"
+        },
+        {
+          "name": "department",
+          "expr": "department"
+        },
+        {
+          "name": "fiscal_quarter",
+          "expr": "fiscal_quarter"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_revenue",
+          "expr": "SUM(revenue_usd)",
+          "comment": "Total revenue in USD"
+        },
+        {
+          "name": "total_actual_cost",
+          "expr": "SUM(actual_cost_usd)",
+          "comment": "Total actual cost in USD"
+        },
+        {
+          "name": "total_budget_cost",
+          "expr": "SUM(budget_cost_usd)",
+          "comment": "Total budgeted cost in USD"
+        },
+        {
+          "name": "avg_variance_pct",
+          "expr": "AVG(variance_pct)",
+          "comment": "Average budget variance percentage"
+        },
+        {
+          "name": "total_variance_usd",
+          "expr": "SUM(variance_usd)",
+          "comment": "Total budget variance in USD"
+        },
+        {
+          "name": "unique_cost_center_count",
+          "expr": "COUNT(DISTINCT cost_center_id)",
+          "comment": "Number of distinct cost centers"
+        },
+        {
+          "name": "max_revenue",
+          "expr": "MAX(revenue_usd)",
+          "comment": "Maximum revenue usd"
+        }
+      ]
+    },
+    {
+      "view_name": "budget_status_monthly",
+      "source_table": "budget_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "department",
+          "expr": "department"
+        },
+        {
+          "name": "budget_status",
+          "expr": "budget_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_annual_budget",
+          "expr": "SUM(annual_budget_usd)",
+          "comment": "Total annual budget USD"
+        },
+        {
+          "name": "total_ytd_spend",
+          "expr": "SUM(ytd_spend_usd)",
+          "comment": "Total year-to-date spend USD"
+        },
+        {
+          "name": "total_remaining_budget",
+          "expr": "SUM(remaining_budget_usd)",
+          "comment": "Total remaining budget USD"
+        },
+        {
+          "name": "total_capex_committed",
+          "expr": "SUM(capex_committed_usd)",
+          "comment": "Total committed CapEx USD"
+        },
+        {
+          "name": "avg_operating_margin",
+          "expr": "AVG(operating_margin_pct)",
+          "comment": "Average operating margin pct"
+        },
+        {
+          "name": "unique_cost_center_count",
+          "expr": "COUNT(DISTINCT cost_center_id)",
+          "comment": "Number of distinct cost centers"
+        },
+        {
+          "name": "max_annual_budget",
+          "expr": "MAX(annual_budget_usd)",
+          "comment": "Maximum annual budget usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_kpi_monthly view (source: financial_transactions) has dimensions: record_date, department, fiscal_quarter. Measures: total_revenue, total_actual_cost, total_budget_cost, avg_variance_pct, total_variance_usd. The budget_status_monthly view (source: budget_snapshots) has dimensions: snapshot_date, department, budget_status. Measures: total_annual_budget, total_ytd_spend, total_remaining_budget, total_capex_committed, avg_operating_margin. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id, cost_center_name, region).",
+  "sample_questions": [
+    "What is the monthly trend in unique cost centers?",
+    "How has highest revenue changed over time?",
+    "What is the monthly trend in total revenue in usd?",
+    "How has total actual cost in usd changed over time?",
+    "What is the monthly trend in unique cost centers?",
+    "How has highest annual budget changed over time?",
+    "What is the monthly trend in total annual budget usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total revenue in usd?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_revenue) AS total_revenue",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has total actual cost in usd changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_actual_cost) AS total_actual_cost",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in average operating margin pct?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_operating_margin) AS avg_operating_margin",
+        "FROM {fqn}.budget_status_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "Rank departments by total committed capex usd",
+      "sql_lines": [
+        "SELECT department, MEASURE(total_capex_committed) AS total_capex_committed",
+        "FROM {fqn}.budget_status_monthly",
+        "GROUP BY ALL",
+        "ORDER BY total_capex_committed DESC"
+      ]
+    },
+    {
+      "question": "How does total transaction amount in usd break down by cost center identifier for 'Pending' records?",
+      "sql_lines": [
+        "SELECT cost_center_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.cost_centers",
+        "WHERE approval_status = 'Pending' GROUP BY cost_center_id ORDER BY total_amount_usd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total revenue in usd (generation cost centers only) over time?",
+      "sql_lines": [
+        "SELECT record_date, SUM(revenue_usd) AS total_revenue_usd",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY record_date ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has the average operating margin percentage changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, AVG(operating_margin_pct) AS avg_operating_margin_pct",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "cost_centers.approval_status = 'Approved'",
+        "display_name": "approved transactions",
+        "synonyms": [
+          "approved spend",
+          "authorized"
+        ],
+        "instruction": "Use when filtering to approved financial transactions."
+      },
+      {
+        "sql": "budget_snapshots.budget_status = 'Over Budget'",
+        "display_name": "over budget centers",
+        "synonyms": [
+          "exceeded budget",
+          "overspend"
+        ],
+        "instruction": "Use when filtering to cost centers exceeding their budget."
+      },
+      {
+        "sql": "cost_centers.expense_category = 'CapEx'",
+        "display_name": "capital expenditures",
+        "synonyms": [
+          "CapEx",
+          "capital projects"
+        ],
+        "instruction": "Use when filtering to capital expenditure transactions."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "txn_month",
+        "sql": "DATE_TRUNC('month', cost_centers.transaction_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "budget_utilization_pct",
+        "sql": "budget_snapshots.ytd_spend_usd / NULLIF(budget_snapshots.annual_budget_usd, 0) * 100",
+        "display_name": "budget utilization pct",
+        "synonyms": [
+          "burn rate",
+          "spend rate"
+        ]
+      },
+      {
+        "alias": "cost_per_revenue",
+        "sql": "financial_transactions.actual_cost_usd / NULLIF(financial_transactions.revenue_usd, 0)",
+        "display_name": "cost per revenue dollar",
+        "synonyms": [
+          "cost ratio",
+          "efficiency ratio"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_spend",
+        "sql": "SUM(cost_centers.amount_usd)",
+        "display_name": "total spend USD",
+        "synonyms": [
+          "total expenses",
+          "expenditure"
+        ]
+      },
+      {
+        "alias": "total_variance",
+        "sql": "SUM(financial_transactions.variance_usd)",
+        "display_name": "total budget variance",
+        "synonyms": [
+          "budget gap",
+          "over/under"
+        ]
+      },
+      {
+        "alias": "total_capex",
+        "sql": "SUM(budget_snapshots.capex_committed_usd)",
+        "display_name": "total CapEx committed",
+        "synonyms": [
+          "capital committed",
+          "CapEx"
+        ]
+      },
+      {
+        "alias": "avg_operating_margin",
+        "sql": "AVG(budget_snapshots.operating_margin_pct)",
+        "display_name": "average operating margin",
+        "synonyms": [
+          "margin",
+          "profitability"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique cost centers?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(unique_cost_center_count) AS unique_cost_center_count",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has highest revenue changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(max_revenue) AS max_revenue",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has highest annual budget changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_annual_budget) AS max_annual_budget",
+        "FROM {fqn}.budget_status_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total annual budget usd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_annual_budget) AS total_annual_budget",
+        "FROM {fqn}.budget_status_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "sql_lines": [
+        "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.cost_centers",
+        "GROUP BY cost_center_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average variance as percentage of budget by department?",
+      "sql_lines": [
+        "SELECT department, AVG(variance_pct) AS avg_variance_pct",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY department ORDER BY avg_variance_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per date of budget snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,939 @@
+{
+  "company_name": "PowerGrid Analytics",
+  "industry": "Electric Utility",
+  "use_case": "Grid management, energy mix optimization, and renewable integration",
+  "space_title": "PowerGrid Analytics - Grid Management & Energy Mix ⚡",
+  "space_description": "Grid management analytics for PowerGrid Analytics. Ask about generation mix, renewable integration, grid frequency, load balancing, and congestion across 20 grid zones and 6 generation fuel types.",
+  "schema_basename": "utility_grid_management",
+  "tables": [
+    {
+      "table_name": "generation_readings",
+      "description": "Hourly generation readings by fuel source and grid zone including MW output, capacity factor, and curtailment.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique generation reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('GR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.zone_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of generation reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "zone_id",
+          "sql_type": "STRING",
+          "comment": "Grid zone identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "zone_name",
+          "sql_type": "STRING",
+          "comment": "Grid zone descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region: North, South, East, West, Central",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "fuel_type",
+          "sql_type": "STRING",
+          "comment": "Generation fuel: Solar, Wind, Natural Gas, Nuclear, Hydro, Coal",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Solar' WHEN {status_noise} < 0.42 THEN 'Wind' WHEN {status_noise} < 0.62 THEN 'Natural Gas' WHEN {status_noise} < 0.75 THEN 'Nuclear' WHEN {status_noise} < 0.88 THEN 'Hydro' ELSE 'Coal' END"
+        },
+        {
+          "name": "generation_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Generation output in megawatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 950.0), 2)"
+        },
+        {
+          "name": "capacity_factor_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Capacity factor as percentage 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 80.0), 2)"
+        },
+        {
+          "name": "curtailment_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Curtailed generation in MW (renewable only)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(CASE WHEN {status_noise} < 0.42 THEN {qty_noise} * 120.0 ELSE 0.0 END, 2)"
+        },
+        {
+          "name": "carbon_intensity_kg_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Carbon intensity in kg CO2 per MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(CASE WHEN {status_noise} < 0.42 THEN 0.0 WHEN {status_noise} < 0.62 THEN 400.0 + ({qty_noise} * 100.0) WHEN {status_noise} < 0.75 THEN 12.0 WHEN {status_noise} < 0.88 THEN 24.0 ELSE 900.0 + ({qty_noise} * 100.0) END, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "North": {
+          "12,1,2": 0.06
+        },
+        "South": {
+          "6,7,8": 0.065
+        },
+        "West": {
+          "6,7,8": 0.055
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "zone_id": "GZ-N01",
+          "zone_name": "Northern Metro",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N02",
+          "zone_name": "Northern Industrial",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N03",
+          "zone_name": "Northern Rural",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N04",
+          "zone_name": "Northern Wind Corridor",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-S01",
+          "zone_name": "Southern Metro",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S02",
+          "zone_name": "Southern Coast",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S03",
+          "zone_name": "Southern Solar Belt",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S04",
+          "zone_name": "Southern Industrial",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-E01",
+          "zone_name": "Eastern Metro",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E02",
+          "zone_name": "Eastern Suburban",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E03",
+          "zone_name": "Eastern Port District",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E04",
+          "zone_name": "Eastern Nuclear Zone",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-W01",
+          "zone_name": "Western Metro",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W02",
+          "zone_name": "Western Valley",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W03",
+          "zone_name": "Western Hydro Basin",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W04",
+          "zone_name": "Western Desert Solar",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-C01",
+          "zone_name": "Central Metro",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C02",
+          "zone_name": "Central Data Center Hub",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C03",
+          "zone_name": "Central Agricultural",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C04",
+          "zone_name": "Central Gas Corridor",
+          "region": "Central"
+        }
+      ],
+      "category_distribution": {
+        "North": 0.03,
+        "South": 0.035,
+        "East": 0.03,
+        "West": 0.03,
+        "Central": 0.025
+      }
+    },
+    {
+      "table_name": "load_snapshots",
+      "description": "Daily grid load snapshot with peak demand, frequency deviation, congestion index, and import/export flows by zone.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique load snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.zone_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of load snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "zone_id",
+          "sql_type": "STRING",
+          "comment": "Grid zone identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "zone_name",
+          "sql_type": "STRING",
+          "comment": "Grid zone name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "peak_demand_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Peak demand in MW for the day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 1800.0) + (CASE WHEN MONTH(d.dt) IN (7,8) THEN 200.0 WHEN MONTH(d.dt) IN (1,2) THEN 150.0 ELSE 0.0 END), 2)"
+        },
+        {
+          "name": "avg_frequency_hz",
+          "sql_type": "DOUBLE",
+          "comment": "Average grid frequency in Hz (target 60.00)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(59.95 + ({qty_noise} * 0.10), 4)"
+        },
+        {
+          "name": "congestion_index",
+          "sql_type": "DOUBLE",
+          "comment": "Congestion severity index 0-10",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 10.0, 2)"
+        },
+        {
+          "name": "import_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Power imported from neighboring zones in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 500.0, 2)"
+        },
+        {
+          "name": "export_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Power exported to neighboring zones in MW",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 400.0, 2)"
+        },
+        {
+          "name": "renewable_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of load served by renewables",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 55.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "North": {
+          "12,1,2": 0.06
+        },
+        "South": {
+          "6,7,8": 0.065
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "zone_id": "GZ-N01",
+          "zone_name": "Northern Metro",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N02",
+          "zone_name": "Northern Industrial",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N03",
+          "zone_name": "Northern Rural",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N04",
+          "zone_name": "Northern Wind Corridor",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-S01",
+          "zone_name": "Southern Metro",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S02",
+          "zone_name": "Southern Coast",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S03",
+          "zone_name": "Southern Solar Belt",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S04",
+          "zone_name": "Southern Industrial",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-E01",
+          "zone_name": "Eastern Metro",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E02",
+          "zone_name": "Eastern Suburban",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E03",
+          "zone_name": "Eastern Port District",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E04",
+          "zone_name": "Eastern Nuclear Zone",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-W01",
+          "zone_name": "Western Metro",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W02",
+          "zone_name": "Western Valley",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W03",
+          "zone_name": "Western Hydro Basin",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W04",
+          "zone_name": "Western Desert Solar",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-C01",
+          "zone_name": "Central Metro",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C02",
+          "zone_name": "Central Data Center Hub",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C03",
+          "zone_name": "Central Agricultural",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C04",
+          "zone_name": "Central Gas Corridor",
+          "region": "Central"
+        }
+      ],
+      "category_distribution": {
+        "North": 0.03,
+        "South": 0.035,
+        "East": 0.03,
+        "West": 0.03,
+        "Central": 0.025
+      }
+    },
+    {
+      "table_name": "grid_kpi_monthly",
+      "description": "Monthly grid performance KPIs including renewable share, reliability indices, and carbon emission trends.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('GK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.zone_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "zone_id",
+          "sql_type": "STRING",
+          "comment": "Grid zone identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "renewable_share_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Renewable energy share of total generation",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 50.0), 2)"
+        },
+        {
+          "name": "saidi_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "SAIDI - System Average Interruption Duration Index in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 55.0), 2)"
+        },
+        {
+          "name": "saifi_events",
+          "sql_type": "DOUBLE",
+          "comment": "SAIFI - System Average Interruption Frequency Index",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.1 + ({qty_noise} * 1.4), 3)"
+        },
+        {
+          "name": "total_carbon_tons",
+          "sql_type": "DOUBLE",
+          "comment": "Total carbon emissions in metric tons",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000.0 + ({qty_noise} * 45000.0), 2)"
+        },
+        {
+          "name": "avg_lmp_usd_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Average locational marginal price in USD/MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25.0 + ({qty_noise} * 75.0), 2)"
+        },
+        {
+          "name": "curtailment_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Total renewable curtailment in MWh for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 5000.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "zone_id": "GZ-N01",
+          "zone_name": "Northern Metro",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N02",
+          "zone_name": "Northern Industrial",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N03",
+          "zone_name": "Northern Rural",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-N04",
+          "zone_name": "Northern Wind Corridor",
+          "region": "North"
+        },
+        {
+          "zone_id": "GZ-S01",
+          "zone_name": "Southern Metro",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S02",
+          "zone_name": "Southern Coast",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S03",
+          "zone_name": "Southern Solar Belt",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-S04",
+          "zone_name": "Southern Industrial",
+          "region": "South"
+        },
+        {
+          "zone_id": "GZ-E01",
+          "zone_name": "Eastern Metro",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E02",
+          "zone_name": "Eastern Suburban",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E03",
+          "zone_name": "Eastern Port District",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-E04",
+          "zone_name": "Eastern Nuclear Zone",
+          "region": "East"
+        },
+        {
+          "zone_id": "GZ-W01",
+          "zone_name": "Western Metro",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W02",
+          "zone_name": "Western Valley",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W03",
+          "zone_name": "Western Hydro Basin",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-W04",
+          "zone_name": "Western Desert Solar",
+          "region": "West"
+        },
+        {
+          "zone_id": "GZ-C01",
+          "zone_name": "Central Metro",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C02",
+          "zone_name": "Central Data Center Hub",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C03",
+          "zone_name": "Central Agricultural",
+          "region": "Central"
+        },
+        {
+          "zone_id": "GZ-C04",
+          "zone_name": "Central Gas Corridor",
+          "region": "Central"
+        }
+      ],
+      "category_distribution": {
+        "North": 0.03,
+        "South": 0.035,
+        "East": 0.03,
+        "West": 0.03,
+        "Central": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "generation_metrics",
+      "source_table": "generation_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "fuel_type",
+          "expr": "fuel_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_generation_mw",
+          "expr": "SUM(generation_mw)",
+          "comment": "Total generation output in MW"
+        },
+        {
+          "name": "avg_capacity_factor",
+          "expr": "AVG(capacity_factor_pct)",
+          "comment": "Average capacity factor percentage"
+        },
+        {
+          "name": "total_curtailment_mw",
+          "expr": "SUM(curtailment_mw)",
+          "comment": "Total renewable curtailment in MW"
+        },
+        {
+          "name": "avg_carbon_intensity",
+          "expr": "AVG(carbon_intensity_kg_mwh)",
+          "comment": "Average carbon intensity kg CO2/MWh"
+        },
+        {
+          "name": "reading_count",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total number of generation readings"
+        },
+        {
+          "name": "unique_zone_count",
+          "expr": "COUNT(DISTINCT zone_id)",
+          "comment": "Number of distinct zones"
+        },
+        {
+          "name": "max_generation_mw",
+          "expr": "MAX(generation_mw)",
+          "comment": "Maximum generation mw"
+        }
+      ]
+    },
+    {
+      "view_name": "load_metrics",
+      "source_table": "load_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "zone_id",
+          "expr": "zone_id"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_peak_demand_mw",
+          "expr": "AVG(peak_demand_mw)",
+          "comment": "Average peak demand in MW"
+        },
+        {
+          "name": "avg_congestion_index",
+          "expr": "AVG(congestion_index)",
+          "comment": "Average congestion severity index"
+        },
+        {
+          "name": "total_import_mw",
+          "expr": "SUM(import_mw)",
+          "comment": "Total power imported in MW"
+        },
+        {
+          "name": "total_export_mw",
+          "expr": "SUM(export_mw)",
+          "comment": "Total power exported in MW"
+        },
+        {
+          "name": "avg_renewable_pct",
+          "expr": "AVG(renewable_pct)",
+          "comment": "Average renewable share percentage"
+        },
+        {
+          "name": "total_avg_frequency_hz",
+          "expr": "SUM(avg_frequency_hz)",
+          "comment": "Total avg frequency hz"
+        },
+        {
+          "name": "max_peak_demand_mw",
+          "expr": "MAX(peak_demand_mw)",
+          "comment": "Maximum peak demand mw"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The generation_metrics view (source: generation_readings) has dimensions: reading_date, region, fuel_type. Measures: total_generation_mw, avg_capacity_factor, total_curtailment_mw, avg_carbon_intensity, reading_count. The load_metrics view (source: load_snapshots) has dimensions: snapshot_date, region, zone_id. Measures: avg_peak_demand_mw, avg_congestion_index, total_import_mw, total_export_mw, avg_renewable_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. zone_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique readings?",
+    "How has unique zones changed over time?",
+    "What is the monthly trend in highest generation mw?",
+    "How has total generation output in mw changed over time?",
+    "What is the monthly trend in highest peak demand mw?",
+    "How has total power imported in mw changed over time?",
+    "What is the monthly trend in total power exported in mw?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest generation mw?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_generation_mw) AS max_generation_mw",
+        "FROM {fqn}.generation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total generation output in mw changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_generation_mw) AS total_generation_mw",
+        "FROM {fqn}.generation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total power exported in mw?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_export_mw) AS total_export_mw",
+        "FROM {fqn}.load_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in average renewable share percentage?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_renewable_pct) AS avg_renewable_pct",
+        "FROM {fqn}.load_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total curtailed generation in mw (renewable only) over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(curtailment_mw) AS total_curtailment_mw",
+        "FROM {fqn}.generation_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total peak demand in mw for the day over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(peak_demand_mw) AS total_peak_demand_mw",
+        "FROM {fqn}.load_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average renewable energy share of total generation changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(renewable_share_pct) AS avg_renewable_share_pct",
+        "FROM {fqn}.grid_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "generation_readings.fuel_type IN ('Solar', 'Wind')",
+        "display_name": "renewable generation",
+        "synonyms": [
+          "renewables",
+          "clean energy"
+        ],
+        "instruction": "Use when filtering for renewable fuel sources only."
+      },
+      {
+        "sql": "load_snapshots.congestion_index > 7",
+        "display_name": "severe congestion",
+        "synonyms": [
+          "high congestion",
+          "congested zones"
+        ],
+        "instruction": "Use when identifying zones with severe congestion."
+      },
+      {
+        "sql": "generation_readings.fuel_type IN ('Natural Gas', 'Coal')",
+        "display_name": "fossil fuel generation",
+        "synonyms": [
+          "thermal generation",
+          "carbon-emitting sources"
+        ],
+        "instruction": "Use when analyzing fossil fuel or high-carbon generation."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "generation_month",
+        "sql": "DATE_TRUNC('month', generation_readings.reading_date)",
+        "display_name": "generation month",
+        "synonyms": [
+          "month of generation",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "net_interchange_mw",
+        "sql": "load_snapshots.import_mw - load_snapshots.export_mw",
+        "display_name": "net interchange MW",
+        "synonyms": [
+          "net import",
+          "net flow"
+        ]
+      },
+      {
+        "alias": "frequency_deviation",
+        "sql": "ABS(load_snapshots.avg_frequency_hz - 60.0)",
+        "display_name": "frequency deviation from 60 Hz",
+        "synonyms": [
+          "frequency error",
+          "Hz deviation"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_generation_mw",
+        "sql": "SUM(generation_readings.generation_mw)",
+        "display_name": "total generation MW",
+        "synonyms": [
+          "total output",
+          "generation capacity"
+        ]
+      },
+      {
+        "alias": "total_curtailment_mw",
+        "sql": "SUM(generation_readings.curtailment_mw)",
+        "display_name": "total curtailment MW",
+        "synonyms": [
+          "wasted renewable",
+          "curtailed energy"
+        ]
+      },
+      {
+        "alias": "avg_carbon_intensity",
+        "sql": "AVG(generation_readings.carbon_intensity_kg_mwh)",
+        "display_name": "average carbon intensity",
+        "synonyms": [
+          "emissions rate",
+          "carbon rate"
+        ]
+      },
+      {
+        "alias": "avg_peak_demand",
+        "sql": "AVG(load_snapshots.peak_demand_mw)",
+        "display_name": "average peak demand MW",
+        "synonyms": [
+          "peak load",
+          "max demand"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique readings?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "FROM {fqn}.generation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique zones changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_zone_count) AS unique_zone_count",
+        "FROM {fqn}.generation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest peak demand mw?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_peak_demand_mw) AS max_peak_demand_mw",
+        "FROM {fqn}.load_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total power imported in mw changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_import_mw) AS total_import_mw",
+        "FROM {fqn}.load_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top grid zone identifier by total curtailed generation in mw (renewable only)?",
+      "sql_lines": [
+        "SELECT zone_id, SUM(curtailment_mw) AS total_curtailment_mw",
+        "FROM {fqn}.generation_readings",
+        "GROUP BY zone_id ORDER BY total_curtailment_mw DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average congestion severity index 0-10 by grid zone name?",
+      "sql_lines": [
+        "SELECT zone_name, AVG(congestion_index) AS avg_congestion_index",
+        "FROM {fqn}.load_snapshots",
+        "GROUP BY zone_name ORDER BY avg_congestion_index DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.grid_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1036 @@
+{
+  "company_name": "SiteTrack Construction",
+  "industry": "Construction & Engineering",
+  "use_case": "Construction project monitoring and completion tracking",
+  "space_title": "SiteTrack Construction - Project Completion Monitoring 🏗️",
+  "space_description": "Project monitoring analytics for SiteTrack Construction. Ask about project progress, schedule variance, cost performance, and milestone completion across 20 active projects.",
+  "schema_basename": "ce_project_monitoring",
+  "tables": [
+    {
+      "table_name": "projects",
+      "description": "Daily project progress events with work completed, crew deployment, and safety incidents.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Progress event ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Event date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_name",
+          "sql_type": "STRING",
+          "comment": "Project name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "work_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Work hours logged",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + ({qty_noise} * 450.0), 1)"
+        },
+        {
+          "name": "crew_count",
+          "sql_type": "INT",
+          "comment": "Crew members on site",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 190) AS INT)"
+        },
+        {
+          "name": "daily_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Daily project cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000.0 + ({qty_noise} * 95000.0), 2)"
+        },
+        {
+          "name": "safety_incidents",
+          "sql_type": "INT",
+          "comment": "Safety incidents reported",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 3) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Bridge": {
+          "3,4,5": 0.06
+        },
+        "Highway": {
+          "4,5,6,7": 0.07
+        },
+        "Commercial Building": {
+          "3,4,5": 0.05
+        },
+        "Energy": {
+          "4,5,6": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "project_id": "AP-001",
+          "project_name": "Riverdale Bridge Rehab",
+          "project_type": "Bridge Rehabilitation",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-002",
+          "project_name": "Coastal Highway Extension",
+          "project_type": "Highway Construction",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-003",
+          "project_name": "Downtown Office Tower",
+          "project_type": "Commercial Construction",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-004",
+          "project_name": "Airport Terminal B",
+          "project_type": "Public Infrastructure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-005",
+          "project_name": "Metro Rail Extension",
+          "project_type": "Rail Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-006",
+          "project_name": "Water Treatment Upgrade",
+          "project_type": "Utility Infrastructure",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-007",
+          "project_name": "Solar Farm Phase II",
+          "project_type": "Renewable Energy",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-008",
+          "project_name": "Hospital Wing Addition",
+          "project_type": "Healthcare",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-009",
+          "project_name": "University Science Center",
+          "project_type": "Educational",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-010",
+          "project_name": "Warehouse Distribution Hub",
+          "project_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-011",
+          "project_name": "Parking Garage Downtown",
+          "project_type": "Parking Structure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-012",
+          "project_name": "Convention Center Expansion",
+          "project_type": "Public Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-013",
+          "project_name": "Residential Tower Complex",
+          "project_type": "Residential",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-014",
+          "project_name": "Wind Farm Foundation Work",
+          "project_type": "Renewable Energy",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-015",
+          "project_name": "Interstate Interchange",
+          "project_type": "Highway Construction",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-016",
+          "project_name": "Dam Safety Renovation",
+          "project_type": "Water Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-017",
+          "project_name": "Data Center Campus",
+          "project_type": "Commercial Construction",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-018",
+          "project_name": "Port Facility Expansion",
+          "project_type": "Marine Infrastructure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-019",
+          "project_name": "Mountain Highway Tunnel",
+          "project_type": "Tunnel Construction",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-020",
+          "project_name": "Mixed-Use Development",
+          "project_type": "Commercial Construction",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Bridge Rehabilitation": 0.025,
+        "Highway Construction": 0.035,
+        "Commercial Construction": 0.03,
+        "Public Infrastructure": 0.028,
+        "Rail Infrastructure": 0.022,
+        "Utility Infrastructure": 0.025,
+        "Renewable Energy": 0.028,
+        "Healthcare": 0.02,
+        "Educational": 0.02,
+        "Industrial": 0.025,
+        "Parking Structure": 0.018,
+        "Residential": 0.022,
+        "Water Infrastructure": 0.02,
+        "Marine Infrastructure": 0.018,
+        "Tunnel Construction": 0.02,
+        "Mixed-Use Development": 0.022
+      }
+    },
+    {
+      "table_name": "progress_events",
+      "description": "Weekly project milestone snapshots with completion percentages and schedule/cost indices.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Milestone snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('MS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "completion_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Overall completion 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 100.0, 1)"
+        },
+        {
+          "name": "schedule_performance_index",
+          "sql_type": "DOUBLE",
+          "comment": "SPI (earned/planned value ratio)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.7 + ({qty_noise} * 0.6), 3)"
+        },
+        {
+          "name": "cost_performance_index",
+          "sql_type": "DOUBLE",
+          "comment": "CPI (earned/actual cost ratio)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.75 + ({qty_noise} * 0.5), 3)"
+        },
+        {
+          "name": "milestones_completed",
+          "sql_type": "INT",
+          "comment": "Milestones completed to date",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 20) AS INT)"
+        },
+        {
+          "name": "project_health",
+          "sql_type": "STRING",
+          "comment": "Health: Green, Yellow, Red",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Red' WHEN {status_noise} < 0.30 THEN 'Yellow' ELSE 'Green' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Bridge": {
+          "3,4,5": 0.06
+        },
+        "Highway": {
+          "4,5,6,7": 0.07
+        },
+        "Commercial Building": {
+          "3,4,5": 0.05
+        },
+        "Energy": {
+          "4,5,6": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "project_id": "AP-001",
+          "project_name": "Riverdale Bridge Rehab",
+          "project_type": "Bridge Rehabilitation",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-002",
+          "project_name": "Coastal Highway Extension",
+          "project_type": "Highway Construction",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-003",
+          "project_name": "Downtown Office Tower",
+          "project_type": "Commercial Construction",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-004",
+          "project_name": "Airport Terminal B",
+          "project_type": "Public Infrastructure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-005",
+          "project_name": "Metro Rail Extension",
+          "project_type": "Rail Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-006",
+          "project_name": "Water Treatment Upgrade",
+          "project_type": "Utility Infrastructure",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-007",
+          "project_name": "Solar Farm Phase II",
+          "project_type": "Renewable Energy",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-008",
+          "project_name": "Hospital Wing Addition",
+          "project_type": "Healthcare",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-009",
+          "project_name": "University Science Center",
+          "project_type": "Educational",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-010",
+          "project_name": "Warehouse Distribution Hub",
+          "project_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-011",
+          "project_name": "Parking Garage Downtown",
+          "project_type": "Parking Structure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-012",
+          "project_name": "Convention Center Expansion",
+          "project_type": "Public Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-013",
+          "project_name": "Residential Tower Complex",
+          "project_type": "Residential",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-014",
+          "project_name": "Wind Farm Foundation Work",
+          "project_type": "Renewable Energy",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-015",
+          "project_name": "Interstate Interchange",
+          "project_type": "Highway Construction",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-016",
+          "project_name": "Dam Safety Renovation",
+          "project_type": "Water Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-017",
+          "project_name": "Data Center Campus",
+          "project_type": "Commercial Construction",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-018",
+          "project_name": "Port Facility Expansion",
+          "project_type": "Marine Infrastructure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-019",
+          "project_name": "Mountain Highway Tunnel",
+          "project_type": "Tunnel Construction",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-020",
+          "project_name": "Mixed-Use Development",
+          "project_type": "Commercial Construction",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Bridge Rehabilitation": 0.025,
+        "Highway Construction": 0.035,
+        "Commercial Construction": 0.03,
+        "Public Infrastructure": 0.028,
+        "Rail Infrastructure": 0.022,
+        "Utility Infrastructure": 0.025,
+        "Renewable Energy": 0.028,
+        "Healthcare": 0.02,
+        "Educational": 0.02,
+        "Industrial": 0.025,
+        "Parking Structure": 0.018,
+        "Residential": 0.022,
+        "Water Infrastructure": 0.02,
+        "Marine Infrastructure": 0.018,
+        "Tunnel Construction": 0.02,
+        "Mixed-Use Development": 0.022
+      }
+    },
+    {
+      "table_name": "milestone_snapshots",
+      "description": "Monthly project forecast summaries with estimated completion dates and budget at completion.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Forecast ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PF-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Forecast month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "budget_at_completion_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated budget at completion USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1000000.0 + ({qty_noise} * 19000000.0), 2)"
+        },
+        {
+          "name": "actual_cost_to_date_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual cost to date USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200000.0 + ({qty_noise} * 12800000.0), 2)"
+        },
+        {
+          "name": "earned_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Earned value USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(250000.0 + ({qty_noise} * 11750000.0), 2)"
+        },
+        {
+          "name": "schedule_variance_days",
+          "sql_type": "INT",
+          "comment": "Schedule variance in days (neg=behind)",
+          "is_dimension": false,
+          "generation_expr": "CAST(({qty_noise} - 0.4) * 60 AS INT)"
+        },
+        {
+          "name": "risk_level",
+          "sql_type": "STRING",
+          "comment": "Risk: Low, Medium, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.22 THEN 'High' WHEN {status_noise} < 0.48 THEN 'Medium' ELSE 'Low' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Bridge": {
+          "3,4,5": 0.06
+        },
+        "Highway": {
+          "4,5,6,7": 0.07
+        },
+        "Commercial Building": {
+          "3,4,5": 0.05
+        },
+        "Energy": {
+          "4,5,6": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "project_id": "AP-001",
+          "project_name": "Riverdale Bridge Rehab",
+          "project_type": "Bridge Rehabilitation",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-002",
+          "project_name": "Coastal Highway Extension",
+          "project_type": "Highway Construction",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-003",
+          "project_name": "Downtown Office Tower",
+          "project_type": "Commercial Construction",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-004",
+          "project_name": "Airport Terminal B",
+          "project_type": "Public Infrastructure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-005",
+          "project_name": "Metro Rail Extension",
+          "project_type": "Rail Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-006",
+          "project_name": "Water Treatment Upgrade",
+          "project_type": "Utility Infrastructure",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-007",
+          "project_name": "Solar Farm Phase II",
+          "project_type": "Renewable Energy",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-008",
+          "project_name": "Hospital Wing Addition",
+          "project_type": "Healthcare",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-009",
+          "project_name": "University Science Center",
+          "project_type": "Educational",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-010",
+          "project_name": "Warehouse Distribution Hub",
+          "project_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-011",
+          "project_name": "Parking Garage Downtown",
+          "project_type": "Parking Structure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-012",
+          "project_name": "Convention Center Expansion",
+          "project_type": "Public Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-013",
+          "project_name": "Residential Tower Complex",
+          "project_type": "Residential",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "AP-014",
+          "project_name": "Wind Farm Foundation Work",
+          "project_type": "Renewable Energy",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "AP-015",
+          "project_name": "Interstate Interchange",
+          "project_type": "Highway Construction",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "AP-016",
+          "project_name": "Dam Safety Renovation",
+          "project_type": "Water Infrastructure",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-017",
+          "project_name": "Data Center Campus",
+          "project_type": "Commercial Construction",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-018",
+          "project_name": "Port Facility Expansion",
+          "project_type": "Marine Infrastructure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "AP-019",
+          "project_name": "Mountain Highway Tunnel",
+          "project_type": "Tunnel Construction",
+          "region": "West"
+        },
+        {
+          "project_id": "AP-020",
+          "project_name": "Mixed-Use Development",
+          "project_type": "Commercial Construction",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Bridge Rehabilitation": 0.025,
+        "Highway Construction": 0.035,
+        "Commercial Construction": 0.03,
+        "Public Infrastructure": 0.028,
+        "Rail Infrastructure": 0.022,
+        "Utility Infrastructure": 0.025,
+        "Renewable Energy": 0.028,
+        "Healthcare": 0.02,
+        "Educational": 0.02,
+        "Industrial": 0.025,
+        "Parking Structure": 0.018,
+        "Residential": 0.022,
+        "Water Infrastructure": 0.02,
+        "Marine Infrastructure": 0.018,
+        "Tunnel Construction": 0.02,
+        "Mixed-Use Development": 0.022
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "project_kpi_monthly",
+      "source_table": "projects",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "project_type",
+          "expr": "project_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_work_hours",
+          "expr": "SUM(work_hours)",
+          "comment": "Total work hours"
+        },
+        {
+          "name": "total_daily_cost",
+          "expr": "SUM(daily_cost_usd)",
+          "comment": "Total daily cost"
+        },
+        {
+          "name": "avg_crew_count",
+          "expr": "AVG(crew_count)",
+          "comment": "Avg crew size"
+        },
+        {
+          "name": "total_safety_incidents",
+          "expr": "SUM(safety_incidents)",
+          "comment": "Total safety incidents"
+        },
+        {
+          "name": "project_count",
+          "expr": "COUNT(DISTINCT project_id)",
+          "comment": "Active project count"
+        },
+        {
+          "name": "max_work_hours",
+          "expr": "MAX(work_hours)",
+          "comment": "Maximum work hours"
+        }
+      ]
+    },
+    {
+      "view_name": "completion_kpi_monthly",
+      "source_table": "milestone_snapshots",
+      "dimensions": [
+        {
+          "name": "forecast_month",
+          "expr": "forecast_month"
+        },
+        {
+          "name": "project_type",
+          "expr": "project_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "risk_level",
+          "expr": "risk_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_budget_at_completion",
+          "expr": "SUM(budget_at_completion_usd)",
+          "comment": "Total BAC"
+        },
+        {
+          "name": "total_actual_cost",
+          "expr": "SUM(actual_cost_to_date_usd)",
+          "comment": "Total actual cost to date"
+        },
+        {
+          "name": "total_earned_value",
+          "expr": "SUM(earned_value_usd)",
+          "comment": "Total earned value"
+        },
+        {
+          "name": "avg_schedule_variance",
+          "expr": "AVG(schedule_variance_days)",
+          "comment": "Avg schedule variance days"
+        },
+        {
+          "name": "high_risk_count",
+          "expr": "COUNT(DISTINCT CASE WHEN risk_level IN ('High', 'Critical') THEN forecast_id END)",
+          "comment": "High/critical risk count"
+        },
+        {
+          "name": "unique_project_count",
+          "expr": "COUNT(DISTINCT project_id)",
+          "comment": "Number of distinct projects"
+        },
+        {
+          "name": "max_budget_at_completion",
+          "expr": "MAX(budget_at_completion_usd)",
+          "comment": "Maximum budget at completion usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The project_kpi_monthly view (source: projects) has dimensions: event_date, project_type, region. Measures: total_work_hours, total_daily_cost, avg_crew_count, total_safety_incidents, project_count. The completion_kpi_monthly view (source: milestone_snapshots) has dimensions: forecast_month, project_type, region, risk_level. Measures: total_budget_at_completion, total_actual_cost, total_earned_value, avg_schedule_variance, high_risk_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. project_id, project_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique projects?",
+    "How has highest work hours changed over time?",
+    "What is the monthly trend in total work hours?",
+    "How has total daily cost changed over time?",
+    "What is the monthly trend in high risk count?",
+    "How has unique projects changed over time?",
+    "What is the monthly trend in highest budget at completion?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total work hours?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_work_hours) AS total_work_hours",
+        "FROM {fqn}.project_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has total daily cost changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_daily_cost) AS total_daily_cost",
+        "FROM {fqn}.project_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest budget at completion?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(max_budget_at_completion) AS max_budget_at_completion",
+        "FROM {fqn}.completion_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "Rank project types by avg schedule variance days",
+      "sql_lines": [
+        "SELECT project_type, MEASURE(avg_schedule_variance) AS avg_schedule_variance",
+        "FROM {fqn}.completion_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_schedule_variance DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total work hours logged over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(work_hours) AS total_work_hours",
+        "FROM {fqn}.projects",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total milestones completed to date over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(milestones_completed) AS total_milestones_completed",
+        "FROM {fqn}.progress_events",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many distinct forecast id are there per region?",
+      "sql_lines": [
+        "SELECT region, COUNT(DISTINCT forecast_id) AS distinct_count",
+        "FROM {fqn}.milestone_snapshots",
+        "GROUP BY region ORDER BY distinct_count DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "progress_events.project_health = 'Red'",
+        "display_name": "red projects",
+        "synonyms": [
+          "troubled"
+        ],
+        "instruction": "Filter troubled projects."
+      },
+      {
+        "sql": "milestone_snapshots.risk_level IN ('High', 'Critical')",
+        "display_name": "high risk",
+        "synonyms": [
+          "at risk"
+        ],
+        "instruction": "Filter high risk."
+      },
+      {
+        "sql": "progress_events.schedule_performance_index < 0.9",
+        "display_name": "behind schedule",
+        "synonyms": [
+          "delayed"
+        ],
+        "instruction": "Filter projects behind schedule."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', projects.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "cost_variance",
+        "sql": "milestone_snapshots.earned_value_usd - milestone_snapshots.actual_cost_to_date_usd",
+        "display_name": "cost variance",
+        "synonyms": [
+          "CV"
+        ]
+      },
+      {
+        "alias": "schedule_variance_usd",
+        "sql": "milestone_snapshots.earned_value_usd - (milestone_snapshots.budget_at_completion_usd * 0.5)",
+        "display_name": "schedule variance USD",
+        "synonyms": [
+          "SV dollars"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_cost",
+        "sql": "SUM(projects.daily_cost_usd)",
+        "display_name": "total project cost",
+        "synonyms": [
+          "spend"
+        ]
+      },
+      {
+        "alias": "total_ev",
+        "sql": "SUM(milestone_snapshots.earned_value_usd)",
+        "display_name": "total earned value",
+        "synonyms": [
+          "value earned"
+        ]
+      },
+      {
+        "alias": "total_incidents",
+        "sql": "SUM(projects.safety_incidents)",
+        "display_name": "total safety incidents",
+        "synonyms": [
+          "incidents"
+        ]
+      },
+      {
+        "alias": "avg_spi",
+        "sql": "AVG(progress_events.schedule_performance_index)",
+        "display_name": "avg SPI",
+        "synonyms": [
+          "schedule performance"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique projects?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(project_count) AS project_count",
+        "FROM {fqn}.project_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest work hours changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_work_hours) AS max_work_hours",
+        "FROM {fqn}.project_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in high risk count?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(high_risk_count) AS high_risk_count",
+        "FROM {fqn}.completion_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has unique projects changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(unique_project_count) AS unique_project_count",
+        "FROM {fqn}.completion_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What are the top project id by total work hours logged?",
+      "sql_lines": [
+        "SELECT project_id, SUM(work_hours) AS total_work_hours",
+        "FROM {fqn}.projects",
+        "GROUP BY project_id ORDER BY total_work_hours DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average overall completion 0-100 by project type?",
+      "sql_lines": [
+        "SELECT project_type, AVG(completion_pct) AS avg_completion_pct",
+        "FROM {fqn}.progress_events",
+        "GROUP BY project_type ORDER BY avg_completion_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per forecast month?",
+      "sql_lines": [
+        "SELECT forecast_month, COUNT(*) AS record_count",
+        "FROM {fqn}.milestone_snapshots",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    }
+  ]
+}

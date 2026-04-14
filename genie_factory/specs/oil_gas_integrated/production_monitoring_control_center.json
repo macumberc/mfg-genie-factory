@@ -1,0 +1,1017 @@
+{
+  "company_name": "PetroPulse Integrated",
+  "industry": "Oil & Gas Integrated",
+  "use_case": "Real-time production monitoring and control center for wells and platforms",
+  "space_title": "PetroPulse Integrated - Production Monitoring Control Center 📊",
+  "space_description": "Production monitoring analytics for PetroPulse Integrated. Ask questions about well production rates, platform throughput, production events, decline curves, and KPIs across 20 wells and offshore platforms in the Gulf of Mexico.",
+  "schema_basename": "og_integrated_production",
+  "tables": [
+    {
+      "table_name": "production_readings",
+      "description": "Daily production readings from wells and platforms including oil, gas, and water volumes.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique production reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.well_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of the production reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "well_id",
+          "sql_type": "STRING",
+          "comment": "Well identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "well_name",
+          "sql_type": "STRING",
+          "comment": "Well name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "platform_name",
+          "sql_type": "STRING",
+          "comment": "Host platform name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "field_name",
+          "sql_type": "STRING",
+          "comment": "Production field name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "oil_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Daily oil production in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, 500.0 + {qty_noise} * 9500.0), 0)"
+        },
+        {
+          "name": "gas_mcf",
+          "sql_type": "DOUBLE",
+          "comment": "Daily gas production in MCF",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, 2000.0 + {qty_noise} * 18000.0), 0)"
+        },
+        {
+          "name": "water_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Daily water production in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, 100.0 + {qty_noise} * 3000.0), 0)"
+        },
+        {
+          "name": "choke_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Choke valve position percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(10.0, 65.0 + ({qty_noise} - 0.5) * 70.0)), 1)"
+        },
+        {
+          "name": "wellhead_pressure_psi",
+          "sql_type": "DOUBLE",
+          "comment": "Wellhead pressure in PSI",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(200.0, 1500.0 + ({qty_noise} - 0.5) * 2000.0), 0)"
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Well status: Flowing, Shut-In, Maintenance, Ramping",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Flowing' WHEN {status_noise} < 0.85 THEN 'Shut-In' WHEN {status_noise} < 0.93 THEN 'Maintenance' ELSE 'Ramping' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Thunder Horse": {
+          "6,7,8,9": 0.05
+        },
+        "Mars Basin": {
+          "1,2,11,12": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "well_id": "PP-W-001",
+          "well_name": "Thunder Horse A-1",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-002",
+          "well_name": "Thunder Horse A-2",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-003",
+          "well_name": "Thunder Horse B-1",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-004",
+          "well_name": "Mars A-5",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-005",
+          "well_name": "Mars A-8",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-006",
+          "well_name": "Mars B-3",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-007",
+          "well_name": "Atlantis N-1",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-008",
+          "well_name": "Atlantis N-4",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-009",
+          "well_name": "Atlantis S-2",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-010",
+          "well_name": "Na Kika E-1",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Na Kika"
+        },
+        {
+          "well_id": "PP-W-011",
+          "well_name": "Na Kika E-6",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Na Kika"
+        },
+        {
+          "well_id": "PP-W-012",
+          "well_name": "Shenzi A-1",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-013",
+          "well_name": "Shenzi A-3",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-014",
+          "well_name": "Shenzi B-2",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-015",
+          "well_name": "Mad Dog A-1",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-016",
+          "well_name": "Mad Dog A-5",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-017",
+          "well_name": "Mad Dog B-2",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-018",
+          "well_name": "Tiber D-1",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Tiber"
+        },
+        {
+          "well_id": "PP-W-019",
+          "well_name": "Kaskida K-1",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Kaskida"
+        },
+        {
+          "well_id": "PP-W-020",
+          "well_name": "Kaskida K-3",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Kaskida"
+        }
+      ],
+      "category_distribution": {
+        "Thunder Horse": 0.06,
+        "Mars Basin": 0.055,
+        "Atlantis": 0.055,
+        "Na Kika": 0.05,
+        "Shenzi": 0.05,
+        "Mad Dog": 0.05,
+        "Tiber": 0.04,
+        "Kaskida": 0.04
+      }
+    },
+    {
+      "table_name": "production_events",
+      "description": "Production events including shut-ins, startups, rate changes, and operational disruptions.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.well_id) + 60000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date of the production event",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "well_id",
+          "sql_type": "STRING",
+          "comment": "Well identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "well_name",
+          "sql_type": "STRING",
+          "comment": "Well name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "platform_name",
+          "sql_type": "STRING",
+          "comment": "Host platform name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "field_name",
+          "sql_type": "STRING",
+          "comment": "Production field name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "event_category",
+          "sql_type": "STRING",
+          "comment": "Event type: Shut-In, Startup, Rate Change, Hurricane Evac, Equipment Trip, Planned Maintenance",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Shut-In' WHEN {status_noise} < 0.40 THEN 'Startup' WHEN {status_noise} < 0.55 THEN 'Rate Change' WHEN {status_noise} < 0.68 THEN 'Planned Maintenance' WHEN {status_noise} < 0.82 THEN 'Equipment Trip' ELSE 'Hurricane Evac' END"
+        },
+        {
+          "name": "duration_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Event duration in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 4.0 + {qty_noise} * 164.0), 1)"
+        },
+        {
+          "name": "deferred_oil_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Oil production deferred in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 15000.0), 0)"
+        },
+        {
+          "name": "deferred_gas_mcf",
+          "sql_type": "DOUBLE",
+          "comment": "Gas production deferred in MCF",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 45000.0), 0)"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Low, Medium, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Thunder Horse": {
+          "8,9": 0.07
+        },
+        "Mars Basin": {
+          "8,9": 0.07
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "well_id": "PP-W-001",
+          "well_name": "Thunder Horse A-1",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-002",
+          "well_name": "Thunder Horse A-2",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-003",
+          "well_name": "Thunder Horse B-1",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-004",
+          "well_name": "Mars A-5",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-005",
+          "well_name": "Mars A-8",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-006",
+          "well_name": "Mars B-3",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-007",
+          "well_name": "Atlantis N-1",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-008",
+          "well_name": "Atlantis N-4",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-009",
+          "well_name": "Atlantis S-2",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-010",
+          "well_name": "Na Kika E-1",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Na Kika"
+        },
+        {
+          "well_id": "PP-W-011",
+          "well_name": "Na Kika E-6",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Na Kika"
+        },
+        {
+          "well_id": "PP-W-012",
+          "well_name": "Shenzi A-1",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-013",
+          "well_name": "Shenzi A-3",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-014",
+          "well_name": "Shenzi B-2",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-015",
+          "well_name": "Mad Dog A-1",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-016",
+          "well_name": "Mad Dog A-5",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-017",
+          "well_name": "Mad Dog B-2",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-018",
+          "well_name": "Tiber D-1",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Tiber"
+        },
+        {
+          "well_id": "PP-W-019",
+          "well_name": "Kaskida K-1",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Kaskida"
+        },
+        {
+          "well_id": "PP-W-020",
+          "well_name": "Kaskida K-3",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Kaskida"
+        }
+      ],
+      "category_distribution": {
+        "Thunder Horse": 0.06,
+        "Mars Basin": 0.055,
+        "Atlantis": 0.055,
+        "Na Kika": 0.05,
+        "Shenzi": 0.05,
+        "Mad Dog": 0.05,
+        "Tiber": 0.04,
+        "Kaskida": 0.04
+      }
+    },
+    {
+      "table_name": "production_kpi_monthly",
+      "description": "Monthly production KPI snapshots including total volumes, uptime, water cut, and GOR by well and platform.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.well_id) + 40000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "snapshot_month",
+          "sql_type": "DATE",
+          "comment": "First day of the snapshot month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "well_id",
+          "sql_type": "STRING",
+          "comment": "Well identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "platform_name",
+          "sql_type": "STRING",
+          "comment": "Host platform name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "field_name",
+          "sql_type": "STRING",
+          "comment": "Production field name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "total_oil_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Total monthly oil production in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, 15000.0 + {qty_noise} * 285000.0), 0)"
+        },
+        {
+          "name": "total_gas_mcf",
+          "sql_type": "DOUBLE",
+          "comment": "Total monthly gas production in MCF",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, 60000.0 + {qty_noise} * 540000.0), 0)"
+        },
+        {
+          "name": "water_cut_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Water cut percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(85.0, GREATEST(5.0, 25.0 + {qty_noise} * 50.0)), 1)"
+        },
+        {
+          "name": "gor_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Gas-to-oil ratio SCF/BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100.0, 800.0 + ({qty_noise} - 0.5) * 1200.0), 0)"
+        },
+        {
+          "name": "uptime_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Well uptime percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 92.0 + ({qty_noise} - 0.5) * 16.0)), 1)"
+        },
+        {
+          "name": "deferred_oil_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly deferred oil production in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 35000.0), 0)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "well_id": "PP-W-001",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-002",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-003",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Thunder Horse"
+        },
+        {
+          "well_id": "PP-W-004",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-005",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-006",
+          "platform_name": "Mars TLP",
+          "field_name": "Mars Basin"
+        },
+        {
+          "well_id": "PP-W-007",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-008",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-009",
+          "platform_name": "Atlantis Semi",
+          "field_name": "Atlantis"
+        },
+        {
+          "well_id": "PP-W-010",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Na Kika"
+        },
+        {
+          "well_id": "PP-W-011",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Na Kika"
+        },
+        {
+          "well_id": "PP-W-012",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-013",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-014",
+          "platform_name": "Shenzi TLP",
+          "field_name": "Shenzi"
+        },
+        {
+          "well_id": "PP-W-015",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-016",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-017",
+          "platform_name": "Mad Dog Spar",
+          "field_name": "Mad Dog"
+        },
+        {
+          "well_id": "PP-W-018",
+          "platform_name": "Thunder Horse PDQ",
+          "field_name": "Tiber"
+        },
+        {
+          "well_id": "PP-W-019",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Kaskida"
+        },
+        {
+          "well_id": "PP-W-020",
+          "platform_name": "Na Kika Semi",
+          "field_name": "Kaskida"
+        }
+      ],
+      "category_distribution": {
+        "Thunder Horse": 0.06,
+        "Mars Basin": 0.055,
+        "Atlantis": 0.055,
+        "Na Kika": 0.05,
+        "Shenzi": 0.05,
+        "Mad Dog": 0.05,
+        "Tiber": 0.04,
+        "Kaskida": 0.04
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "production_readings_metrics",
+      "source_table": "production_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "well_id",
+          "expr": "well_id"
+        },
+        {
+          "name": "platform_name",
+          "expr": "platform_name"
+        },
+        {
+          "name": "field_name",
+          "expr": "field_name"
+        },
+        {
+          "name": "status",
+          "expr": "status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_oil_bbl",
+          "expr": "SUM(oil_bbl)",
+          "comment": "Total oil production in barrels"
+        },
+        {
+          "name": "total_gas_mcf",
+          "expr": "SUM(gas_mcf)",
+          "comment": "Total gas production in MCF"
+        },
+        {
+          "name": "total_water_bbl",
+          "expr": "SUM(water_bbl)",
+          "comment": "Total water production in barrels"
+        },
+        {
+          "name": "avg_wellhead_pressure_psi",
+          "expr": "AVG(wellhead_pressure_psi)",
+          "comment": "Average wellhead pressure in PSI"
+        },
+        {
+          "name": "avg_choke_pct",
+          "expr": "AVG(choke_pct)",
+          "comment": "Average choke valve position"
+        },
+        {
+          "name": "max_oil_bbl",
+          "expr": "MAX(oil_bbl)",
+          "comment": "Maximum oil bbl"
+        }
+      ]
+    },
+    {
+      "view_name": "production_events_metrics",
+      "source_table": "production_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "well_id",
+          "expr": "well_id"
+        },
+        {
+          "name": "platform_name",
+          "expr": "platform_name"
+        },
+        {
+          "name": "field_name",
+          "expr": "field_name"
+        },
+        {
+          "name": "event_category",
+          "expr": "event_category"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total production events"
+        },
+        {
+          "name": "total_deferred_oil_bbl",
+          "expr": "SUM(deferred_oil_bbl)",
+          "comment": "Total deferred oil production in barrels"
+        },
+        {
+          "name": "total_deferred_gas_mcf",
+          "expr": "SUM(deferred_gas_mcf)",
+          "comment": "Total deferred gas production in MCF"
+        },
+        {
+          "name": "total_duration_hours",
+          "expr": "SUM(duration_hours)",
+          "comment": "Total event duration in hours"
+        },
+        {
+          "name": "avg_duration_hours",
+          "expr": "AVG(duration_hours)",
+          "comment": "Average event duration in hours"
+        },
+        {
+          "name": "max_duration_hours",
+          "expr": "MAX(duration_hours)",
+          "comment": "Maximum duration hours"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_readings_metrics view (source: production_readings) has dimensions: reading_date, well_id, platform_name, field_name, status. Measures: total_oil_bbl, total_gas_mcf, total_water_bbl, avg_wellhead_pressure_psi, avg_choke_pct. The production_events_metrics view (source: production_events) has dimensions: event_date, well_id, platform_name, field_name, event_category, severity. Measures: total_events, total_deferred_oil_bbl, total_deferred_gas_mcf, total_duration_hours, avg_duration_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. well_name).",
+  "sample_questions": [
+    "What is the monthly trend in highest oil bbl?",
+    "How has total oil production in barrels changed over time?",
+    "What is the monthly trend in total gas production in mcf?",
+    "How has total water production in barrels changed over time?",
+    "What is the monthly trend in unique total eventss?",
+    "How has highest duration hours changed over time?",
+    "What is the monthly trend in total deferred oil production in barrels?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total gas production in mcf?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_gas_mcf) AS total_gas_mcf",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total water production in barrels changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_water_bbl) AS total_water_bbl",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total deferred oil production in barrels?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_deferred_oil_bbl) AS total_deferred_oil_bbl",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How does total daily oil production in barrels break down by well identifier for 'Flowing' records?",
+      "sql_lines": [
+        "SELECT well_id, COUNT(*) AS record_count, SUM(oil_bbl) AS total_oil_bbl",
+        "FROM {fqn}.production_readings",
+        "WHERE status = 'Flowing' GROUP BY well_id ORDER BY total_oil_bbl DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total oil production deferred in barrels over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(deferred_oil_bbl) AS total_deferred_oil_bbl",
+        "FROM {fqn}.production_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has the average water cut percentage changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_month, AVG(water_cut_pct) AS avg_water_cut_pct",
+        "FROM {fqn}.production_kpi_monthly",
+        "GROUP BY snapshot_month ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "How has average wellhead pressure in psi changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_wellhead_pressure_psi) AS avg_wellhead_pressure_psi",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "status = 'Flowing'",
+        "display_name": "flowing wells",
+        "synonyms": [
+          "producing",
+          "active wells"
+        ],
+        "instruction": "Use to filter to actively producing wells."
+      },
+      {
+        "sql": "event_category = 'Hurricane Evac'",
+        "display_name": "hurricane events",
+        "synonyms": [
+          "hurricane",
+          "evacuation",
+          "storm"
+        ],
+        "instruction": "Use to filter production events to hurricane evacuations."
+      },
+      {
+        "sql": "severity IN ('High', 'Critical')",
+        "display_name": "high severity events",
+        "synonyms": [
+          "serious events",
+          "critical incidents"
+        ],
+        "instruction": "Use to filter to high-impact production events."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "water_cut_pct",
+        "sql": "ROUND(100.0 * production_readings.water_bbl / NULLIF(production_readings.oil_bbl + production_readings.water_bbl, 0), 2)",
+        "display_name": "water cut percent",
+        "synonyms": [
+          "water cut",
+          "BSW"
+        ]
+      },
+      {
+        "alias": "boe_total",
+        "sql": "production_readings.oil_bbl + (production_readings.gas_mcf / 6.0)",
+        "display_name": "barrels of oil equivalent",
+        "synonyms": [
+          "BOE",
+          "total equivalent"
+        ]
+      },
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', production_readings.reading_date)",
+        "display_name": "production month",
+        "synonyms": [
+          "month",
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_oil_bbl",
+        "sql": "SUM(production_readings.oil_bbl)",
+        "display_name": "total oil production",
+        "synonyms": [
+          "oil volume",
+          "oil barrels"
+        ]
+      },
+      {
+        "alias": "total_gas_mcf",
+        "sql": "SUM(production_readings.gas_mcf)",
+        "display_name": "total gas production",
+        "synonyms": [
+          "gas volume",
+          "gas MCF"
+        ]
+      },
+      {
+        "alias": "total_deferred_oil_bbl",
+        "sql": "SUM(production_events.deferred_oil_bbl)",
+        "display_name": "total deferred oil",
+        "synonyms": [
+          "lost oil",
+          "deferred production"
+        ]
+      },
+      {
+        "alias": "total_boe",
+        "sql": "SUM(production_readings.oil_bbl + production_readings.gas_mcf / 6.0)",
+        "display_name": "total BOE",
+        "synonyms": [
+          "barrels equivalent",
+          "BOE"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in highest oil bbl?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_oil_bbl) AS max_oil_bbl",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total oil production in barrels changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_oil_bbl) AS total_oil_bbl",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique total eventss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest duration hours changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_duration_hours) AS max_duration_hours",
+        "FROM {fqn}.production_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What are the top well identifier by total daily oil production in barrels?",
+      "sql_lines": [
+        "SELECT well_id, SUM(oil_bbl) AS total_oil_bbl",
+        "FROM {fqn}.production_readings",
+        "GROUP BY well_id ORDER BY total_oil_bbl DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average event duration in hours by well name?",
+      "sql_lines": [
+        "SELECT well_name, AVG(duration_hours) AS avg_duration_hours",
+        "FROM {fqn}.production_events",
+        "GROUP BY well_name ORDER BY avg_duration_hours DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the snapshot month?",
+      "sql_lines": [
+        "SELECT snapshot_month, COUNT(*) AS record_count",
+        "FROM {fqn}.production_kpi_monthly",
+        "GROUP BY snapshot_month ORDER BY snapshot_month"
+      ]
+    }
+  ]
+}

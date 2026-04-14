@@ -1,0 +1,985 @@
+{
+  "company_name": "AssemblyGuard Systems",
+  "industry": "Computer & Electronic",
+  "use_case": "Predictive maintenance and troubleshooting for electronics assembly lines",
+  "space_title": "AssemblyGuard Systems - Predictive Maintenance 🔧",
+  "space_description": "Assembly line maintenance analytics for AssemblyGuard. Ask about sensor anomalies, maintenance schedules, equipment health, and MTBF across 20 assembly line machines.",
+  "schema_basename": "ce_predictive_maint",
+  "tables": [
+    {
+      "table_name": "sensor_readings",
+      "description": "Real-time sensor readings from assembly line machines including vibration, temperature, and power consumption.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique sensor reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SR-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of sensor reading",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "machine_id",
+          "sql_type": "STRING",
+          "comment": "Assembly line machine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "machine_type",
+          "sql_type": "STRING",
+          "comment": "Type of assembly machine",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "assembly_line",
+          "sql_type": "STRING",
+          "comment": "Assembly line identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vibration_mm_s",
+          "sql_type": "DOUBLE",
+          "comment": "Vibration velocity in mm/s",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 14.5), 2)"
+        },
+        {
+          "name": "temperature_c",
+          "sql_type": "DOUBLE",
+          "comment": "Operating temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(35.0 + ({qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "power_consumption_kw",
+          "sql_type": "DOUBLE",
+          "comment": "Power consumption in kilowatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 18.0), 2)"
+        },
+        {
+          "name": "anomaly_score",
+          "sql_type": "DOUBLE",
+          "comment": "ML anomaly detection score 0-1",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 1.0, 4)"
+        },
+        {
+          "name": "alert_level",
+          "sql_type": "STRING",
+          "comment": "Alert level: Normal, Warning, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Normal' WHEN {status_noise} < 0.92 THEN 'Warning' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pick-and-Place": {
+          "9,10,11": 0.06,
+          "3,4": 0.045
+        },
+        "Reflow Oven": {
+          "6,7,8": 0.055
+        },
+        "Wave Solder": {
+          "1,2": 0.04,
+          "10,11": 0.055
+        },
+        "SMT Printer": {
+          "8,9,10": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "machine_id": "AG-PNP-001",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-PNP-002",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-PNP-003",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-PNP-004",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-PNP-005",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-RFO-006",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-RFO-007",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-RFO-008",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-RFO-009",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-RFO-010",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-E"
+        },
+        {
+          "machine_id": "AG-WSL-011",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-WSL-012",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-WSL-013",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-WSL-014",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-WSL-015",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-E"
+        },
+        {
+          "machine_id": "AG-SMT-016",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-SMT-017",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-SMT-018",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-SMT-019",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-SMT-020",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-E"
+        }
+      ],
+      "category_distribution": {
+        "Pick-and-Place": 0.032,
+        "Reflow Oven": 0.03,
+        "Wave Solder": 0.028,
+        "SMT Printer": 0.03
+      }
+    },
+    {
+      "table_name": "maintenance_records",
+      "description": "Maintenance event records including scheduled, corrective, and predictive maintenance activities.",
+      "columns": [
+        {
+          "name": "maintenance_id",
+          "sql_type": "STRING",
+          "comment": "Unique maintenance record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('MR-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "maintenance_date",
+          "sql_type": "DATE",
+          "comment": "Date maintenance was performed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "machine_id",
+          "sql_type": "STRING",
+          "comment": "Machine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "machine_type",
+          "sql_type": "STRING",
+          "comment": "Type of assembly machine",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "assembly_line",
+          "sql_type": "STRING",
+          "comment": "Assembly line identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "maintenance_type",
+          "sql_type": "STRING",
+          "comment": "Type: Scheduled, Corrective, Predictive",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Scheduled' WHEN {status_noise} < 0.70 THEN 'Corrective' ELSE 'Predictive' END"
+        },
+        {
+          "name": "failure_mode",
+          "sql_type": "STRING",
+          "comment": "Failure mode identified: Belt Wear, Motor Burnout, Nozzle Clog, Thermal Drift, Solder Contamination, Calibration Drift, None",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'None' WHEN {status_noise} < 0.52 THEN 'Belt Wear' WHEN {status_noise} < 0.62 THEN 'Motor Burnout' WHEN {status_noise} < 0.72 THEN 'Nozzle Clog' WHEN {status_noise} < 0.82 THEN 'Thermal Drift' WHEN {status_noise} < 0.92 THEN 'Solder Contamination' ELSE 'Calibration Drift' END"
+        },
+        {
+          "name": "downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Total downtime in hours for this event",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 23.5), 1)"
+        },
+        {
+          "name": "repair_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cost of maintenance or repair in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 9800.0), 2)"
+        },
+        {
+          "name": "parts_replaced",
+          "sql_type": "INT",
+          "comment": "Number of parts replaced",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 8) AS INT)"
+        },
+        {
+          "name": "was_predicted",
+          "sql_type": "BOOLEAN",
+          "comment": "Whether the failure was predicted by ML model",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN true ELSE false END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pick-and-Place": {
+          "9,10,11": 0.06,
+          "3,4": 0.045
+        },
+        "Reflow Oven": {
+          "6,7,8": 0.055
+        },
+        "Wave Solder": {
+          "1,2": 0.04,
+          "10,11": 0.055
+        },
+        "SMT Printer": {
+          "8,9,10": 0.06
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "machine_id": "AG-PNP-001",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-PNP-002",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-PNP-003",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-PNP-004",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-PNP-005",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-RFO-006",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-RFO-007",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-RFO-008",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-RFO-009",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-RFO-010",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-E"
+        },
+        {
+          "machine_id": "AG-WSL-011",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-WSL-012",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-WSL-013",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-WSL-014",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-WSL-015",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-E"
+        },
+        {
+          "machine_id": "AG-SMT-016",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-SMT-017",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-SMT-018",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-SMT-019",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-SMT-020",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-E"
+        }
+      ],
+      "category_distribution": {
+        "Pick-and-Place": 0.032,
+        "Reflow Oven": 0.03,
+        "Wave Solder": 0.028,
+        "SMT Printer": 0.03
+      }
+    },
+    {
+      "table_name": "equipment_health_monthly",
+      "description": "Monthly equipment health KPIs including MTBF, MTTR, availability, and predictive model performance.",
+      "columns": [
+        {
+          "name": "health_id",
+          "sql_type": "STRING",
+          "comment": "Unique health record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('EH-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "health_month",
+          "sql_type": "DATE",
+          "comment": "Month of the health record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "machine_id",
+          "sql_type": "STRING",
+          "comment": "Machine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "machine_type",
+          "sql_type": "STRING",
+          "comment": "Type of assembly machine",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "assembly_line",
+          "sql_type": "STRING",
+          "comment": "Assembly line identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "mtbf_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Mean time between failures in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 1800.0), 1)"
+        },
+        {
+          "name": "mttr_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Mean time to repair in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 11.0), 1)"
+        },
+        {
+          "name": "availability_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Equipment availability percentage 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(85.0 + ({qty_noise} * 14.5), 2)"
+        },
+        {
+          "name": "total_downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Total downtime hours in the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 48.0), 1)"
+        },
+        {
+          "name": "maintenance_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total maintenance cost for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 14500.0), 2)"
+        },
+        {
+          "name": "prediction_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Predictive model accuracy percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70.0 + ({qty_noise} * 28.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pick-and-Place": {
+          "9,10,11": 0.06,
+          "3,4": 0.045
+        },
+        "Reflow Oven": {
+          "6,7,8": 0.055
+        },
+        "Wave Solder": {
+          "1,2": 0.04,
+          "10,11": 0.055
+        },
+        "SMT Printer": {
+          "8,9,10": 0.06
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "machine_id": "AG-PNP-001",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-PNP-002",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-PNP-003",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-PNP-004",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-PNP-005",
+          "machine_type": "Pick-and-Place",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-RFO-006",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-RFO-007",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-RFO-008",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-RFO-009",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-RFO-010",
+          "machine_type": "Reflow Oven",
+          "assembly_line": "Line-E"
+        },
+        {
+          "machine_id": "AG-WSL-011",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-WSL-012",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-WSL-013",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-WSL-014",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-WSL-015",
+          "machine_type": "Wave Solder",
+          "assembly_line": "Line-E"
+        },
+        {
+          "machine_id": "AG-SMT-016",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-A"
+        },
+        {
+          "machine_id": "AG-SMT-017",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-B"
+        },
+        {
+          "machine_id": "AG-SMT-018",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-C"
+        },
+        {
+          "machine_id": "AG-SMT-019",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-D"
+        },
+        {
+          "machine_id": "AG-SMT-020",
+          "machine_type": "SMT Printer",
+          "assembly_line": "Line-E"
+        }
+      ],
+      "category_distribution": {
+        "Pick-and-Place": 0.032,
+        "Reflow Oven": 0.03,
+        "Wave Solder": 0.028,
+        "SMT Printer": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "sensor_readings_metrics",
+      "source_table": "sensor_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "machine_type",
+          "expr": "machine_type"
+        },
+        {
+          "name": "assembly_line",
+          "expr": "assembly_line"
+        },
+        {
+          "name": "alert_level",
+          "expr": "alert_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_readings",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total number of sensor readings"
+        },
+        {
+          "name": "avg_vibration",
+          "expr": "AVG(vibration_mm_s)",
+          "comment": "Average vibration velocity in mm/s"
+        },
+        {
+          "name": "avg_temperature",
+          "expr": "AVG(temperature_c)",
+          "comment": "Average operating temperature in Celsius"
+        },
+        {
+          "name": "critical_alert_count",
+          "expr": "COUNT(DISTINCT CASE WHEN alert_level = 'Critical' THEN reading_id END)",
+          "comment": "Number of critical alert readings"
+        },
+        {
+          "name": "total_power_consumption_kw",
+          "expr": "SUM(power_consumption_kw)",
+          "comment": "Total power consumption kw"
+        },
+        {
+          "name": "total_anomaly_score",
+          "expr": "SUM(anomaly_score)",
+          "comment": "Total anomaly score"
+        },
+        {
+          "name": "unique_machine_count",
+          "expr": "COUNT(DISTINCT machine_id)",
+          "comment": "Number of distinct machines"
+        },
+        {
+          "name": "max_vibration_mm_s",
+          "expr": "MAX(vibration_mm_s)",
+          "comment": "Maximum vibration mm s"
+        }
+      ]
+    },
+    {
+      "view_name": "equipment_health_metrics",
+      "source_table": "equipment_health_monthly",
+      "dimensions": [
+        {
+          "name": "health_month",
+          "expr": "health_month"
+        },
+        {
+          "name": "machine_type",
+          "expr": "machine_type"
+        },
+        {
+          "name": "assembly_line",
+          "expr": "assembly_line"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_mtbf_hours",
+          "expr": "AVG(mtbf_hours)",
+          "comment": "Average mean time between failures in hours"
+        },
+        {
+          "name": "avg_mttr_hours",
+          "expr": "AVG(mttr_hours)",
+          "comment": "Average mean time to repair in hours"
+        },
+        {
+          "name": "avg_availability_pct",
+          "expr": "AVG(availability_pct)",
+          "comment": "Average equipment availability percentage"
+        },
+        {
+          "name": "total_maintenance_cost",
+          "expr": "SUM(maintenance_cost_usd)",
+          "comment": "Total maintenance cost in USD"
+        },
+        {
+          "name": "total_total_downtime_hours",
+          "expr": "SUM(total_downtime_hours)",
+          "comment": "Total total downtime hours"
+        },
+        {
+          "name": "total_prediction_accuracy_percent",
+          "expr": "SUM(prediction_accuracy_pct)",
+          "comment": "Total prediction accuracy pct"
+        },
+        {
+          "name": "unique_machine_count",
+          "expr": "COUNT(DISTINCT machine_id)",
+          "comment": "Number of distinct machines"
+        },
+        {
+          "name": "max_mtbf_hours",
+          "expr": "MAX(mtbf_hours)",
+          "comment": "Maximum mtbf hours"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_date, machine_type, assembly_line, alert_level. Measures: total_readings, avg_vibration, avg_temperature, critical_alert_count. The equipment_health_metrics view (source: equipment_health_monthly) has dimensions: health_month, machine_type, assembly_line. Measures: avg_mtbf_hours, avg_mttr_hours, avg_availability_pct, total_maintenance_cost. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. machine_id).",
+  "sample_questions": [
+    "What is the monthly trend in critical alert count?",
+    "How has unique total readingss changed over time?",
+    "What is the monthly trend in unique machines?",
+    "How has highest vibration mm s changed over time?",
+    "What is the monthly trend in unique machines?",
+    "How has highest mtbf hours changed over time?",
+    "What is the monthly trend in total maintenance cost in usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique machines?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_machine_count) AS unique_machine_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest vibration mm s changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_vibration_mm_s) AS max_vibration_mm_s",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total prediction accuracy pct changed over time?",
+      "sql_lines": [
+        "SELECT health_month, MEASURE(total_prediction_accuracy_percent) AS total_prediction_accuracy_percent",
+        "FROM {fqn}.equipment_health_metrics",
+        "GROUP BY ALL",
+        "ORDER BY health_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total operating temperature in celsius over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(temperature_c) AS total_temperature_c",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total total downtime in hours for this event over time?",
+      "sql_lines": [
+        "SELECT maintenance_date, SUM(downtime_hours) AS total_downtime_hours",
+        "FROM {fqn}.maintenance_records",
+        "GROUP BY maintenance_date ORDER BY maintenance_date"
+      ]
+    },
+    {
+      "question": "How has the average equipment availability percentage 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT health_month, AVG(availability_pct) AS avg_availability_pct",
+        "FROM {fqn}.equipment_health_monthly",
+        "GROUP BY health_month ORDER BY health_month"
+      ]
+    },
+    {
+      "question": "How has total anomaly score changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_anomaly_score) AS total_anomaly_score",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "sensor_readings.alert_level = 'Critical'",
+        "display_name": "critical alerts",
+        "synonyms": [
+          "critical readings",
+          "critical anomalies"
+        ],
+        "instruction": "Use when filtering for critical-severity sensor readings."
+      },
+      {
+        "sql": "maintenance_records.maintenance_type = 'Corrective'",
+        "display_name": "corrective maintenance",
+        "synonyms": [
+          "unplanned maintenance",
+          "breakdown repairs"
+        ],
+        "instruction": "Use when analyzing unplanned failure-driven maintenance events."
+      },
+      {
+        "sql": "maintenance_records.was_predicted = true",
+        "display_name": "predicted failures",
+        "synonyms": [
+          "ML predicted",
+          "anticipated failures"
+        ],
+        "instruction": "Use when analyzing the effectiveness of predictive maintenance models."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', sensor_readings.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "month of reading",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "maintenance_month",
+        "sql": "DATE_TRUNC('month', maintenance_records.maintenance_date)",
+        "display_name": "maintenance month",
+        "synonyms": [
+          "month of maintenance",
+          "monthly maintenance"
+        ]
+      },
+      {
+        "alias": "cost_per_downtime_hour",
+        "sql": "maintenance_records.repair_cost_usd / NULLIF(maintenance_records.downtime_hours, 0)",
+        "display_name": "cost per downtime hour",
+        "synonyms": [
+          "hourly repair cost",
+          "downtime unit cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_maintenance_cost",
+        "sql": "SUM(maintenance_records.repair_cost_usd)",
+        "display_name": "total maintenance cost",
+        "synonyms": [
+          "repair cost",
+          "maintenance spend"
+        ]
+      },
+      {
+        "alias": "total_downtime_hours",
+        "sql": "SUM(maintenance_records.downtime_hours)",
+        "display_name": "total downtime hours",
+        "synonyms": [
+          "downtime",
+          "hours lost"
+        ]
+      },
+      {
+        "alias": "avg_anomaly_score",
+        "sql": "AVG(sensor_readings.anomaly_score)",
+        "display_name": "average anomaly score",
+        "synonyms": [
+          "anomaly score",
+          "avg anomaly"
+        ]
+      },
+      {
+        "alias": "avg_availability",
+        "sql": "AVG(equipment_health_monthly.availability_pct)",
+        "display_name": "average availability",
+        "synonyms": [
+          "uptime",
+          "availability rate"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical alert count?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(critical_alert_count) AS critical_alert_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique total readingss changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest mtbf hours changed over time?",
+      "sql_lines": [
+        "SELECT health_month, MEASURE(max_mtbf_hours) AS max_mtbf_hours",
+        "FROM {fqn}.equipment_health_metrics",
+        "GROUP BY ALL",
+        "ORDER BY health_month"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total maintenance cost in usd?",
+      "sql_lines": [
+        "SELECT health_month, MEASURE(total_maintenance_cost) AS total_maintenance_cost",
+        "FROM {fqn}.equipment_health_metrics",
+        "GROUP BY ALL",
+        "ORDER BY health_month"
+      ]
+    },
+    {
+      "question": "What are the top assembly line machine identifier by total operating temperature in celsius?",
+      "sql_lines": [
+        "SELECT machine_id, SUM(temperature_c) AS total_temperature_c",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY machine_id ORDER BY total_temperature_c DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date maintenance was performed?",
+      "sql_lines": [
+        "SELECT maintenance_date, COUNT(*) AS record_count",
+        "FROM {fqn}.maintenance_records",
+        "GROUP BY maintenance_date ORDER BY maintenance_date"
+      ]
+    },
+    {
+      "question": "How many records are there per month of the health record?",
+      "sql_lines": [
+        "SELECT health_month, COUNT(*) AS record_count",
+        "FROM {fqn}.equipment_health_monthly",
+        "GROUP BY health_month ORDER BY health_month"
+      ]
+    }
+  ]
+}

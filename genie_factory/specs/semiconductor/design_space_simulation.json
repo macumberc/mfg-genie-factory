@@ -1,0 +1,1000 @@
+{
+  "company_name": "SiliconPath Design",
+  "industry": "Semiconductor",
+  "use_case": "Chip design space exploration and multi-objective optimization",
+  "space_title": "SiliconPath - Design Space Simulation 🧪",
+  "space_description": "Design space simulation analytics for SiliconPath Design. Explore simulation runs, parameter explorations, and optimization results across 20 chip designs to accelerate PPA (power, performance, area) tradeoff analysis.",
+  "schema_basename": "semiconductor_design_sim",
+  "tables": [
+    {
+      "table_name": "simulation_runs",
+      "description": "Daily simulation run records capturing timing closure, power estimates, and design rule check results for each chip design variant.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Unique simulation run identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SIM-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Date the simulation was executed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "design_id",
+          "sql_type": "STRING",
+          "comment": "Chip design identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable chip design name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_family",
+          "sql_type": "STRING",
+          "comment": "Design family grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "target_node_nm",
+          "sql_type": "INT",
+          "comment": "Target process node in nanometers",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 3 WHEN {status_noise} < 0.50 THEN 5 WHEN {status_noise} < 0.75 THEN 7 ELSE 14 END"
+        },
+        {
+          "name": "timing_slack_ns",
+          "sql_type": "DOUBLE",
+          "comment": "Worst negative slack in nanoseconds (positive = met timing)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-0.5 + {qty_noise} * 1.2, 3)"
+        },
+        {
+          "name": "dynamic_power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated dynamic power in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + {qty_noise} * 1800.0, 1)"
+        },
+        {
+          "name": "leakage_power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated leakage power in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + {qty_noise} * 90.0, 2)"
+        },
+        {
+          "name": "die_area_mm2",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated die area in square millimeters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(4.0 + {qty_noise} * 96.0, 2)"
+        },
+        {
+          "name": "drc_violations",
+          "sql_type": "INT",
+          "comment": "Number of design rule check violations",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 50) AS INT)"
+        },
+        {
+          "name": "run_status",
+          "sql_type": "STRING",
+          "comment": "Simulation completion status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Completed' WHEN {status_noise} < 0.80 THEN 'Timing Fail' WHEN {status_noise} < 0.90 THEN 'DRC Fail' ELSE 'Aborted' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Application Processor": {
+          "1,2": 0.05,
+          "9,10": 0.06
+        },
+        "AI Accelerator": {
+          "3,4": 0.055
+        },
+        "IoT Controller": {
+          "6,7": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "design_id": "SP-AP-001",
+          "design_name": "Orion-7 Application Processor",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-002",
+          "design_name": "Orion-5 Mobile SoC",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-003",
+          "design_name": "Orion-3 Ultra-Low-Power SoC",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-004",
+          "design_name": "Orion-9 Server Processor",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AI-001",
+          "design_name": "TensorCore T100 NPU",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-002",
+          "design_name": "TensorCore T200 Training ASIC",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-003",
+          "design_name": "TensorCore T50 Edge Inference",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-004",
+          "design_name": "TensorCore T300 HPC Accelerator",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-RF-001",
+          "design_name": "WaveLink 5G Modem",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-002",
+          "design_name": "WaveLink WiFi7 Baseband",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-003",
+          "design_name": "WaveLink Satellite Transceiver",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-004",
+          "design_name": "WaveLink V2X Modem",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-IO-001",
+          "design_name": "PicoNode IoT Controller M0",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-002",
+          "design_name": "PicoNode IoT Controller M4",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-003",
+          "design_name": "PicoNode Sensor Hub",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-004",
+          "design_name": "PicoNode BLE SoC",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-PM-001",
+          "design_name": "VoltEdge GaN PMIC",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-002",
+          "design_name": "VoltEdge SiC Gate Driver",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-003",
+          "design_name": "VoltEdge Multi-Rail PMIC",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-004",
+          "design_name": "VoltEdge USB-PD Controller",
+          "design_family": "Power Management"
+        }
+      ],
+      "category_distribution": {
+        "Application Processor": 0.035,
+        "AI Accelerator": 0.04,
+        "RF Modem": 0.025,
+        "IoT Controller": 0.02,
+        "Power Management": 0.022
+      }
+    },
+    {
+      "table_name": "parameter_explorations",
+      "description": "Weekly parameter sweep snapshots capturing design variable configurations and resulting PPA metrics for multi-objective exploration.",
+      "columns": [
+        {
+          "name": "exploration_id",
+          "sql_type": "STRING",
+          "comment": "Unique parameter exploration identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PEX-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of parameter sweep",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "design_id",
+          "sql_type": "STRING",
+          "comment": "Chip design identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable chip design name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_family",
+          "sql_type": "STRING",
+          "comment": "Design family grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "clock_freq_ghz",
+          "sql_type": "DOUBLE",
+          "comment": "Target clock frequency in GHz",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + {qty_noise} * 3.5, 2)"
+        },
+        {
+          "name": "supply_voltage_v",
+          "sql_type": "DOUBLE",
+          "comment": "Core supply voltage in volts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.55 + {qty_noise} * 0.45, 3)"
+        },
+        {
+          "name": "gate_count_millions",
+          "sql_type": "DOUBLE",
+          "comment": "Logic gate count in millions",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + {qty_noise} * 495.0, 1)"
+        },
+        {
+          "name": "total_power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Total estimated power in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + {qty_noise} * 2400.0, 1)"
+        },
+        {
+          "name": "performance_score",
+          "sql_type": "DOUBLE",
+          "comment": "Normalized performance score (0-100)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(10.0, 55.0 + ({qty_noise} - 0.5) * 80.0)), 1)"
+        },
+        {
+          "name": "pareto_optimal",
+          "sql_type": "STRING",
+          "comment": "Whether this point is Pareto optimal",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Yes' ELSE 'No' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Application Processor": {
+          "1,2": 0.05
+        },
+        "AI Accelerator": {
+          "3,4": 0.055,
+          "9,10": 0.05
+        },
+        "RF Modem": {
+          "6,7": 0.04
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "design_id": "SP-AP-001",
+          "design_name": "Orion-7 Application Processor",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-002",
+          "design_name": "Orion-5 Mobile SoC",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-003",
+          "design_name": "Orion-3 Ultra-Low-Power SoC",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-004",
+          "design_name": "Orion-9 Server Processor",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AI-001",
+          "design_name": "TensorCore T100 NPU",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-002",
+          "design_name": "TensorCore T200 Training ASIC",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-003",
+          "design_name": "TensorCore T50 Edge Inference",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-004",
+          "design_name": "TensorCore T300 HPC Accelerator",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-RF-001",
+          "design_name": "WaveLink 5G Modem",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-002",
+          "design_name": "WaveLink WiFi7 Baseband",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-003",
+          "design_name": "WaveLink Satellite Transceiver",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-004",
+          "design_name": "WaveLink V2X Modem",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-IO-001",
+          "design_name": "PicoNode IoT Controller M0",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-002",
+          "design_name": "PicoNode IoT Controller M4",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-003",
+          "design_name": "PicoNode Sensor Hub",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-004",
+          "design_name": "PicoNode BLE SoC",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-PM-001",
+          "design_name": "VoltEdge GaN PMIC",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-002",
+          "design_name": "VoltEdge SiC Gate Driver",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-003",
+          "design_name": "VoltEdge Multi-Rail PMIC",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-004",
+          "design_name": "VoltEdge USB-PD Controller",
+          "design_family": "Power Management"
+        }
+      ],
+      "category_distribution": {
+        "Application Processor": 0.035,
+        "AI Accelerator": 0.04,
+        "RF Modem": 0.025,
+        "IoT Controller": 0.02,
+        "Power Management": 0.022
+      }
+    },
+    {
+      "table_name": "optimization_results",
+      "description": "Monthly optimization result summaries capturing best-found PPA tradeoffs, convergence metrics, and design closure status per chip design.",
+      "columns": [
+        {
+          "name": "result_id",
+          "sql_type": "STRING",
+          "comment": "Unique optimization result identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OPT-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "result_month",
+          "sql_type": "DATE",
+          "comment": "Month of the optimization result",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "design_id",
+          "sql_type": "STRING",
+          "comment": "Chip design identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable chip design name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "design_family",
+          "sql_type": "STRING",
+          "comment": "Design family grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "best_power_mw",
+          "sql_type": "DOUBLE",
+          "comment": "Best total power found in milliwatts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80.0 + {qty_noise} * 1200.0, 1)"
+        },
+        {
+          "name": "best_performance_score",
+          "sql_type": "DOUBLE",
+          "comment": "Best performance score achieved (0-100)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(30.0, 70.0 + ({qty_noise} - 0.5) * 50.0)), 1)"
+        },
+        {
+          "name": "best_area_mm2",
+          "sql_type": "DOUBLE",
+          "comment": "Best die area found in square millimeters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.0 + {qty_noise} * 80.0, 2)"
+        },
+        {
+          "name": "pareto_front_size",
+          "sql_type": "INT",
+          "comment": "Number of Pareto-optimal solutions found",
+          "is_dimension": false,
+          "generation_expr": "CAST(3 + FLOOR({qty_noise} * 47) AS INT)"
+        },
+        {
+          "name": "convergence_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Optimization convergence percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 75.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "design_closure_status",
+          "sql_type": "STRING",
+          "comment": "Design closure status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'On Track' WHEN {status_noise} < 0.65 THEN 'At Risk' WHEN {status_noise} < 0.85 THEN 'Behind Schedule' ELSE 'Blocked' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Application Processor": {
+          "9,10,11": 0.06
+        },
+        "AI Accelerator": {
+          "1,2,3": 0.055
+        },
+        "Power Management": {
+          "5,6": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "design_id": "SP-AP-001",
+          "design_name": "Orion-7 Application Processor",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-002",
+          "design_name": "Orion-5 Mobile SoC",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-003",
+          "design_name": "Orion-3 Ultra-Low-Power SoC",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AP-004",
+          "design_name": "Orion-9 Server Processor",
+          "design_family": "Application Processor"
+        },
+        {
+          "design_id": "SP-AI-001",
+          "design_name": "TensorCore T100 NPU",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-002",
+          "design_name": "TensorCore T200 Training ASIC",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-003",
+          "design_name": "TensorCore T50 Edge Inference",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-AI-004",
+          "design_name": "TensorCore T300 HPC Accelerator",
+          "design_family": "AI Accelerator"
+        },
+        {
+          "design_id": "SP-RF-001",
+          "design_name": "WaveLink 5G Modem",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-002",
+          "design_name": "WaveLink WiFi7 Baseband",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-003",
+          "design_name": "WaveLink Satellite Transceiver",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-RF-004",
+          "design_name": "WaveLink V2X Modem",
+          "design_family": "RF Modem"
+        },
+        {
+          "design_id": "SP-IO-001",
+          "design_name": "PicoNode IoT Controller M0",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-002",
+          "design_name": "PicoNode IoT Controller M4",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-003",
+          "design_name": "PicoNode Sensor Hub",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-IO-004",
+          "design_name": "PicoNode BLE SoC",
+          "design_family": "IoT Controller"
+        },
+        {
+          "design_id": "SP-PM-001",
+          "design_name": "VoltEdge GaN PMIC",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-002",
+          "design_name": "VoltEdge SiC Gate Driver",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-003",
+          "design_name": "VoltEdge Multi-Rail PMIC",
+          "design_family": "Power Management"
+        },
+        {
+          "design_id": "SP-PM-004",
+          "design_name": "VoltEdge USB-PD Controller",
+          "design_family": "Power Management"
+        }
+      ],
+      "category_distribution": {
+        "Application Processor": 0.035,
+        "AI Accelerator": 0.04,
+        "RF Modem": 0.025,
+        "IoT Controller": 0.02,
+        "Power Management": 0.022
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "simulation_run_metrics",
+      "source_table": "simulation_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "design_family",
+          "expr": "design_family"
+        },
+        {
+          "name": "run_status",
+          "expr": "run_status"
+        },
+        {
+          "name": "target_node_nm",
+          "expr": "target_node_nm"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_simulation_runs",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total simulation runs executed"
+        },
+        {
+          "name": "completed_runs",
+          "expr": "COUNT(DISTINCT CASE WHEN run_status = 'Completed' THEN run_id END)",
+          "comment": "Successfully completed runs"
+        },
+        {
+          "name": "avg_dynamic_power_mw",
+          "expr": "AVG(dynamic_power_mw)",
+          "comment": "Average dynamic power in milliwatts"
+        },
+        {
+          "name": "avg_die_area_mm2",
+          "expr": "AVG(die_area_mm2)",
+          "comment": "Average die area in square millimeters"
+        },
+        {
+          "name": "avg_drc_violations",
+          "expr": "AVG(drc_violations)",
+          "comment": "Average DRC violations per run"
+        },
+        {
+          "name": "total_timing_slack_ns",
+          "expr": "SUM(timing_slack_ns)",
+          "comment": "Total timing slack ns"
+        },
+        {
+          "name": "total_leakage_power_mw",
+          "expr": "SUM(leakage_power_mw)",
+          "comment": "Total leakage power mw"
+        },
+        {
+          "name": "unique_design_count",
+          "expr": "COUNT(DISTINCT design_id)",
+          "comment": "Number of distinct designs"
+        },
+        {
+          "name": "max_timing_slack_ns",
+          "expr": "MAX(timing_slack_ns)",
+          "comment": "Maximum timing slack ns"
+        }
+      ]
+    },
+    {
+      "view_name": "optimization_result_metrics",
+      "source_table": "optimization_results",
+      "dimensions": [
+        {
+          "name": "result_month",
+          "expr": "result_month"
+        },
+        {
+          "name": "design_family",
+          "expr": "design_family"
+        },
+        {
+          "name": "design_closure_status",
+          "expr": "design_closure_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_best_power_mw",
+          "expr": "AVG(best_power_mw)",
+          "comment": "Average best power found across designs"
+        },
+        {
+          "name": "avg_best_performance",
+          "expr": "AVG(best_performance_score)",
+          "comment": "Average best performance score"
+        },
+        {
+          "name": "avg_convergence_pct",
+          "expr": "AVG(convergence_pct)",
+          "comment": "Average optimization convergence"
+        },
+        {
+          "name": "total_optimization_records",
+          "expr": "COUNT(DISTINCT result_id)",
+          "comment": "Total optimization result records"
+        },
+        {
+          "name": "blocked_design_count",
+          "expr": "COUNT(DISTINCT CASE WHEN design_closure_status = 'Blocked' THEN result_id END)",
+          "comment": "Designs in Blocked status"
+        },
+        {
+          "name": "total_best_area_mm2",
+          "expr": "SUM(best_area_mm2)",
+          "comment": "Total best area mm2"
+        },
+        {
+          "name": "unique_design_count",
+          "expr": "COUNT(DISTINCT design_id)",
+          "comment": "Number of distinct designs"
+        },
+        {
+          "name": "max_best_power_mw",
+          "expr": "MAX(best_power_mw)",
+          "comment": "Maximum best power mw"
+        },
+        {
+          "name": "total_pareto_front_size",
+          "expr": "SUM(pareto_front_size)",
+          "comment": "Total pareto front size"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_run_metrics view (source: simulation_runs) has dimensions: run_date, design_family, run_status, target_node_nm. Measures: total_simulation_runs, completed_runs, avg_dynamic_power_mw, avg_die_area_mm2, avg_drc_violations. The optimization_result_metrics view (source: optimization_results) has dimensions: result_month, design_family, design_closure_status. Measures: avg_best_power_mw, avg_best_performance, avg_convergence_pct, total_optimization_records, blocked_design_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. design_id, design_name).",
+  "sample_questions": [
+    "What is the monthly trend in completed runs count?",
+    "How has unique total simulation runss changed over time?",
+    "What is the monthly trend in unique designs?",
+    "How has highest timing slack ns changed over time?",
+    "What is the monthly trend in blocked design count?",
+    "How has unique total optimization recordss changed over time?",
+    "What is the monthly trend in unique designs?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique designs?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(unique_design_count) AS unique_design_count",
+        "FROM {fqn}.simulation_run_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has highest timing slack ns changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_timing_slack_ns) AS max_timing_slack_ns",
+        "FROM {fqn}.simulation_run_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique designs changed over time?",
+      "sql_lines": [
+        "SELECT result_month, MEASURE(unique_design_count) AS unique_design_count",
+        "FROM {fqn}.optimization_result_metrics",
+        "GROUP BY ALL",
+        "ORDER BY result_month"
+      ]
+    },
+    {
+      "question": "How does total target process node in nanometers break down by chip design identifier for 'Completed' records?",
+      "sql_lines": [
+        "SELECT design_id, COUNT(*) AS record_count, SUM(target_node_nm) AS total_target_node_nm",
+        "FROM {fqn}.simulation_runs",
+        "WHERE run_status = 'Completed' GROUP BY design_id ORDER BY total_target_node_nm DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total target clock frequency in ghz over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
+        "FROM {fqn}.parameter_explorations",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average best performance score achieved (0-100) changed over time?",
+      "sql_lines": [
+        "SELECT result_month, AVG(best_performance_score) AS avg_best_performance_score",
+        "FROM {fqn}.optimization_results",
+        "GROUP BY result_month ORDER BY result_month"
+      ]
+    },
+    {
+      "question": "How has total leakage power mw changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_leakage_power_mw) AS total_leakage_power_mw",
+        "FROM {fqn}.simulation_run_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "simulation_runs.run_status = 'Completed'",
+        "display_name": "completed simulations",
+        "synonyms": [
+          "successful runs",
+          "passing simulations"
+        ],
+        "instruction": "Use when analyzing only successfully completed simulation runs."
+      },
+      {
+        "sql": "parameter_explorations.pareto_optimal = 'Yes'",
+        "display_name": "pareto optimal points",
+        "synonyms": [
+          "pareto front",
+          "optimal tradeoffs",
+          "non-dominated solutions"
+        ],
+        "instruction": "Use when filtering for Pareto-optimal design points only."
+      },
+      {
+        "sql": "optimization_results.design_closure_status = 'Blocked'",
+        "display_name": "blocked designs",
+        "synonyms": [
+          "stalled designs",
+          "blocked closure"
+        ],
+        "instruction": "Use when identifying designs that cannot proceed to tapeout."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "total_power_mw",
+        "sql": "simulation_runs.dynamic_power_mw + simulation_runs.leakage_power_mw",
+        "display_name": "total power",
+        "synonyms": [
+          "combined power",
+          "dynamic plus leakage"
+        ]
+      },
+      {
+        "alias": "power_efficiency",
+        "sql": "parameter_explorations.performance_score / NULLIF(parameter_explorations.total_power_mw, 0)",
+        "display_name": "power efficiency",
+        "synonyms": [
+          "performance per watt",
+          "perf/power ratio"
+        ]
+      },
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
+        "display_name": "run month",
+        "synonyms": [
+          "simulation month",
+          "month of run"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_runs",
+        "sql": "COUNT(DISTINCT simulation_runs.run_id)",
+        "display_name": "total simulation runs",
+        "synonyms": [
+          "run count",
+          "number of simulations"
+        ]
+      },
+      {
+        "alias": "avg_power",
+        "sql": "AVG(simulation_runs.dynamic_power_mw)",
+        "display_name": "average dynamic power",
+        "synonyms": [
+          "mean power",
+          "avg power mW"
+        ]
+      },
+      {
+        "alias": "avg_area",
+        "sql": "AVG(simulation_runs.die_area_mm2)",
+        "display_name": "average die area",
+        "synonyms": [
+          "mean area",
+          "avg die size"
+        ]
+      },
+      {
+        "alias": "avg_convergence",
+        "sql": "AVG(optimization_results.convergence_pct)",
+        "display_name": "average convergence",
+        "synonyms": [
+          "mean convergence",
+          "optimization progress"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in completed runs count?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(completed_runs) AS completed_runs",
+        "FROM {fqn}.simulation_run_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique total simulation runss changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_simulation_runs) AS total_simulation_runs",
+        "FROM {fqn}.simulation_run_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in blocked design count?",
+      "sql_lines": [
+        "SELECT result_month, MEASURE(blocked_design_count) AS blocked_design_count",
+        "FROM {fqn}.optimization_result_metrics",
+        "GROUP BY ALL",
+        "ORDER BY result_month"
+      ]
+    },
+    {
+      "question": "How has unique total optimization recordss changed over time?",
+      "sql_lines": [
+        "SELECT result_month, MEASURE(total_optimization_records) AS total_optimization_records",
+        "FROM {fqn}.optimization_result_metrics",
+        "GROUP BY ALL",
+        "ORDER BY result_month"
+      ]
+    },
+    {
+      "question": "What are the top chip design identifier by total target process node in nanometers?",
+      "sql_lines": [
+        "SELECT design_id, SUM(target_node_nm) AS total_target_node_nm",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY design_id ORDER BY total_target_node_nm DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average normalized performance score (0-100) by human-readable chip design name?",
+      "sql_lines": [
+        "SELECT design_name, AVG(performance_score) AS avg_performance_score",
+        "FROM {fqn}.parameter_explorations",
+        "GROUP BY design_name ORDER BY avg_performance_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of the optimization result?",
+      "sql_lines": [
+        "SELECT result_month, COUNT(*) AS record_count",
+        "FROM {fqn}.optimization_results",
+        "GROUP BY result_month ORDER BY result_month"
+      ]
+    }
+  ]
+}

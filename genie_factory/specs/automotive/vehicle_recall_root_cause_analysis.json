@@ -1,0 +1,1028 @@
+{
+  "company_name": "Apex Motor Group",
+  "industry": "Automotive",
+  "use_case": "Vehicle recall root cause analysis and defect pattern identification",
+  "space_title": "Apex Motor Group - Recall & Defect Analytics 🚨",
+  "space_description": "Recall and defect analytics for Apex Motor Group. Ask questions about recall events, warranty claims, component failure patterns, root cause categories, and repair outcomes across 20 vehicle models and 15 suppliers.",
+  "schema_basename": "automotive_recalls",
+  "tables": [
+    {
+      "table_name": "recall_events",
+      "description": "Recall event records capturing NHTSA-filed recalls linked to vehicle models, with severity, root cause, supplier, remedy, and cost data.",
+      "columns": [
+        {
+          "name": "recall_event_id",
+          "sql_type": "STRING",
+          "comment": "Unique recall event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RCL-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "vehicle_model_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle model identifier (FK to dimension)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "make",
+          "sql_type": "STRING",
+          "comment": "Vehicle manufacturer brand",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model_year",
+          "sql_type": "INT",
+          "comment": "Vehicle model year",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle classification (SUV, Sedan, Pickup Truck, etc.)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "recall_date",
+          "sql_type": "DATE",
+          "comment": "Date the recall was filed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "recall_nhtsa_number",
+          "sql_type": "STRING",
+          "comment": "NHTSA recall campaign number",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('25V-', LPAD(CAST(25000 + {id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "component_group",
+          "sql_type": "STRING",
+          "comment": "Component system affected by the recall",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Infotainment System' WHEN {status_noise} < 0.143 THEN 'Visibility/Wipers' WHEN {status_noise} < 0.214 THEN 'Fuel System' WHEN {status_noise} < 0.286 THEN 'Powertrain' WHEN {status_noise} < 0.357 THEN 'Brakes' WHEN {status_noise} < 0.429 THEN 'Suspension' WHEN {status_noise} < 0.500 THEN 'Exterior Lighting' WHEN {status_noise} < 0.571 THEN 'Wheels/Tires' WHEN {status_noise} < 0.643 THEN 'Steering' WHEN {status_noise} < 0.714 THEN 'Seats/Restraints' WHEN {status_noise} < 0.786 THEN 'Electrical System' WHEN {status_noise} < 0.857 THEN 'ADAS Software' WHEN {status_noise} < 0.929 THEN 'Engine Cooling' ELSE 'Air Bags' END"
+        },
+        {
+          "name": "defect_description",
+          "sql_type": "STRING",
+          "comment": "Free-text description of the defect",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Touchscreen may become unresponsive during operation' WHEN {status_noise} < 0.143 THEN 'Wiper motor may fail intermittently in heavy rain conditions' WHEN {status_noise} < 0.214 THEN 'Fuel line connector may develop micro-cracks causing vapor leak' WHEN {status_noise} < 0.286 THEN 'Transmission control module may cause unexpected downshift' WHEN {status_noise} < 0.357 THEN 'Brake caliper mounting bolt may loosen over time' WHEN {status_noise} < 0.429 THEN 'Front strut bearing may corrode prematurely in salt belt regions' WHEN {status_noise} < 0.500 THEN 'Daytime running light LED module may overheat and fail' WHEN {status_noise} < 0.571 THEN 'Wheel lug nuts may not maintain proper torque specification' WHEN {status_noise} < 0.643 THEN 'Power steering assist may reduce unexpectedly at low speed' WHEN {status_noise} < 0.714 THEN 'Seat belt pretensioner may not deploy in rear-end collision' WHEN {status_noise} < 0.786 THEN 'Battery management system may incorrectly report state of charge' WHEN {status_noise} < 0.857 THEN 'Forward collision warning may generate false alerts in fog' WHEN {status_noise} < 0.929 THEN 'Coolant thermostat housing may crack causing slow coolant loss' ELSE 'Side curtain airbag inflator may produce excessive force' END"
+        },
+        {
+          "name": "severity_level",
+          "sql_type": "STRING",
+          "comment": "Recall severity classification",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.44 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.91 THEN 'Safety Advisory' ELSE 'Critical' END"
+        },
+        {
+          "name": "units_affected",
+          "sql_type": "INT",
+          "comment": "Number of vehicles affected by the recall",
+          "is_dimension": false,
+          "generation_expr": "CAST(584 + FLOOR({qty_noise} * 179325) AS INT)"
+        },
+        {
+          "name": "estimated_repair_cost_per_unit",
+          "sql_type": "DECIMAL(10,2)",
+          "comment": "Estimated repair cost per vehicle in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + {qty_noise} * 4960.0, 2)"
+        },
+        {
+          "name": "total_estimated_cost",
+          "sql_type": "DECIMAL(15,2)",
+          "comment": "Total estimated financial impact of the recall in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((584 + FLOOR({qty_noise} * 179325)) * (20.0 + {status_noise} * 4960.0), 2)"
+        },
+        {
+          "name": "root_cause_category",
+          "sql_type": "STRING",
+          "comment": "Root cause classification for the defect",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {seed} % 100 < 11 THEN 'Calibration Drift' WHEN {seed} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {seed} % 100 < 33 THEN 'Assembly Error' WHEN {seed} % 100 < 44 THEN 'Inadequate Testing' WHEN {seed} % 100 < 55 THEN 'Environmental Degradation' WHEN {seed} % 100 < 65 THEN 'Design Deficiency' WHEN {seed} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {seed} % 100 < 84 THEN 'Material Specification Failure' WHEN {seed} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END"
+        },
+        {
+          "name": "supplier_id",
+          "sql_type": "STRING",
+          "comment": "Tier-1 supplier identifier",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {seed} % 15 = 0 THEN 'SUP-BOSCH' WHEN {seed} % 15 = 1 THEN 'SUP-DENSO' WHEN {seed} % 15 = 2 THEN 'SUP-MAGNA' WHEN {seed} % 15 = 3 THEN 'SUP-CONTI' WHEN {seed} % 15 = 4 THEN 'SUP-ZF' WHEN {seed} % 15 = 5 THEN 'SUP-AISIN' WHEN {seed} % 15 = 6 THEN 'SUP-LEAR' WHEN {seed} % 15 = 7 THEN 'SUP-APTIV' WHEN {seed} % 15 = 8 THEN 'SUP-VALEO' WHEN {seed} % 15 = 9 THEN 'SUP-HELLA' WHEN {seed} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {seed} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {seed} % 15 = 12 THEN 'SUP-MANDO' WHEN {seed} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END"
+        },
+        {
+          "name": "days_to_remedy",
+          "sql_type": "INT",
+          "comment": "Number of days from recall announcement to remedy availability",
+          "is_dimension": false,
+          "generation_expr": "CAST(15 + FLOOR({qty_noise} * 350) AS INT)"
+        },
+        {
+          "name": "remedy_type",
+          "sql_type": "STRING",
+          "comment": "Type of remedy applied to resolve the recall",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.31 THEN 'Repair' WHEN {status_noise} < 0.55 THEN 'Replace' WHEN {status_noise} < 0.78 THEN 'Software Update' WHEN {status_noise} < 0.91 THEN 'Inspection' ELSE 'Owner Notification' END"
+        },
+        {
+          "name": "injuries_reported",
+          "sql_type": "INT",
+          "comment": "Number of injuries reported related to this recall",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {qty_noise} < 0.70 THEN 0 WHEN {qty_noise} < 0.85 THEN 1 WHEN {qty_noise} < 0.92 THEN CAST(2 + FLOOR({status_noise} * 3) AS INT) WHEN {qty_noise} < 0.97 THEN CAST(5 + FLOOR({status_noise} * 5) AS INT) ELSE CAST(10 + FLOOR({status_noise} * 5) AS INT) END"
+        },
+        {
+          "name": "fatalities_reported",
+          "sql_type": "INT",
+          "comment": "Number of fatalities reported related to this recall",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {qty_noise} < 0.985 THEN 0 WHEN {qty_noise} < 0.995 THEN 1 WHEN {qty_noise} < 0.999 THEN 2 ELSE 3 END"
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Current status of the recall campaign",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.57 THEN 'Closed' WHEN {status_noise} < 0.85 THEN 'In Progress' ELSE 'Open' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pickup Truck": {
+          "1,2,3": 0.06,
+          "10,11,12": 0.055
+        },
+        "SUV": {
+          "1,2,3": 0.055,
+          "10,11,12": 0.05
+        },
+        "Crossover": {
+          "2,3": 0.05,
+          "11,12": 0.045
+        },
+        "Sedan": {
+          "1,2": 0.045,
+          "10,11": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "vehicle_model_id": "VM-0001",
+          "make": "Ford",
+          "model": "F-150",
+          "model_year": 2022,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0002",
+          "make": "Ford",
+          "model": "Explorer",
+          "model_year": 2023,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0003",
+          "make": "Ford",
+          "model": "Escape",
+          "model_year": 2022,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0005",
+          "make": "Ford",
+          "model": "Bronco",
+          "model_year": 2024,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0006",
+          "make": "Chevrolet",
+          "model": "Silverado 1500",
+          "model_year": 2024,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0008",
+          "make": "Chevrolet",
+          "model": "Traverse",
+          "model_year": 2024,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0011",
+          "make": "Toyota",
+          "model": "Camry",
+          "model_year": 2022,
+          "vehicle_class": "Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0012",
+          "make": "Toyota",
+          "model": "RAV4",
+          "model_year": 2023,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0013",
+          "make": "Toyota",
+          "model": "Tacoma",
+          "model_year": 2024,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0015",
+          "make": "Toyota",
+          "model": "Corolla",
+          "model_year": 2023,
+          "vehicle_class": "Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0016",
+          "make": "Honda",
+          "model": "CR-V",
+          "model_year": 2023,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0017",
+          "make": "Honda",
+          "model": "Civic",
+          "model_year": 2022,
+          "vehicle_class": "Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0020",
+          "make": "Hyundai",
+          "model": "Tucson",
+          "model_year": 2023,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0021",
+          "make": "Hyundai",
+          "model": "Santa Fe",
+          "model_year": 2024,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0025",
+          "make": "Ram",
+          "model": "1500",
+          "model_year": 2022,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0026",
+          "make": "Jeep",
+          "model": "Grand Cherokee",
+          "model_year": 2025,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0027",
+          "make": "Jeep",
+          "model": "Wrangler",
+          "model_year": 2024,
+          "vehicle_class": "Off-Road SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0028",
+          "make": "Tesla",
+          "model": "Model Y",
+          "model_year": 2024,
+          "vehicle_class": "Electric Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0029",
+          "make": "Tesla",
+          "model": "Model 3",
+          "model_year": 2023,
+          "vehicle_class": "Electric Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0030",
+          "make": "Nissan",
+          "model": "Rogue",
+          "model_year": 2022,
+          "vehicle_class": "Crossover"
+        }
+      ],
+      "category_distribution": {
+        "Infotainment System": 0.071,
+        "Visibility/Wipers": 0.071,
+        "Fuel System": 0.071,
+        "Powertrain": 0.071,
+        "Brakes": 0.071,
+        "Suspension": 0.071,
+        "Exterior Lighting": 0.071,
+        "Wheels/Tires": 0.071,
+        "Steering": 0.071,
+        "Seats/Restraints": 0.071,
+        "Electrical System": 0.071,
+        "ADAS Software": 0.071,
+        "Engine Cooling": 0.071,
+        "Air Bags": 0.071
+      }
+    },
+    {
+      "table_name": "warranty_claims",
+      "description": "Warranty claim records from dealerships, capturing repair costs, labor, component codes, and claim disposition for vehicles under warranty coverage.",
+      "columns": [
+        {
+          "name": "claim_id",
+          "sql_type": "STRING",
+          "comment": "Unique warranty claim identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WC-', LPAD(CAST({id_seq} AS STRING), 6, '0'))"
+        },
+        {
+          "name": "vehicle_model_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle model identifier (FK to dimension)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "make",
+          "sql_type": "STRING",
+          "comment": "Vehicle manufacturer brand",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model_year",
+          "sql_type": "INT",
+          "comment": "Vehicle model year",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle classification (SUV, Sedan, Pickup Truck, etc.)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "claim_date",
+          "sql_type": "DATE",
+          "comment": "Date the warranty claim was filed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "mileage_at_claim",
+          "sql_type": "INT",
+          "comment": "Vehicle odometer reading at time of claim",
+          "is_dimension": false,
+          "generation_expr": "CAST(966 + FLOOR({qty_noise} * 93818) AS INT)"
+        },
+        {
+          "name": "component_code",
+          "sql_type": "STRING",
+          "comment": "Component code identifying the failed part",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {seed} % 30 = 0 THEN 'SU-BLJ' WHEN {seed} % 30 = 1 THEN 'PT-TBW' WHEN {seed} % 30 = 2 THEN 'BR-PAD' WHEN {seed} % 30 = 3 THEN 'EL-BCM' WHEN {seed} % 30 = 4 THEN 'EN-THR' WHEN {seed} % 30 = 5 THEN 'IN-TCH' WHEN {seed} % 30 = 6 THEN 'FS-INJ' WHEN {seed} % 30 = 7 THEN 'ST-RCK' WHEN {seed} % 30 = 8 THEN 'CL-RAD' WHEN {seed} % 30 = 9 THEN 'EX-LED' WHEN {seed} % 30 = 10 THEN 'SE-BKL' WHEN {seed} % 30 = 11 THEN 'WH-BRG' WHEN {seed} % 30 = 12 THEN 'AD-CAM' WHEN {seed} % 30 = 13 THEN 'AB-SNS' WHEN {seed} % 30 = 14 THEN 'PT-CVT' WHEN {seed} % 30 = 15 THEN 'BR-ABS' WHEN {seed} % 30 = 16 THEN 'EL-ALT' WHEN {seed} % 30 = 17 THEN 'EN-WTP' WHEN {seed} % 30 = 18 THEN 'SU-SWA' WHEN {seed} % 30 = 19 THEN 'IN-AMP' WHEN {seed} % 30 = 20 THEN 'FS-PMP' WHEN {seed} % 30 = 21 THEN 'ST-EPS' WHEN {seed} % 30 = 22 THEN 'CL-FAN' WHEN {seed} % 30 = 23 THEN 'EX-HRN' WHEN {seed} % 30 = 24 THEN 'SE-MTR' WHEN {seed} % 30 = 25 THEN 'WH-TPS' WHEN {seed} % 30 = 26 THEN 'AD-RDR' WHEN {seed} % 30 = 27 THEN 'AB-INF' WHEN {seed} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END"
+        },
+        {
+          "name": "labor_hours",
+          "sql_type": "DECIMAL(4,1)",
+          "comment": "Total labor hours charged for the repair",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + {qty_noise} * 11.5, 1)"
+        },
+        {
+          "name": "parts_cost_usd",
+          "sql_type": "DECIMAL(10,2)",
+          "comment": "Cost of replacement parts in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(16.0 + {qty_noise} * 2781.0, 2)"
+        },
+        {
+          "name": "labor_cost_usd",
+          "sql_type": "DECIMAL(10,2)",
+          "comment": "Labor cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(47.0 + {status_noise} * 1904.0, 2)"
+        },
+        {
+          "name": "total_claim_cost_usd",
+          "sql_type": "DECIMAL(10,2)",
+          "comment": "Total warranty claim cost (parts + labor)",
+          "is_dimension": false,
+          "generation_expr": "ROUND((16.0 + {qty_noise} * 2781.0) + (47.0 + {status_noise} * 1904.0), 2)"
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Geographic region where the claim was filed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Northwest' WHEN {status_noise} < 0.33 THEN 'Midwest' WHEN {status_noise} < 0.48 THEN 'Mountain' WHEN {status_noise} < 0.62 THEN 'Southwest' WHEN {status_noise} < 0.76 THEN 'Southeast' WHEN {status_noise} < 0.90 THEN 'West Coast' ELSE 'Northeast' END"
+        },
+        {
+          "name": "claim_disposition",
+          "sql_type": "STRING",
+          "comment": "Claim review outcome",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.62 THEN 'Approved' WHEN {status_noise} < 0.77 THEN 'Partially Approved' WHEN {status_noise} < 0.90 THEN 'Pending Review' ELSE 'Denied' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Pickup Truck": {
+          "1,2,3": 0.05,
+          "10,11,12": 0.045
+        },
+        "SUV": {
+          "1,2": 0.045,
+          "11,12": 0.04
+        },
+        "Crossover": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "vehicle_model_id": "VM-0001",
+          "make": "Ford",
+          "model": "F-150",
+          "model_year": 2022,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0002",
+          "make": "Ford",
+          "model": "Explorer",
+          "model_year": 2023,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0003",
+          "make": "Ford",
+          "model": "Escape",
+          "model_year": 2022,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0005",
+          "make": "Ford",
+          "model": "Bronco",
+          "model_year": 2024,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0006",
+          "make": "Chevrolet",
+          "model": "Silverado 1500",
+          "model_year": 2024,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0008",
+          "make": "Chevrolet",
+          "model": "Traverse",
+          "model_year": 2024,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0011",
+          "make": "Toyota",
+          "model": "Camry",
+          "model_year": 2022,
+          "vehicle_class": "Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0012",
+          "make": "Toyota",
+          "model": "RAV4",
+          "model_year": 2023,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0013",
+          "make": "Toyota",
+          "model": "Tacoma",
+          "model_year": 2024,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0015",
+          "make": "Toyota",
+          "model": "Corolla",
+          "model_year": 2023,
+          "vehicle_class": "Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0016",
+          "make": "Honda",
+          "model": "CR-V",
+          "model_year": 2023,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0017",
+          "make": "Honda",
+          "model": "Civic",
+          "model_year": 2022,
+          "vehicle_class": "Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0020",
+          "make": "Hyundai",
+          "model": "Tucson",
+          "model_year": 2023,
+          "vehicle_class": "Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0021",
+          "make": "Hyundai",
+          "model": "Santa Fe",
+          "model_year": 2024,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0025",
+          "make": "Ram",
+          "model": "1500",
+          "model_year": 2022,
+          "vehicle_class": "Pickup Truck"
+        },
+        {
+          "vehicle_model_id": "VM-0026",
+          "make": "Jeep",
+          "model": "Grand Cherokee",
+          "model_year": 2025,
+          "vehicle_class": "SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0027",
+          "make": "Jeep",
+          "model": "Wrangler",
+          "model_year": 2024,
+          "vehicle_class": "Off-Road SUV"
+        },
+        {
+          "vehicle_model_id": "VM-0028",
+          "make": "Tesla",
+          "model": "Model Y",
+          "model_year": 2024,
+          "vehicle_class": "Electric Crossover"
+        },
+        {
+          "vehicle_model_id": "VM-0029",
+          "make": "Tesla",
+          "model": "Model 3",
+          "model_year": 2023,
+          "vehicle_class": "Electric Sedan"
+        },
+        {
+          "vehicle_model_id": "VM-0030",
+          "make": "Nissan",
+          "model": "Rogue",
+          "model_year": 2022,
+          "vehicle_class": "Crossover"
+        }
+      ],
+      "category_distribution": {
+        "Pickup Truck": 0.04,
+        "SUV": 0.035,
+        "Crossover": 0.035,
+        "Sedan": 0.025,
+        "Off-Road SUV": 0.015,
+        "Electric Crossover": 0.015,
+        "Electric Sedan": 0.015
+      }
+    },
+    {
+      "table_name": "recall_metrics_monthly",
+      "description": "Monthly aggregate recall KPIs tracking recall volume, closure rates, cost, remedy timelines, and customer satisfaction scores.",
+      "columns": [
+        {
+          "name": "month_date",
+          "sql_type": "DATE",
+          "comment": "First day of the reporting month",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "metric_period",
+          "sql_type": "STRING",
+          "comment": "Reporting period granularity",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "total_recalls_opened",
+          "sql_type": "INT",
+          "comment": "Number of new recalls opened in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(51 + FLOOR({qty_noise} * 32) AS INT)"
+        },
+        {
+          "name": "total_recalls_closed",
+          "sql_type": "INT",
+          "comment": "Number of recalls closed in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(43 + FLOOR({qty_noise} * 30) AS INT)"
+        },
+        {
+          "name": "units_under_recall",
+          "sql_type": "INT",
+          "comment": "Total vehicle units with active recall status",
+          "is_dimension": false,
+          "generation_expr": "CAST(951000 + FLOOR({qty_noise} * 1449000) AS INT)"
+        },
+        {
+          "name": "avg_days_to_remedy",
+          "sql_type": "INT",
+          "comment": "Average days from recall to remedy availability",
+          "is_dimension": false,
+          "generation_expr": "CAST(70 + FLOOR({qty_noise} * 25) AS INT)"
+        },
+        {
+          "name": "total_cost_usd",
+          "sql_type": "INT",
+          "comment": "Total recall cost for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "CAST(28000000 + FLOOR({qty_noise} * 52000000) AS INT)"
+        },
+        {
+          "name": "customer_satisfaction_score",
+          "sql_type": "DECIMAL(5,2)",
+          "comment": "Monthly customer satisfaction score (0-100 scale)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(67.0 + {qty_noise} * 15.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "monthly": {
+          "1,2,3": 0.06,
+          "10,11,12": 0.055
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "metric_period": "monthly"
+        }
+      ],
+      "category_distribution": {
+        "monthly": 1.0
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "recall_analysis_metrics",
+      "source_table": "recall_events",
+      "dimensions": [
+        {
+          "name": "component_group",
+          "expr": "component_group"
+        },
+        {
+          "name": "severity_level",
+          "expr": "severity_level"
+        },
+        {
+          "name": "root_cause_category",
+          "expr": "root_cause_category"
+        },
+        {
+          "name": "recall_month",
+          "expr": "DATE_TRUNC('month', recall_date)"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_recall_events",
+          "expr": "COUNT(*)",
+          "comment": "Total number of recall events"
+        },
+        {
+          "name": "total_estimated_cost",
+          "expr": "SUM(total_estimated_cost)",
+          "comment": "Sum of estimated recall costs"
+        },
+        {
+          "name": "avg_units_affected",
+          "expr": "AVG(units_affected)",
+          "comment": "Average units affected per recall"
+        },
+        {
+          "name": "avg_days_to_remedy",
+          "expr": "AVG(days_to_remedy)",
+          "comment": "Average days to remedy completion"
+        },
+        {
+          "name": "critical_recall_count",
+          "expr": "COUNT(DISTINCT CASE WHEN severity_level = 'Critical' THEN recall_event_id END)",
+          "comment": "Count of critical severity recalls"
+        },
+        {
+          "name": "total_estimated_repair_cost_per_unit",
+          "expr": "SUM(estimated_repair_cost_per_unit)",
+          "comment": "Total estimated repair cost per unit"
+        },
+        {
+          "name": "unique_vehicle_model_count",
+          "expr": "COUNT(DISTINCT vehicle_model_id)",
+          "comment": "Number of distinct vehicle models"
+        },
+        {
+          "name": "unique_supplier_count",
+          "expr": "COUNT(DISTINCT supplier_id)",
+          "comment": "Number of distinct suppliers"
+        },
+        {
+          "name": "open_recall_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN status = 'Open' THEN recall_event_id END)",
+          "comment": "Count where status is Open"
+        },
+        {
+          "name": "max_units_affected",
+          "expr": "MAX(units_affected)",
+          "comment": "Maximum units affected"
+        }
+      ]
+    },
+    {
+      "view_name": "warranty_claim_metrics",
+      "source_table": "warranty_claims",
+      "dimensions": [
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "claim_disposition",
+          "expr": "claim_disposition"
+        },
+        {
+          "name": "claim_month",
+          "expr": "DATE_TRUNC('month', claim_date)"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_claims",
+          "expr": "COUNT(*)",
+          "comment": "Total warranty claims"
+        },
+        {
+          "name": "total_claim_cost",
+          "expr": "SUM(total_claim_cost_usd)",
+          "comment": "Total warranty claim cost"
+        },
+        {
+          "name": "avg_claim_cost",
+          "expr": "AVG(total_claim_cost_usd)",
+          "comment": "Average claim cost"
+        },
+        {
+          "name": "avg_labor_hours",
+          "expr": "AVG(labor_hours)",
+          "comment": "Average labor hours per claim"
+        },
+        {
+          "name": "total_parts_cost",
+          "expr": "SUM(parts_cost_usd)",
+          "comment": "Total parts cost usd"
+        },
+        {
+          "name": "total_labor_cost",
+          "expr": "SUM(labor_cost_usd)",
+          "comment": "Total labor cost usd"
+        },
+        {
+          "name": "unique_vehicle_model_count",
+          "expr": "COUNT(DISTINCT vehicle_model_id)",
+          "comment": "Number of distinct vehicle models"
+        },
+        {
+          "name": "unique_component_count",
+          "expr": "COUNT(DISTINCT component_code)",
+          "comment": "Number of distinct components"
+        },
+        {
+          "name": "max_mileage_at_claim",
+          "expr": "MAX(mileage_at_claim)",
+          "comment": "Maximum mileage at claim"
+        },
+        {
+          "name": "total_mileage_at_claim",
+          "expr": "SUM(mileage_at_claim)",
+          "comment": "Total mileage at claim"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The recall_analysis_metrics view (source: recall_events) has dimensions: component_group, severity_level, root_cause_category, recall_month. Measures: total_recall_events, total_estimated_cost, avg_units_affected, avg_days_to_remedy, critical_recall_count. The warranty_claim_metrics view (source: warranty_claims) has dimensions: region, claim_disposition, claim_month. Measures: total_claims, total_claim_cost, avg_claim_cost, avg_labor_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. make, metric_period, model, model_year, vehicle_class, vehicle_model_id).",
+  "sample_questions": [
+    "What is the critical recall count by component group?",
+    "Which component groups have the highest open status count?",
+    "How does the number of unique vehicle models vary by component group?",
+    "How many unique suppliers are there per component group?",
+    "Which regions have the most unique vehicle models?",
+    "How does the number of unique components vary by region?",
+    "What is the highest mileage at claim for each region?"
+  ],
+  "example_sqls": [
+    {
+      "question": "How does the number of unique vehicle models vary by component group?",
+      "sql_lines": [
+        "SELECT component_group, MEASURE(unique_vehicle_model_count) AS unique_vehicle_model_count",
+        "FROM {fqn}.recall_analysis_metrics",
+        "GROUP BY ALL",
+        "ORDER BY unique_vehicle_model_count DESC"
+      ]
+    },
+    {
+      "question": "How many unique suppliers are there per component group?",
+      "sql_lines": [
+        "SELECT component_group, MEASURE(unique_supplier_count) AS unique_supplier_count",
+        "FROM {fqn}.recall_analysis_metrics",
+        "GROUP BY ALL",
+        "ORDER BY unique_supplier_count DESC"
+      ]
+    },
+    {
+      "question": "What is the highest mileage at claim for each region?",
+      "sql_lines": [
+        "SELECT region, MEASURE(max_mileage_at_claim) AS max_mileage_at_claim",
+        "FROM {fqn}.warranty_claim_metrics",
+        "GROUP BY ALL",
+        "ORDER BY max_mileage_at_claim DESC"
+      ]
+    },
+    {
+      "question": "How does total number of vehicles affected by the recall break down by vehicle model identifier (fk to dimension) for 'Closed' records?",
+      "sql_lines": [
+        "SELECT vehicle_model_id, COUNT(*) AS record_count, SUM(units_affected) AS total_units_affected",
+        "FROM {fqn}.recall_events",
+        "WHERE status = 'Closed' GROUP BY vehicle_model_id ORDER BY total_units_affected DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total vehicle odometer reading at time of claim over time?",
+      "sql_lines": [
+        "SELECT claim_date, SUM(mileage_at_claim) AS total_mileage_at_claim",
+        "FROM {fqn}.warranty_claims",
+        "GROUP BY claim_date ORDER BY claim_date"
+      ]
+    },
+    {
+      "question": "Show the distribution of records by reporting period granularity",
+      "sql_lines": [
+        "SELECT metric_period, COUNT(*) AS record_count",
+        "FROM {fqn}.recall_metrics_monthly",
+        "GROUP BY metric_period ORDER BY record_count DESC"
+      ]
+    },
+    {
+      "question": "Which component groups have the most unique suppliers?",
+      "sql_lines": [
+        "SELECT component_group, MEASURE(unique_supplier_count) AS unique_supplier_count",
+        "FROM {fqn}.recall_analysis_metrics",
+        "GROUP BY ALL",
+        "ORDER BY unique_supplier_count DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "WHERE severity_level = 'Critical'",
+        "display_name": "Critical severity only"
+      },
+      {
+        "sql": "WHERE YEAR(recall_date) = 2025",
+        "display_name": "Current year recalls"
+      },
+      {
+        "sql": "WHERE total_estimated_cost > 50000000",
+        "display_name": "High cost recalls"
+      }
+    ],
+    "expressions": [
+      {
+        "sql": "total_estimated_cost / NULLIF(units_affected, 0)",
+        "display_name": "Cost per unit",
+        "alias": "Cost per unit"
+      },
+      {
+        "sql": "DATE_TRUNC('month', recall_date)",
+        "display_name": "Recall month",
+        "alias": "Recall month"
+      },
+      {
+        "sql": "CASE WHEN severity_level IN ('Critical', 'Safety Advisory') THEN 'Yes' ELSE 'No' END",
+        "display_name": "Is safety critical",
+        "alias": "Is safety critical"
+      }
+    ],
+    "measures": [
+      {
+        "sql": "SUM(total_estimated_cost)",
+        "display_name": "Total recall cost",
+        "alias": "Total recall cost"
+      },
+      {
+        "sql": "AVG(days_to_remedy)",
+        "display_name": "Average days to remedy",
+        "alias": "Average days to remedy"
+      },
+      {
+        "sql": "COUNT(DISTINCT recall_event_id)",
+        "display_name": "Recall event count",
+        "alias": "Recall event count"
+      },
+      {
+        "sql": "SUM(injuries_reported)",
+        "display_name": "Total injuries",
+        "alias": "Total injuries"
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the critical recall count by component group?",
+      "sql_lines": [
+        "SELECT component_group, MEASURE(critical_recall_count) AS critical_recall_count",
+        "FROM {fqn}.recall_analysis_metrics",
+        "GROUP BY ALL",
+        "ORDER BY critical_recall_count DESC"
+      ]
+    },
+    {
+      "question": "Which component groups have the highest open status count?",
+      "sql_lines": [
+        "SELECT component_group, MEASURE(open_recall_event_count) AS open_recall_event_count",
+        "FROM {fqn}.recall_analysis_metrics",
+        "GROUP BY ALL",
+        "ORDER BY open_recall_event_count DESC"
+      ]
+    },
+    {
+      "question": "Which regions have the most unique vehicle models?",
+      "sql_lines": [
+        "SELECT region, MEASURE(unique_vehicle_model_count) AS unique_vehicle_model_count",
+        "FROM {fqn}.warranty_claim_metrics",
+        "GROUP BY ALL",
+        "ORDER BY unique_vehicle_model_count DESC"
+      ]
+    },
+    {
+      "question": "How does the number of unique components vary by region?",
+      "sql_lines": [
+        "SELECT region, MEASURE(unique_component_count) AS unique_component_count",
+        "FROM {fqn}.warranty_claim_metrics",
+        "GROUP BY ALL",
+        "ORDER BY unique_component_count DESC"
+      ]
+    },
+    {
+      "question": "What are the top vehicle model identifier (fk to dimension) by total number of vehicles affected by the recall?",
+      "sql_lines": [
+        "SELECT vehicle_model_id, SUM(units_affected) AS total_units_affected",
+        "FROM {fqn}.recall_events",
+        "GROUP BY vehicle_model_id ORDER BY total_units_affected DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date the warranty claim was filed?",
+      "sql_lines": [
+        "SELECT claim_date, COUNT(*) AS record_count",
+        "FROM {fqn}.warranty_claims",
+        "GROUP BY claim_date ORDER BY claim_date"
+      ]
+    },
+    {
+      "question": "Which reporting period granularity have the most records?",
+      "sql_lines": [
+        "SELECT metric_period, COUNT(*) AS record_count",
+        "FROM {fqn}.recall_metrics_monthly",
+        "GROUP BY metric_period ORDER BY record_count DESC LIMIT 10"
+      ]
+    }
+  ]
+}

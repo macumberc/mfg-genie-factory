@@ -1,0 +1,967 @@
+{
+  "company_name": "ReservoirSight Analytics",
+  "industry": "Oil & Gas Upstream",
+  "use_case": "Reservoir management and production optimization",
+  "space_title": "ReservoirSight Analytics - Reservoir Management 🛢️",
+  "space_description": "Reservoir analytics for ReservoirSight Analytics. Ask questions about reservoir performance, production rates, decline curves, and recovery factors across 20 reservoirs in major US basins.",
+  "schema_basename": "og_upstream_reservoir",
+  "tables": [
+    {
+      "table_name": "production_readings",
+      "description": "Daily production readings from reservoir wells.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Reading ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.reservoir_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Reading date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "reservoir_id",
+          "sql_type": "STRING",
+          "comment": "Reservoir ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "reservoir_name",
+          "sql_type": "STRING",
+          "comment": "Reservoir name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formation",
+          "sql_type": "STRING",
+          "comment": "Formation",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "basin",
+          "sql_type": "STRING",
+          "comment": "Basin",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "oil_bpd",
+          "sql_type": "DOUBLE",
+          "comment": "Oil BPD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10.0, 200.0 + {qty_noise} * 2800.0), 0)"
+        },
+        {
+          "name": "gas_mcfpd",
+          "sql_type": "DOUBLE",
+          "comment": "Gas MCF per day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50.0, 500.0 + {qty_noise} * 9500.0), 0)"
+        },
+        {
+          "name": "water_bpd",
+          "sql_type": "DOUBLE",
+          "comment": "Water BPD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 50.0 + {qty_noise} * 1500.0), 0)"
+        },
+        {
+          "name": "reservoir_pressure_psi",
+          "sql_type": "DOUBLE",
+          "comment": "Reservoir pressure PSI",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, 2000.0 + {qty_noise} * 6000.0), 0)"
+        },
+        {
+          "name": "bottomhole_temp_f",
+          "sql_type": "DOUBLE",
+          "comment": "Bottomhole temp F",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(150.0, 180.0 + {qty_noise} * 120.0), 0)"
+        },
+        {
+          "name": "lift_method",
+          "sql_type": "STRING",
+          "comment": "Lift: Natural Flow, ESP, Rod Pump, Gas Lift, Plunger",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Natural Flow' WHEN {status_noise} < 0.45 THEN 'ESP' WHEN {status_noise} < 0.65 THEN 'Rod Pump' WHEN {status_noise} < 0.85 THEN 'Gas Lift' ELSE 'Plunger' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Permian Basin": {
+          "3,4,5,9,10": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "reservoir_id": "RS-001",
+          "reservoir_name": "Wolfcamp A-1",
+          "formation": "Wolfcamp A",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-002",
+          "reservoir_name": "Wolfcamp B-2",
+          "formation": "Wolfcamp B",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-003",
+          "reservoir_name": "Bone Spring 1",
+          "formation": "Bone Spring",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-004",
+          "reservoir_name": "Bone Spring 2",
+          "formation": "Bone Spring",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-005",
+          "reservoir_name": "Spraberry Trend A",
+          "formation": "Spraberry",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-006",
+          "reservoir_name": "Eagle Ford Shale 1",
+          "formation": "Eagle Ford",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-007",
+          "reservoir_name": "Eagle Ford Shale 2",
+          "formation": "Eagle Ford",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-008",
+          "reservoir_name": "Eagle Ford Austin Chalk",
+          "formation": "Austin Chalk",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-009",
+          "reservoir_name": "Bakken Middle 1",
+          "formation": "Bakken",
+          "basin": "Williston Basin"
+        },
+        {
+          "reservoir_id": "RS-010",
+          "reservoir_name": "Bakken Three Forks",
+          "formation": "Three Forks",
+          "basin": "Williston Basin"
+        },
+        {
+          "reservoir_id": "RS-011",
+          "reservoir_name": "Marcellus Dry Gas 1",
+          "formation": "Marcellus",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-012",
+          "reservoir_name": "Marcellus Wet Gas 2",
+          "formation": "Marcellus",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-013",
+          "reservoir_name": "Haynesville Shale 1",
+          "formation": "Haynesville",
+          "basin": "Haynesville"
+        },
+        {
+          "reservoir_id": "RS-014",
+          "reservoir_name": "Haynesville Bossier",
+          "formation": "Bossier",
+          "basin": "Haynesville"
+        },
+        {
+          "reservoir_id": "RS-015",
+          "reservoir_name": "Utica Point Pleasant",
+          "formation": "Utica",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-016",
+          "reservoir_name": "DJ Basin Niobrara A",
+          "formation": "Niobrara",
+          "basin": "DJ Basin"
+        },
+        {
+          "reservoir_id": "RS-017",
+          "reservoir_name": "DJ Basin Niobrara B",
+          "formation": "Niobrara",
+          "basin": "DJ Basin"
+        },
+        {
+          "reservoir_id": "RS-018",
+          "reservoir_name": "Permian San Andres",
+          "formation": "San Andres",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-019",
+          "reservoir_name": "Anadarko Woodford",
+          "formation": "Woodford",
+          "basin": "Anadarko Basin"
+        },
+        {
+          "reservoir_id": "RS-020",
+          "reservoir_name": "SCOOP Springer",
+          "formation": "Springer",
+          "basin": "Anadarko Basin"
+        }
+      ],
+      "category_distribution": {
+        "Permian Basin": 0.065,
+        "Eagle Ford": 0.055,
+        "Williston Basin": 0.05,
+        "Appalachian Basin": 0.05,
+        "Haynesville": 0.045,
+        "DJ Basin": 0.045,
+        "Anadarko Basin": 0.04
+      }
+    },
+    {
+      "table_name": "reservoir_snapshots",
+      "description": "Monthly reservoir performance snapshots.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.reservoir_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "reservoir_id",
+          "sql_type": "STRING",
+          "comment": "Reservoir ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "reservoir_name",
+          "sql_type": "STRING",
+          "comment": "Reservoir name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formation",
+          "sql_type": "STRING",
+          "comment": "Formation",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "basin",
+          "sql_type": "STRING",
+          "comment": "Basin",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cumulative_oil_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Cumulative oil BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10000.0, {qty_noise} * 5000000.0), 0)"
+        },
+        {
+          "name": "estimated_eur_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated ultimate recovery BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, 500000.0 + {qty_noise} * 4500000.0), 0)"
+        },
+        {
+          "name": "recovery_factor_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Recovery factor pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(60.0, GREATEST(5.0, 15.0 + {qty_noise} * 35.0)), 1)"
+        },
+        {
+          "name": "decline_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Annual decline rate pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 10.0 + {qty_noise} * 50.0), 1)"
+        },
+        {
+          "name": "water_cut_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Water cut pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(90.0, GREATEST(5.0, 20.0 + {qty_noise} * 55.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "reservoir_id": "RS-001",
+          "reservoir_name": "Wolfcamp A-1",
+          "formation": "Wolfcamp A",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-002",
+          "reservoir_name": "Wolfcamp B-2",
+          "formation": "Wolfcamp B",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-003",
+          "reservoir_name": "Bone Spring 1",
+          "formation": "Bone Spring",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-004",
+          "reservoir_name": "Bone Spring 2",
+          "formation": "Bone Spring",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-005",
+          "reservoir_name": "Spraberry Trend A",
+          "formation": "Spraberry",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-006",
+          "reservoir_name": "Eagle Ford Shale 1",
+          "formation": "Eagle Ford",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-007",
+          "reservoir_name": "Eagle Ford Shale 2",
+          "formation": "Eagle Ford",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-008",
+          "reservoir_name": "Eagle Ford Austin Chalk",
+          "formation": "Austin Chalk",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-009",
+          "reservoir_name": "Bakken Middle 1",
+          "formation": "Bakken",
+          "basin": "Williston Basin"
+        },
+        {
+          "reservoir_id": "RS-010",
+          "reservoir_name": "Bakken Three Forks",
+          "formation": "Three Forks",
+          "basin": "Williston Basin"
+        },
+        {
+          "reservoir_id": "RS-011",
+          "reservoir_name": "Marcellus Dry Gas 1",
+          "formation": "Marcellus",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-012",
+          "reservoir_name": "Marcellus Wet Gas 2",
+          "formation": "Marcellus",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-013",
+          "reservoir_name": "Haynesville Shale 1",
+          "formation": "Haynesville",
+          "basin": "Haynesville"
+        },
+        {
+          "reservoir_id": "RS-014",
+          "reservoir_name": "Haynesville Bossier",
+          "formation": "Bossier",
+          "basin": "Haynesville"
+        },
+        {
+          "reservoir_id": "RS-015",
+          "reservoir_name": "Utica Point Pleasant",
+          "formation": "Utica",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-016",
+          "reservoir_name": "DJ Basin Niobrara A",
+          "formation": "Niobrara",
+          "basin": "DJ Basin"
+        },
+        {
+          "reservoir_id": "RS-017",
+          "reservoir_name": "DJ Basin Niobrara B",
+          "formation": "Niobrara",
+          "basin": "DJ Basin"
+        },
+        {
+          "reservoir_id": "RS-018",
+          "reservoir_name": "Permian San Andres",
+          "formation": "San Andres",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-019",
+          "reservoir_name": "Anadarko Woodford",
+          "formation": "Woodford",
+          "basin": "Anadarko Basin"
+        },
+        {
+          "reservoir_id": "RS-020",
+          "reservoir_name": "SCOOP Springer",
+          "formation": "Springer",
+          "basin": "Anadarko Basin"
+        }
+      ],
+      "category_distribution": {
+        "Permian Basin": 0.065,
+        "Eagle Ford": 0.055,
+        "Williston Basin": 0.05,
+        "Appalachian Basin": 0.05,
+        "Haynesville": 0.045,
+        "DJ Basin": 0.045,
+        "Anadarko Basin": 0.04
+      }
+    },
+    {
+      "table_name": "reservoir_kpi_monthly",
+      "description": "Monthly reservoir KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.reservoir_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "reservoir_id",
+          "sql_type": "STRING",
+          "comment": "Reservoir ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formation",
+          "sql_type": "STRING",
+          "comment": "Formation",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "basin",
+          "sql_type": "STRING",
+          "comment": "Basin",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_oil_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly oil BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500.0, {qty_noise} * 90000.0), 0)"
+        },
+        {
+          "name": "monthly_gas_mcf",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly gas MCF",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1000.0, {qty_noise} * 300000.0), 0)"
+        },
+        {
+          "name": "opex_per_boe",
+          "sql_type": "DOUBLE",
+          "comment": "OPEX per BOE",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(3.0, 8.0 + {qty_noise} * 22.0), 2)"
+        },
+        {
+          "name": "breakeven_price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Breakeven price USD/BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(25.0, 35.0 + {qty_noise} * 30.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "reservoir_id": "RS-001",
+          "formation": "Wolfcamp A",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-002",
+          "formation": "Wolfcamp B",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-003",
+          "formation": "Bone Spring",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-004",
+          "formation": "Bone Spring",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-005",
+          "formation": "Spraberry",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-006",
+          "formation": "Eagle Ford",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-007",
+          "formation": "Eagle Ford",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-008",
+          "formation": "Austin Chalk",
+          "basin": "Eagle Ford"
+        },
+        {
+          "reservoir_id": "RS-009",
+          "formation": "Bakken",
+          "basin": "Williston Basin"
+        },
+        {
+          "reservoir_id": "RS-010",
+          "formation": "Three Forks",
+          "basin": "Williston Basin"
+        },
+        {
+          "reservoir_id": "RS-011",
+          "formation": "Marcellus",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-012",
+          "formation": "Marcellus",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-013",
+          "formation": "Haynesville",
+          "basin": "Haynesville"
+        },
+        {
+          "reservoir_id": "RS-014",
+          "formation": "Bossier",
+          "basin": "Haynesville"
+        },
+        {
+          "reservoir_id": "RS-015",
+          "formation": "Utica",
+          "basin": "Appalachian Basin"
+        },
+        {
+          "reservoir_id": "RS-016",
+          "formation": "Niobrara",
+          "basin": "DJ Basin"
+        },
+        {
+          "reservoir_id": "RS-017",
+          "formation": "Niobrara",
+          "basin": "DJ Basin"
+        },
+        {
+          "reservoir_id": "RS-018",
+          "formation": "San Andres",
+          "basin": "Permian Basin"
+        },
+        {
+          "reservoir_id": "RS-019",
+          "formation": "Woodford",
+          "basin": "Anadarko Basin"
+        },
+        {
+          "reservoir_id": "RS-020",
+          "formation": "Springer",
+          "basin": "Anadarko Basin"
+        }
+      ],
+      "category_distribution": {
+        "Permian Basin": 0.065,
+        "Eagle Ford": 0.055,
+        "Williston Basin": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "production_readings_metrics",
+      "source_table": "production_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "reservoir_id",
+          "expr": "reservoir_id"
+        },
+        {
+          "name": "formation",
+          "expr": "formation"
+        },
+        {
+          "name": "basin",
+          "expr": "basin"
+        },
+        {
+          "name": "lift_method",
+          "expr": "lift_method"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_oil_bpd",
+          "expr": "AVG(oil_bpd)",
+          "comment": "Avg oil BPD"
+        },
+        {
+          "name": "avg_gas_mcfpd",
+          "expr": "AVG(gas_mcfpd)",
+          "comment": "Avg gas MCFPD"
+        },
+        {
+          "name": "avg_water_bpd",
+          "expr": "AVG(water_bpd)",
+          "comment": "Avg water BPD"
+        },
+        {
+          "name": "avg_reservoir_pressure",
+          "expr": "AVG(reservoir_pressure_psi)",
+          "comment": "Avg reservoir pressure"
+        },
+        {
+          "name": "total_bottomhole_temp_f",
+          "expr": "SUM(bottomhole_temp_f)",
+          "comment": "Total bottomhole temp f"
+        },
+        {
+          "name": "max_oil_bpd",
+          "expr": "MAX(oil_bpd)",
+          "comment": "Maximum oil bpd"
+        }
+      ]
+    },
+    {
+      "view_name": "reservoir_snapshots_metrics",
+      "source_table": "reservoir_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "reservoir_id",
+          "expr": "reservoir_id"
+        },
+        {
+          "name": "formation",
+          "expr": "formation"
+        },
+        {
+          "name": "basin",
+          "expr": "basin"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_recovery_factor",
+          "expr": "AVG(recovery_factor_pct)",
+          "comment": "Avg recovery factor"
+        },
+        {
+          "name": "avg_decline_rate",
+          "expr": "AVG(decline_rate_pct)",
+          "comment": "Avg decline rate"
+        },
+        {
+          "name": "avg_water_cut",
+          "expr": "AVG(water_cut_pct)",
+          "comment": "Avg water cut"
+        },
+        {
+          "name": "total_cumulative_oil",
+          "expr": "SUM(cumulative_oil_bbl)",
+          "comment": "Total cumulative oil"
+        },
+        {
+          "name": "total_estimated_eur_bbl",
+          "expr": "SUM(estimated_eur_bbl)",
+          "comment": "Total estimated eur bbl"
+        },
+        {
+          "name": "max_cumulative_oil_bbl",
+          "expr": "MAX(cumulative_oil_bbl)",
+          "comment": "Maximum cumulative oil bbl"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_readings_metrics view (source: production_readings) has dimensions: reading_date, reservoir_id, formation, basin, lift_method. Measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_reservoir_pressure. The reservoir_snapshots_metrics view (source: reservoir_snapshots) has dimensions: snapshot_date, reservoir_id, formation, basin. Measures: avg_recovery_factor, avg_decline_rate, avg_water_cut, total_cumulative_oil. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. reservoir_name).",
+  "sample_questions": [
+    "What is the monthly trend in highest oil bpd?",
+    "How has total bottomhole temp f changed over time?",
+    "What is the monthly trend in avg oil bpd?",
+    "How has avg gas mcfpd changed over time?",
+    "What is the monthly trend in highest cumulative oil bbl?",
+    "How has total cumulative oil changed over time?",
+    "What is the monthly trend in total estimated eur bbl?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in avg oil bpd?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has avg gas mcfpd changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_gas_mcfpd) AS avg_gas_mcfpd",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total estimated eur bbl?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_estimated_eur_bbl) AS total_estimated_eur_bbl",
+        "FROM {fqn}.reservoir_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total oil bpd over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(oil_bpd) AS total_oil_bpd",
+        "FROM {fqn}.production_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total cumulative oil bbl over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(cumulative_oil_bbl) AS total_cumulative_oil_bbl",
+        "FROM {fqn}.reservoir_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many distinct kpi id are there per basin?",
+      "sql_lines": [
+        "SELECT basin, COUNT(DISTINCT kpi_id) AS distinct_count",
+        "FROM {fqn}.reservoir_kpi_monthly",
+        "GROUP BY basin ORDER BY distinct_count DESC"
+      ]
+    },
+    {
+      "question": "How has avg reservoir pressure changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_reservoir_pressure) AS avg_reservoir_pressure",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "water_cut_pct > 50",
+        "display_name": "high water cut",
+        "synonyms": [
+          "watered out"
+        ],
+        "instruction": "High water cut reservoirs."
+      },
+      {
+        "sql": "decline_rate_pct > 30",
+        "display_name": "steep decline",
+        "synonyms": [
+          "fast decline"
+        ],
+        "instruction": "Steep decline reservoirs."
+      },
+      {
+        "sql": "basin = 'Permian Basin'",
+        "display_name": "Permian wells",
+        "synonyms": [
+          "Permian"
+        ],
+        "instruction": "Permian Basin."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "gor",
+        "sql": "ROUND(production_readings.gas_mcfpd / NULLIF(production_readings.oil_bpd, 0), 0)",
+        "display_name": "GOR",
+        "synonyms": [
+          "gas-oil ratio"
+        ]
+      },
+      {
+        "alias": "water_cut",
+        "sql": "ROUND(100.0 * production_readings.water_bpd / NULLIF(production_readings.oil_bpd + production_readings.water_bpd, 0), 1)",
+        "display_name": "water cut",
+        "synonyms": [
+          "BSW"
+        ]
+      },
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', production_readings.reading_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_oil",
+        "sql": "AVG(production_readings.oil_bpd)",
+        "display_name": "avg oil rate",
+        "synonyms": [
+          "oil production"
+        ]
+      },
+      {
+        "alias": "avg_gas",
+        "sql": "AVG(production_readings.gas_mcfpd)",
+        "display_name": "avg gas rate",
+        "synonyms": [
+          "gas production"
+        ]
+      },
+      {
+        "alias": "avg_recovery",
+        "sql": "AVG(reservoir_snapshots.recovery_factor_pct)",
+        "display_name": "avg recovery factor",
+        "synonyms": [
+          "recovery"
+        ]
+      },
+      {
+        "alias": "total_cum_oil",
+        "sql": "SUM(reservoir_snapshots.cumulative_oil_bbl)",
+        "display_name": "cumulative oil",
+        "synonyms": [
+          "total production"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in highest oil bpd?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_oil_bpd) AS max_oil_bpd",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total bottomhole temp f changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_bottomhole_temp_f) AS total_bottomhole_temp_f",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest cumulative oil bbl?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_cumulative_oil_bbl) AS max_cumulative_oil_bbl",
+        "FROM {fqn}.reservoir_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total cumulative oil changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_cumulative_oil) AS total_cumulative_oil",
+        "FROM {fqn}.reservoir_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top reservoir id by total oil bpd?",
+      "sql_lines": [
+        "SELECT reservoir_id, SUM(oil_bpd) AS total_oil_bpd",
+        "FROM {fqn}.production_readings",
+        "GROUP BY reservoir_id ORDER BY total_oil_bpd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average recovery factor pct by reservoir name?",
+      "sql_lines": [
+        "SELECT reservoir_name, AVG(recovery_factor_pct) AS avg_recovery_factor_pct",
+        "FROM {fqn}.reservoir_snapshots",
+        "GROUP BY reservoir_name ORDER BY avg_recovery_factor_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.reservoir_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

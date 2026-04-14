@@ -1,0 +1,1016 @@
+{
+  "company_name": "AeroSim Dynamics",
+  "industry": "Aerospace",
+  "use_case": "Design space simulation and optimization for aircraft fuel efficiency",
+  "space_title": "AeroSim Dynamics - Fuel Efficiency Design Optimization 🧪",
+  "space_description": "Design optimization analytics for AeroSim Dynamics. Ask about wing/engine configurations, CFD simulation results, fuel burn rates, drag coefficients, and Pareto-optimal designs across 20 design configurations and 4 optimization objectives.",
+  "schema_basename": "aerospace_fuel_efficiency",
+  "tables": [
+    {
+      "table_name": "simulation_runs",
+      "description": "Individual CFD/FEM simulation run results including drag, lift, fuel burn, weight, and convergence metrics for each design configuration.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Unique simulation run identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SIM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.config_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Date of simulation run",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "config_id",
+          "sql_type": "STRING",
+          "comment": "Design configuration identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "config_name",
+          "sql_type": "STRING",
+          "comment": "Configuration descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wing_type",
+          "sql_type": "STRING",
+          "comment": "Wing type: Conventional, Blended Wing Body, Truss-Braced, Folding Wingtip",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "engine_type",
+          "sql_type": "STRING",
+          "comment": "Engine type: Turbofan, Open Rotor, Hybrid Electric, Geared Turbofan",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "drag_coefficient",
+          "sql_type": "DOUBLE",
+          "comment": "Total drag coefficient Cd",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.018 + ({qty_noise} * 0.014), 5)"
+        },
+        {
+          "name": "lift_to_drag_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Lift-to-drag ratio L/D",
+          "is_dimension": false,
+          "generation_expr": "ROUND(14.0 + ({qty_noise} * 10.0), 2)"
+        },
+        {
+          "name": "fuel_burn_kg_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel burn in kg per nautical mile",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.5 + ({qty_noise} * 4.5), 3)"
+        },
+        {
+          "name": "mtow_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Maximum takeoff weight in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60000.0 + ({qty_noise} * 140000.0), 0)"
+        },
+        {
+          "name": "convergence_residual",
+          "sql_type": "DOUBLE",
+          "comment": "Solver convergence residual (lower is better)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.0001 + ({qty_noise} * 0.0099), 6)"
+        },
+        {
+          "name": "is_pareto_optimal",
+          "sql_type": "STRING",
+          "comment": "Whether the run is on the Pareto front: Yes, No",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Yes' ELSE 'No' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "config_id": "CFG-001",
+          "config_name": "Baseline Narrowbody",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-002",
+          "config_name": "High-Aspect-Ratio Wing",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-003",
+          "config_name": "Folding Wingtip A",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-004",
+          "config_name": "Folding Wingtip B",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-005",
+          "config_name": "Geared Turbofan NB",
+          "wing_type": "Conventional",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-006",
+          "config_name": "Open Rotor Test",
+          "wing_type": "Conventional",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-007",
+          "config_name": "Truss-Braced Alpha",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-008",
+          "config_name": "Truss-Braced Beta",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-009",
+          "config_name": "BWB Concept 1",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-010",
+          "config_name": "BWB Concept 2",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-011",
+          "config_name": "Hybrid Electric Short",
+          "wing_type": "Conventional",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-012",
+          "config_name": "Hybrid Electric Regional",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-013",
+          "config_name": "Ultra-High Bypass NB",
+          "wing_type": "Conventional",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-014",
+          "config_name": "Laminar Flow Wing",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-015",
+          "config_name": "Composite Intensive",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-016",
+          "config_name": "BWB Hybrid",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-017",
+          "config_name": "Truss-Braced Open Rotor",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-018",
+          "config_name": "Next-Gen Narrowbody",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-019",
+          "config_name": "Widebody Efficiency",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-020",
+          "config_name": "Widebody Open Rotor",
+          "wing_type": "Conventional",
+          "engine_type": "Open Rotor"
+        }
+      ],
+      "category_distribution": {
+        "Conventional": 0.03,
+        "Folding Wingtip": 0.035,
+        "Truss-Braced": 0.03,
+        "Blended Wing Body": 0.025
+      }
+    },
+    {
+      "table_name": "parameter_snapshots",
+      "description": "Weekly snapshot of design parameter values and sensitivity indices per configuration for optimization tracking.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique parameter snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.config_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of parameter snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "config_id",
+          "sql_type": "STRING",
+          "comment": "Design configuration identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wing_type",
+          "sql_type": "STRING",
+          "comment": "Wing type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "engine_type",
+          "sql_type": "STRING",
+          "comment": "Engine type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wing_span_m",
+          "sql_type": "DOUBLE",
+          "comment": "Wing span in meters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + ({qty_noise} * 40.0), 2)"
+        },
+        {
+          "name": "sweep_angle_deg",
+          "sql_type": "DOUBLE",
+          "comment": "Wing sweep angle in degrees",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 20.0), 1)"
+        },
+        {
+          "name": "bypass_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Engine bypass ratio",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 10.0), 1)"
+        },
+        {
+          "name": "empty_weight_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Operating empty weight in kg",
+          "is_dimension": false,
+          "generation_expr": "ROUND(35000.0 + ({qty_noise} * 85000.0), 0)"
+        },
+        {
+          "name": "fuel_efficiency_improvement_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel efficiency improvement vs baseline in percent",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-5.0 + ({qty_noise} * 35.0), 2)"
+        },
+        {
+          "name": "technology_readiness_level",
+          "sql_type": "INT",
+          "comment": "Technology readiness level 1-9",
+          "is_dimension": false,
+          "generation_expr": "CAST(3 + FLOOR({qty_noise} * 6) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "config_id": "CFG-001",
+          "config_name": "Baseline Narrowbody",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-002",
+          "config_name": "High-Aspect-Ratio Wing",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-003",
+          "config_name": "Folding Wingtip A",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-004",
+          "config_name": "Folding Wingtip B",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-005",
+          "config_name": "Geared Turbofan NB",
+          "wing_type": "Conventional",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-006",
+          "config_name": "Open Rotor Test",
+          "wing_type": "Conventional",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-007",
+          "config_name": "Truss-Braced Alpha",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-008",
+          "config_name": "Truss-Braced Beta",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-009",
+          "config_name": "BWB Concept 1",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-010",
+          "config_name": "BWB Concept 2",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-011",
+          "config_name": "Hybrid Electric Short",
+          "wing_type": "Conventional",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-012",
+          "config_name": "Hybrid Electric Regional",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-013",
+          "config_name": "Ultra-High Bypass NB",
+          "wing_type": "Conventional",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-014",
+          "config_name": "Laminar Flow Wing",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-015",
+          "config_name": "Composite Intensive",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-016",
+          "config_name": "BWB Hybrid",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-017",
+          "config_name": "Truss-Braced Open Rotor",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-018",
+          "config_name": "Next-Gen Narrowbody",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-019",
+          "config_name": "Widebody Efficiency",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-020",
+          "config_name": "Widebody Open Rotor",
+          "wing_type": "Conventional",
+          "engine_type": "Open Rotor"
+        }
+      ],
+      "category_distribution": {
+        "Conventional": 0.03,
+        "Folding Wingtip": 0.035,
+        "Truss-Braced": 0.03,
+        "Blended Wing Body": 0.025
+      }
+    },
+    {
+      "table_name": "optimization_monthly",
+      "description": "Monthly optimization progress KPIs including best-in-class metrics, Pareto front count, and compute resource usage.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.config_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "config_id",
+          "sql_type": "STRING",
+          "comment": "Design configuration identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wing_type",
+          "sql_type": "STRING",
+          "comment": "Wing type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "engine_type",
+          "sql_type": "STRING",
+          "comment": "Engine type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "best_fuel_burn_kg_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Best fuel burn achieved this month in kg/nm",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.0 + ({qty_noise} * 4.0), 3)"
+        },
+        {
+          "name": "best_lift_to_drag",
+          "sql_type": "DOUBLE",
+          "comment": "Best L/D ratio achieved this month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 10.0), 2)"
+        },
+        {
+          "name": "simulation_count",
+          "sql_type": "INT",
+          "comment": "Number of simulation runs this month",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 190) AS INT)"
+        },
+        {
+          "name": "pareto_front_count",
+          "sql_type": "INT",
+          "comment": "Number of Pareto-optimal designs found",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 14) AS INT)"
+        },
+        {
+          "name": "compute_hours",
+          "sql_type": "DOUBLE",
+          "comment": "HPC compute hours consumed",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 9500.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "config_id": "CFG-001",
+          "config_name": "Baseline Narrowbody",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-002",
+          "config_name": "High-Aspect-Ratio Wing",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-003",
+          "config_name": "Folding Wingtip A",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-004",
+          "config_name": "Folding Wingtip B",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-005",
+          "config_name": "Geared Turbofan NB",
+          "wing_type": "Conventional",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-006",
+          "config_name": "Open Rotor Test",
+          "wing_type": "Conventional",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-007",
+          "config_name": "Truss-Braced Alpha",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-008",
+          "config_name": "Truss-Braced Beta",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-009",
+          "config_name": "BWB Concept 1",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-010",
+          "config_name": "BWB Concept 2",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-011",
+          "config_name": "Hybrid Electric Short",
+          "wing_type": "Conventional",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-012",
+          "config_name": "Hybrid Electric Regional",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-013",
+          "config_name": "Ultra-High Bypass NB",
+          "wing_type": "Conventional",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-014",
+          "config_name": "Laminar Flow Wing",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-015",
+          "config_name": "Composite Intensive",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-016",
+          "config_name": "BWB Hybrid",
+          "wing_type": "Blended Wing Body",
+          "engine_type": "Hybrid Electric"
+        },
+        {
+          "config_id": "CFG-017",
+          "config_name": "Truss-Braced Open Rotor",
+          "wing_type": "Truss-Braced",
+          "engine_type": "Open Rotor"
+        },
+        {
+          "config_id": "CFG-018",
+          "config_name": "Next-Gen Narrowbody",
+          "wing_type": "Folding Wingtip",
+          "engine_type": "Geared Turbofan"
+        },
+        {
+          "config_id": "CFG-019",
+          "config_name": "Widebody Efficiency",
+          "wing_type": "Conventional",
+          "engine_type": "Turbofan"
+        },
+        {
+          "config_id": "CFG-020",
+          "config_name": "Widebody Open Rotor",
+          "wing_type": "Conventional",
+          "engine_type": "Open Rotor"
+        }
+      ],
+      "category_distribution": {
+        "Conventional": 0.03,
+        "Folding Wingtip": 0.035,
+        "Truss-Braced": 0.03,
+        "Blended Wing Body": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "simulation_metrics",
+      "source_table": "simulation_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "wing_type",
+          "expr": "wing_type"
+        },
+        {
+          "name": "engine_type",
+          "expr": "engine_type"
+        },
+        {
+          "name": "is_pareto_optimal",
+          "expr": "is_pareto_optimal"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_fuel_burn",
+          "expr": "AVG(fuel_burn_kg_nm)",
+          "comment": "Average fuel burn in kg/nm"
+        },
+        {
+          "name": "avg_lift_to_drag",
+          "expr": "AVG(lift_to_drag_ratio)",
+          "comment": "Average lift-to-drag ratio"
+        },
+        {
+          "name": "min_drag_coefficient",
+          "expr": "MIN(drag_coefficient)",
+          "comment": "Minimum drag coefficient achieved"
+        },
+        {
+          "name": "simulation_count",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total simulation runs"
+        },
+        {
+          "name": "pareto_run_count",
+          "expr": "COUNT(DISTINCT CASE WHEN is_pareto_optimal = 'Yes' THEN run_id END)",
+          "comment": "Number of Pareto-optimal runs"
+        },
+        {
+          "name": "total_mtow_kg",
+          "expr": "SUM(mtow_kg)",
+          "comment": "Total mtow kg"
+        },
+        {
+          "name": "total_convergence_residual",
+          "expr": "SUM(convergence_residual)",
+          "comment": "Total convergence residual"
+        },
+        {
+          "name": "unique_config_count",
+          "expr": "COUNT(DISTINCT config_id)",
+          "comment": "Number of distinct configs"
+        },
+        {
+          "name": "max_drag_coefficient",
+          "expr": "MAX(drag_coefficient)",
+          "comment": "Maximum drag coefficient"
+        }
+      ]
+    },
+    {
+      "view_name": "parameter_metrics",
+      "source_table": "parameter_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "wing_type",
+          "expr": "wing_type"
+        },
+        {
+          "name": "engine_type",
+          "expr": "engine_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_fuel_efficiency_improvement",
+          "expr": "AVG(fuel_efficiency_improvement_pct)",
+          "comment": "Average fuel efficiency improvement vs baseline"
+        },
+        {
+          "name": "avg_bypass_ratio",
+          "expr": "AVG(bypass_ratio)",
+          "comment": "Average engine bypass ratio"
+        },
+        {
+          "name": "avg_wing_span",
+          "expr": "AVG(wing_span_m)",
+          "comment": "Average wing span in meters"
+        },
+        {
+          "name": "avg_trl",
+          "expr": "AVG(technology_readiness_level)",
+          "comment": "Average technology readiness level"
+        },
+        {
+          "name": "snapshot_count",
+          "expr": "COUNT(DISTINCT snapshot_id)",
+          "comment": "Total parameter snapshots"
+        },
+        {
+          "name": "total_sweep_angle_deg",
+          "expr": "SUM(sweep_angle_deg)",
+          "comment": "Total sweep angle deg"
+        },
+        {
+          "name": "total_empty_weight_kg",
+          "expr": "SUM(empty_weight_kg)",
+          "comment": "Total empty weight kg"
+        },
+        {
+          "name": "unique_config_count",
+          "expr": "COUNT(DISTINCT config_id)",
+          "comment": "Number of distinct configs"
+        },
+        {
+          "name": "max_wing_span_m",
+          "expr": "MAX(wing_span_m)",
+          "comment": "Maximum wing span m"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_metrics view (source: simulation_runs) has dimensions: run_date, wing_type, engine_type, is_pareto_optimal. Measures: avg_fuel_burn, avg_lift_to_drag, min_drag_coefficient, simulation_count, pareto_run_count. The parameter_metrics view (source: parameter_snapshots) has dimensions: snapshot_date, wing_type, engine_type. Measures: avg_fuel_efficiency_improvement, avg_bypass_ratio, avg_wing_span, avg_trl, snapshot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. config_id, config_name).",
+  "sample_questions": [
+    "What is the monthly trend in pareto run count?",
+    "How has unique simulations changed over time?",
+    "What is the monthly trend in unique configs?",
+    "How has highest drag coefficient changed over time?",
+    "What is the monthly trend in unique snapshots?",
+    "How has unique configs changed over time?",
+    "What is the monthly trend in highest wing span m?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique configs?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(unique_config_count) AS unique_config_count",
+        "FROM {fqn}.simulation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has highest drag coefficient changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_drag_coefficient) AS max_drag_coefficient",
+        "FROM {fqn}.simulation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest wing span m?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_wing_span_m) AS max_wing_span_m",
+        "FROM {fqn}.parameter_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total empty weight kg changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_empty_weight_kg) AS total_empty_weight_kg",
+        "FROM {fqn}.parameter_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total total drag coefficient cd over time?",
+      "sql_lines": [
+        "SELECT run_date, SUM(drag_coefficient) AS total_drag_coefficient",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY run_date ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total wing span in meters over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(wing_span_m) AS total_wing_span_m",
+        "FROM {fqn}.parameter_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many distinct unique monthly record identifier are there per engine type?",
+      "sql_lines": [
+        "SELECT engine_type, COUNT(DISTINCT record_id) AS distinct_count",
+        "FROM {fqn}.optimization_monthly",
+        "GROUP BY engine_type ORDER BY distinct_count DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "simulation_runs.is_pareto_optimal = 'Yes'",
+        "display_name": "Pareto-optimal designs",
+        "synonyms": [
+          "best trade-off",
+          "Pareto front"
+        ],
+        "instruction": "Use when filtering for Pareto-optimal simulation runs."
+      },
+      {
+        "sql": "parameter_snapshots.technology_readiness_level >= 6",
+        "display_name": "deployment-ready TRL",
+        "synonyms": [
+          "mature technology",
+          "TRL 6+"
+        ],
+        "instruction": "Use when filtering for configurations at TRL 6 or above."
+      },
+      {
+        "sql": "simulation_runs.convergence_residual < 0.001",
+        "display_name": "converged simulations",
+        "synonyms": [
+          "valid runs",
+          "converged CFD"
+        ],
+        "instruction": "Use when filtering for well-converged simulation results."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "sim_month",
+        "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
+        "display_name": "simulation month",
+        "synonyms": [
+          "month of simulation",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "fuel_burn_improvement_pct",
+        "sql": "(simulation_runs.fuel_burn_kg_nm - 5.5) / 5.5 * 100",
+        "display_name": "fuel burn improvement vs baseline",
+        "synonyms": [
+          "fuel savings",
+          "efficiency gain"
+        ]
+      },
+      {
+        "alias": "weight_efficiency",
+        "sql": "simulation_runs.mtow_kg / NULLIF(simulation_runs.lift_to_drag_ratio, 0)",
+        "display_name": "weight per unit L/D",
+        "synonyms": [
+          "weight efficiency metric"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_fuel_burn",
+        "sql": "AVG(simulation_runs.fuel_burn_kg_nm)",
+        "display_name": "average fuel burn kg/nm",
+        "synonyms": [
+          "fuel consumption",
+          "burn rate"
+        ]
+      },
+      {
+        "alias": "avg_lift_to_drag",
+        "sql": "AVG(simulation_runs.lift_to_drag_ratio)",
+        "display_name": "average L/D ratio",
+        "synonyms": [
+          "aerodynamic efficiency",
+          "L/D"
+        ]
+      },
+      {
+        "alias": "total_compute_hours",
+        "sql": "SUM(optimization_monthly.compute_hours)",
+        "display_name": "total compute hours",
+        "synonyms": [
+          "HPC hours",
+          "compute budget"
+        ]
+      },
+      {
+        "alias": "avg_fuel_efficiency_improvement",
+        "sql": "AVG(parameter_snapshots.fuel_efficiency_improvement_pct)",
+        "display_name": "average fuel efficiency improvement",
+        "synonyms": [
+          "efficiency gain",
+          "fuel savings vs baseline"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in pareto run count?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(pareto_run_count) AS pareto_run_count",
+        "FROM {fqn}.simulation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique simulations changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(simulation_count) AS simulation_count",
+        "FROM {fqn}.simulation_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique snapshots?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(snapshot_count) AS snapshot_count",
+        "FROM {fqn}.parameter_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique configs changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_config_count) AS unique_config_count",
+        "FROM {fqn}.parameter_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top design configuration identifier by total total drag coefficient cd?",
+      "sql_lines": [
+        "SELECT config_id, SUM(drag_coefficient) AS total_drag_coefficient",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY config_id ORDER BY total_drag_coefficient DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average engine bypass ratio by wing type?",
+      "sql_lines": [
+        "SELECT wing_type, AVG(bypass_ratio) AS avg_bypass_ratio",
+        "FROM {fqn}.parameter_snapshots",
+        "GROUP BY wing_type ORDER BY avg_bypass_ratio DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.optimization_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

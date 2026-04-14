@@ -1,0 +1,971 @@
+{
+  "company_name": "WaferVault Systems",
+  "industry": "Semiconductor",
+  "use_case": "Salable inventory optimization across wafer, die, and finished goods stock",
+  "space_title": "WaferVault - Salable Inventory Optimization 📦",
+  "space_description": "Salable inventory optimization analytics for WaferVault Systems. Analyze inventory transactions, snapshots, and monthly KPIs across 20 products to minimize excess stock, prevent shortages, and improve inventory turns.",
+  "schema_basename": "semiconductor_inventory_opt",
+  "tables": [
+    {
+      "table_name": "inventory_transactions",
+      "description": "Daily inventory transaction records capturing receipts, shipments, adjustments, and scrap events across product lines.",
+      "columns": [
+        {
+          "name": "transaction_id",
+          "sql_type": "STRING",
+          "comment": "Unique inventory transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TXN-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "transaction_date",
+          "sql_type": "DATE",
+          "comment": "Date the transaction occurred",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_line",
+          "sql_type": "STRING",
+          "comment": "Product line grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "transaction_type",
+          "sql_type": "STRING",
+          "comment": "Type of inventory transaction",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Receipt' WHEN {status_noise} < 0.65 THEN 'Shipment' WHEN {status_noise} < 0.80 THEN 'Transfer' WHEN {status_noise} < 0.92 THEN 'Adjustment' ELSE 'Scrap' END"
+        },
+        {
+          "name": "warehouse_location",
+          "sql_type": "STRING",
+          "comment": "Warehouse or storage location",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END"
+        },
+        {
+          "name": "quantity_units",
+          "sql_type": "INT",
+          "comment": "Transaction quantity in units",
+          "is_dimension": false,
+          "generation_expr": "CAST(50 + FLOOR({qty_noise} * 4950) AS INT)"
+        },
+        {
+          "name": "unit_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Unit cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.25 + {qty_noise} * 24.75, 2)"
+        },
+        {
+          "name": "transaction_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total transaction value in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((50 + FLOOR({qty_noise} * 4950)) * (0.25 + {qty_noise} * 24.75), 2)"
+        },
+        {
+          "name": "stock_stage",
+          "sql_type": "STRING",
+          "comment": "Stage of inventory in the supply chain",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Wafer Bank' WHEN {status_noise} < 0.55 THEN 'Die Bank' WHEN {status_noise} < 0.80 THEN 'Finished Goods' ELSE 'WIP' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Logic Products": {
+          "1,2": 0.045,
+          "9,10": 0.06
+        },
+        "Memory Products": {
+          "3,4": 0.05,
+          "7,8": 0.045
+        },
+        "Analog Products": {
+          "5,6": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "WV-LP-001",
+          "product_name": "VaultCore SoC A72",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-002",
+          "product_name": "VaultCore MCU M33",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-003",
+          "product_name": "VaultCore NPU Edge",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-004",
+          "product_name": "VaultCore FPGA Flex-7",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-MP-001",
+          "product_name": "VaultMem DDR5 8Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-002",
+          "product_name": "VaultMem DDR5 16Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-003",
+          "product_name": "VaultMem NAND 256Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-004",
+          "product_name": "VaultMem LPDDR5X 12Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-AP-001",
+          "product_name": "VaultSense ADC 24-bit",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-002",
+          "product_name": "VaultSense DAC 16-bit",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-003",
+          "product_name": "VaultSense Op-Amp Precision",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-004",
+          "product_name": "VaultSense Comparator Hi-Speed",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-PW-001",
+          "product_name": "VaultPower LDO Ultra-Low-Noise",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-002",
+          "product_name": "VaultPower Buck 12V-1V 10A",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-003",
+          "product_name": "VaultPower GaN HB 650V",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-004",
+          "product_name": "VaultPower Wireless Charger IC",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-IF-001",
+          "product_name": "VaultLink PCIe 5.0 Switch",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-002",
+          "product_name": "VaultLink USB4 Retimer",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-003",
+          "product_name": "VaultLink HDMI 2.1 Mux",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-004",
+          "product_name": "VaultLink I3C Hub Controller",
+          "product_line": "Interface Products"
+        }
+      ],
+      "category_distribution": {
+        "Logic Products": 0.035,
+        "Memory Products": 0.03,
+        "Analog Products": 0.025,
+        "Power Products": 0.028,
+        "Interface Products": 0.022
+      }
+    },
+    {
+      "table_name": "inventory_snapshots",
+      "description": "Weekly inventory snapshot records tracking on-hand quantities, committed stock, and aging buckets by product and warehouse.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique inventory snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SNP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of snapshot",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_line",
+          "sql_type": "STRING",
+          "comment": "Product line grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "warehouse_location",
+          "sql_type": "STRING",
+          "comment": "Warehouse or storage location",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END"
+        },
+        {
+          "name": "on_hand_units",
+          "sql_type": "INT",
+          "comment": "Total units on hand",
+          "is_dimension": false,
+          "generation_expr": "CAST(500 + FLOOR({qty_noise} * 49500) AS INT)"
+        },
+        {
+          "name": "committed_units",
+          "sql_type": "INT",
+          "comment": "Units committed to orders",
+          "is_dimension": false,
+          "generation_expr": "CAST(200 + FLOOR({qty_noise} * 25000) AS INT)"
+        },
+        {
+          "name": "available_to_sell",
+          "sql_type": "INT",
+          "comment": "Units available for new orders",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(0, (500 + FLOOR({qty_noise} * 49500)) - (200 + FLOOR({qty_noise} * 25000))) AS INT)"
+        },
+        {
+          "name": "inventory_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total inventory value in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND((500 + FLOOR({qty_noise} * 49500)) * (0.50 + {qty_noise} * 20.0), 2)"
+        },
+        {
+          "name": "aging_bucket",
+          "sql_type": "STRING",
+          "comment": "Inventory age classification",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN '0-30 days' WHEN {status_noise} < 0.65 THEN '31-60 days' WHEN {status_noise} < 0.82 THEN '61-90 days' WHEN {status_noise} < 0.93 THEN '91-180 days' ELSE '180+ days' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Logic Products": {
+          "1,2": 0.04,
+          "9,10": 0.05
+        },
+        "Memory Products": {
+          "3,4": 0.045
+        },
+        "Power Products": {
+          "7,8": 0.035
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "WV-LP-001",
+          "product_name": "VaultCore SoC A72",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-002",
+          "product_name": "VaultCore MCU M33",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-003",
+          "product_name": "VaultCore NPU Edge",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-004",
+          "product_name": "VaultCore FPGA Flex-7",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-MP-001",
+          "product_name": "VaultMem DDR5 8Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-002",
+          "product_name": "VaultMem DDR5 16Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-003",
+          "product_name": "VaultMem NAND 256Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-004",
+          "product_name": "VaultMem LPDDR5X 12Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-AP-001",
+          "product_name": "VaultSense ADC 24-bit",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-002",
+          "product_name": "VaultSense DAC 16-bit",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-003",
+          "product_name": "VaultSense Op-Amp Precision",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-004",
+          "product_name": "VaultSense Comparator Hi-Speed",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-PW-001",
+          "product_name": "VaultPower LDO Ultra-Low-Noise",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-002",
+          "product_name": "VaultPower Buck 12V-1V 10A",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-003",
+          "product_name": "VaultPower GaN HB 650V",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-004",
+          "product_name": "VaultPower Wireless Charger IC",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-IF-001",
+          "product_name": "VaultLink PCIe 5.0 Switch",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-002",
+          "product_name": "VaultLink USB4 Retimer",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-003",
+          "product_name": "VaultLink HDMI 2.1 Mux",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-004",
+          "product_name": "VaultLink I3C Hub Controller",
+          "product_line": "Interface Products"
+        }
+      ],
+      "category_distribution": {
+        "Logic Products": 0.035,
+        "Memory Products": 0.03,
+        "Analog Products": 0.025,
+        "Power Products": 0.028,
+        "Interface Products": 0.022
+      }
+    },
+    {
+      "table_name": "inventory_kpi_monthly",
+      "description": "Monthly inventory KPI summaries per product line tracking turns, days-of-supply, excess and obsolete exposure, and fill rates.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IK-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month of KPI measurement",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_line",
+          "sql_type": "STRING",
+          "comment": "Product line grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "inventory_turns",
+          "sql_type": "DOUBLE",
+          "comment": "Annualized inventory turn rate",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 2.0 + {qty_noise} * 10.0), 1)"
+        },
+        {
+          "name": "days_of_supply",
+          "sql_type": "DOUBLE",
+          "comment": "Days of supply at current demand rate",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 15.0 + {qty_noise} * 135.0), 1)"
+        },
+        {
+          "name": "excess_exposure_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Value of excess inventory in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 500000.0, 2)"
+        },
+        {
+          "name": "obsolete_exposure_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Value of obsolete inventory in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 150000.0, 2)"
+        },
+        {
+          "name": "fill_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Order fill rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(70.0, 92.0 + ({qty_noise} - 0.5) * 15.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Logic Products": {
+          "9,10,11": 0.055
+        },
+        "Memory Products": {
+          "1,2,3": 0.05
+        },
+        "Power Products": {
+          "5,6": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "WV-LP-001",
+          "product_name": "VaultCore SoC A72",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-002",
+          "product_name": "VaultCore MCU M33",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-003",
+          "product_name": "VaultCore NPU Edge",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-LP-004",
+          "product_name": "VaultCore FPGA Flex-7",
+          "product_line": "Logic Products"
+        },
+        {
+          "product_id": "WV-MP-001",
+          "product_name": "VaultMem DDR5 8Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-002",
+          "product_name": "VaultMem DDR5 16Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-003",
+          "product_name": "VaultMem NAND 256Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-MP-004",
+          "product_name": "VaultMem LPDDR5X 12Gb",
+          "product_line": "Memory Products"
+        },
+        {
+          "product_id": "WV-AP-001",
+          "product_name": "VaultSense ADC 24-bit",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-002",
+          "product_name": "VaultSense DAC 16-bit",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-003",
+          "product_name": "VaultSense Op-Amp Precision",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-AP-004",
+          "product_name": "VaultSense Comparator Hi-Speed",
+          "product_line": "Analog Products"
+        },
+        {
+          "product_id": "WV-PW-001",
+          "product_name": "VaultPower LDO Ultra-Low-Noise",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-002",
+          "product_name": "VaultPower Buck 12V-1V 10A",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-003",
+          "product_name": "VaultPower GaN HB 650V",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-PW-004",
+          "product_name": "VaultPower Wireless Charger IC",
+          "product_line": "Power Products"
+        },
+        {
+          "product_id": "WV-IF-001",
+          "product_name": "VaultLink PCIe 5.0 Switch",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-002",
+          "product_name": "VaultLink USB4 Retimer",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-003",
+          "product_name": "VaultLink HDMI 2.1 Mux",
+          "product_line": "Interface Products"
+        },
+        {
+          "product_id": "WV-IF-004",
+          "product_name": "VaultLink I3C Hub Controller",
+          "product_line": "Interface Products"
+        }
+      ],
+      "category_distribution": {
+        "Logic Products": 0.035,
+        "Memory Products": 0.03,
+        "Analog Products": 0.025,
+        "Power Products": 0.028,
+        "Interface Products": 0.022
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "inventory_transaction_metrics",
+      "source_table": "inventory_transactions",
+      "dimensions": [
+        {
+          "name": "transaction_date",
+          "expr": "transaction_date"
+        },
+        {
+          "name": "product_line",
+          "expr": "product_line"
+        },
+        {
+          "name": "transaction_type",
+          "expr": "transaction_type"
+        },
+        {
+          "name": "warehouse_location",
+          "expr": "warehouse_location"
+        },
+        {
+          "name": "stock_stage",
+          "expr": "stock_stage"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT transaction_id)",
+          "comment": "Total inventory transactions"
+        },
+        {
+          "name": "total_transaction_value_usd",
+          "expr": "SUM(transaction_value_usd)",
+          "comment": "Total transaction value in USD"
+        },
+        {
+          "name": "total_units_moved",
+          "expr": "SUM(quantity_units)",
+          "comment": "Total units across all transactions"
+        },
+        {
+          "name": "scrap_transaction_count",
+          "expr": "COUNT(DISTINCT CASE WHEN transaction_type = 'Scrap' THEN transaction_id END)",
+          "comment": "Scrap transactions"
+        },
+        {
+          "name": "avg_unit_cost_usd",
+          "expr": "AVG(unit_cost_usd)",
+          "comment": "Average unit cost in USD"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_quantity_units",
+          "expr": "MAX(quantity_units)",
+          "comment": "Maximum quantity units"
+        }
+      ]
+    },
+    {
+      "view_name": "inventory_snapshot_metrics",
+      "source_table": "inventory_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "product_line",
+          "expr": "product_line"
+        },
+        {
+          "name": "warehouse_location",
+          "expr": "warehouse_location"
+        },
+        {
+          "name": "aging_bucket",
+          "expr": "aging_bucket"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_on_hand_units",
+          "expr": "SUM(on_hand_units)",
+          "comment": "Total units on hand"
+        },
+        {
+          "name": "total_available_to_sell",
+          "expr": "SUM(available_to_sell)",
+          "comment": "Total units available for sale"
+        },
+        {
+          "name": "total_inventory_value_usd",
+          "expr": "SUM(inventory_value_usd)",
+          "comment": "Total inventory value in USD"
+        },
+        {
+          "name": "avg_committed_units",
+          "expr": "AVG(committed_units)",
+          "comment": "Average committed units per snapshot"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_on_hand_units",
+          "expr": "MAX(on_hand_units)",
+          "comment": "Maximum on hand units"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_transaction_metrics view (source: inventory_transactions) has dimensions: transaction_date, product_line, transaction_type, warehouse_location, stock_stage. Measures: total_transactions, total_transaction_value_usd, total_units_moved, scrap_transaction_count, avg_unit_cost_usd. The inventory_snapshot_metrics view (source: inventory_snapshots) has dimensions: snapshot_date, product_line, warehouse_location, aging_bucket. Measures: total_on_hand_units, total_available_to_sell, total_inventory_value_usd, avg_committed_units. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "sample_questions": [
+    "What is the monthly trend in scrap transaction count?",
+    "How has unique total transactionss changed over time?",
+    "What is the monthly trend in unique products?",
+    "How has highest quantity units changed over time?",
+    "What is the monthly trend in unique products?",
+    "How has highest on hand units changed over time?",
+    "What is the monthly trend in total units on hand?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique products?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(unique_product_count) AS unique_product_count",
+        "FROM {fqn}.inventory_transaction_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has highest quantity units changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(max_quantity_units) AS max_quantity_units",
+        "FROM {fqn}.inventory_transaction_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has average unit cost in usd changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(avg_unit_cost_usd) AS avg_unit_cost_usd",
+        "FROM {fqn}.inventory_transaction_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How does scrap transaction count vary across product lines?",
+      "sql_lines": [
+        "SELECT product_line, MEASURE(scrap_transaction_count) AS scrap_transaction_count",
+        "FROM {fqn}.inventory_transaction_metrics",
+        "GROUP BY ALL",
+        "ORDER BY scrap_transaction_count DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total transaction quantity in units over time?",
+      "sql_lines": [
+        "SELECT transaction_date, SUM(quantity_units) AS total_quantity_units",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY transaction_date ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total total units on hand over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(on_hand_units) AS total_on_hand_units",
+        "FROM {fqn}.inventory_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average order fill rate percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(fill_rate_pct) AS avg_fill_rate_pct",
+        "FROM {fqn}.inventory_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "inventory_transactions.transaction_type = 'Scrap'",
+        "display_name": "scrap transactions",
+        "synonyms": [
+          "scrapped inventory",
+          "waste",
+          "write-offs"
+        ],
+        "instruction": "Use when analyzing inventory losses due to scrap."
+      },
+      {
+        "sql": "inventory_snapshots.aging_bucket = '180+ days'",
+        "display_name": "aged inventory",
+        "synonyms": [
+          "old stock",
+          "stale inventory",
+          "obsolescence risk"
+        ],
+        "instruction": "Use when identifying inventory at risk of obsolescence."
+      },
+      {
+        "sql": "inventory_kpi_monthly.fill_rate_pct < 90",
+        "display_name": "low fill rate",
+        "synonyms": [
+          "poor fill rate",
+          "service level miss"
+        ],
+        "instruction": "Use when identifying products with service level issues."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "transaction_month",
+        "sql": "DATE_TRUNC('month', inventory_transactions.transaction_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "month of transaction",
+          "inventory movement month"
+        ]
+      },
+      {
+        "alias": "eo_total_usd",
+        "sql": "inventory_kpi_monthly.excess_exposure_usd + inventory_kpi_monthly.obsolete_exposure_usd",
+        "display_name": "total E&O exposure",
+        "synonyms": [
+          "excess and obsolete total",
+          "E&O value"
+        ]
+      },
+      {
+        "alias": "committed_pct",
+        "sql": "inventory_snapshots.committed_units * 100.0 / NULLIF(inventory_snapshots.on_hand_units, 0)",
+        "display_name": "committed percentage",
+        "synonyms": [
+          "allocation rate",
+          "pct allocated"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_inventory_value",
+        "sql": "SUM(inventory_snapshots.inventory_value_usd)",
+        "display_name": "total inventory value",
+        "synonyms": [
+          "stock value",
+          "inventory dollars"
+        ]
+      },
+      {
+        "alias": "avg_turns",
+        "sql": "AVG(inventory_kpi_monthly.inventory_turns)",
+        "display_name": "average inventory turns",
+        "synonyms": [
+          "mean turns",
+          "turn rate"
+        ]
+      },
+      {
+        "alias": "total_units_moved",
+        "sql": "SUM(inventory_transactions.quantity_units)",
+        "display_name": "total units transacted",
+        "synonyms": [
+          "unit volume",
+          "transaction quantity"
+        ]
+      },
+      {
+        "alias": "avg_fill_rate",
+        "sql": "AVG(inventory_kpi_monthly.fill_rate_pct)",
+        "display_name": "average fill rate",
+        "synonyms": [
+          "mean fill rate",
+          "service level"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in scrap transaction count?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(scrap_transaction_count) AS scrap_transaction_count",
+        "FROM {fqn}.inventory_transaction_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has unique total transactionss changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.inventory_transaction_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has highest on hand units changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_on_hand_units) AS max_on_hand_units",
+        "FROM {fqn}.inventory_snapshot_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total units on hand?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_on_hand_units) AS total_on_hand_units",
+        "FROM {fqn}.inventory_snapshot_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top product identifier by total transaction quantity in units?",
+      "sql_lines": [
+        "SELECT product_id, SUM(quantity_units) AS total_quantity_units",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY product_id ORDER BY total_quantity_units DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per week-ending date of snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.inventory_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per month of kpi measurement?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.inventory_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

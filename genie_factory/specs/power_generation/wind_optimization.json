@@ -1,0 +1,1010 @@
+{
+  "company_name": "WindPeak Energy",
+  "industry": "Power Generation",
+  "use_case": "Wind farm performance optimization and turbine health monitoring",
+  "space_title": "WindPeak Energy - Wind Farm Optimization 💨",
+  "space_description": "Wind energy analytics for WindPeak Energy. Ask about turbine performance, wind resource availability, capacity factors, and maintenance events across 20 wind turbines.",
+  "schema_basename": "wind_optimization",
+  "tables": [
+    {
+      "table_name": "wind_turbines",
+      "description": "Daily wind turbine operational records with generation output, wind speed, and availability.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique turbine record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.turbine_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Date of operational record",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "turbine_id",
+          "sql_type": "STRING",
+          "comment": "Wind turbine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "turbine_name",
+          "sql_type": "STRING",
+          "comment": "Turbine name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "turbine_model",
+          "sql_type": "STRING",
+          "comment": "Turbine model: V150, SG-5.8, GE-3.6, Goldwind-6.7",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wind_farm",
+          "sql_type": "STRING",
+          "comment": "Wind farm name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "generation_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy generated in MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 280.0), 2)"
+        },
+        {
+          "name": "avg_wind_speed_ms",
+          "sql_type": "DOUBLE",
+          "comment": "Average wind speed in meters per second",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.0 + ({qty_noise} * 17.0), 1)"
+        },
+        {
+          "name": "capacity_factor_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Capacity factor 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 55.0), 2)"
+        },
+        {
+          "name": "turbine_status",
+          "sql_type": "STRING",
+          "comment": "Status: Generating, Idling, Curtailed, Maintenance, Fault",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Fault' WHEN {status_noise} < 0.10 THEN 'Maintenance' WHEN {status_noise} < 0.18 THEN 'Curtailed' WHEN {status_noise} < 0.25 THEN 'Idling' ELSE 'Generating' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "V150": {
+          "3,4,10,11": 0.06,
+          "7,8": -0.03
+        },
+        "SG-5.8": {
+          "3,4,10,11": 0.065
+        },
+        "GE-3.6": {
+          "10,11,12": 0.055
+        },
+        "Goldwind-6.7": {
+          "3,4,5": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "turbine_id": "WF-V1-001",
+          "turbine_name": "Great Plains T01",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-002",
+          "turbine_name": "Great Plains T02",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-003",
+          "turbine_name": "Great Plains T03",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-004",
+          "turbine_name": "Great Plains T04",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-005",
+          "turbine_name": "Great Plains T05",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-SG-006",
+          "turbine_name": "Coastal Breeze T01",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-007",
+          "turbine_name": "Coastal Breeze T02",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-008",
+          "turbine_name": "Coastal Breeze T03",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-009",
+          "turbine_name": "Coastal Breeze T04",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-010",
+          "turbine_name": "Coastal Breeze T05",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-GE-011",
+          "turbine_name": "Mesa Ridge T01",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-012",
+          "turbine_name": "Mesa Ridge T02",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-013",
+          "turbine_name": "Mesa Ridge T03",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-014",
+          "turbine_name": "Mesa Ridge T04",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-015",
+          "turbine_name": "Mesa Ridge T05",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GW-016",
+          "turbine_name": "Bluewater T01",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-017",
+          "turbine_name": "Bluewater T02",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-018",
+          "turbine_name": "Bluewater T03",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-019",
+          "turbine_name": "Bluewater T04",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-020",
+          "turbine_name": "Bluewater T05",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        }
+      ],
+      "category_distribution": {
+        "V150": 0.03,
+        "SG-5.8": 0.032,
+        "GE-3.6": 0.028,
+        "Goldwind-6.7": 0.035
+      }
+    },
+    {
+      "table_name": "performance_readings",
+      "description": "Detailed performance readings including power curve deviation, wake losses, and blade pitch data.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique performance reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.turbine_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "turbine_id",
+          "sql_type": "STRING",
+          "comment": "Turbine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "turbine_model",
+          "sql_type": "STRING",
+          "comment": "Turbine model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wind_farm",
+          "sql_type": "STRING",
+          "comment": "Wind farm",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "power_curve_deviation_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Deviation from ideal power curve 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 25.0, 2)"
+        },
+        {
+          "name": "wake_loss_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Wake effect losses percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 15.0, 2)"
+        },
+        {
+          "name": "blade_pitch_deg",
+          "sql_type": "DOUBLE",
+          "comment": "Blade pitch angle in degrees",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 25.0, 1)"
+        },
+        {
+          "name": "rotor_rpm",
+          "sql_type": "DOUBLE",
+          "comment": "Rotor rotations per minute",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 15.0), 1)"
+        },
+        {
+          "name": "vibration_level_g",
+          "sql_type": "DOUBLE",
+          "comment": "Vibration level in g-force",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.1 + ({qty_noise} * 2.9), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "V150": {
+          "3,4,10,11": 0.06
+        },
+        "SG-5.8": {
+          "3,4,10,11": 0.065
+        },
+        "GE-3.6": {
+          "10,11,12": 0.055
+        },
+        "Goldwind-6.7": {
+          "3,4,5": 0.06
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "turbine_id": "WF-V1-001",
+          "turbine_name": "Great Plains T01",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-002",
+          "turbine_name": "Great Plains T02",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-003",
+          "turbine_name": "Great Plains T03",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-004",
+          "turbine_name": "Great Plains T04",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-005",
+          "turbine_name": "Great Plains T05",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-SG-006",
+          "turbine_name": "Coastal Breeze T01",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-007",
+          "turbine_name": "Coastal Breeze T02",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-008",
+          "turbine_name": "Coastal Breeze T03",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-009",
+          "turbine_name": "Coastal Breeze T04",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-010",
+          "turbine_name": "Coastal Breeze T05",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-GE-011",
+          "turbine_name": "Mesa Ridge T01",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-012",
+          "turbine_name": "Mesa Ridge T02",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-013",
+          "turbine_name": "Mesa Ridge T03",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-014",
+          "turbine_name": "Mesa Ridge T04",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-015",
+          "turbine_name": "Mesa Ridge T05",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GW-016",
+          "turbine_name": "Bluewater T01",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-017",
+          "turbine_name": "Bluewater T02",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-018",
+          "turbine_name": "Bluewater T03",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-019",
+          "turbine_name": "Bluewater T04",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-020",
+          "turbine_name": "Bluewater T05",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        }
+      ],
+      "category_distribution": {
+        "V150": 0.03,
+        "SG-5.8": 0.032,
+        "GE-3.6": 0.028,
+        "Goldwind-6.7": 0.035
+      }
+    },
+    {
+      "table_name": "wind_snapshots",
+      "description": "Weekly wind resource and farm-level performance snapshots with energy production forecasts.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.turbine_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "turbine_id",
+          "sql_type": "STRING",
+          "comment": "Turbine identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wind_farm",
+          "sql_type": "STRING",
+          "comment": "Wind farm",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_generation_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Forecasted generation in MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100.0 + ({qty_noise} * 1900.0), 2)"
+        },
+        {
+          "name": "actual_generation_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Actual generation in MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND((100.0 + ({qty_noise} * 1900.0)) * (0.80 + {status_noise} * 0.35), 2)"
+        },
+        {
+          "name": "curtailment_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Energy curtailed in MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 200.0, 2)"
+        },
+        {
+          "name": "availability_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Turbine availability percentage 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(85.0 + ({qty_noise} * 14.0), 2)"
+        },
+        {
+          "name": "revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue from energy sales in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2000.0 + ({qty_noise} * 48000.0), 2)"
+        },
+        {
+          "name": "ppa_price_mwh",
+          "sql_type": "DOUBLE",
+          "comment": "Power purchase agreement price per MWh",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25.0 + ({qty_noise} * 35.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "V150": {
+          "3,4,10,11": 0.06
+        },
+        "SG-5.8": {
+          "3,4,10,11": 0.065
+        },
+        "GE-3.6": {
+          "10,11,12": 0.055
+        },
+        "Goldwind-6.7": {
+          "3,4,5": 0.06
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "turbine_id": "WF-V1-001",
+          "turbine_name": "Great Plains T01",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-002",
+          "turbine_name": "Great Plains T02",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-003",
+          "turbine_name": "Great Plains T03",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-004",
+          "turbine_name": "Great Plains T04",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-V1-005",
+          "turbine_name": "Great Plains T05",
+          "turbine_model": "V150",
+          "wind_farm": "Great Plains Wind Farm"
+        },
+        {
+          "turbine_id": "WF-SG-006",
+          "turbine_name": "Coastal Breeze T01",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-007",
+          "turbine_name": "Coastal Breeze T02",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-008",
+          "turbine_name": "Coastal Breeze T03",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-009",
+          "turbine_name": "Coastal Breeze T04",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-SG-010",
+          "turbine_name": "Coastal Breeze T05",
+          "turbine_model": "SG-5.8",
+          "wind_farm": "Coastal Breeze Wind"
+        },
+        {
+          "turbine_id": "WF-GE-011",
+          "turbine_name": "Mesa Ridge T01",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-012",
+          "turbine_name": "Mesa Ridge T02",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-013",
+          "turbine_name": "Mesa Ridge T03",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-014",
+          "turbine_name": "Mesa Ridge T04",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GE-015",
+          "turbine_name": "Mesa Ridge T05",
+          "turbine_model": "GE-3.6",
+          "wind_farm": "Mesa Ridge Wind Park"
+        },
+        {
+          "turbine_id": "WF-GW-016",
+          "turbine_name": "Bluewater T01",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-017",
+          "turbine_name": "Bluewater T02",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-018",
+          "turbine_name": "Bluewater T03",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-019",
+          "turbine_name": "Bluewater T04",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        },
+        {
+          "turbine_id": "WF-GW-020",
+          "turbine_name": "Bluewater T05",
+          "turbine_model": "Goldwind-6.7",
+          "wind_farm": "Bluewater Offshore"
+        }
+      ],
+      "category_distribution": {
+        "V150": 0.03,
+        "SG-5.8": 0.032,
+        "GE-3.6": 0.028,
+        "Goldwind-6.7": 0.035
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "turbine_kpi_monthly",
+      "source_table": "wind_turbines",
+      "dimensions": [
+        {
+          "name": "record_date",
+          "expr": "record_date"
+        },
+        {
+          "name": "turbine_model",
+          "expr": "turbine_model"
+        },
+        {
+          "name": "wind_farm",
+          "expr": "wind_farm"
+        },
+        {
+          "name": "turbine_status",
+          "expr": "turbine_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_generation_mwh",
+          "expr": "SUM(generation_mwh)",
+          "comment": "Total wind generation MWh"
+        },
+        {
+          "name": "avg_capacity_factor",
+          "expr": "AVG(capacity_factor_pct)",
+          "comment": "Average capacity factor"
+        },
+        {
+          "name": "avg_wind_speed",
+          "expr": "AVG(avg_wind_speed_ms)",
+          "comment": "Average wind speed m/s"
+        },
+        {
+          "name": "generating_count",
+          "expr": "COUNT(DISTINCT CASE WHEN turbine_status = 'Generating' THEN turbine_id END)",
+          "comment": "Generating turbine count"
+        },
+        {
+          "name": "total_turbine_count",
+          "expr": "COUNT(DISTINCT turbine_id)",
+          "comment": "Total turbine count"
+        },
+        {
+          "name": "max_generation_mwh",
+          "expr": "MAX(generation_mwh)",
+          "comment": "Maximum generation mwh"
+        }
+      ]
+    },
+    {
+      "view_name": "wind_forecast_monthly",
+      "source_table": "wind_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "wind_farm",
+          "expr": "wind_farm"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_forecasted_mwh",
+          "expr": "SUM(forecasted_generation_mwh)",
+          "comment": "Total forecasted generation MWh"
+        },
+        {
+          "name": "total_actual_mwh",
+          "expr": "SUM(actual_generation_mwh)",
+          "comment": "Total actual generation MWh"
+        },
+        {
+          "name": "total_curtailment_mwh",
+          "expr": "SUM(curtailment_mwh)",
+          "comment": "Total curtailed energy MWh"
+        },
+        {
+          "name": "total_revenue",
+          "expr": "SUM(revenue_usd)",
+          "comment": "Total revenue USD"
+        },
+        {
+          "name": "avg_availability",
+          "expr": "AVG(availability_pct)",
+          "comment": "Average turbine availability"
+        },
+        {
+          "name": "total_ppa_price_mwh",
+          "expr": "SUM(ppa_price_mwh)",
+          "comment": "Total ppa price mwh"
+        },
+        {
+          "name": "unique_turbine_count",
+          "expr": "COUNT(DISTINCT turbine_id)",
+          "comment": "Number of distinct turbines"
+        },
+        {
+          "name": "max_forecasted_generation_mwh",
+          "expr": "MAX(forecasted_generation_mwh)",
+          "comment": "Maximum forecasted generation mwh"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The turbine_kpi_monthly view (source: wind_turbines) has dimensions: record_date, turbine_model, wind_farm, turbine_status. Measures: total_generation_mwh, avg_capacity_factor, avg_wind_speed, generating_count, total_turbine_count. The wind_forecast_monthly view (source: wind_snapshots) has dimensions: snapshot_date, wind_farm. Measures: total_forecasted_mwh, total_actual_mwh, total_curtailment_mwh, total_revenue, avg_availability. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. turbine_id, turbine_name).",
+  "sample_questions": [
+    "What is the monthly trend in generating count?",
+    "How has unique total turbines changed over time?",
+    "What is the monthly trend in highest generation mwh?",
+    "How has total wind generation mwh changed over time?",
+    "What is the monthly trend in unique turbines?",
+    "How has highest forecasted generation mwh changed over time?",
+    "What is the monthly trend in total forecasted generation mwh?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest generation mwh?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(max_generation_mwh) AS max_generation_mwh",
+        "FROM {fqn}.turbine_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has total wind generation mwh changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_generation_mwh) AS total_generation_mwh",
+        "FROM {fqn}.turbine_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total forecasted generation mwh?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_forecasted_mwh) AS total_forecasted_mwh",
+        "FROM {fqn}.wind_forecast_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total ppa price mwh changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_ppa_price_mwh) AS total_ppa_price_mwh",
+        "FROM {fqn}.wind_forecast_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total average wind speed in meters per second break down by wind turbine identifier for 'Fault' records?",
+      "sql_lines": [
+        "SELECT turbine_id, COUNT(*) AS record_count, SUM(avg_wind_speed_ms) AS total_avg_wind_speed_ms",
+        "FROM {fqn}.wind_turbines",
+        "WHERE turbine_status = 'Fault' GROUP BY turbine_id ORDER BY total_avg_wind_speed_ms DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total blade pitch angle in degrees over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(blade_pitch_deg) AS total_blade_pitch_deg",
+        "FROM {fqn}.performance_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has the average forecasted generation in mwh changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, AVG(forecasted_generation_mwh) AS avg_forecasted_generation_mwh",
+        "FROM {fqn}.wind_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "wind_turbines.turbine_status = 'Generating'",
+        "display_name": "generating turbines",
+        "synonyms": [
+          "active turbines",
+          "producing turbines"
+        ],
+        "instruction": "Use when filtering to actively generating wind turbines."
+      },
+      {
+        "sql": "wind_turbines.turbine_status IN ('Fault', 'Maintenance')",
+        "display_name": "turbines down",
+        "synonyms": [
+          "offline turbines",
+          "unavailable turbines"
+        ],
+        "instruction": "Use when filtering to turbines in fault or maintenance."
+      },
+      {
+        "sql": "performance_readings.power_curve_deviation_pct > 10",
+        "display_name": "high deviation turbines",
+        "synonyms": [
+          "underperforming",
+          "off curve"
+        ],
+        "instruction": "Use when filtering to turbines deviating significantly from power curve."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "gen_month",
+        "sql": "DATE_TRUNC('month', wind_turbines.record_date)",
+        "display_name": "generation month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "forecast_accuracy",
+        "sql": "wind_snapshots.actual_generation_mwh / NULLIF(wind_snapshots.forecasted_generation_mwh, 0) * 100",
+        "display_name": "forecast accuracy pct",
+        "synonyms": [
+          "prediction accuracy"
+        ]
+      },
+      {
+        "alias": "revenue_per_mwh",
+        "sql": "wind_snapshots.revenue_usd / NULLIF(wind_snapshots.actual_generation_mwh, 0)",
+        "display_name": "revenue per MWh",
+        "synonyms": [
+          "unit revenue",
+          "realized price"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_generation",
+        "sql": "SUM(wind_turbines.generation_mwh)",
+        "display_name": "total wind generation MWh",
+        "synonyms": [
+          "wind output",
+          "energy produced"
+        ]
+      },
+      {
+        "alias": "avg_capacity_factor",
+        "sql": "AVG(wind_turbines.capacity_factor_pct)",
+        "display_name": "average capacity factor",
+        "synonyms": [
+          "CF",
+          "capacity utilization"
+        ]
+      },
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(wind_snapshots.revenue_usd)",
+        "display_name": "total revenue",
+        "synonyms": [
+          "energy revenue",
+          "sales"
+        ]
+      },
+      {
+        "alias": "total_curtailment",
+        "sql": "SUM(wind_snapshots.curtailment_mwh)",
+        "display_name": "total curtailment MWh",
+        "synonyms": [
+          "curtailed energy",
+          "wasted wind"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in generating count?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(generating_count) AS generating_count",
+        "FROM {fqn}.turbine_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "How has unique total turbines changed over time?",
+      "sql_lines": [
+        "SELECT record_date, MEASURE(total_turbine_count) AS total_turbine_count",
+        "FROM {fqn}.turbine_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique turbines?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_turbine_count) AS unique_turbine_count",
+        "FROM {fqn}.wind_forecast_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has highest forecasted generation mwh changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_forecasted_generation_mwh) AS max_forecasted_generation_mwh",
+        "FROM {fqn}.wind_forecast_monthly",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top wind turbine identifier by total average wind speed in meters per second?",
+      "sql_lines": [
+        "SELECT turbine_id, SUM(avg_wind_speed_ms) AS total_avg_wind_speed_ms",
+        "FROM {fqn}.wind_turbines",
+        "GROUP BY turbine_id ORDER BY total_avg_wind_speed_ms DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average deviation from ideal power curve 0-100 by turbine model?",
+      "sql_lines": [
+        "SELECT turbine_model, AVG(power_curve_deviation_pct) AS avg_power_curve_deviation_pct",
+        "FROM {fqn}.performance_readings",
+        "GROUP BY turbine_model ORDER BY avg_power_curve_deviation_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per date of snapshot?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.wind_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    }
+  ]
+}

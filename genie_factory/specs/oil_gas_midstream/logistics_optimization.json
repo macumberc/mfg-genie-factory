@@ -1,0 +1,962 @@
+{
+  "company_name": "PipeRoute Midstream",
+  "industry": "Oil & Gas Midstream",
+  "use_case": "Pipeline logistics optimization and throughput management",
+  "space_title": "PipeRoute Midstream - Logistics Optimization 🚚",
+  "space_description": "Logistics analytics for PipeRoute Midstream. Ask questions about pipeline throughput, flow rates, logistics events, and KPIs across 20 pipeline segments spanning crude oil, NGL, natural gas, and refined products.",
+  "schema_basename": "og_midstream_logistics",
+  "tables": [
+    {
+      "table_name": "flow_readings",
+      "description": "Daily pipeline flow readings.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique reading ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.segment_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Reading date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "segment_id",
+          "sql_type": "STRING",
+          "comment": "Pipeline segment ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment_name",
+          "sql_type": "STRING",
+          "comment": "Segment name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "pipeline_type",
+          "sql_type": "STRING",
+          "comment": "Type: Crude Oil, NGL, Natural Gas, Refined Products",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "throughput_bpd",
+          "sql_type": "DOUBLE",
+          "comment": "Throughput in BPD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5000.0, 20000.0 + {qty_noise} * 280000.0), 0)"
+        },
+        {
+          "name": "capacity_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Capacity utilization pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 72.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "pressure_psi",
+          "sql_type": "DOUBLE",
+          "comment": "Operating pressure PSI",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100.0, 400.0 + {qty_noise} * 1100.0), 0)"
+        },
+        {
+          "name": "tariff_usd_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Transportation tariff USD/BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.50, 1.50 + {qty_noise} * 4.50), 2)"
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Status: Operating, Restricted, Maintenance, Idle",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Operating' WHEN {status_noise} < 0.85 THEN 'Restricted' WHEN {status_noise} < 0.94 THEN 'Maintenance' ELSE 'Idle' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Crude Oil": {
+          "3,4,9,10": 0.04
+        },
+        "Natural Gas": {
+          "12,1,2": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "segment_id": "PR-CRD-001",
+          "segment_name": "Permian Crude Main",
+          "pipeline_type": "Crude Oil",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-CRD-002",
+          "segment_name": "Eagle Ford Crude",
+          "pipeline_type": "Crude Oil",
+          "region": "Eagle Ford"
+        },
+        {
+          "segment_id": "PR-CRD-003",
+          "segment_name": "GOM Offshore Crude",
+          "pipeline_type": "Crude Oil",
+          "region": "Gulf of Mexico"
+        },
+        {
+          "segment_id": "PR-CRD-004",
+          "segment_name": "Cushing Hub Link",
+          "pipeline_type": "Crude Oil",
+          "region": "Midcontinent"
+        },
+        {
+          "segment_id": "PR-NGL-005",
+          "segment_name": "Mont Belvieu NGL",
+          "pipeline_type": "NGL",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-NGL-006",
+          "segment_name": "Conway NGL System",
+          "pipeline_type": "NGL",
+          "region": "Midcontinent"
+        },
+        {
+          "segment_id": "PR-NGL-007",
+          "segment_name": "Permian NGL Gathering",
+          "pipeline_type": "NGL",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-008",
+          "segment_name": "Haynesville Gas Header",
+          "pipeline_type": "Natural Gas",
+          "region": "Louisiana"
+        },
+        {
+          "segment_id": "PR-GAS-009",
+          "segment_name": "Marcellus Gas Trunk",
+          "pipeline_type": "Natural Gas",
+          "region": "Appalachia"
+        },
+        {
+          "segment_id": "PR-GAS-010",
+          "segment_name": "Permian Gas Gathering",
+          "pipeline_type": "Natural Gas",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-011",
+          "segment_name": "Gulf Coast Gas Main",
+          "pipeline_type": "Natural Gas",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-REF-012",
+          "segment_name": "Houston Refined Products",
+          "pipeline_type": "Refined Products",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-REF-013",
+          "segment_name": "Colonial Pipeline Seg",
+          "pipeline_type": "Refined Products",
+          "region": "Southeast"
+        },
+        {
+          "segment_id": "PR-REF-014",
+          "segment_name": "Midwest Products Line",
+          "pipeline_type": "Refined Products",
+          "region": "Midwest"
+        },
+        {
+          "segment_id": "PR-CRD-015",
+          "segment_name": "Bakken Crude Takeaway",
+          "pipeline_type": "Crude Oil",
+          "region": "Williston Basin"
+        },
+        {
+          "segment_id": "PR-NGL-016",
+          "segment_name": "DJ Basin NGL Line",
+          "pipeline_type": "NGL",
+          "region": "DJ Basin"
+        },
+        {
+          "segment_id": "PR-GAS-017",
+          "segment_name": "Delaware Basin Gas",
+          "pipeline_type": "Natural Gas",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-REF-018",
+          "segment_name": "Northeast Products",
+          "pipeline_type": "Refined Products",
+          "region": "Northeast"
+        },
+        {
+          "segment_id": "PR-CRD-019",
+          "segment_name": "Midland-to-Gulf Crude",
+          "pipeline_type": "Crude Oil",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-020",
+          "segment_name": "Utica Shale Gas",
+          "pipeline_type": "Natural Gas",
+          "region": "Appalachia"
+        }
+      ],
+      "category_distribution": {
+        "Crude Oil": 0.06,
+        "NGL": 0.055,
+        "Natural Gas": 0.06,
+        "Refined Products": 0.05
+      }
+    },
+    {
+      "table_name": "logistics_events",
+      "description": "Pipeline logistics events including disruptions, nominations, and maintenance.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Event ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.segment_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Event date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "segment_id",
+          "sql_type": "STRING",
+          "comment": "Segment ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "segment_name",
+          "sql_type": "STRING",
+          "comment": "Segment name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "pipeline_type",
+          "sql_type": "STRING",
+          "comment": "Pipeline type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "event_category",
+          "sql_type": "STRING",
+          "comment": "Category: Apportionment, Maintenance, Force Majeure, Inspection, Rate Change, Leak Detection",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Apportionment' WHEN {status_noise} < 0.45 THEN 'Maintenance' WHEN {status_noise} < 0.58 THEN 'Force Majeure' WHEN {status_noise} < 0.72 THEN 'Inspection' WHEN {status_noise} < 0.86 THEN 'Rate Change' ELSE 'Leak Detection' END"
+        },
+        {
+          "name": "volume_impact_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Volume impact BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 50000.0), 0)"
+        },
+        {
+          "name": "duration_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Duration hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 2.0 + {qty_noise} * 120.0), 1)"
+        },
+        {
+          "name": "revenue_impact_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue impact USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 200000.0), 2)"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Low, Medium, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "segment_id": "PR-CRD-001",
+          "segment_name": "Permian Crude Main",
+          "pipeline_type": "Crude Oil",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-CRD-002",
+          "segment_name": "Eagle Ford Crude",
+          "pipeline_type": "Crude Oil",
+          "region": "Eagle Ford"
+        },
+        {
+          "segment_id": "PR-CRD-003",
+          "segment_name": "GOM Offshore Crude",
+          "pipeline_type": "Crude Oil",
+          "region": "Gulf of Mexico"
+        },
+        {
+          "segment_id": "PR-CRD-004",
+          "segment_name": "Cushing Hub Link",
+          "pipeline_type": "Crude Oil",
+          "region": "Midcontinent"
+        },
+        {
+          "segment_id": "PR-NGL-005",
+          "segment_name": "Mont Belvieu NGL",
+          "pipeline_type": "NGL",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-NGL-006",
+          "segment_name": "Conway NGL System",
+          "pipeline_type": "NGL",
+          "region": "Midcontinent"
+        },
+        {
+          "segment_id": "PR-NGL-007",
+          "segment_name": "Permian NGL Gathering",
+          "pipeline_type": "NGL",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-008",
+          "segment_name": "Haynesville Gas Header",
+          "pipeline_type": "Natural Gas",
+          "region": "Louisiana"
+        },
+        {
+          "segment_id": "PR-GAS-009",
+          "segment_name": "Marcellus Gas Trunk",
+          "pipeline_type": "Natural Gas",
+          "region": "Appalachia"
+        },
+        {
+          "segment_id": "PR-GAS-010",
+          "segment_name": "Permian Gas Gathering",
+          "pipeline_type": "Natural Gas",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-011",
+          "segment_name": "Gulf Coast Gas Main",
+          "pipeline_type": "Natural Gas",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-REF-012",
+          "segment_name": "Houston Refined Products",
+          "pipeline_type": "Refined Products",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-REF-013",
+          "segment_name": "Colonial Pipeline Seg",
+          "pipeline_type": "Refined Products",
+          "region": "Southeast"
+        },
+        {
+          "segment_id": "PR-REF-014",
+          "segment_name": "Midwest Products Line",
+          "pipeline_type": "Refined Products",
+          "region": "Midwest"
+        },
+        {
+          "segment_id": "PR-CRD-015",
+          "segment_name": "Bakken Crude Takeaway",
+          "pipeline_type": "Crude Oil",
+          "region": "Williston Basin"
+        },
+        {
+          "segment_id": "PR-NGL-016",
+          "segment_name": "DJ Basin NGL Line",
+          "pipeline_type": "NGL",
+          "region": "DJ Basin"
+        },
+        {
+          "segment_id": "PR-GAS-017",
+          "segment_name": "Delaware Basin Gas",
+          "pipeline_type": "Natural Gas",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-REF-018",
+          "segment_name": "Northeast Products",
+          "pipeline_type": "Refined Products",
+          "region": "Northeast"
+        },
+        {
+          "segment_id": "PR-CRD-019",
+          "segment_name": "Midland-to-Gulf Crude",
+          "pipeline_type": "Crude Oil",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-020",
+          "segment_name": "Utica Shale Gas",
+          "pipeline_type": "Natural Gas",
+          "region": "Appalachia"
+        }
+      ],
+      "category_distribution": {
+        "Crude Oil": 0.06,
+        "NGL": 0.055,
+        "Natural Gas": 0.06,
+        "Refined Products": 0.05
+      }
+    },
+    {
+      "table_name": "throughput_kpi_monthly",
+      "description": "Monthly pipeline throughput KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.segment_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "segment_id",
+          "sql_type": "STRING",
+          "comment": "Segment ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "pipeline_type",
+          "sql_type": "STRING",
+          "comment": "Pipeline type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_throughput_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly throughput BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, {qty_noise} * 9000000.0), 0)"
+        },
+        {
+          "name": "revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly revenue USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, {qty_noise} * 15000000.0), 2)"
+        },
+        {
+          "name": "avg_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Average utilization",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 72.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "on_time_delivery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "On-time delivery pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(75.0, 92.0 + ({qty_noise} - 0.5) * 14.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "segment_id": "PR-CRD-001",
+          "pipeline_type": "Crude Oil",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-CRD-002",
+          "pipeline_type": "Crude Oil",
+          "region": "Eagle Ford"
+        },
+        {
+          "segment_id": "PR-CRD-003",
+          "pipeline_type": "Crude Oil",
+          "region": "Gulf of Mexico"
+        },
+        {
+          "segment_id": "PR-CRD-004",
+          "pipeline_type": "Crude Oil",
+          "region": "Midcontinent"
+        },
+        {
+          "segment_id": "PR-NGL-005",
+          "pipeline_type": "NGL",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-NGL-006",
+          "pipeline_type": "NGL",
+          "region": "Midcontinent"
+        },
+        {
+          "segment_id": "PR-NGL-007",
+          "pipeline_type": "NGL",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-008",
+          "pipeline_type": "Natural Gas",
+          "region": "Louisiana"
+        },
+        {
+          "segment_id": "PR-GAS-009",
+          "pipeline_type": "Natural Gas",
+          "region": "Appalachia"
+        },
+        {
+          "segment_id": "PR-GAS-010",
+          "pipeline_type": "Natural Gas",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-011",
+          "pipeline_type": "Natural Gas",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-REF-012",
+          "pipeline_type": "Refined Products",
+          "region": "Gulf Coast"
+        },
+        {
+          "segment_id": "PR-REF-013",
+          "pipeline_type": "Refined Products",
+          "region": "Southeast"
+        },
+        {
+          "segment_id": "PR-REF-014",
+          "pipeline_type": "Refined Products",
+          "region": "Midwest"
+        },
+        {
+          "segment_id": "PR-CRD-015",
+          "pipeline_type": "Crude Oil",
+          "region": "Williston Basin"
+        },
+        {
+          "segment_id": "PR-NGL-016",
+          "pipeline_type": "NGL",
+          "region": "DJ Basin"
+        },
+        {
+          "segment_id": "PR-GAS-017",
+          "pipeline_type": "Natural Gas",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-REF-018",
+          "pipeline_type": "Refined Products",
+          "region": "Northeast"
+        },
+        {
+          "segment_id": "PR-CRD-019",
+          "pipeline_type": "Crude Oil",
+          "region": "Permian Basin"
+        },
+        {
+          "segment_id": "PR-GAS-020",
+          "pipeline_type": "Natural Gas",
+          "region": "Appalachia"
+        }
+      ],
+      "category_distribution": {
+        "Crude Oil": 0.06,
+        "NGL": 0.055,
+        "Natural Gas": 0.06,
+        "Refined Products": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "flow_readings_metrics",
+      "source_table": "flow_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "segment_id",
+          "expr": "segment_id"
+        },
+        {
+          "name": "pipeline_type",
+          "expr": "pipeline_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "status",
+          "expr": "status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_throughput_bpd",
+          "expr": "AVG(throughput_bpd)",
+          "comment": "Avg throughput BPD"
+        },
+        {
+          "name": "avg_utilization_pct",
+          "expr": "AVG(capacity_utilization_pct)",
+          "comment": "Avg capacity utilization"
+        },
+        {
+          "name": "total_readings",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total readings"
+        },
+        {
+          "name": "avg_tariff",
+          "expr": "AVG(tariff_usd_bbl)",
+          "comment": "Avg tariff USD/BBL"
+        },
+        {
+          "name": "total_pressure_psi",
+          "expr": "SUM(pressure_psi)",
+          "comment": "Total pressure psi"
+        },
+        {
+          "name": "max_throughput_bpd",
+          "expr": "MAX(throughput_bpd)",
+          "comment": "Maximum throughput bpd"
+        }
+      ]
+    },
+    {
+      "view_name": "logistics_events_metrics",
+      "source_table": "logistics_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "segment_id",
+          "expr": "segment_id"
+        },
+        {
+          "name": "pipeline_type",
+          "expr": "pipeline_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "event_category",
+          "expr": "event_category"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total events"
+        },
+        {
+          "name": "total_volume_impact_bbl",
+          "expr": "SUM(volume_impact_bbl)",
+          "comment": "Total volume impact BBL"
+        },
+        {
+          "name": "total_revenue_impact_usd",
+          "expr": "SUM(revenue_impact_usd)",
+          "comment": "Total revenue impact USD"
+        },
+        {
+          "name": "avg_duration_hours",
+          "expr": "AVG(duration_hours)",
+          "comment": "Avg event duration hours"
+        },
+        {
+          "name": "max_volume_impact_bbl",
+          "expr": "MAX(volume_impact_bbl)",
+          "comment": "Maximum volume impact bbl"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The flow_readings_metrics view (source: flow_readings) has dimensions: reading_date, segment_id, pipeline_type, region, status. Measures: avg_throughput_bpd, avg_utilization_pct, total_readings, avg_tariff. The logistics_events_metrics view (source: logistics_events) has dimensions: event_date, segment_id, pipeline_type, region, event_category, severity. Measures: total_events, total_volume_impact_bbl, total_revenue_impact_usd, avg_duration_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. segment_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total readingss?",
+    "How has highest throughput bpd changed over time?",
+    "What is the monthly trend in total pressure psi?",
+    "How has avg throughput bpd changed over time?",
+    "What is the monthly trend in unique total eventss?",
+    "How has highest volume impact bbl changed over time?",
+    "What is the monthly trend in total volume impact bbl?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total pressure psi?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_pressure_psi) AS total_pressure_psi",
+        "FROM {fqn}.flow_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has avg throughput bpd changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
+        "FROM {fqn}.flow_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total volume impact bbl?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_volume_impact_bbl) AS total_volume_impact_bbl",
+        "FROM {fqn}.logistics_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How does total throughput in bpd break down by pipeline segment id for 'Operating' records?",
+      "sql_lines": [
+        "SELECT segment_id, COUNT(*) AS record_count, SUM(throughput_bpd) AS total_throughput_bpd",
+        "FROM {fqn}.flow_readings",
+        "WHERE status = 'Operating' GROUP BY segment_id ORDER BY total_throughput_bpd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total volume impact bbl over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(volume_impact_bbl) AS total_volume_impact_bbl",
+        "FROM {fqn}.logistics_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has the average average utilization changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has avg tariff usd/bbl changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_tariff) AS avg_tariff",
+        "FROM {fqn}.flow_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "status = 'Operating'",
+        "display_name": "operating segments",
+        "synonyms": [
+          "active"
+        ],
+        "instruction": "Filter to operating segments."
+      },
+      {
+        "sql": "event_category = 'Apportionment'",
+        "display_name": "apportionment events",
+        "synonyms": [
+          "rationing",
+          "capacity limit"
+        ],
+        "instruction": "Filter to apportionment events."
+      },
+      {
+        "sql": "severity IN ('High', 'Critical')",
+        "display_name": "high severity",
+        "synonyms": [
+          "serious events"
+        ],
+        "instruction": "High severity events."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "revenue_per_bbl",
+        "sql": "ROUND(throughput_kpi_monthly.revenue_usd / NULLIF(throughput_kpi_monthly.monthly_throughput_bbl, 0), 2)",
+        "display_name": "revenue per barrel",
+        "synonyms": [
+          "unit economics"
+        ]
+      },
+      {
+        "alias": "utilization_gap",
+        "sql": "100.0 - flow_readings.capacity_utilization_pct",
+        "display_name": "spare capacity pct",
+        "synonyms": [
+          "headroom"
+        ]
+      },
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', flow_readings.reading_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_throughput",
+        "sql": "AVG(flow_readings.throughput_bpd)",
+        "display_name": "avg throughput",
+        "synonyms": [
+          "throughput"
+        ]
+      },
+      {
+        "alias": "total_volume_impact",
+        "sql": "SUM(logistics_events.volume_impact_bbl)",
+        "display_name": "total volume impact",
+        "synonyms": [
+          "lost volume"
+        ]
+      },
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(throughput_kpi_monthly.revenue_usd)",
+        "display_name": "total revenue",
+        "synonyms": [
+          "income"
+        ]
+      },
+      {
+        "alias": "avg_utilization",
+        "sql": "AVG(flow_readings.capacity_utilization_pct)",
+        "display_name": "avg utilization",
+        "synonyms": [
+          "utilization"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total readingss?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "FROM {fqn}.flow_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest throughput bpd changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_throughput_bpd) AS max_throughput_bpd",
+        "FROM {fqn}.flow_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique total eventss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.logistics_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest volume impact bbl changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_volume_impact_bbl) AS max_volume_impact_bbl",
+        "FROM {fqn}.logistics_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What are the top pipeline segment id by total throughput in bpd?",
+      "sql_lines": [
+        "SELECT segment_id, SUM(throughput_bpd) AS total_throughput_bpd",
+        "FROM {fqn}.flow_readings",
+        "GROUP BY segment_id ORDER BY total_throughput_bpd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average duration hours by segment name?",
+      "sql_lines": [
+        "SELECT segment_name, AVG(duration_hours) AS avg_duration_hours",
+        "FROM {fqn}.logistics_events",
+        "GROUP BY segment_name ORDER BY avg_duration_hours DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.throughput_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

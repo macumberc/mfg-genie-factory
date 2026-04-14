@@ -1,0 +1,954 @@
+{
+  "company_name": "FabSight Analytics",
+  "industry": "Semiconductor",
+  "use_case": "Virtual metrology and inline defect detection for wafer fabrication",
+  "space_title": "FabSight - Virtual Metrology & Defect Detection 🔬",
+  "space_description": "Virtual metrology and defect detection analytics for FabSight Analytics. Analyze wafer measurements, metrology predictions, and defect detections across 20 process recipes to improve yield and reduce inline inspection costs.",
+  "schema_basename": "semiconductor_virtual_metrology",
+  "tables": [
+    {
+      "table_name": "wafer_measurements",
+      "description": "Daily wafer measurement records from inline metrology tools capturing thickness, CD, overlay, and film stress across process steps.",
+      "columns": [
+        {
+          "name": "measurement_id",
+          "sql_type": "STRING",
+          "comment": "Unique wafer measurement identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WM-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "measurement_date",
+          "sql_type": "DATE",
+          "comment": "Date the measurement was taken",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "recipe_id",
+          "sql_type": "STRING",
+          "comment": "Process recipe identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "recipe_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable recipe name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_step",
+          "sql_type": "STRING",
+          "comment": "Process step category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "tool_id",
+          "sql_type": "STRING",
+          "comment": "Metrology tool identifier",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'MET-ASML-01' WHEN {status_noise} < 0.40 THEN 'MET-KLA-02' WHEN {status_noise} < 0.55 THEN 'MET-AMAT-03' WHEN {status_noise} < 0.70 THEN 'MET-HITC-04' WHEN {status_noise} < 0.85 THEN 'MET-NOVA-05' ELSE 'MET-ONTO-06' END"
+        },
+        {
+          "name": "thickness_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Film thickness measurement in nanometers",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 50.0 + ({qty_noise} - 0.5) * 40.0), 2)"
+        },
+        {
+          "name": "cd_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Critical dimension measurement in nanometers",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(2.0, 20.0 + ({qty_noise} - 0.5) * 15.0), 2)"
+        },
+        {
+          "name": "overlay_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Overlay alignment error in nanometers",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.1, 3.0 + ({qty_noise} - 0.5) * 4.0), 3)"
+        },
+        {
+          "name": "measurement_status",
+          "sql_type": "STRING",
+          "comment": "Measurement result status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'In Spec' WHEN {status_noise} < 0.88 THEN 'Warning' ELSE 'Out of Spec' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Lithography": {
+          "1,2": 0.05,
+          "9,10": 0.06
+        },
+        "Etch": {
+          "3,4": 0.045
+        },
+        "Deposition": {
+          "7,8": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "recipe_id": "FS-LIT-001",
+          "recipe_name": "EUV Litho 3nm Gate",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-002",
+          "recipe_name": "DUV Litho 7nm Metal",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-003",
+          "recipe_name": "EUV Litho 5nm Via",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-004",
+          "recipe_name": "DUV Litho 14nm Contact",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-ETH-001",
+          "recipe_name": "HAR Etch Poly Gate",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-002",
+          "recipe_name": "RIE Etch Oxide",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-003",
+          "recipe_name": "DRIE Etch TSV",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-004",
+          "recipe_name": "Wet Etch Clean",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-DEP-001",
+          "recipe_name": "ALD HfO2 Gate Dielectric",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-002",
+          "recipe_name": "CVD SiN Spacer",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-003",
+          "recipe_name": "PVD Cu Seed Layer",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-004",
+          "recipe_name": "ECD Cu Fill",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-CMP-001",
+          "recipe_name": "CMP Cu Polish Step 1",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-002",
+          "recipe_name": "CMP Cu Polish Step 2",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-003",
+          "recipe_name": "CMP STI Oxide",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-004",
+          "recipe_name": "CMP ILD Planarization",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-IMP-001",
+          "recipe_name": "Ion Implant N-Well",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-002",
+          "recipe_name": "Ion Implant S/D Extension",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-003",
+          "recipe_name": "Ion Implant Halo",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-004",
+          "recipe_name": "Ion Implant Threshold Adjust",
+          "process_step": "Implant"
+        }
+      ],
+      "category_distribution": {
+        "Lithography": 0.035,
+        "Etch": 0.03,
+        "Deposition": 0.028,
+        "CMP": 0.025,
+        "Implant": 0.022
+      }
+    },
+    {
+      "table_name": "metrology_predictions",
+      "description": "Weekly virtual metrology prediction snapshots comparing ML model predictions against actual measurements for each process recipe.",
+      "columns": [
+        {
+          "name": "prediction_id",
+          "sql_type": "STRING",
+          "comment": "Unique prediction record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('VP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of prediction batch",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "recipe_id",
+          "sql_type": "STRING",
+          "comment": "Process recipe identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "recipe_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable recipe name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_step",
+          "sql_type": "STRING",
+          "comment": "Process step category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "predicted_thickness_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Model-predicted film thickness in nm",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 50.0 + ({qty_noise} - 0.5) * 35.0), 2)"
+        },
+        {
+          "name": "actual_thickness_nm",
+          "sql_type": "DOUBLE",
+          "comment": "Actual measured film thickness in nm",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 50.0 + ({qty_noise} - 0.5) * 40.0 + ({status_noise} - 0.5) * 5.0), 2)"
+        },
+        {
+          "name": "prediction_error_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Absolute prediction error as percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.1, {qty_noise} * 8.0), 2)"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Virtual metrology model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'vm-2.0' WHEN {status_noise} < 0.65 THEN 'vm-2.1' ELSE 'vm-2.2' END"
+        },
+        {
+          "name": "confidence_score",
+          "sql_type": "DOUBLE",
+          "comment": "Model prediction confidence (0-1)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(0.99, GREATEST(0.50, 0.80 + ({qty_noise} - 0.5) * 0.30)), 3)"
+        },
+        {
+          "name": "wafer_count",
+          "sql_type": "INT",
+          "comment": "Number of wafers in prediction batch",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 90) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Lithography": {
+          "1,2": 0.04,
+          "9,10": 0.05
+        },
+        "CMP": {
+          "3,4": 0.045
+        },
+        "Deposition": {
+          "6,7": 0.035
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "recipe_id": "FS-LIT-001",
+          "recipe_name": "EUV Litho 3nm Gate",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-002",
+          "recipe_name": "DUV Litho 7nm Metal",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-003",
+          "recipe_name": "EUV Litho 5nm Via",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-004",
+          "recipe_name": "DUV Litho 14nm Contact",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-ETH-001",
+          "recipe_name": "HAR Etch Poly Gate",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-002",
+          "recipe_name": "RIE Etch Oxide",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-003",
+          "recipe_name": "DRIE Etch TSV",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-004",
+          "recipe_name": "Wet Etch Clean",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-DEP-001",
+          "recipe_name": "ALD HfO2 Gate Dielectric",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-002",
+          "recipe_name": "CVD SiN Spacer",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-003",
+          "recipe_name": "PVD Cu Seed Layer",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-004",
+          "recipe_name": "ECD Cu Fill",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-CMP-001",
+          "recipe_name": "CMP Cu Polish Step 1",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-002",
+          "recipe_name": "CMP Cu Polish Step 2",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-003",
+          "recipe_name": "CMP STI Oxide",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-004",
+          "recipe_name": "CMP ILD Planarization",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-IMP-001",
+          "recipe_name": "Ion Implant N-Well",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-002",
+          "recipe_name": "Ion Implant S/D Extension",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-003",
+          "recipe_name": "Ion Implant Halo",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-004",
+          "recipe_name": "Ion Implant Threshold Adjust",
+          "process_step": "Implant"
+        }
+      ],
+      "category_distribution": {
+        "Lithography": 0.035,
+        "Etch": 0.03,
+        "Deposition": 0.028,
+        "CMP": 0.025,
+        "Implant": 0.022
+      }
+    },
+    {
+      "table_name": "defect_detections",
+      "description": "Monthly defect detection summaries per recipe and process step, tracking defect types, density, and kill ratio estimates.",
+      "columns": [
+        {
+          "name": "detection_id",
+          "sql_type": "STRING",
+          "comment": "Unique defect detection record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DD-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "detection_month",
+          "sql_type": "DATE",
+          "comment": "Month of defect detection summary",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "recipe_id",
+          "sql_type": "STRING",
+          "comment": "Process recipe identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "recipe_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable recipe name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_step",
+          "sql_type": "STRING",
+          "comment": "Process step category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "defect_type",
+          "sql_type": "STRING",
+          "comment": "Classification of defect type",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Particle' WHEN {status_noise} < 0.38 THEN 'Scratch' WHEN {status_noise} < 0.52 THEN 'Pattern Defect' WHEN {status_noise} < 0.65 THEN 'Residue' WHEN {status_noise} < 0.78 THEN 'Void' WHEN {status_noise} < 0.90 THEN 'Bridge' ELSE 'Crack' END"
+        },
+        {
+          "name": "defect_density_per_cm2",
+          "sql_type": "DOUBLE",
+          "comment": "Defect density per square centimeter",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.01, 0.40 - ({qty_noise} * 0.35)), 4)"
+        },
+        {
+          "name": "kill_ratio_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated percentage of defects that are yield-killing",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(95.0, GREATEST(5.0, 40.0 + ({qty_noise} - 0.5) * 60.0)), 1)"
+        },
+        {
+          "name": "wafers_inspected",
+          "sql_type": "INT",
+          "comment": "Number of wafers inspected in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(50 + FLOOR({qty_noise} * 450) AS INT)"
+        },
+        {
+          "name": "total_defects_found",
+          "sql_type": "INT",
+          "comment": "Total defects found across inspections",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 990) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Lithography": {
+          "9,10,11": 0.055
+        },
+        "Etch": {
+          "1,2,3": 0.05
+        },
+        "CMP": {
+          "5,6": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "recipe_id": "FS-LIT-001",
+          "recipe_name": "EUV Litho 3nm Gate",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-002",
+          "recipe_name": "DUV Litho 7nm Metal",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-003",
+          "recipe_name": "EUV Litho 5nm Via",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-LIT-004",
+          "recipe_name": "DUV Litho 14nm Contact",
+          "process_step": "Lithography"
+        },
+        {
+          "recipe_id": "FS-ETH-001",
+          "recipe_name": "HAR Etch Poly Gate",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-002",
+          "recipe_name": "RIE Etch Oxide",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-003",
+          "recipe_name": "DRIE Etch TSV",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-ETH-004",
+          "recipe_name": "Wet Etch Clean",
+          "process_step": "Etch"
+        },
+        {
+          "recipe_id": "FS-DEP-001",
+          "recipe_name": "ALD HfO2 Gate Dielectric",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-002",
+          "recipe_name": "CVD SiN Spacer",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-003",
+          "recipe_name": "PVD Cu Seed Layer",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-DEP-004",
+          "recipe_name": "ECD Cu Fill",
+          "process_step": "Deposition"
+        },
+        {
+          "recipe_id": "FS-CMP-001",
+          "recipe_name": "CMP Cu Polish Step 1",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-002",
+          "recipe_name": "CMP Cu Polish Step 2",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-003",
+          "recipe_name": "CMP STI Oxide",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-CMP-004",
+          "recipe_name": "CMP ILD Planarization",
+          "process_step": "CMP"
+        },
+        {
+          "recipe_id": "FS-IMP-001",
+          "recipe_name": "Ion Implant N-Well",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-002",
+          "recipe_name": "Ion Implant S/D Extension",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-003",
+          "recipe_name": "Ion Implant Halo",
+          "process_step": "Implant"
+        },
+        {
+          "recipe_id": "FS-IMP-004",
+          "recipe_name": "Ion Implant Threshold Adjust",
+          "process_step": "Implant"
+        }
+      ],
+      "category_distribution": {
+        "Lithography": 0.035,
+        "Etch": 0.03,
+        "Deposition": 0.028,
+        "CMP": 0.025,
+        "Implant": 0.022
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "wafer_measurement_metrics",
+      "source_table": "wafer_measurements",
+      "dimensions": [
+        {
+          "name": "measurement_date",
+          "expr": "measurement_date"
+        },
+        {
+          "name": "process_step",
+          "expr": "process_step"
+        },
+        {
+          "name": "tool_id",
+          "expr": "tool_id"
+        },
+        {
+          "name": "measurement_status",
+          "expr": "measurement_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_measurements",
+          "expr": "COUNT(DISTINCT measurement_id)",
+          "comment": "Total wafer measurements taken"
+        },
+        {
+          "name": "avg_thickness_nm",
+          "expr": "AVG(thickness_nm)",
+          "comment": "Average film thickness in nanometers"
+        },
+        {
+          "name": "avg_cd_nm",
+          "expr": "AVG(cd_nm)",
+          "comment": "Average critical dimension in nanometers"
+        },
+        {
+          "name": "avg_overlay_nm",
+          "expr": "AVG(overlay_nm)",
+          "comment": "Average overlay alignment error"
+        },
+        {
+          "name": "out_of_spec_count",
+          "expr": "COUNT(DISTINCT CASE WHEN measurement_status = 'Out of Spec' THEN measurement_id END)",
+          "comment": "Measurements flagged Out of Spec"
+        },
+        {
+          "name": "unique_recipe_count",
+          "expr": "COUNT(DISTINCT recipe_id)",
+          "comment": "Number of distinct recipes"
+        },
+        {
+          "name": "max_thickness_nm",
+          "expr": "MAX(thickness_nm)",
+          "comment": "Maximum thickness nm"
+        }
+      ]
+    },
+    {
+      "view_name": "defect_detection_metrics",
+      "source_table": "defect_detections",
+      "dimensions": [
+        {
+          "name": "detection_month",
+          "expr": "detection_month"
+        },
+        {
+          "name": "process_step",
+          "expr": "process_step"
+        },
+        {
+          "name": "defect_type",
+          "expr": "defect_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_defect_density",
+          "expr": "AVG(defect_density_per_cm2)",
+          "comment": "Average defect density per cm2"
+        },
+        {
+          "name": "avg_kill_ratio_pct",
+          "expr": "AVG(kill_ratio_pct)",
+          "comment": "Average kill ratio percentage"
+        },
+        {
+          "name": "total_wafers_inspected",
+          "expr": "SUM(wafers_inspected)",
+          "comment": "Total wafers inspected"
+        },
+        {
+          "name": "total_defects_found",
+          "expr": "SUM(total_defects_found)",
+          "comment": "Total defects found"
+        },
+        {
+          "name": "unique_recipe_count",
+          "expr": "COUNT(DISTINCT recipe_id)",
+          "comment": "Number of distinct recipes"
+        },
+        {
+          "name": "max_defect_density_per_cm2",
+          "expr": "MAX(defect_density_per_cm2)",
+          "comment": "Maximum defect density per cm2"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The wafer_measurement_metrics view (source: wafer_measurements) has dimensions: measurement_date, process_step, tool_id, measurement_status. Measures: total_measurements, avg_thickness_nm, avg_cd_nm, avg_overlay_nm, out_of_spec_count. The defect_detection_metrics view (source: defect_detections) has dimensions: detection_month, process_step, defect_type. Measures: avg_defect_density, avg_kill_ratio_pct, total_wafers_inspected, total_defects_found. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. recipe_id, recipe_name).",
+  "sample_questions": [
+    "What is the monthly trend in out of spec count?",
+    "How has unique total measurementss changed over time?",
+    "What is the monthly trend in unique recipes?",
+    "How has highest thickness nm changed over time?",
+    "What is the monthly trend in unique recipes?",
+    "How has highest defect density per cm2 changed over time?",
+    "What is the monthly trend in total wafers inspected?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique recipes?",
+      "sql_lines": [
+        "SELECT measurement_date, MEASURE(unique_recipe_count) AS unique_recipe_count",
+        "FROM {fqn}.wafer_measurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY measurement_date"
+      ]
+    },
+    {
+      "question": "How has highest thickness nm changed over time?",
+      "sql_lines": [
+        "SELECT measurement_date, MEASURE(max_thickness_nm) AS max_thickness_nm",
+        "FROM {fqn}.wafer_measurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY measurement_date"
+      ]
+    },
+    {
+      "question": "How has total defects found changed over time?",
+      "sql_lines": [
+        "SELECT detection_month, MEASURE(total_defects_found) AS total_defects_found",
+        "FROM {fqn}.defect_detection_metrics",
+        "GROUP BY ALL",
+        "ORDER BY detection_month"
+      ]
+    },
+    {
+      "question": "How does total film thickness measurement in nanometers break down by process recipe identifier for 'In Spec' records?",
+      "sql_lines": [
+        "SELECT recipe_id, COUNT(*) AS record_count, SUM(thickness_nm) AS total_thickness_nm",
+        "FROM {fqn}.wafer_measurements",
+        "WHERE measurement_status = 'In Spec' GROUP BY recipe_id ORDER BY total_thickness_nm DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total model-predicted film thickness in nm over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(predicted_thickness_nm) AS total_predicted_thickness_nm",
+        "FROM {fqn}.metrology_predictions",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average estimated percentage of defects that are yield-killing changed over time?",
+      "sql_lines": [
+        "SELECT detection_month, AVG(kill_ratio_pct) AS avg_kill_ratio_pct",
+        "FROM {fqn}.defect_detections",
+        "GROUP BY detection_month ORDER BY detection_month"
+      ]
+    },
+    {
+      "question": "How has out of spec count changed over time?",
+      "sql_lines": [
+        "SELECT measurement_date, MEASURE(out_of_spec_count) AS out_of_spec_count",
+        "FROM {fqn}.wafer_measurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY measurement_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "wafer_measurements.measurement_status = 'Out of Spec'",
+        "display_name": "out of spec measurements",
+        "synonyms": [
+          "OOS",
+          "failing measurements",
+          "spec violations"
+        ],
+        "instruction": "Use when filtering for wafers that failed specification checks."
+      },
+      {
+        "sql": "metrology_predictions.model_version = 'vm-2.2'",
+        "display_name": "latest model version",
+        "synonyms": [
+          "current model",
+          "newest VM model"
+        ],
+        "instruction": "Use when analyzing only the latest virtual metrology model."
+      },
+      {
+        "sql": "defect_detections.kill_ratio_pct >= 50",
+        "display_name": "high kill ratio defects",
+        "synonyms": [
+          "yield killing defects",
+          "critical defects"
+        ],
+        "instruction": "Use when focusing on defects most likely to cause yield loss."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "measurement_month",
+        "sql": "DATE_TRUNC('month', wafer_measurements.measurement_date)",
+        "display_name": "measurement month",
+        "synonyms": [
+          "month of measurement",
+          "metrology month"
+        ]
+      },
+      {
+        "alias": "prediction_gap_nm",
+        "sql": "metrology_predictions.predicted_thickness_nm - metrology_predictions.actual_thickness_nm",
+        "display_name": "prediction gap",
+        "synonyms": [
+          "VM model error",
+          "thickness prediction delta"
+        ]
+      },
+      {
+        "alias": "defects_per_wafer",
+        "sql": "defect_detections.total_defects_found * 1.0 / NULLIF(defect_detections.wafers_inspected, 0)",
+        "display_name": "defects per wafer",
+        "synonyms": [
+          "DPW",
+          "defect rate per wafer"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_measurements",
+        "sql": "COUNT(DISTINCT wafer_measurements.measurement_id)",
+        "display_name": "total measurements",
+        "synonyms": [
+          "measurement count",
+          "number of measurements"
+        ]
+      },
+      {
+        "alias": "avg_defect_density",
+        "sql": "AVG(defect_detections.defect_density_per_cm2)",
+        "display_name": "average defect density",
+        "synonyms": [
+          "mean defect density",
+          "avg density per cm2"
+        ]
+      },
+      {
+        "alias": "avg_prediction_error",
+        "sql": "AVG(metrology_predictions.prediction_error_pct)",
+        "display_name": "average prediction error",
+        "synonyms": [
+          "mean VM error",
+          "prediction accuracy"
+        ]
+      },
+      {
+        "alias": "total_defects",
+        "sql": "SUM(defect_detections.total_defects_found)",
+        "display_name": "total defects found",
+        "synonyms": [
+          "defect count",
+          "number of defects"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in out of spec count?",
+      "sql_lines": [
+        "SELECT measurement_date, MEASURE(out_of_spec_count) AS out_of_spec_count",
+        "FROM {fqn}.wafer_measurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY measurement_date"
+      ]
+    },
+    {
+      "question": "How has unique total measurementss changed over time?",
+      "sql_lines": [
+        "SELECT measurement_date, MEASURE(total_measurements) AS total_measurements",
+        "FROM {fqn}.wafer_measurement_metrics",
+        "GROUP BY ALL",
+        "ORDER BY measurement_date"
+      ]
+    },
+    {
+      "question": "How has highest defect density per cm2 changed over time?",
+      "sql_lines": [
+        "SELECT detection_month, MEASURE(max_defect_density_per_cm2) AS max_defect_density_per_cm2",
+        "FROM {fqn}.defect_detection_metrics",
+        "GROUP BY ALL",
+        "ORDER BY detection_month"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total wafers inspected?",
+      "sql_lines": [
+        "SELECT detection_month, MEASURE(total_wafers_inspected) AS total_wafers_inspected",
+        "FROM {fqn}.defect_detection_metrics",
+        "GROUP BY ALL",
+        "ORDER BY detection_month"
+      ]
+    },
+    {
+      "question": "What are the top process recipe identifier by total film thickness measurement in nanometers?",
+      "sql_lines": [
+        "SELECT recipe_id, SUM(thickness_nm) AS total_thickness_nm",
+        "FROM {fqn}.wafer_measurements",
+        "GROUP BY recipe_id ORDER BY total_thickness_nm DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average absolute prediction error as percentage by human-readable recipe name?",
+      "sql_lines": [
+        "SELECT recipe_name, AVG(prediction_error_pct) AS avg_prediction_error_pct",
+        "FROM {fqn}.metrology_predictions",
+        "GROUP BY recipe_name ORDER BY avg_prediction_error_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of defect detection summary?",
+      "sql_lines": [
+        "SELECT detection_month, COUNT(*) AS record_count",
+        "FROM {fqn}.defect_detections",
+        "GROUP BY detection_month ORDER BY detection_month"
+      ]
+    }
+  ]
+}

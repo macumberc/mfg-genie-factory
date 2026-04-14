@@ -1,0 +1,973 @@
+{
+  "company_name": "CapVenture Energy",
+  "industry": "Oil & Gas Integrated",
+  "use_case": "Capital investment simulation and portfolio optimization for exploration and development projects",
+  "space_title": "CapVenture Energy - Capital Investment Simulation 💰",
+  "space_description": "Capital investment analytics for CapVenture Energy. Ask questions about project economics, investment returns, portfolio allocation, and risk-adjusted outcomes across 20 exploration and development projects spanning deepwater, onshore, and LNG.",
+  "schema_basename": "og_integrated_capinvest",
+  "tables": [
+    {
+      "table_name": "investment_transactions",
+      "description": "Capital investment transactions including expenditures, commitments, and drawdowns across projects.",
+      "columns": [
+        {
+          "name": "transaction_id",
+          "sql_type": "STRING",
+          "comment": "Unique investment transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "transaction_date",
+          "sql_type": "DATE",
+          "comment": "Date of the investment transaction",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_name",
+          "sql_type": "STRING",
+          "comment": "Project name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type: Deepwater, Onshore Conventional, Shale, LNG, Infrastructure",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "basin_region",
+          "sql_type": "STRING",
+          "comment": "Basin or geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "spend_category",
+          "sql_type": "STRING",
+          "comment": "Category: Drilling, Facilities, Subsea, Seismic, Engineering, Procurement",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Drilling' WHEN {status_noise} < 0.42 THEN 'Facilities' WHEN {status_noise} < 0.55 THEN 'Subsea' WHEN {status_noise} < 0.68 THEN 'Seismic' WHEN {status_noise} < 0.82 THEN 'Engineering' ELSE 'Procurement' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50000.0, {qty_noise} * 15000000.0), 2)"
+        },
+        {
+          "name": "budget_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budgeted amount for this category in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(60000.0, {qty_noise} * 16000000.0), 2)"
+        },
+        {
+          "name": "phase",
+          "sql_type": "STRING",
+          "comment": "Project phase: Exploration, Appraisal, Development, Production, Abandonment",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Exploration' WHEN {status_noise} < 0.30 THEN 'Appraisal' WHEN {status_noise} < 0.65 THEN 'Development' WHEN {status_noise} < 0.90 THEN 'Production' ELSE 'Abandonment' END"
+        },
+        {
+          "name": "approval_status",
+          "sql_type": "STRING",
+          "comment": "Status: Approved, Pending, On Hold, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Approved' WHEN {status_noise} < 0.80 THEN 'Pending' WHEN {status_noise} < 0.92 THEN 'On Hold' ELSE 'Cancelled' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Deepwater": {
+          "3,4,5,9,10": 0.05
+        },
+        "LNG": {
+          "6,7,8": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "project_id": "CV-DW-001",
+          "project_name": "Anchor Phase 2",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-002",
+          "project_name": "Whale Development",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-003",
+          "project_name": "Kaskida Appraisal",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-004",
+          "project_name": "Tiber Exploration",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-ON-005",
+          "project_name": "Eagle Ford Infill Program",
+          "project_type": "Onshore Conventional",
+          "basin_region": "Texas"
+        },
+        {
+          "project_id": "CV-ON-006",
+          "project_name": "San Juan Basin Recompletion",
+          "project_type": "Onshore Conventional",
+          "basin_region": "New Mexico"
+        },
+        {
+          "project_id": "CV-SH-007",
+          "project_name": "Permian Delaware Basin Pad",
+          "project_type": "Shale",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-SH-008",
+          "project_name": "Permian Midland Expansion",
+          "project_type": "Shale",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-SH-009",
+          "project_name": "Haynesville Gas Play",
+          "project_type": "Shale",
+          "basin_region": "Louisiana"
+        },
+        {
+          "project_id": "CV-SH-010",
+          "project_name": "Marcellus Northeast PA",
+          "project_type": "Shale",
+          "basin_region": "Appalachia"
+        },
+        {
+          "project_id": "CV-LNG-011",
+          "project_name": "Freeport LNG Train 4",
+          "project_type": "LNG",
+          "basin_region": "Texas Gulf Coast"
+        },
+        {
+          "project_id": "CV-LNG-012",
+          "project_name": "Plaquemines LNG Phase 2",
+          "project_type": "LNG",
+          "basin_region": "Louisiana Gulf Coast"
+        },
+        {
+          "project_id": "CV-LNG-013",
+          "project_name": "Golden Pass Export",
+          "project_type": "LNG",
+          "basin_region": "Texas Gulf Coast"
+        },
+        {
+          "project_id": "CV-INF-014",
+          "project_name": "GOM Pipeline Expansion",
+          "project_type": "Infrastructure",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-INF-015",
+          "project_name": "Permian Gathering System",
+          "project_type": "Infrastructure",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-INF-016",
+          "project_name": "FPSO Conversion Project",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-017",
+          "project_name": "Shenandoah Exploration",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-SH-018",
+          "project_name": "DJ Basin Wattenberg",
+          "project_type": "Shale",
+          "basin_region": "Colorado"
+        },
+        {
+          "project_id": "CV-INF-019",
+          "project_name": "Carbon Capture Hub Texas",
+          "project_type": "Infrastructure",
+          "basin_region": "Texas"
+        },
+        {
+          "project_id": "CV-LNG-020",
+          "project_name": "Cameron LNG Debottleneck",
+          "project_type": "LNG",
+          "basin_region": "Louisiana Gulf Coast"
+        }
+      ],
+      "category_distribution": {
+        "Deepwater": 0.06,
+        "Onshore Conventional": 0.04,
+        "Shale": 0.055,
+        "LNG": 0.055,
+        "Infrastructure": 0.045
+      }
+    },
+    {
+      "table_name": "project_snapshots",
+      "description": "Periodic project health snapshots including NPV, IRR, schedule adherence, and risk ratings.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique project snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of the project snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_name",
+          "sql_type": "STRING",
+          "comment": "Project name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "basin_region",
+          "sql_type": "STRING",
+          "comment": "Basin or geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "npv_mm",
+          "sql_type": "DOUBLE",
+          "comment": "Net present value in millions USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-200.0 + {qty_noise} * 3200.0, 1)"
+        },
+        {
+          "name": "irr_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Internal rate of return percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-5.0, 2.0 + {qty_noise} * 28.0), 2)"
+        },
+        {
+          "name": "schedule_adherence_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Schedule adherence percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(110.0, GREATEST(60.0, 90.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "cost_variance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Cost variance from budget percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-15.0 + {qty_noise} * 30.0, 2)"
+        },
+        {
+          "name": "risk_rating",
+          "sql_type": "STRING",
+          "comment": "Risk: Low, Medium, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.88 THEN 'High' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "project_id": "CV-DW-001",
+          "project_name": "Anchor Phase 2",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-002",
+          "project_name": "Whale Development",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-003",
+          "project_name": "Kaskida Appraisal",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-004",
+          "project_name": "Tiber Exploration",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-ON-005",
+          "project_name": "Eagle Ford Infill Program",
+          "project_type": "Onshore Conventional",
+          "basin_region": "Texas"
+        },
+        {
+          "project_id": "CV-ON-006",
+          "project_name": "San Juan Basin Recompletion",
+          "project_type": "Onshore Conventional",
+          "basin_region": "New Mexico"
+        },
+        {
+          "project_id": "CV-SH-007",
+          "project_name": "Permian Delaware Basin Pad",
+          "project_type": "Shale",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-SH-008",
+          "project_name": "Permian Midland Expansion",
+          "project_type": "Shale",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-SH-009",
+          "project_name": "Haynesville Gas Play",
+          "project_type": "Shale",
+          "basin_region": "Louisiana"
+        },
+        {
+          "project_id": "CV-SH-010",
+          "project_name": "Marcellus Northeast PA",
+          "project_type": "Shale",
+          "basin_region": "Appalachia"
+        },
+        {
+          "project_id": "CV-LNG-011",
+          "project_name": "Freeport LNG Train 4",
+          "project_type": "LNG",
+          "basin_region": "Texas Gulf Coast"
+        },
+        {
+          "project_id": "CV-LNG-012",
+          "project_name": "Plaquemines LNG Phase 2",
+          "project_type": "LNG",
+          "basin_region": "Louisiana Gulf Coast"
+        },
+        {
+          "project_id": "CV-LNG-013",
+          "project_name": "Golden Pass Export",
+          "project_type": "LNG",
+          "basin_region": "Texas Gulf Coast"
+        },
+        {
+          "project_id": "CV-INF-014",
+          "project_name": "GOM Pipeline Expansion",
+          "project_type": "Infrastructure",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-INF-015",
+          "project_name": "Permian Gathering System",
+          "project_type": "Infrastructure",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-INF-016",
+          "project_name": "FPSO Conversion Project",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-017",
+          "project_name": "Shenandoah Exploration",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-SH-018",
+          "project_name": "DJ Basin Wattenberg",
+          "project_type": "Shale",
+          "basin_region": "Colorado"
+        },
+        {
+          "project_id": "CV-INF-019",
+          "project_name": "Carbon Capture Hub Texas",
+          "project_type": "Infrastructure",
+          "basin_region": "Texas"
+        },
+        {
+          "project_id": "CV-LNG-020",
+          "project_name": "Cameron LNG Debottleneck",
+          "project_type": "LNG",
+          "basin_region": "Louisiana Gulf Coast"
+        }
+      ],
+      "category_distribution": {
+        "Deepwater": 0.06,
+        "Onshore Conventional": 0.04,
+        "Shale": 0.055,
+        "LNG": 0.055,
+        "Infrastructure": 0.045
+      }
+    },
+    {
+      "table_name": "investment_kpi_monthly",
+      "description": "Monthly investment portfolio KPIs including total spend, budget variance, and portfolio-level return metrics.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "First day of the KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "basin_region",
+          "sql_type": "STRING",
+          "comment": "Basin or geographic region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_spend_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly capital spend in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, {qty_noise} * 25000000.0), 2)"
+        },
+        {
+          "name": "cumulative_spend_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Cumulative capital spend in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(500000.0, {qty_noise} * 150000000.0), 2)"
+        },
+        {
+          "name": "budget_remaining_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Budget remaining percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 60.0 + ({qty_noise} - 0.5) * 80.0)), 1)"
+        },
+        {
+          "name": "portfolio_roic_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Return on invested capital percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(-5.0, 3.0 + {qty_noise} * 17.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "project_id": "CV-DW-001",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-002",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-003",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-004",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-ON-005",
+          "project_type": "Onshore Conventional",
+          "basin_region": "Texas"
+        },
+        {
+          "project_id": "CV-ON-006",
+          "project_type": "Onshore Conventional",
+          "basin_region": "New Mexico"
+        },
+        {
+          "project_id": "CV-SH-007",
+          "project_type": "Shale",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-SH-008",
+          "project_type": "Shale",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-SH-009",
+          "project_type": "Shale",
+          "basin_region": "Louisiana"
+        },
+        {
+          "project_id": "CV-SH-010",
+          "project_type": "Shale",
+          "basin_region": "Appalachia"
+        },
+        {
+          "project_id": "CV-LNG-011",
+          "project_type": "LNG",
+          "basin_region": "Texas Gulf Coast"
+        },
+        {
+          "project_id": "CV-LNG-012",
+          "project_type": "LNG",
+          "basin_region": "Louisiana Gulf Coast"
+        },
+        {
+          "project_id": "CV-LNG-013",
+          "project_type": "LNG",
+          "basin_region": "Texas Gulf Coast"
+        },
+        {
+          "project_id": "CV-INF-014",
+          "project_type": "Infrastructure",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-INF-015",
+          "project_type": "Infrastructure",
+          "basin_region": "Permian Basin"
+        },
+        {
+          "project_id": "CV-INF-016",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-DW-017",
+          "project_type": "Deepwater",
+          "basin_region": "Gulf of Mexico"
+        },
+        {
+          "project_id": "CV-SH-018",
+          "project_type": "Shale",
+          "basin_region": "Colorado"
+        },
+        {
+          "project_id": "CV-INF-019",
+          "project_type": "Infrastructure",
+          "basin_region": "Texas"
+        },
+        {
+          "project_id": "CV-LNG-020",
+          "project_type": "LNG",
+          "basin_region": "Louisiana Gulf Coast"
+        }
+      ],
+      "category_distribution": {
+        "Deepwater": 0.06,
+        "Onshore Conventional": 0.04,
+        "Shale": 0.055,
+        "LNG": 0.055,
+        "Infrastructure": 0.045
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "investment_transactions_metrics",
+      "source_table": "investment_transactions",
+      "dimensions": [
+        {
+          "name": "transaction_date",
+          "expr": "transaction_date"
+        },
+        {
+          "name": "project_id",
+          "expr": "project_id"
+        },
+        {
+          "name": "project_type",
+          "expr": "project_type"
+        },
+        {
+          "name": "basin_region",
+          "expr": "basin_region"
+        },
+        {
+          "name": "spend_category",
+          "expr": "spend_category"
+        },
+        {
+          "name": "phase",
+          "expr": "phase"
+        },
+        {
+          "name": "approval_status",
+          "expr": "approval_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_spend_usd",
+          "expr": "SUM(amount_usd)",
+          "comment": "Total investment spend in USD"
+        },
+        {
+          "name": "total_budget_usd",
+          "expr": "SUM(budget_amount_usd)",
+          "comment": "Total budgeted amount in USD"
+        },
+        {
+          "name": "total_transactions",
+          "expr": "COUNT(DISTINCT transaction_id)",
+          "comment": "Total investment transactions"
+        },
+        {
+          "name": "avg_transaction_usd",
+          "expr": "AVG(amount_usd)",
+          "comment": "Average transaction size in USD"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        }
+      ]
+    },
+    {
+      "view_name": "project_snapshots_metrics",
+      "source_table": "project_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "project_id",
+          "expr": "project_id"
+        },
+        {
+          "name": "project_type",
+          "expr": "project_type"
+        },
+        {
+          "name": "basin_region",
+          "expr": "basin_region"
+        },
+        {
+          "name": "risk_rating",
+          "expr": "risk_rating"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_npv_mm",
+          "expr": "AVG(npv_mm)",
+          "comment": "Average NPV in millions USD"
+        },
+        {
+          "name": "avg_irr_pct",
+          "expr": "AVG(irr_pct)",
+          "comment": "Average IRR percentage"
+        },
+        {
+          "name": "avg_schedule_adherence",
+          "expr": "AVG(schedule_adherence_pct)",
+          "comment": "Average schedule adherence percentage"
+        },
+        {
+          "name": "avg_cost_variance_pct",
+          "expr": "AVG(cost_variance_pct)",
+          "comment": "Average cost variance from budget"
+        },
+        {
+          "name": "max_npv_mm",
+          "expr": "MAX(npv_mm)",
+          "comment": "Maximum npv mm"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The investment_transactions_metrics view (source: investment_transactions) has dimensions: transaction_date, project_id, project_type, basin_region, spend_category, phase, approval_status. Measures: total_spend_usd, total_budget_usd, total_transactions, avg_transaction_usd. The project_snapshots_metrics view (source: project_snapshots) has dimensions: snapshot_date, project_id, project_type, basin_region, risk_rating. Measures: avg_npv_mm, avg_irr_pct, avg_schedule_adherence, avg_cost_variance_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. project_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total transactionss?",
+    "How has highest amount changed over time?",
+    "What is the monthly trend in total investment spend in usd?",
+    "How has total budgeted amount in usd changed over time?",
+    "What is the monthly trend in highest npv mm?",
+    "How has average npv in millions usd changed over time?",
+    "What is the monthly trend in average irr percentage?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total investment spend in usd?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_spend_usd) AS total_spend_usd",
+        "FROM {fqn}.investment_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has total budgeted amount in usd changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_budget_usd) AS total_budget_usd",
+        "FROM {fqn}.investment_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in average irr percentage?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_irr_pct) AS avg_irr_pct",
+        "FROM {fqn}.project_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total transaction amount in usd break down by project identifier for 'Approved' records?",
+      "sql_lines": [
+        "SELECT project_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.investment_transactions",
+        "WHERE approval_status = 'Approved' GROUP BY project_id ORDER BY total_amount_usd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total net present value in millions usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(npv_mm) AS total_npv_mm",
+        "FROM {fqn}.project_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average budget remaining percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(budget_remaining_pct) AS avg_budget_remaining_pct",
+        "FROM {fqn}.investment_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has unique total transactionss changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.investment_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "approval_status = 'Approved'",
+        "display_name": "approved investments",
+        "synonyms": [
+          "committed capital",
+          "approved projects"
+        ],
+        "instruction": "Use to filter to approved investment transactions."
+      },
+      {
+        "sql": "risk_rating IN ('High', 'Critical')",
+        "display_name": "high risk projects",
+        "synonyms": [
+          "risky projects",
+          "at risk"
+        ],
+        "instruction": "Use to filter project snapshots to high and critical risk."
+      },
+      {
+        "sql": "phase = 'Development'",
+        "display_name": "development phase",
+        "synonyms": [
+          "in development",
+          "active development"
+        ],
+        "instruction": "Use to filter to projects in the development phase."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "budget_variance_usd",
+        "sql": "investment_transactions.amount_usd - investment_transactions.budget_amount_usd",
+        "display_name": "budget variance USD",
+        "synonyms": [
+          "overspend",
+          "underspend"
+        ]
+      },
+      {
+        "alias": "npv_per_capex",
+        "sql": "ROUND(project_snapshots.npv_mm / NULLIF(investment_kpi_monthly.cumulative_spend_usd / 1000000.0, 0), 3)",
+        "display_name": "NPV per capex million",
+        "synonyms": [
+          "capital efficiency",
+          "return ratio"
+        ]
+      },
+      {
+        "alias": "transaction_month",
+        "sql": "DATE_TRUNC('month', investment_transactions.transaction_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "month",
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_spend_usd",
+        "sql": "SUM(investment_transactions.amount_usd)",
+        "display_name": "total capital spend",
+        "synonyms": [
+          "capex",
+          "investment spend"
+        ]
+      },
+      {
+        "alias": "total_budget_usd",
+        "sql": "SUM(investment_transactions.budget_amount_usd)",
+        "display_name": "total budget",
+        "synonyms": [
+          "budgeted amount",
+          "planned spend"
+        ]
+      },
+      {
+        "alias": "avg_npv_mm",
+        "sql": "AVG(project_snapshots.npv_mm)",
+        "display_name": "average NPV",
+        "synonyms": [
+          "NPV",
+          "net present value"
+        ]
+      },
+      {
+        "alias": "avg_irr_pct",
+        "sql": "AVG(project_snapshots.irr_pct)",
+        "display_name": "average IRR",
+        "synonyms": [
+          "IRR",
+          "return rate"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total transactionss?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "FROM {fqn}.investment_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "How has highest amount changed over time?",
+      "sql_lines": [
+        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "FROM {fqn}.investment_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY transaction_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest npv mm?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_npv_mm) AS max_npv_mm",
+        "FROM {fqn}.project_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has average npv in millions usd changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_npv_mm) AS avg_npv_mm",
+        "FROM {fqn}.project_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top project identifier by total transaction amount in usd?",
+      "sql_lines": [
+        "SELECT project_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.investment_transactions",
+        "GROUP BY project_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average internal rate of return percentage by project name?",
+      "sql_lines": [
+        "SELECT project_name, AVG(irr_pct) AS avg_irr_pct",
+        "FROM {fqn}.project_snapshots",
+        "GROUP BY project_name ORDER BY avg_irr_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.investment_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

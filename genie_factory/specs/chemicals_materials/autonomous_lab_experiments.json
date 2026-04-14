@@ -1,0 +1,994 @@
+{
+  "company_name": "LabAuto Sciences",
+  "industry": "Chemicals & Materials",
+  "use_case": "Autonomous lab experiment tracking and formulation optimization",
+  "space_title": "LabAuto Sciences - Autonomous Lab Experiments & Optimization 🧪",
+  "space_description": "R&D analytics for LabAuto Sciences. Ask about experiment runs, parameter configurations, formulation yields, optimization KPIs, and model-guided experiment outcomes across 20 formulation targets and 4 lab facilities.",
+  "schema_basename": "auto_lab_experiments",
+  "tables": [
+    {
+      "table_name": "experiment_runs",
+      "description": "Individual experiment run records with formulation, parameters, measured outcomes, and pass/fail results from autonomous lab systems.",
+      "columns": [
+        {
+          "name": "run_id",
+          "sql_type": "STRING",
+          "comment": "Unique experiment run identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RUN-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "run_date",
+          "sql_type": "DATE",
+          "comment": "Date experiment was executed",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "formulation_id",
+          "sql_type": "STRING",
+          "comment": "Target formulation identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formulation_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable formulation name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formulation_category",
+          "sql_type": "STRING",
+          "comment": "Category: Catalysts, Coatings, Polymers, Pharmaceuticals, Nanomaterials",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "lab_facility",
+          "sql_type": "STRING",
+          "comment": "Lab facility where experiment ran",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Lab-Boston' WHEN {status_noise} < 0.50 THEN 'Lab-SanDiego' WHEN {status_noise} < 0.75 THEN 'Lab-Basel' ELSE 'Lab-Shanghai' END"
+        },
+        {
+          "name": "temperature_c",
+          "sql_type": "DOUBLE",
+          "comment": "Reaction temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25 + {qty_noise} * 475, 1)"
+        },
+        {
+          "name": "pressure_bar",
+          "sql_type": "DOUBLE",
+          "comment": "Reaction pressure in bar",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + {qty_noise} * 49.0, 2)"
+        },
+        {
+          "name": "reaction_time_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Reaction duration in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5 + {qty_noise} * 355, 1)"
+        },
+        {
+          "name": "yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Product yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15 + {qty_noise} * 80, 2)"
+        },
+        {
+          "name": "purity_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Product purity percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70 + {qty_noise} * 29.5, 2)"
+        },
+        {
+          "name": "run_result",
+          "sql_type": "STRING",
+          "comment": "Result: Pass, Fail, Inconclusive",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Fail' WHEN {status_noise} < 0.20 THEN 'Inconclusive' ELSE 'Pass' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Catalysts": {
+          "1,2,3": 0.05
+        },
+        "Coatings": {
+          "4,5,6": 0.05
+        },
+        "Polymers": {
+          "7,8,9": 0.045
+        },
+        "Pharmaceuticals": {
+          "1,2,3,10,11,12": 0.04
+        },
+        "Nanomaterials": {
+          "6,7,8": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "formulation_id": "FRM-001",
+          "formulation_name": "Pt-Pd Bimetallic Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-002",
+          "formulation_name": "Zeolite Cracking Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-003",
+          "formulation_name": "Iron-Oxide Fischer-Tropsch",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-004",
+          "formulation_name": "Nickel Hydrogenation Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-005",
+          "formulation_name": "UV-Cure Epoxy Coating",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-006",
+          "formulation_name": "Ceramic Thermal Barrier",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-007",
+          "formulation_name": "Anti-Corrosion Zinc Primer",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-008",
+          "formulation_name": "Hydrophobic Silicone Coat",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-009",
+          "formulation_name": "Bio-PLA Blend Polymer",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-010",
+          "formulation_name": "High-Impact ABS Resin",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-011",
+          "formulation_name": "Conductive PEDOT Polymer",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-012",
+          "formulation_name": "Self-Healing Polyurethane",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-013",
+          "formulation_name": "mRNA Lipid Nanoparticle",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-014",
+          "formulation_name": "Sustained-Release Tablet",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-015",
+          "formulation_name": "Antibody-Drug Conjugate",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-016",
+          "formulation_name": "Oral Bioavailability Enhancer",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-017",
+          "formulation_name": "Graphene Oxide Nanosheet",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-018",
+          "formulation_name": "Silver Nanoparticle Ink",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-019",
+          "formulation_name": "Quantum Dot CdSe/ZnS",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-020",
+          "formulation_name": "Carbon Nanotube Composite",
+          "formulation_category": "Nanomaterials"
+        }
+      ],
+      "category_distribution": {
+        "Catalysts": 0.04,
+        "Coatings": 0.035,
+        "Polymers": 0.03,
+        "Pharmaceuticals": 0.03,
+        "Nanomaterials": 0.025
+      }
+    },
+    {
+      "table_name": "parameter_snapshots",
+      "description": "Weekly snapshots of optimal parameter configurations per formulation, including model-recommended settings and confidence scores.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique parameter snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PRM-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Weekly snapshot date",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "formulation_id",
+          "sql_type": "STRING",
+          "comment": "Target formulation identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formulation_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable formulation name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formulation_category",
+          "sql_type": "STRING",
+          "comment": "Formulation category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "optimal_temp_c",
+          "sql_type": "DOUBLE",
+          "comment": "Model-recommended optimal temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50 + {qty_noise} * 400, 1)"
+        },
+        {
+          "name": "optimal_pressure_bar",
+          "sql_type": "DOUBLE",
+          "comment": "Model-recommended optimal pressure in bar",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.5 + {qty_noise} * 38.5, 2)"
+        },
+        {
+          "name": "optimal_time_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Model-recommended reaction time in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10 + {qty_noise} * 290, 1)"
+        },
+        {
+          "name": "predicted_yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Model-predicted yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40 + {qty_noise} * 55, 2)"
+        },
+        {
+          "name": "confidence_score",
+          "sql_type": "DOUBLE",
+          "comment": "Model confidence score (0-1)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.50 + {qty_noise} * 0.48, 3)"
+        },
+        {
+          "name": "experiments_to_date",
+          "sql_type": "INT",
+          "comment": "Cumulative experiments run for this formulation",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 490) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "formulation_id": "FRM-001",
+          "formulation_name": "Pt-Pd Bimetallic Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-002",
+          "formulation_name": "Zeolite Cracking Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-003",
+          "formulation_name": "Iron-Oxide Fischer-Tropsch",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-004",
+          "formulation_name": "Nickel Hydrogenation Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-005",
+          "formulation_name": "UV-Cure Epoxy Coating",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-006",
+          "formulation_name": "Ceramic Thermal Barrier",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-007",
+          "formulation_name": "Anti-Corrosion Zinc Primer",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-008",
+          "formulation_name": "Hydrophobic Silicone Coat",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-009",
+          "formulation_name": "Bio-PLA Blend Polymer",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-010",
+          "formulation_name": "High-Impact ABS Resin",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-011",
+          "formulation_name": "Conductive PEDOT Polymer",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-012",
+          "formulation_name": "Self-Healing Polyurethane",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-013",
+          "formulation_name": "mRNA Lipid Nanoparticle",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-014",
+          "formulation_name": "Sustained-Release Tablet",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-015",
+          "formulation_name": "Antibody-Drug Conjugate",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-016",
+          "formulation_name": "Oral Bioavailability Enhancer",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-017",
+          "formulation_name": "Graphene Oxide Nanosheet",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-018",
+          "formulation_name": "Silver Nanoparticle Ink",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-019",
+          "formulation_name": "Quantum Dot CdSe/ZnS",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-020",
+          "formulation_name": "Carbon Nanotube Composite",
+          "formulation_category": "Nanomaterials"
+        }
+      ],
+      "category_distribution": {
+        "Catalysts": 0.04,
+        "Coatings": 0.035,
+        "Polymers": 0.03,
+        "Pharmaceuticals": 0.03,
+        "Nanomaterials": 0.025
+      }
+    },
+    {
+      "table_name": "optimization_monthly",
+      "description": "Monthly optimization KPIs per formulation including pass rate, average yield improvement, cost per experiment, and model accuracy.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OPT-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of reporting month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "formulation_id",
+          "sql_type": "STRING",
+          "comment": "Target formulation identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formulation_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable formulation name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "formulation_category",
+          "sql_type": "STRING",
+          "comment": "Formulation category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "experiments_run",
+          "sql_type": "INT",
+          "comment": "Number of experiments run in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 45) AS INT)"
+        },
+        {
+          "name": "pass_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of experiments that passed",
+          "is_dimension": false,
+          "generation_expr": "ROUND(55 + {qty_noise} * 40, 2)"
+        },
+        {
+          "name": "avg_yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Average yield across experiments",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30 + {qty_noise} * 60, 2)"
+        },
+        {
+          "name": "best_yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Best yield achieved in the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50 + {qty_noise} * 48, 2)"
+        },
+        {
+          "name": "cost_per_experiment_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Average cost per experiment in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200 + {qty_noise} * 4800, 2)"
+        },
+        {
+          "name": "model_prediction_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "How close model predictions were to actual yields (%)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60 + {qty_noise} * 35, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Catalysts": {
+          "1,2,3": 0.05
+        },
+        "Coatings": {
+          "4,5,6": 0.05
+        },
+        "Polymers": {
+          "7,8,9": 0.045
+        },
+        "Pharmaceuticals": {
+          "10,11,12": 0.04
+        },
+        "Nanomaterials": {
+          "6,7,8": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "formulation_id": "FRM-001",
+          "formulation_name": "Pt-Pd Bimetallic Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-002",
+          "formulation_name": "Zeolite Cracking Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-003",
+          "formulation_name": "Iron-Oxide Fischer-Tropsch",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-004",
+          "formulation_name": "Nickel Hydrogenation Catalyst",
+          "formulation_category": "Catalysts"
+        },
+        {
+          "formulation_id": "FRM-005",
+          "formulation_name": "UV-Cure Epoxy Coating",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-006",
+          "formulation_name": "Ceramic Thermal Barrier",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-007",
+          "formulation_name": "Anti-Corrosion Zinc Primer",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-008",
+          "formulation_name": "Hydrophobic Silicone Coat",
+          "formulation_category": "Coatings"
+        },
+        {
+          "formulation_id": "FRM-009",
+          "formulation_name": "Bio-PLA Blend Polymer",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-010",
+          "formulation_name": "High-Impact ABS Resin",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-011",
+          "formulation_name": "Conductive PEDOT Polymer",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-012",
+          "formulation_name": "Self-Healing Polyurethane",
+          "formulation_category": "Polymers"
+        },
+        {
+          "formulation_id": "FRM-013",
+          "formulation_name": "mRNA Lipid Nanoparticle",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-014",
+          "formulation_name": "Sustained-Release Tablet",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-015",
+          "formulation_name": "Antibody-Drug Conjugate",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-016",
+          "formulation_name": "Oral Bioavailability Enhancer",
+          "formulation_category": "Pharmaceuticals"
+        },
+        {
+          "formulation_id": "FRM-017",
+          "formulation_name": "Graphene Oxide Nanosheet",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-018",
+          "formulation_name": "Silver Nanoparticle Ink",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-019",
+          "formulation_name": "Quantum Dot CdSe/ZnS",
+          "formulation_category": "Nanomaterials"
+        },
+        {
+          "formulation_id": "FRM-020",
+          "formulation_name": "Carbon Nanotube Composite",
+          "formulation_category": "Nanomaterials"
+        }
+      ],
+      "category_distribution": {
+        "Catalysts": 0.04,
+        "Coatings": 0.035,
+        "Polymers": 0.03,
+        "Pharmaceuticals": 0.03,
+        "Nanomaterials": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "experiment_runs_metrics",
+      "source_table": "experiment_runs",
+      "dimensions": [
+        {
+          "name": "run_date",
+          "expr": "run_date"
+        },
+        {
+          "name": "formulation_category",
+          "expr": "formulation_category"
+        },
+        {
+          "name": "lab_facility",
+          "expr": "lab_facility"
+        },
+        {
+          "name": "run_result",
+          "expr": "run_result"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_experiments",
+          "expr": "COUNT(DISTINCT run_id)",
+          "comment": "Total experiment runs"
+        },
+        {
+          "name": "passed_experiments",
+          "expr": "COUNT(DISTINCT CASE WHEN run_result = 'Pass' THEN run_id END)",
+          "comment": "Experiments that passed"
+        },
+        {
+          "name": "avg_yield_pct",
+          "expr": "AVG(yield_pct)",
+          "comment": "Average product yield percentage"
+        },
+        {
+          "name": "avg_purity_pct",
+          "expr": "AVG(purity_pct)",
+          "comment": "Average product purity percentage"
+        },
+        {
+          "name": "avg_reaction_time_minutes",
+          "expr": "AVG(reaction_time_minutes)",
+          "comment": "Average reaction time in minutes"
+        },
+        {
+          "name": "max_yield_pct",
+          "expr": "MAX(yield_pct)",
+          "comment": "Maximum yield achieved"
+        },
+        {
+          "name": "total_temperature_c",
+          "expr": "SUM(temperature_c)",
+          "comment": "Total temperature c"
+        },
+        {
+          "name": "total_pressure_bar",
+          "expr": "SUM(pressure_bar)",
+          "comment": "Total pressure bar"
+        },
+        {
+          "name": "unique_formulation_count",
+          "expr": "COUNT(DISTINCT formulation_id)",
+          "comment": "Number of distinct formulations"
+        },
+        {
+          "name": "max_temperature_c",
+          "expr": "MAX(temperature_c)",
+          "comment": "Maximum temperature c"
+        }
+      ]
+    },
+    {
+      "view_name": "optimization_monthly_metrics",
+      "source_table": "optimization_monthly",
+      "dimensions": [
+        {
+          "name": "report_month",
+          "expr": "report_month"
+        },
+        {
+          "name": "formulation_category",
+          "expr": "formulation_category"
+        },
+        {
+          "name": "formulation_id",
+          "expr": "formulation_id"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_experiments_run",
+          "expr": "SUM(experiments_run)",
+          "comment": "Total experiments conducted"
+        },
+        {
+          "name": "avg_pass_rate_pct",
+          "expr": "AVG(pass_rate_pct)",
+          "comment": "Average pass rate"
+        },
+        {
+          "name": "avg_yield_pct",
+          "expr": "AVG(avg_yield_pct)",
+          "comment": "Average yield across formulations"
+        },
+        {
+          "name": "avg_cost_per_experiment",
+          "expr": "AVG(cost_per_experiment_usd)",
+          "comment": "Average cost per experiment in USD"
+        },
+        {
+          "name": "avg_model_accuracy_pct",
+          "expr": "AVG(model_prediction_accuracy_pct)",
+          "comment": "Average model prediction accuracy"
+        },
+        {
+          "name": "total_best_yield_percent",
+          "expr": "SUM(best_yield_pct)",
+          "comment": "Total best yield pct"
+        },
+        {
+          "name": "max_experiments_run",
+          "expr": "MAX(experiments_run)",
+          "comment": "Maximum experiments run"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The experiment_runs_metrics view (source: experiment_runs) has dimensions: run_date, formulation_category, lab_facility, run_result. Measures: total_experiments, passed_experiments, avg_yield_pct, avg_purity_pct, avg_reaction_time_minutes, max_yield_pct. The optimization_monthly_metrics view (source: optimization_monthly) has dimensions: report_month, formulation_category, formulation_id. Measures: total_experiments_run, avg_pass_rate_pct, avg_yield_pct, avg_cost_per_experiment, avg_model_accuracy_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. formulation_name).",
+  "sample_questions": [
+    "What is the monthly trend in passed experiments count?",
+    "How has unique total experimentss changed over time?",
+    "What is the monthly trend in unique formulations?",
+    "How has highest yield pct changed over time?",
+    "What is the monthly trend in highest experiments run?",
+    "How has total experiments conducted changed over time?",
+    "What is the monthly trend in total best yield pct?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique formulations?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(unique_formulation_count) AS unique_formulation_count",
+        "FROM {fqn}.experiment_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has highest yield pct changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(max_yield_pct) AS max_yield_pct",
+        "FROM {fqn}.experiment_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total best yield pct?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_best_yield_percent) AS total_best_yield_percent",
+        "FROM {fqn}.optimization_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has average model prediction accuracy changed over time?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(avg_model_accuracy_pct) AS avg_model_accuracy_pct",
+        "FROM {fqn}.optimization_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total reaction temperature in celsius over time?",
+      "sql_lines": [
+        "SELECT run_date, SUM(temperature_c) AS total_temperature_c",
+        "FROM {fqn}.experiment_runs",
+        "GROUP BY run_date ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total model-recommended optimal temperature in celsius over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(optimal_temp_c) AS total_optimal_temp_c",
+        "FROM {fqn}.parameter_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average percentage of experiments that passed changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(pass_rate_pct) AS avg_pass_rate_pct",
+        "FROM {fqn}.optimization_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "run_result = 'Pass'",
+        "display_name": "passed experiments",
+        "synonyms": [
+          "successful runs",
+          "passing experiments"
+        ],
+        "instruction": "Use when filtering to successful experiment runs only."
+      },
+      {
+        "sql": "formulation_category = 'Catalysts'",
+        "display_name": "catalyst formulations",
+        "synonyms": [
+          "catalysts",
+          "catalyst experiments"
+        ],
+        "instruction": "Use when filtering to catalyst formulation experiments."
+      },
+      {
+        "sql": "confidence_score >= 0.85",
+        "display_name": "high confidence predictions",
+        "synonyms": [
+          "confident model",
+          "reliable predictions"
+        ],
+        "instruction": "Use when filtering to formulations with high model confidence."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "run_month",
+        "sql": "DATE_TRUNC('month', run_date)",
+        "display_name": "experiment month",
+        "synonyms": [
+          "month",
+          "run month"
+        ]
+      },
+      {
+        "alias": "yield_gap",
+        "sql": "best_yield_pct - avg_yield_pct",
+        "display_name": "yield improvement gap",
+        "synonyms": [
+          "yield headroom",
+          "optimization potential"
+        ]
+      },
+      {
+        "alias": "total_experiment_cost",
+        "sql": "experiments_run * cost_per_experiment_usd",
+        "display_name": "total experiment cost",
+        "synonyms": [
+          "R&D spend",
+          "lab cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "experiment_pass_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN run_result = 'Pass' THEN run_id END) * 1.0 / NULLIF(COUNT(DISTINCT run_id), 0)",
+        "display_name": "experiment pass rate",
+        "synonyms": [
+          "pass rate",
+          "success rate"
+        ]
+      },
+      {
+        "alias": "avg_experiment_yield",
+        "sql": "AVG(yield_pct)",
+        "display_name": "average yield",
+        "synonyms": [
+          "mean yield",
+          "avg yield percentage"
+        ]
+      },
+      {
+        "alias": "total_experiment_count",
+        "sql": "COUNT(DISTINCT run_id)",
+        "display_name": "total experiments",
+        "synonyms": [
+          "experiment count",
+          "runs completed"
+        ]
+      },
+      {
+        "alias": "avg_cost_per_run",
+        "sql": "AVG(cost_per_experiment_usd)",
+        "display_name": "average cost per experiment",
+        "synonyms": [
+          "unit cost",
+          "experiment cost"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in passed experiments count?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(passed_experiments) AS passed_experiments",
+        "FROM {fqn}.experiment_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "How has unique total experimentss changed over time?",
+      "sql_lines": [
+        "SELECT run_date, MEASURE(total_experiments) AS total_experiments",
+        "FROM {fqn}.experiment_runs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY run_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest experiments run?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(max_experiments_run) AS max_experiments_run",
+        "FROM {fqn}.optimization_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has total experiments conducted changed over time?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_experiments_run) AS total_experiments_run",
+        "FROM {fqn}.optimization_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "What are the top target formulation identifier by total reaction temperature in celsius?",
+      "sql_lines": [
+        "SELECT formulation_id, SUM(temperature_c) AS total_temperature_c",
+        "FROM {fqn}.experiment_runs",
+        "GROUP BY formulation_id ORDER BY total_temperature_c DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average model-predicted yield percentage by human-readable formulation name?",
+      "sql_lines": [
+        "SELECT formulation_name, AVG(predicted_yield_pct) AS avg_predicted_yield_pct",
+        "FROM {fqn}.parameter_snapshots",
+        "GROUP BY formulation_name ORDER BY avg_predicted_yield_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of reporting month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.optimization_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

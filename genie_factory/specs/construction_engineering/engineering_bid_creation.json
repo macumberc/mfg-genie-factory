@@ -1,0 +1,1020 @@
+{
+  "company_name": "BuildBid Engineering",
+  "industry": "Construction & Engineering",
+  "use_case": "Engineering bid creation and cost estimation analytics",
+  "space_title": "BuildBid Engineering - Bid Creation & Cost Estimation 📝",
+  "space_description": "Bid analytics for BuildBid Engineering. Ask about bid win rates, cost estimation accuracy, competitive positioning, and margin analysis across 20 project types.",
+  "schema_basename": "ce_bid_creation",
+  "tables": [
+    {
+      "table_name": "projects",
+      "description": "Daily bid submission records with estimated costs, margins, and competitive data.",
+      "columns": [
+        {
+          "name": "bid_id",
+          "sql_type": "STRING",
+          "comment": "Bid ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BD-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "bid_date",
+          "sql_type": "DATE",
+          "comment": "Bid submission date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_name",
+          "sql_type": "STRING",
+          "comment": "Project name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "estimated_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated project cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500000.0 + ({qty_noise} * 9500000.0), 2)"
+        },
+        {
+          "name": "bid_amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Bid amount USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(600000.0 + ({qty_noise} * 11400000.0), 2)"
+        },
+        {
+          "name": "target_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Target margin 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 20.0), 2)"
+        },
+        {
+          "name": "bid_result",
+          "sql_type": "STRING",
+          "comment": "Result: Won, Lost, Pending, Withdrawn",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Withdrawn' WHEN {status_noise} < 0.25 THEN 'Pending' WHEN {status_noise} < 0.55 THEN 'Lost' ELSE 'Won' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Bridge": {
+          "3,4,5": 0.06
+        },
+        "Highway": {
+          "4,5,6,7": 0.07
+        },
+        "Commercial Building": {
+          "3,4,5": 0.05
+        },
+        "Energy": {
+          "4,5,6": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "project_id": "PJ-001",
+          "project_name": "I-95 Bridge Replacement",
+          "project_type": "Bridge",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-002",
+          "project_name": "Harbor Crossing Overpass",
+          "project_type": "Bridge",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-003",
+          "project_name": "Mountain Pass Bridge",
+          "project_type": "Bridge",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-004",
+          "project_name": "Highway 101 Expansion",
+          "project_type": "Highway",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-005",
+          "project_name": "Interstate 10 Widening",
+          "project_type": "Highway",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-006",
+          "project_name": "Ring Road Phase III",
+          "project_type": "Highway",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-007",
+          "project_name": "Metro Tower Office Complex",
+          "project_type": "Commercial Building",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-008",
+          "project_name": "Lakeside Mixed-Use Dev",
+          "project_type": "Commercial Building",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-009",
+          "project_name": "Airport Terminal Expansion",
+          "project_type": "Commercial Building",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-010",
+          "project_name": "City Center Parking Garage",
+          "project_type": "Parking Structure",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-011",
+          "project_name": "Convention Center Garage",
+          "project_type": "Parking Structure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-012",
+          "project_name": "Regional Water Treatment",
+          "project_type": "Water/Wastewater",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-013",
+          "project_name": "Coastal Desalination Plant",
+          "project_type": "Water/Wastewater",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-014",
+          "project_name": "Downtown Tunnel Project",
+          "project_type": "Tunnel",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-015",
+          "project_name": "Mountain Rail Tunnel",
+          "project_type": "Tunnel",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-016",
+          "project_name": "Industrial Park Phase II",
+          "project_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-017",
+          "project_name": "Logistics Hub Construction",
+          "project_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-018",
+          "project_name": "Riverfront Park Development",
+          "project_type": "Public Works",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-019",
+          "project_name": "Solar Farm Infrastructure",
+          "project_type": "Energy",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-020",
+          "project_name": "Wind Farm Foundations",
+          "project_type": "Energy",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Bridge": 0.03,
+        "Highway": 0.035,
+        "Commercial Building": 0.028,
+        "Parking Structure": 0.02,
+        "Water/Wastewater": 0.025,
+        "Tunnel": 0.022,
+        "Industrial": 0.028,
+        "Public Works": 0.02,
+        "Energy": 0.025
+      }
+    },
+    {
+      "table_name": "bid_submissions",
+      "description": "Weekly cost estimate snapshots with labor, materials, equipment, and subcontractor breakdowns.",
+      "columns": [
+        {
+          "name": "estimate_id",
+          "sql_type": "STRING",
+          "comment": "Estimate ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "estimate_date",
+          "sql_type": "DATE",
+          "comment": "Estimate date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "labor_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Labor cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(100000.0 + ({qty_noise} * 2900000.0), 2)"
+        },
+        {
+          "name": "material_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Material cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(150000.0 + ({qty_noise} * 3850000.0), 2)"
+        },
+        {
+          "name": "equipment_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Equipment cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 1450000.0), 2)"
+        },
+        {
+          "name": "subcontractor_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Subcontractor cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80000.0 + ({qty_noise} * 2420000.0), 2)"
+        },
+        {
+          "name": "contingency_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Contingency percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.0 + ({qty_noise} * 12.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Bridge": {
+          "3,4,5": 0.06
+        },
+        "Highway": {
+          "4,5,6,7": 0.07
+        },
+        "Commercial Building": {
+          "3,4,5": 0.05
+        },
+        "Energy": {
+          "4,5,6": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "project_id": "PJ-001",
+          "project_name": "I-95 Bridge Replacement",
+          "project_type": "Bridge",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-002",
+          "project_name": "Harbor Crossing Overpass",
+          "project_type": "Bridge",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-003",
+          "project_name": "Mountain Pass Bridge",
+          "project_type": "Bridge",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-004",
+          "project_name": "Highway 101 Expansion",
+          "project_type": "Highway",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-005",
+          "project_name": "Interstate 10 Widening",
+          "project_type": "Highway",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-006",
+          "project_name": "Ring Road Phase III",
+          "project_type": "Highway",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-007",
+          "project_name": "Metro Tower Office Complex",
+          "project_type": "Commercial Building",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-008",
+          "project_name": "Lakeside Mixed-Use Dev",
+          "project_type": "Commercial Building",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-009",
+          "project_name": "Airport Terminal Expansion",
+          "project_type": "Commercial Building",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-010",
+          "project_name": "City Center Parking Garage",
+          "project_type": "Parking Structure",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-011",
+          "project_name": "Convention Center Garage",
+          "project_type": "Parking Structure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-012",
+          "project_name": "Regional Water Treatment",
+          "project_type": "Water/Wastewater",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-013",
+          "project_name": "Coastal Desalination Plant",
+          "project_type": "Water/Wastewater",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-014",
+          "project_name": "Downtown Tunnel Project",
+          "project_type": "Tunnel",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-015",
+          "project_name": "Mountain Rail Tunnel",
+          "project_type": "Tunnel",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-016",
+          "project_name": "Industrial Park Phase II",
+          "project_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-017",
+          "project_name": "Logistics Hub Construction",
+          "project_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-018",
+          "project_name": "Riverfront Park Development",
+          "project_type": "Public Works",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-019",
+          "project_name": "Solar Farm Infrastructure",
+          "project_type": "Energy",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-020",
+          "project_name": "Wind Farm Foundations",
+          "project_type": "Energy",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Bridge": 0.03,
+        "Highway": 0.035,
+        "Commercial Building": 0.028,
+        "Parking Structure": 0.02,
+        "Water/Wastewater": 0.025,
+        "Tunnel": 0.022,
+        "Industrial": 0.028,
+        "Public Works": 0.02,
+        "Energy": 0.025
+      }
+    },
+    {
+      "table_name": "cost_estimate_snapshots",
+      "description": "Monthly bid performance metrics with win rates, accuracy, and pipeline value.",
+      "columns": [
+        {
+          "name": "perf_id",
+          "sql_type": "STRING",
+          "comment": "Performance ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BP-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.project_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "perf_month",
+          "sql_type": "DATE",
+          "comment": "Performance month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "project_id",
+          "sql_type": "STRING",
+          "comment": "Project ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project_type",
+          "sql_type": "STRING",
+          "comment": "Project type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "region",
+          "sql_type": "STRING",
+          "comment": "Region",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "bids_submitted",
+          "sql_type": "INT",
+          "comment": "Bids submitted",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 9) AS INT)"
+        },
+        {
+          "name": "bids_won",
+          "sql_type": "INT",
+          "comment": "Bids won",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 5) AS INT)"
+        },
+        {
+          "name": "pipeline_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Pipeline value USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1000000.0 + ({qty_noise} * 19000000.0), 2)"
+        },
+        {
+          "name": "estimate_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Cost estimate accuracy 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75.0 + ({qty_noise} * 22.0), 2)"
+        },
+        {
+          "name": "avg_competitors",
+          "sql_type": "INT",
+          "comment": "Avg number of competitors per bid",
+          "is_dimension": false,
+          "generation_expr": "CAST(3 + FLOOR({qty_noise} * 7) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Bridge": {
+          "3,4,5": 0.06
+        },
+        "Highway": {
+          "4,5,6,7": 0.07
+        },
+        "Commercial Building": {
+          "3,4,5": 0.05
+        },
+        "Energy": {
+          "4,5,6": 0.05
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "project_id": "PJ-001",
+          "project_name": "I-95 Bridge Replacement",
+          "project_type": "Bridge",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-002",
+          "project_name": "Harbor Crossing Overpass",
+          "project_type": "Bridge",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-003",
+          "project_name": "Mountain Pass Bridge",
+          "project_type": "Bridge",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-004",
+          "project_name": "Highway 101 Expansion",
+          "project_type": "Highway",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-005",
+          "project_name": "Interstate 10 Widening",
+          "project_type": "Highway",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-006",
+          "project_name": "Ring Road Phase III",
+          "project_type": "Highway",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-007",
+          "project_name": "Metro Tower Office Complex",
+          "project_type": "Commercial Building",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-008",
+          "project_name": "Lakeside Mixed-Use Dev",
+          "project_type": "Commercial Building",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-009",
+          "project_name": "Airport Terminal Expansion",
+          "project_type": "Commercial Building",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-010",
+          "project_name": "City Center Parking Garage",
+          "project_type": "Parking Structure",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-011",
+          "project_name": "Convention Center Garage",
+          "project_type": "Parking Structure",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-012",
+          "project_name": "Regional Water Treatment",
+          "project_type": "Water/Wastewater",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-013",
+          "project_name": "Coastal Desalination Plant",
+          "project_type": "Water/Wastewater",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-014",
+          "project_name": "Downtown Tunnel Project",
+          "project_type": "Tunnel",
+          "region": "Northeast"
+        },
+        {
+          "project_id": "PJ-015",
+          "project_name": "Mountain Rail Tunnel",
+          "project_type": "Tunnel",
+          "region": "West"
+        },
+        {
+          "project_id": "PJ-016",
+          "project_name": "Industrial Park Phase II",
+          "project_type": "Industrial",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-017",
+          "project_name": "Logistics Hub Construction",
+          "project_type": "Industrial",
+          "region": "Midwest"
+        },
+        {
+          "project_id": "PJ-018",
+          "project_name": "Riverfront Park Development",
+          "project_type": "Public Works",
+          "region": "Southeast"
+        },
+        {
+          "project_id": "PJ-019",
+          "project_name": "Solar Farm Infrastructure",
+          "project_type": "Energy",
+          "region": "Southwest"
+        },
+        {
+          "project_id": "PJ-020",
+          "project_name": "Wind Farm Foundations",
+          "project_type": "Energy",
+          "region": "Midwest"
+        }
+      ],
+      "category_distribution": {
+        "Bridge": 0.03,
+        "Highway": 0.035,
+        "Commercial Building": 0.028,
+        "Parking Structure": 0.02,
+        "Water/Wastewater": 0.025,
+        "Tunnel": 0.022,
+        "Industrial": 0.028,
+        "Public Works": 0.02,
+        "Energy": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "bid_kpi_monthly",
+      "source_table": "projects",
+      "dimensions": [
+        {
+          "name": "bid_date",
+          "expr": "bid_date"
+        },
+        {
+          "name": "project_type",
+          "expr": "project_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        },
+        {
+          "name": "bid_result",
+          "expr": "bid_result"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_bid_amount",
+          "expr": "SUM(bid_amount_usd)",
+          "comment": "Total bid amount USD"
+        },
+        {
+          "name": "total_estimated_cost",
+          "expr": "SUM(estimated_cost_usd)",
+          "comment": "Total estimated cost"
+        },
+        {
+          "name": "avg_target_margin",
+          "expr": "AVG(target_margin_pct)",
+          "comment": "Avg target margin"
+        },
+        {
+          "name": "bid_count",
+          "expr": "COUNT(DISTINCT bid_id)",
+          "comment": "Total bids submitted"
+        },
+        {
+          "name": "won_count",
+          "expr": "COUNT(DISTINCT CASE WHEN bid_result = 'Won' THEN bid_id END)",
+          "comment": "Bids won count"
+        },
+        {
+          "name": "unique_project_count",
+          "expr": "COUNT(DISTINCT project_id)",
+          "comment": "Number of distinct projects"
+        },
+        {
+          "name": "max_estimated_cost",
+          "expr": "MAX(estimated_cost_usd)",
+          "comment": "Maximum estimated cost usd"
+        }
+      ]
+    },
+    {
+      "view_name": "pipeline_kpi_monthly",
+      "source_table": "cost_estimate_snapshots",
+      "dimensions": [
+        {
+          "name": "perf_month",
+          "expr": "perf_month"
+        },
+        {
+          "name": "project_type",
+          "expr": "project_type"
+        },
+        {
+          "name": "region",
+          "expr": "region"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_bids_submitted",
+          "expr": "SUM(bids_submitted)",
+          "comment": "Total bids submitted"
+        },
+        {
+          "name": "total_bids_won",
+          "expr": "SUM(bids_won)",
+          "comment": "Total bids won"
+        },
+        {
+          "name": "total_pipeline",
+          "expr": "SUM(pipeline_value_usd)",
+          "comment": "Total pipeline value"
+        },
+        {
+          "name": "avg_estimate_accuracy",
+          "expr": "AVG(estimate_accuracy_pct)",
+          "comment": "Avg estimate accuracy"
+        },
+        {
+          "name": "avg_competitors",
+          "expr": "AVG(avg_competitors)",
+          "comment": "Avg competitors per bid"
+        },
+        {
+          "name": "unique_project_count",
+          "expr": "COUNT(DISTINCT project_id)",
+          "comment": "Number of distinct projects"
+        },
+        {
+          "name": "max_bids_submitted",
+          "expr": "MAX(bids_submitted)",
+          "comment": "Maximum bids submitted"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The bid_kpi_monthly view (source: projects) has dimensions: bid_date, project_type, region, bid_result. Measures: total_bid_amount, total_estimated_cost, avg_target_margin, bid_count, won_count. The pipeline_kpi_monthly view (source: cost_estimate_snapshots) has dimensions: perf_month, project_type, region. Measures: total_bids_submitted, total_bids_won, total_pipeline, avg_estimate_accuracy, avg_competitors. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. project_id, project_name).",
+  "sample_questions": [
+    "What is the monthly trend in won count?",
+    "How has unique bids changed over time?",
+    "What is the monthly trend in unique projects?",
+    "How has highest estimated cost changed over time?",
+    "What is the monthly trend in unique projects?",
+    "How has highest bids submitted changed over time?",
+    "What is the monthly trend in total bids submitted?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique projects?",
+      "sql_lines": [
+        "SELECT bid_date, MEASURE(unique_project_count) AS unique_project_count",
+        "FROM {fqn}.bid_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY bid_date"
+      ]
+    },
+    {
+      "question": "How has highest estimated cost changed over time?",
+      "sql_lines": [
+        "SELECT bid_date, MEASURE(max_estimated_cost) AS max_estimated_cost",
+        "FROM {fqn}.bid_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY bid_date"
+      ]
+    },
+    {
+      "question": "How has avg competitors per bid changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(avg_competitors) AS avg_competitors",
+        "FROM {fqn}.pipeline_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total estimated project cost usd over time?",
+      "sql_lines": [
+        "SELECT bid_date, SUM(estimated_cost_usd) AS total_estimated_cost_usd",
+        "FROM {fqn}.projects",
+        "GROUP BY bid_date ORDER BY bid_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total labor cost usd over time?",
+      "sql_lines": [
+        "SELECT estimate_date, SUM(labor_cost_usd) AS total_labor_cost_usd",
+        "FROM {fqn}.bid_submissions",
+        "GROUP BY estimate_date ORDER BY estimate_date"
+      ]
+    },
+    {
+      "question": "How has the average cost estimate accuracy 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, AVG(estimate_accuracy_pct) AS avg_estimate_accuracy_pct",
+        "FROM {fqn}.cost_estimate_snapshots",
+        "GROUP BY perf_month ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "How has won count changed over time?",
+      "sql_lines": [
+        "SELECT bid_date, MEASURE(won_count) AS won_count",
+        "FROM {fqn}.bid_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY bid_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "projects.bid_result = 'Won'",
+        "display_name": "won bids",
+        "synonyms": [
+          "awarded"
+        ],
+        "instruction": "Filter won."
+      },
+      {
+        "sql": "projects.bid_result = 'Lost'",
+        "display_name": "lost bids",
+        "synonyms": [
+          "unsuccessful"
+        ],
+        "instruction": "Filter lost."
+      },
+      {
+        "sql": "cost_estimate_snapshots.estimate_accuracy_pct < 85",
+        "display_name": "inaccurate estimates",
+        "synonyms": [
+          "off estimates"
+        ],
+        "instruction": "Filter inaccurate."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "bid_month",
+        "sql": "DATE_TRUNC('month', projects.bid_date)",
+        "display_name": "bid month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "bid_margin",
+        "sql": "(projects.bid_amount_usd - projects.estimated_cost_usd) / NULLIF(projects.bid_amount_usd, 0) * 100",
+        "display_name": "bid margin pct",
+        "synonyms": [
+          "markup"
+        ]
+      },
+      {
+        "alias": "total_direct_cost",
+        "sql": "bid_submissions.labor_cost_usd + bid_submissions.material_cost_usd + bid_submissions.equipment_cost_usd + bid_submissions.subcontractor_cost_usd",
+        "display_name": "total direct cost",
+        "synonyms": [
+          "project cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_bids",
+        "sql": "COUNT(DISTINCT projects.bid_id)",
+        "display_name": "total bids",
+        "synonyms": [
+          "submissions"
+        ]
+      },
+      {
+        "alias": "total_bid_value",
+        "sql": "SUM(projects.bid_amount_usd)",
+        "display_name": "total bid value",
+        "synonyms": [
+          "bid volume"
+        ]
+      },
+      {
+        "alias": "avg_accuracy",
+        "sql": "AVG(cost_estimate_snapshots.estimate_accuracy_pct)",
+        "display_name": "avg estimate accuracy",
+        "synonyms": [
+          "accuracy"
+        ]
+      },
+      {
+        "alias": "total_pipeline",
+        "sql": "SUM(cost_estimate_snapshots.pipeline_value_usd)",
+        "display_name": "total pipeline",
+        "synonyms": [
+          "backlog"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in won count?",
+      "sql_lines": [
+        "SELECT bid_date, MEASURE(won_count) AS won_count",
+        "FROM {fqn}.bid_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY bid_date"
+      ]
+    },
+    {
+      "question": "How has unique bids changed over time?",
+      "sql_lines": [
+        "SELECT bid_date, MEASURE(bid_count) AS bid_count",
+        "FROM {fqn}.bid_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY bid_date"
+      ]
+    },
+    {
+      "question": "How has highest bids submitted changed over time?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(max_bids_submitted) AS max_bids_submitted",
+        "FROM {fqn}.pipeline_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total bids submitted?",
+      "sql_lines": [
+        "SELECT perf_month, MEASURE(total_bids_submitted) AS total_bids_submitted",
+        "FROM {fqn}.pipeline_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY perf_month"
+      ]
+    },
+    {
+      "question": "What are the top project id by total estimated project cost usd?",
+      "sql_lines": [
+        "SELECT project_id, SUM(estimated_cost_usd) AS total_estimated_cost_usd",
+        "FROM {fqn}.projects",
+        "GROUP BY project_id ORDER BY total_estimated_cost_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average contingency percentage by project type?",
+      "sql_lines": [
+        "SELECT project_type, AVG(contingency_pct) AS avg_contingency_pct",
+        "FROM {fqn}.bid_submissions",
+        "GROUP BY project_type ORDER BY avg_contingency_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per performance month?",
+      "sql_lines": [
+        "SELECT perf_month, COUNT(*) AS record_count",
+        "FROM {fqn}.cost_estimate_snapshots",
+        "GROUP BY perf_month ORDER BY perf_month"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1010 @@
+{
+  "company_name": "NanoVista Semiconductor",
+  "industry": "Semiconductor",
+  "use_case": "Semiconductor quality event root cause analysis and yield improvement",
+  "space_title": "NanoVista - Quality Event RCA 🔍",
+  "space_description": "Quality event root cause analysis for NanoVista Semiconductor. Ask questions about quality events, failure modes, severity trends, root cause categories, and manufacturing lot yield across 25 products and 4 fabrication facilities.",
+  "schema_basename": "semiconductor_quality_rca",
+  "tables": [
+    {
+      "table_name": "quality_events",
+      "description": "Daily quality event records capturing defect types, failure modes, severity levels, root cause categories, and disposition status across fab locations.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique quality event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QE-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date the quality event was recorded",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_family",
+          "sql_type": "STRING",
+          "comment": "Product family grouping (PowerLogic, DriveMax, ConnectRF, MemVault, SenseEdge)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "fab_location",
+          "sql_type": "STRING",
+          "comment": "Fabrication facility location",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END"
+        },
+        {
+          "name": "event_type",
+          "sql_type": "STRING",
+          "comment": "Type of quality event",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.18 THEN 'Defect Excursion' WHEN {status_noise} < 0.34 THEN 'Process Deviation' WHEN {status_noise} < 0.48 THEN 'Equipment Alarm' WHEN {status_noise} < 0.60 THEN 'Yield Drop' WHEN {status_noise} < 0.72 THEN 'Customer Return' WHEN {status_noise} < 0.86 THEN 'Incoming Material Fail' ELSE 'Environmental Event' END"
+        },
+        {
+          "name": "failure_mode",
+          "sql_type": "STRING",
+          "comment": "Specific failure mode observed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Open Circuit' WHEN {status_noise} < 0.14 THEN 'Short Circuit' WHEN {status_noise} < 0.20 THEN 'Gate Oxide Breakdown' WHEN {status_noise} < 0.26 THEN 'Electromigration' WHEN {status_noise} < 0.32 THEN 'Hot Carrier Injection' WHEN {status_noise} < 0.38 THEN 'Latch-Up' WHEN {status_noise} < 0.44 THEN 'Metal Bridging' WHEN {status_noise} < 0.50 THEN 'Via Void' WHEN {status_noise} < 0.56 THEN 'Particle Contamination' WHEN {status_noise} < 0.62 THEN 'Pattern Collapse' WHEN {status_noise} < 0.68 THEN 'Delamination' WHEN {status_noise} < 0.74 THEN 'Crack Propagation' WHEN {status_noise} < 0.80 THEN 'Solder Joint Fatigue' WHEN {status_noise} < 0.86 THEN 'Wire Bond Lift' WHEN {status_noise} < 0.93 THEN 'ESD Damage' ELSE 'Corrosion' END"
+        },
+        {
+          "name": "severity_level",
+          "sql_type": "STRING",
+          "comment": "Event severity classification",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.95 THEN 'Observation' ELSE 'Critical' END"
+        },
+        {
+          "name": "root_cause_category",
+          "sql_type": "STRING",
+          "comment": "Root cause classification",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Contamination' WHEN {status_noise} < 0.26 THEN 'Lithography' WHEN {status_noise} < 0.38 THEN 'Etch Variation' WHEN {status_noise} < 0.48 THEN 'CMP Defect' WHEN {status_noise} < 0.58 THEN 'Implant Drift' WHEN {status_noise} < 0.68 THEN 'Equipment Fault' WHEN {status_noise} < 0.78 THEN 'Material Defect' WHEN {status_noise} < 0.88 THEN 'Operator Error' ELSE 'Environmental' END"
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Current event status",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.51 THEN 'Closed' WHEN {status_noise} < 0.68 THEN 'Pending' WHEN {status_noise} < 0.85 THEN 'Open' ELSE 'In Progress' END"
+        },
+        {
+          "name": "affected_wafer_count",
+          "sql_type": "INT",
+          "comment": "Number of wafers affected by the event",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 24) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "PowerLogic": {
+          "3,4": 0.055,
+          "9,10": 0.06
+        },
+        "MemVault": {
+          "1,2": 0.05,
+          "7,8": 0.045
+        },
+        "ConnectRF": {
+          "6,7": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "NV-PL-001",
+          "product_name": "PowerLogic PL-7200 SoC",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-002",
+          "product_name": "PowerLogic PL-5100 MCU",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-003",
+          "product_name": "PowerLogic PL-9400 AI Accelerator",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-004",
+          "product_name": "PowerLogic PL-3300 Edge Processor",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-005",
+          "product_name": "PowerLogic PL-6600 DSP",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-DM-001",
+          "product_name": "DriveMax DM-800 Motor Controller",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-002",
+          "product_name": "DriveMax DM-1200 GaN Driver",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-003",
+          "product_name": "DriveMax DM-450 Buck Regulator",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-004",
+          "product_name": "DriveMax DM-600 SiC Module",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-005",
+          "product_name": "DriveMax DM-950 Inverter IC",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-CR-001",
+          "product_name": "ConnectRF CR-5G Front-End",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-002",
+          "product_name": "ConnectRF CR-WiFi7 Combo",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-003",
+          "product_name": "ConnectRF CR-BLE Transceiver",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-004",
+          "product_name": "ConnectRF CR-UWB Ranging",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-005",
+          "product_name": "ConnectRF CR-mmWave 60GHz",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-MV-001",
+          "product_name": "MemVault MV-DDR5 16Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-MV-002",
+          "product_name": "MemVault MV-DDR5 32Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-MV-003",
+          "product_name": "MemVault MV-NAND 512Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-SE-001",
+          "product_name": "SenseEdge SE-IMU 9-Axis",
+          "product_family": "SenseEdge"
+        },
+        {
+          "product_id": "NV-SE-002",
+          "product_name": "SenseEdge SE-LiDAR ToF",
+          "product_family": "SenseEdge"
+        }
+      ],
+      "category_distribution": {
+        "PowerLogic": 0.03,
+        "DriveMax": 0.025,
+        "ConnectRF": 0.028,
+        "MemVault": 0.035,
+        "SenseEdge": 0.022
+      }
+    },
+    {
+      "table_name": "manufacturing_lots",
+      "description": "Weekly manufacturing lot snapshots tracking yield percentage, lot grade, and production throughput by product and fab location.",
+      "columns": [
+        {
+          "name": "lot_id",
+          "sql_type": "STRING",
+          "comment": "Unique manufacturing lot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('LOT-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of lot snapshot",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_family",
+          "sql_type": "STRING",
+          "comment": "Product family grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "fab_location",
+          "sql_type": "STRING",
+          "comment": "Fabrication facility location",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END"
+        },
+        {
+          "name": "yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Lot yield percentage (0-100)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.5, GREATEST(55.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 2)"
+        },
+        {
+          "name": "lot_grade",
+          "sql_type": "STRING",
+          "comment": "Lot quality grade (A/B/C)",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN (82.0 + ({qty_noise} - 0.5) * 30.0) >= 90.0 THEN 'A' WHEN (82.0 + ({qty_noise} - 0.5) * 30.0) >= 75.0 THEN 'B' ELSE 'C' END"
+        },
+        {
+          "name": "wafers_in_lot",
+          "sql_type": "INT",
+          "comment": "Number of wafers in the lot",
+          "is_dimension": false,
+          "generation_expr": "CAST(20 + FLOOR({qty_noise} * 6) AS INT)"
+        },
+        {
+          "name": "good_die_count",
+          "sql_type": "INT",
+          "comment": "Number of good die produced from lot",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR((20 + FLOOR({qty_noise} * 6)) * 400 * (0.55 + {qty_noise} * 0.44)) AS INT)"
+        },
+        {
+          "name": "defect_density_per_cm2",
+          "sql_type": "DOUBLE",
+          "comment": "Defects per square centimeter on wafer surface",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.01, 0.50 - ({qty_noise} * 0.40)), 4)"
+        },
+        {
+          "name": "cycle_time_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Total lot processing time in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(120.0 + {qty_noise} * 360.0, 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "PowerLogic": {
+          "1,2": 0.04,
+          "9,10": 0.05
+        },
+        "MemVault": {
+          "3,4": 0.045
+        },
+        "DriveMax": {
+          "7,8": 0.035
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "NV-PL-001",
+          "product_name": "PowerLogic PL-7200 SoC",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-002",
+          "product_name": "PowerLogic PL-5100 MCU",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-003",
+          "product_name": "PowerLogic PL-9400 AI Accelerator",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-004",
+          "product_name": "PowerLogic PL-3300 Edge Processor",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-005",
+          "product_name": "PowerLogic PL-6600 DSP",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-DM-001",
+          "product_name": "DriveMax DM-800 Motor Controller",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-002",
+          "product_name": "DriveMax DM-1200 GaN Driver",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-003",
+          "product_name": "DriveMax DM-450 Buck Regulator",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-004",
+          "product_name": "DriveMax DM-600 SiC Module",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-005",
+          "product_name": "DriveMax DM-950 Inverter IC",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-CR-001",
+          "product_name": "ConnectRF CR-5G Front-End",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-002",
+          "product_name": "ConnectRF CR-WiFi7 Combo",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-003",
+          "product_name": "ConnectRF CR-BLE Transceiver",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-004",
+          "product_name": "ConnectRF CR-UWB Ranging",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-005",
+          "product_name": "ConnectRF CR-mmWave 60GHz",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-MV-001",
+          "product_name": "MemVault MV-DDR5 16Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-MV-002",
+          "product_name": "MemVault MV-DDR5 32Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-MV-003",
+          "product_name": "MemVault MV-NAND 512Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-SE-001",
+          "product_name": "SenseEdge SE-IMU 9-Axis",
+          "product_family": "SenseEdge"
+        },
+        {
+          "product_id": "NV-SE-002",
+          "product_name": "SenseEdge SE-LiDAR ToF",
+          "product_family": "SenseEdge"
+        }
+      ],
+      "category_distribution": {
+        "PowerLogic": 0.03,
+        "DriveMax": 0.025,
+        "ConnectRF": 0.028,
+        "MemVault": 0.035,
+        "SenseEdge": 0.022
+      }
+    },
+    {
+      "table_name": "quality_kpi_monthly",
+      "description": "Monthly quality KPI summaries per product family and fab, tracking DPPM, first pass yield, and containment effectiveness.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QK-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month the KPI applies to",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Human-readable product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_family",
+          "sql_type": "STRING",
+          "comment": "Product family grouping",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "fab_location",
+          "sql_type": "STRING",
+          "comment": "Fabrication facility location",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END"
+        },
+        {
+          "name": "dppm",
+          "sql_type": "DOUBLE",
+          "comment": "Defective parts per million",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 150.0 - ({qty_noise} * 120.0)), 1)"
+        },
+        {
+          "name": "first_pass_yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "First pass yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.5, GREATEST(70.0, 88.0 + ({qty_noise} - 0.5) * 20.0)), 2)"
+        },
+        {
+          "name": "containment_effectiveness_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of defects contained before shipment",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 90.0 + ({qty_noise} - 0.5) * 15.0)), 1)"
+        },
+        {
+          "name": "avg_resolution_days",
+          "sql_type": "DOUBLE",
+          "comment": "Average days to resolve quality events",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 12.0 - ({qty_noise} * 8.0)), 1)"
+        },
+        {
+          "name": "customer_complaints",
+          "sql_type": "INT",
+          "comment": "Number of external customer complaints received",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 8) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "PowerLogic": {
+          "9,10,11": 0.055
+        },
+        "MemVault": {
+          "1,2,3": 0.05
+        },
+        "DriveMax": {
+          "4,5": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "NV-PL-001",
+          "product_name": "PowerLogic PL-7200 SoC",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-002",
+          "product_name": "PowerLogic PL-5100 MCU",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-003",
+          "product_name": "PowerLogic PL-9400 AI Accelerator",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-004",
+          "product_name": "PowerLogic PL-3300 Edge Processor",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-PL-005",
+          "product_name": "PowerLogic PL-6600 DSP",
+          "product_family": "PowerLogic"
+        },
+        {
+          "product_id": "NV-DM-001",
+          "product_name": "DriveMax DM-800 Motor Controller",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-002",
+          "product_name": "DriveMax DM-1200 GaN Driver",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-003",
+          "product_name": "DriveMax DM-450 Buck Regulator",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-004",
+          "product_name": "DriveMax DM-600 SiC Module",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-DM-005",
+          "product_name": "DriveMax DM-950 Inverter IC",
+          "product_family": "DriveMax"
+        },
+        {
+          "product_id": "NV-CR-001",
+          "product_name": "ConnectRF CR-5G Front-End",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-002",
+          "product_name": "ConnectRF CR-WiFi7 Combo",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-003",
+          "product_name": "ConnectRF CR-BLE Transceiver",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-004",
+          "product_name": "ConnectRF CR-UWB Ranging",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-CR-005",
+          "product_name": "ConnectRF CR-mmWave 60GHz",
+          "product_family": "ConnectRF"
+        },
+        {
+          "product_id": "NV-MV-001",
+          "product_name": "MemVault MV-DDR5 16Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-MV-002",
+          "product_name": "MemVault MV-DDR5 32Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-MV-003",
+          "product_name": "MemVault MV-NAND 512Gb",
+          "product_family": "MemVault"
+        },
+        {
+          "product_id": "NV-SE-001",
+          "product_name": "SenseEdge SE-IMU 9-Axis",
+          "product_family": "SenseEdge"
+        },
+        {
+          "product_id": "NV-SE-002",
+          "product_name": "SenseEdge SE-LiDAR ToF",
+          "product_family": "SenseEdge"
+        }
+      ],
+      "category_distribution": {
+        "PowerLogic": 0.03,
+        "DriveMax": 0.025,
+        "ConnectRF": 0.028,
+        "MemVault": 0.035,
+        "SenseEdge": 0.022
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "quality_events_metrics",
+      "source_table": "quality_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "product_family",
+          "expr": "product_family"
+        },
+        {
+          "name": "fab_location",
+          "expr": "fab_location"
+        },
+        {
+          "name": "root_cause_category",
+          "expr": "root_cause_category"
+        },
+        {
+          "name": "severity_level",
+          "expr": "severity_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_quality_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total number of quality events"
+        },
+        {
+          "name": "critical_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN severity_level = 'Critical' THEN event_id END)",
+          "comment": "Events with Critical severity"
+        },
+        {
+          "name": "closed_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN status = 'Closed' THEN event_id END)",
+          "comment": "Events in Closed status"
+        },
+        {
+          "name": "total_wafers_affected",
+          "expr": "SUM(affected_wafer_count)",
+          "comment": "Total wafers impacted by quality events"
+        },
+        {
+          "name": "open_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN status = 'Open' THEN event_id END)",
+          "comment": "Events currently Open"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_affected_wafer_count",
+          "expr": "MAX(affected_wafer_count)",
+          "comment": "Maximum affected wafer count"
+        }
+      ]
+    },
+    {
+      "view_name": "lot_yield_metrics",
+      "source_table": "manufacturing_lots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "product_family",
+          "expr": "product_family"
+        },
+        {
+          "name": "fab_location",
+          "expr": "fab_location"
+        },
+        {
+          "name": "lot_grade",
+          "expr": "lot_grade"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_yield_pct",
+          "expr": "AVG(yield_pct)",
+          "comment": "Average lot yield percentage"
+        },
+        {
+          "name": "total_good_die",
+          "expr": "SUM(good_die_count)",
+          "comment": "Total good die produced"
+        },
+        {
+          "name": "avg_defect_density",
+          "expr": "AVG(defect_density_per_cm2)",
+          "comment": "Average defect density per cm2"
+        },
+        {
+          "name": "total_lots",
+          "expr": "COUNT(DISTINCT lot_id)",
+          "comment": "Total manufacturing lots"
+        },
+        {
+          "name": "grade_c_lot_count",
+          "expr": "COUNT(DISTINCT CASE WHEN lot_grade = 'C' THEN lot_id END)",
+          "comment": "Lots graded C (below threshold)"
+        },
+        {
+          "name": "total_cycle_time_hours",
+          "expr": "SUM(cycle_time_hours)",
+          "comment": "Total cycle time hours"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_yield_percent",
+          "expr": "MAX(yield_pct)",
+          "comment": "Maximum yield pct"
+        },
+        {
+          "name": "total_wafers_in_lot",
+          "expr": "SUM(wafers_in_lot)",
+          "comment": "Total wafers in lot"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, product_family, fab_location, root_cause_category, severity_level. Measures: total_quality_events, critical_event_count, closed_event_count, total_wafers_affected, open_event_count. The lot_yield_metrics view (source: manufacturing_lots) has dimensions: snapshot_date, product_family, fab_location, lot_grade. Measures: avg_yield_pct, total_good_die, avg_defect_density, total_lots, grade_c_lot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "sample_questions": [
+    "What is the monthly trend in critical event count?",
+    "How has closed event count changed over time?",
+    "What is the monthly trend in open event count?",
+    "How has unique total quality eventss changed over time?",
+    "What is the monthly trend in grade c lot count?",
+    "How has unique total lotss changed over time?",
+    "What is the monthly trend in unique products?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in open event count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(open_event_count) AS open_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique total quality eventss changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_quality_events) AS total_quality_events",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique products?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_product_count) AS unique_product_count",
+        "FROM {fqn}.lot_yield_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total number of wafers affected by the event break down by product identifier for 'Closed' records?",
+      "sql_lines": [
+        "SELECT product_id, COUNT(*) AS record_count, SUM(affected_wafer_count) AS total_affected_wafer_count",
+        "FROM {fqn}.quality_events",
+        "WHERE status = 'Closed' GROUP BY product_id ORDER BY total_affected_wafer_count DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total number of wafers in the lot over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(wafers_in_lot) AS total_wafers_in_lot",
+        "FROM {fqn}.manufacturing_lots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average first pass yield percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(first_pass_yield_pct) AS avg_first_pass_yield_pct",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has open event count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(open_event_count) AS open_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "quality_events.severity_level = 'Critical'",
+        "display_name": "critical events",
+        "synonyms": [
+          "critical quality events",
+          "severe events",
+          "high severity"
+        ],
+        "instruction": "Use when analyzing only the most severe quality events."
+      },
+      {
+        "sql": "manufacturing_lots.lot_grade = 'C'",
+        "display_name": "low yield lots",
+        "synonyms": [
+          "grade C lots",
+          "failing lots",
+          "below threshold"
+        ],
+        "instruction": "Use when filtering for lots with yield below 75%."
+      },
+      {
+        "sql": "quality_events.event_date >= ADD_MONTHS(CURRENT_DATE(), -90)",
+        "display_name": "last 90 days",
+        "synonyms": [
+          "recent events",
+          "past 3 months",
+          "trailing quarter"
+        ],
+        "instruction": "Use to restrict quality event analysis to the most recent 90-day window."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', quality_events.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month of event",
+          "quality event month"
+        ]
+      },
+      {
+        "alias": "yield_grade_flag",
+        "sql": "CASE WHEN manufacturing_lots.yield_pct >= 90 THEN 'A' WHEN manufacturing_lots.yield_pct >= 75 THEN 'B' ELSE 'C' END",
+        "display_name": "yield grade",
+        "synonyms": [
+          "lot grade",
+          "yield bucket"
+        ]
+      },
+      {
+        "alias": "closure_rate",
+        "sql": "CASE WHEN quality_events.status = 'Closed' THEN 1 ELSE 0 END",
+        "display_name": "closure flag",
+        "synonyms": [
+          "resolved flag",
+          "closed indicator"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_events",
+        "sql": "COUNT(DISTINCT quality_events.event_id)",
+        "display_name": "total quality events",
+        "synonyms": [
+          "event count",
+          "number of events",
+          "quality event volume"
+        ]
+      },
+      {
+        "alias": "avg_lot_yield",
+        "sql": "AVG(manufacturing_lots.yield_pct)",
+        "display_name": "average lot yield",
+        "synonyms": [
+          "mean yield",
+          "yield percentage",
+          "lot yield rate"
+        ]
+      },
+      {
+        "alias": "total_wafers_affected",
+        "sql": "SUM(quality_events.affected_wafer_count)",
+        "display_name": "total wafers affected",
+        "synonyms": [
+          "impacted wafers",
+          "affected wafer count"
+        ]
+      },
+      {
+        "alias": "avg_dppm",
+        "sql": "AVG(quality_kpi_monthly.dppm)",
+        "display_name": "average DPPM",
+        "synonyms": [
+          "mean DPPM",
+          "defective parts per million"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical event count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(critical_event_count) AS critical_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has closed event count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(closed_event_count) AS closed_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in grade c lot count?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(grade_c_lot_count) AS grade_c_lot_count",
+        "FROM {fqn}.lot_yield_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has unique total lotss changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_lots) AS total_lots",
+        "FROM {fqn}.lot_yield_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top product identifier by total number of wafers affected by the event?",
+      "sql_lines": [
+        "SELECT product_id, SUM(affected_wafer_count) AS total_affected_wafer_count",
+        "FROM {fqn}.quality_events",
+        "GROUP BY product_id ORDER BY total_affected_wafer_count DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average lot yield percentage (0-100) by human-readable product name?",
+      "sql_lines": [
+        "SELECT product_name, AVG(yield_pct) AS avg_yield_pct",
+        "FROM {fqn}.manufacturing_lots",
+        "GROUP BY product_name ORDER BY avg_yield_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month the kpi applies to?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

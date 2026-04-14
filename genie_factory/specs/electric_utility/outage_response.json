@@ -1,0 +1,1007 @@
+{
+  "company_name": "RestorePower Systems",
+  "industry": "Electric Utility",
+  "use_case": "Outage response management and crew dispatch optimization",
+  "space_title": "RestorePower Systems - Outage Response & Crew Dispatch 🔌",
+  "space_description": "Outage response analytics for RestorePower Systems. Ask about outage events, crew dispatch efficiency, restoration times, SAIDI/SAIFI metrics, and customer impact across 20 distribution feeders.",
+  "schema_basename": "utility_outage_response",
+  "tables": [
+    {
+      "table_name": "outage_events",
+      "description": "Individual outage event records with cause, duration, customer impact, and priority classification.",
+      "columns": [
+        {
+          "name": "outage_id",
+          "sql_type": "STRING",
+          "comment": "Unique outage event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OUT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.feeder_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "outage_date",
+          "sql_type": "DATE",
+          "comment": "Date outage was reported",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "feeder_id",
+          "sql_type": "STRING",
+          "comment": "Distribution feeder identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feeder_name",
+          "sql_type": "STRING",
+          "comment": "Distribution feeder name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "district",
+          "sql_type": "STRING",
+          "comment": "Service district: Metro, North, South, East, West",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feeder_type",
+          "sql_type": "STRING",
+          "comment": "Feeder type: Overhead, Underground, Mixed",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cause",
+          "sql_type": "STRING",
+          "comment": "Outage cause: Storm, Equipment Failure, Tree Contact, Animal Contact, Vehicle Accident, Overload, Planned, Unknown",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Storm' WHEN {status_noise} < 0.42 THEN 'Equipment Failure' WHEN {status_noise} < 0.55 THEN 'Tree Contact' WHEN {status_noise} < 0.65 THEN 'Animal Contact' WHEN {status_noise} < 0.73 THEN 'Vehicle Accident' WHEN {status_noise} < 0.82 THEN 'Overload' WHEN {status_noise} < 0.92 THEN 'Planned' ELSE 'Unknown' END"
+        },
+        {
+          "name": "customers_affected",
+          "sql_type": "INT",
+          "comment": "Number of customers without power",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 9990) AS INT)"
+        },
+        {
+          "name": "outage_duration_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Total outage duration in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 1425.0), 1)"
+        },
+        {
+          "name": "priority",
+          "sql_type": "STRING",
+          "comment": "Priority: P1-Critical, P2-High, P3-Medium, P4-Low",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'P1-Critical' WHEN {status_noise} < 0.35 THEN 'P2-High' WHEN {status_noise} < 0.70 THEN 'P3-Medium' ELSE 'P4-Low' END"
+        },
+        {
+          "name": "customer_minutes_interrupted",
+          "sql_type": "BIGINT",
+          "comment": "Customer-minutes interrupted (customers x minutes)",
+          "is_dimension": false,
+          "generation_expr": "CAST((10 + FLOOR({qty_noise} * 9990)) * (15.0 + ({status_noise} * 500.0)) AS BIGINT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Overhead": {
+          "6,7,8": 0.065,
+          "12,1,2": 0.055
+        },
+        "Mixed": {
+          "6,7,8": 0.05
+        },
+        "Underground": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "feeder_id": "FD-M01",
+          "feeder_name": "Metro Central 1",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-M02",
+          "feeder_name": "Metro Central 2",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-M03",
+          "feeder_name": "Metro Commercial",
+          "district": "Metro",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-M04",
+          "feeder_name": "Metro Hospital District",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-N01",
+          "feeder_name": "North Residential 1",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-N02",
+          "feeder_name": "North Residential 2",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-N03",
+          "feeder_name": "North Industrial",
+          "district": "North",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-N04",
+          "feeder_name": "North Rural",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S01",
+          "feeder_name": "South Coastal 1",
+          "district": "South",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S02",
+          "feeder_name": "South Coastal 2",
+          "district": "South",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-S03",
+          "feeder_name": "South Suburban",
+          "district": "South",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S04",
+          "feeder_name": "South Marina",
+          "district": "South",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-E01",
+          "feeder_name": "East Shopping District",
+          "district": "East",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-E02",
+          "feeder_name": "East Tech Park",
+          "district": "East",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-E03",
+          "feeder_name": "East Hillside",
+          "district": "East",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-E04",
+          "feeder_name": "East Farmland",
+          "district": "East",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-W01",
+          "feeder_name": "West Valley 1",
+          "district": "West",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-W02",
+          "feeder_name": "West Valley 2",
+          "district": "West",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-W03",
+          "feeder_name": "West University",
+          "district": "West",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-W04",
+          "feeder_name": "West Airport",
+          "district": "West",
+          "feeder_type": "Underground"
+        }
+      ],
+      "category_distribution": {
+        "Overhead": 0.04,
+        "Underground": 0.025,
+        "Mixed": 0.03
+      }
+    },
+    {
+      "table_name": "crew_dispatch_snapshots",
+      "description": "Daily snapshot of crew dispatch activity including response time, travel time, crew utilization, and restoration metrics.",
+      "columns": [
+        {
+          "name": "dispatch_id",
+          "sql_type": "STRING",
+          "comment": "Unique dispatch record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CD-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.feeder_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "dispatch_date",
+          "sql_type": "DATE",
+          "comment": "Date of crew dispatch",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "feeder_id",
+          "sql_type": "STRING",
+          "comment": "Distribution feeder identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "district",
+          "sql_type": "STRING",
+          "comment": "Service district",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feeder_type",
+          "sql_type": "STRING",
+          "comment": "Feeder type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "crew_type",
+          "sql_type": "STRING",
+          "comment": "Crew type: Line, Underground, Tree, Substation, Contractor",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Line' WHEN {status_noise} < 0.50 THEN 'Underground' WHEN {status_noise} < 0.65 THEN 'Tree' WHEN {status_noise} < 0.80 THEN 'Substation' ELSE 'Contractor' END"
+        },
+        {
+          "name": "response_time_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Time from report to crew dispatch in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5.0 + ({qty_noise} * 115.0), 1)"
+        },
+        {
+          "name": "travel_time_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Crew travel time to site in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 50.0), 1)"
+        },
+        {
+          "name": "repair_time_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "On-site repair time in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 280.0), 1)"
+        },
+        {
+          "name": "crew_utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Crew utilization percentage for the day",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 2)"
+        },
+        {
+          "name": "jobs_completed",
+          "sql_type": "INT",
+          "comment": "Number of restoration jobs completed in the day",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 7) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Overhead": {
+          "6,7,8": 0.06,
+          "12,1": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "feeder_id": "FD-M01",
+          "feeder_name": "Metro Central 1",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-M02",
+          "feeder_name": "Metro Central 2",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-M03",
+          "feeder_name": "Metro Commercial",
+          "district": "Metro",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-M04",
+          "feeder_name": "Metro Hospital District",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-N01",
+          "feeder_name": "North Residential 1",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-N02",
+          "feeder_name": "North Residential 2",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-N03",
+          "feeder_name": "North Industrial",
+          "district": "North",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-N04",
+          "feeder_name": "North Rural",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S01",
+          "feeder_name": "South Coastal 1",
+          "district": "South",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S02",
+          "feeder_name": "South Coastal 2",
+          "district": "South",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-S03",
+          "feeder_name": "South Suburban",
+          "district": "South",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S04",
+          "feeder_name": "South Marina",
+          "district": "South",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-E01",
+          "feeder_name": "East Shopping District",
+          "district": "East",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-E02",
+          "feeder_name": "East Tech Park",
+          "district": "East",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-E03",
+          "feeder_name": "East Hillside",
+          "district": "East",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-E04",
+          "feeder_name": "East Farmland",
+          "district": "East",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-W01",
+          "feeder_name": "West Valley 1",
+          "district": "West",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-W02",
+          "feeder_name": "West Valley 2",
+          "district": "West",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-W03",
+          "feeder_name": "West University",
+          "district": "West",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-W04",
+          "feeder_name": "West Airport",
+          "district": "West",
+          "feeder_type": "Underground"
+        }
+      ],
+      "category_distribution": {
+        "Overhead": 0.04,
+        "Underground": 0.025,
+        "Mixed": 0.03
+      }
+    },
+    {
+      "table_name": "outage_kpi_monthly",
+      "description": "Monthly outage performance KPIs including SAIDI, SAIFI, CAIDI, and restoration efficiency metrics.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('OK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.feeder_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "feeder_id",
+          "sql_type": "STRING",
+          "comment": "Distribution feeder identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "district",
+          "sql_type": "STRING",
+          "comment": "Service district",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "feeder_type",
+          "sql_type": "STRING",
+          "comment": "Feeder type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "saidi_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "SAIDI - System Average Interruption Duration in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.0 + ({qty_noise} * 57.0), 2)"
+        },
+        {
+          "name": "saifi_events",
+          "sql_type": "DOUBLE",
+          "comment": "SAIFI - System Average Interruption Frequency",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.05 + ({qty_noise} * 1.45), 3)"
+        },
+        {
+          "name": "caidi_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "CAIDI - Customer Average Interruption Duration in minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(30.0 + ({qty_noise} * 170.0), 2)"
+        },
+        {
+          "name": "restoration_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Percentage of outages restored within SLA target",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.5, 70.0 + ({qty_noise} * 29.0)), 2)"
+        },
+        {
+          "name": "total_outage_events",
+          "sql_type": "INT",
+          "comment": "Total outage events in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(2 + FLOOR({qty_noise} * 28) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "feeder_id": "FD-M01",
+          "feeder_name": "Metro Central 1",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-M02",
+          "feeder_name": "Metro Central 2",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-M03",
+          "feeder_name": "Metro Commercial",
+          "district": "Metro",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-M04",
+          "feeder_name": "Metro Hospital District",
+          "district": "Metro",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-N01",
+          "feeder_name": "North Residential 1",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-N02",
+          "feeder_name": "North Residential 2",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-N03",
+          "feeder_name": "North Industrial",
+          "district": "North",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-N04",
+          "feeder_name": "North Rural",
+          "district": "North",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S01",
+          "feeder_name": "South Coastal 1",
+          "district": "South",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S02",
+          "feeder_name": "South Coastal 2",
+          "district": "South",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-S03",
+          "feeder_name": "South Suburban",
+          "district": "South",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-S04",
+          "feeder_name": "South Marina",
+          "district": "South",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-E01",
+          "feeder_name": "East Shopping District",
+          "district": "East",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-E02",
+          "feeder_name": "East Tech Park",
+          "district": "East",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-E03",
+          "feeder_name": "East Hillside",
+          "district": "East",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-E04",
+          "feeder_name": "East Farmland",
+          "district": "East",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-W01",
+          "feeder_name": "West Valley 1",
+          "district": "West",
+          "feeder_type": "Overhead"
+        },
+        {
+          "feeder_id": "FD-W02",
+          "feeder_name": "West Valley 2",
+          "district": "West",
+          "feeder_type": "Mixed"
+        },
+        {
+          "feeder_id": "FD-W03",
+          "feeder_name": "West University",
+          "district": "West",
+          "feeder_type": "Underground"
+        },
+        {
+          "feeder_id": "FD-W04",
+          "feeder_name": "West Airport",
+          "district": "West",
+          "feeder_type": "Underground"
+        }
+      ],
+      "category_distribution": {
+        "Overhead": 0.04,
+        "Underground": 0.025,
+        "Mixed": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "outage_events_metrics",
+      "source_table": "outage_events",
+      "dimensions": [
+        {
+          "name": "outage_date",
+          "expr": "outage_date"
+        },
+        {
+          "name": "district",
+          "expr": "district"
+        },
+        {
+          "name": "feeder_type",
+          "expr": "feeder_type"
+        },
+        {
+          "name": "cause",
+          "expr": "cause"
+        },
+        {
+          "name": "priority",
+          "expr": "priority"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_outage_count",
+          "expr": "COUNT(DISTINCT outage_id)",
+          "comment": "Total number of outage events"
+        },
+        {
+          "name": "total_customers_affected",
+          "expr": "SUM(customers_affected)",
+          "comment": "Total customers affected by outages"
+        },
+        {
+          "name": "avg_outage_duration_min",
+          "expr": "AVG(outage_duration_minutes)",
+          "comment": "Average outage duration in minutes"
+        },
+        {
+          "name": "total_customer_minutes",
+          "expr": "SUM(customer_minutes_interrupted)",
+          "comment": "Total customer-minutes interrupted"
+        },
+        {
+          "name": "storm_outage_count",
+          "expr": "COUNT(DISTINCT CASE WHEN cause = 'Storm' THEN outage_id END)",
+          "comment": "Number of storm-caused outages"
+        },
+        {
+          "name": "unique_feeder_count",
+          "expr": "COUNT(DISTINCT feeder_id)",
+          "comment": "Number of distinct feeders"
+        },
+        {
+          "name": "max_customers_affected",
+          "expr": "MAX(customers_affected)",
+          "comment": "Maximum customers affected"
+        }
+      ]
+    },
+    {
+      "view_name": "crew_dispatch_metrics",
+      "source_table": "crew_dispatch_snapshots",
+      "dimensions": [
+        {
+          "name": "dispatch_date",
+          "expr": "dispatch_date"
+        },
+        {
+          "name": "district",
+          "expr": "district"
+        },
+        {
+          "name": "crew_type",
+          "expr": "crew_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_response_time_min",
+          "expr": "AVG(response_time_minutes)",
+          "comment": "Average response time in minutes"
+        },
+        {
+          "name": "avg_travel_time_min",
+          "expr": "AVG(travel_time_minutes)",
+          "comment": "Average travel time to site in minutes"
+        },
+        {
+          "name": "avg_repair_time_min",
+          "expr": "AVG(repair_time_minutes)",
+          "comment": "Average on-site repair time in minutes"
+        },
+        {
+          "name": "avg_crew_utilization",
+          "expr": "AVG(crew_utilization_pct)",
+          "comment": "Average crew utilization percentage"
+        },
+        {
+          "name": "total_jobs_completed",
+          "expr": "SUM(jobs_completed)",
+          "comment": "Total restoration jobs completed"
+        },
+        {
+          "name": "unique_feeder_count",
+          "expr": "COUNT(DISTINCT feeder_id)",
+          "comment": "Number of distinct feeders"
+        },
+        {
+          "name": "max_response_time_minutes",
+          "expr": "MAX(response_time_minutes)",
+          "comment": "Maximum response time minutes"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The outage_events_metrics view (source: outage_events) has dimensions: outage_date, district, feeder_type, cause, priority. Measures: total_outage_count, total_customers_affected, avg_outage_duration_min, total_customer_minutes, storm_outage_count. The crew_dispatch_metrics view (source: crew_dispatch_snapshots) has dimensions: dispatch_date, district, crew_type. Measures: avg_response_time_min, avg_travel_time_min, avg_repair_time_min, avg_crew_utilization, total_jobs_completed. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. feeder_id, feeder_name).",
+  "sample_questions": [
+    "What is the monthly trend in storm outage count?",
+    "How has unique total outages changed over time?",
+    "What is the monthly trend in unique feeders?",
+    "How has highest customers affected changed over time?",
+    "What is the monthly trend in unique feeders?",
+    "How has highest response time minutes changed over time?",
+    "What is the monthly trend in total restoration jobs completed?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique feeders?",
+      "sql_lines": [
+        "SELECT outage_date, MEASURE(unique_feeder_count) AS unique_feeder_count",
+        "FROM {fqn}.outage_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY outage_date"
+      ]
+    },
+    {
+      "question": "How has highest customers affected changed over time?",
+      "sql_lines": [
+        "SELECT outage_date, MEASURE(max_customers_affected) AS max_customers_affected",
+        "FROM {fqn}.outage_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY outage_date"
+      ]
+    },
+    {
+      "question": "How has storm outage count changed over time?",
+      "sql_lines": [
+        "SELECT outage_date, MEASURE(storm_outage_count) AS storm_outage_count",
+        "FROM {fqn}.outage_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY outage_date"
+      ]
+    },
+    {
+      "question": "Which districts have the highest total customer-minutes interrupted?",
+      "sql_lines": [
+        "SELECT district, MEASURE(total_customer_minutes) AS total_customer_minutes",
+        "FROM {fqn}.outage_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_customer_minutes DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total number of customers without power over time?",
+      "sql_lines": [
+        "SELECT outage_date, SUM(customers_affected) AS total_customers_affected",
+        "FROM {fqn}.outage_events",
+        "GROUP BY outage_date ORDER BY outage_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total time from report to crew dispatch in minutes over time?",
+      "sql_lines": [
+        "SELECT dispatch_date, SUM(response_time_minutes) AS total_response_time_minutes",
+        "FROM {fqn}.crew_dispatch_snapshots",
+        "GROUP BY dispatch_date ORDER BY dispatch_date"
+      ]
+    },
+    {
+      "question": "How has the average percentage of outages restored within sla target changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(restoration_rate_pct) AS avg_restoration_rate_pct",
+        "FROM {fqn}.outage_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "outage_events.cause = 'Storm'",
+        "display_name": "storm outages",
+        "synonyms": [
+          "weather-related outages",
+          "storm events"
+        ],
+        "instruction": "Use when analyzing storm-caused outages specifically."
+      },
+      {
+        "sql": "outage_events.priority = 'P1-Critical'",
+        "display_name": "critical outages",
+        "synonyms": [
+          "P1 outages",
+          "highest priority"
+        ],
+        "instruction": "Use when filtering for the most critical outage events."
+      },
+      {
+        "sql": "crew_dispatch_snapshots.crew_type = 'Contractor'",
+        "display_name": "contractor crews",
+        "synonyms": [
+          "external crews",
+          "contract workers"
+        ],
+        "instruction": "Use when analyzing contractor-specific dispatch metrics."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "outage_month",
+        "sql": "DATE_TRUNC('month', outage_events.outage_date)",
+        "display_name": "outage month",
+        "synonyms": [
+          "month of outage",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "total_dispatch_time_min",
+        "sql": "crew_dispatch_snapshots.response_time_minutes + crew_dispatch_snapshots.travel_time_minutes + crew_dispatch_snapshots.repair_time_minutes",
+        "display_name": "total dispatch cycle time minutes",
+        "synonyms": [
+          "end-to-end time",
+          "total service time"
+        ]
+      },
+      {
+        "alias": "outage_severity",
+        "sql": "CASE WHEN outage_events.customers_affected > 5000 THEN 'Major' WHEN outage_events.customers_affected > 1000 THEN 'Significant' ELSE 'Minor' END",
+        "display_name": "outage severity",
+        "synonyms": [
+          "impact level",
+          "severity category"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_outages",
+        "sql": "COUNT(DISTINCT outage_events.outage_id)",
+        "display_name": "total outage count",
+        "synonyms": [
+          "outage events",
+          "number of outages"
+        ]
+      },
+      {
+        "alias": "total_customer_minutes",
+        "sql": "SUM(outage_events.customer_minutes_interrupted)",
+        "display_name": "total customer-minutes interrupted",
+        "synonyms": [
+          "CMI",
+          "customer impact"
+        ]
+      },
+      {
+        "alias": "avg_response_time",
+        "sql": "AVG(crew_dispatch_snapshots.response_time_minutes)",
+        "display_name": "average response time minutes",
+        "synonyms": [
+          "dispatch time",
+          "time to respond"
+        ]
+      },
+      {
+        "alias": "avg_crew_utilization",
+        "sql": "AVG(crew_dispatch_snapshots.crew_utilization_pct)",
+        "display_name": "average crew utilization",
+        "synonyms": [
+          "crew efficiency",
+          "utilization rate"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in storm outage count?",
+      "sql_lines": [
+        "SELECT outage_date, MEASURE(storm_outage_count) AS storm_outage_count",
+        "FROM {fqn}.outage_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY outage_date"
+      ]
+    },
+    {
+      "question": "How has unique total outages changed over time?",
+      "sql_lines": [
+        "SELECT outage_date, MEASURE(total_outage_count) AS total_outage_count",
+        "FROM {fqn}.outage_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY outage_date"
+      ]
+    },
+    {
+      "question": "How has highest response time minutes changed over time?",
+      "sql_lines": [
+        "SELECT dispatch_date, MEASURE(max_response_time_minutes) AS max_response_time_minutes",
+        "FROM {fqn}.crew_dispatch_metrics",
+        "GROUP BY ALL",
+        "ORDER BY dispatch_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total restoration jobs completed?",
+      "sql_lines": [
+        "SELECT dispatch_date, MEASURE(total_jobs_completed) AS total_jobs_completed",
+        "FROM {fqn}.crew_dispatch_metrics",
+        "GROUP BY ALL",
+        "ORDER BY dispatch_date"
+      ]
+    },
+    {
+      "question": "What are the top distribution feeder identifier by total number of customers without power?",
+      "sql_lines": [
+        "SELECT feeder_id, SUM(customers_affected) AS total_customers_affected",
+        "FROM {fqn}.outage_events",
+        "GROUP BY feeder_id ORDER BY total_customers_affected DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average crew utilization percentage for the day by service district?",
+      "sql_lines": [
+        "SELECT district, AVG(crew_utilization_pct) AS avg_crew_utilization_pct",
+        "FROM {fqn}.crew_dispatch_snapshots",
+        "GROUP BY district ORDER BY avg_crew_utilization_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.outage_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

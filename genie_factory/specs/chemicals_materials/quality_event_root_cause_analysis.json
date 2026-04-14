@@ -1,0 +1,997 @@
+{
+  "company_name": "PureChem Analytics",
+  "industry": "Chemicals & Materials",
+  "use_case": "Quality event tracking and root cause analysis for chemical manufacturing",
+  "space_title": "PureChem Analytics - Quality Event Root Cause Analysis 🔍",
+  "space_description": "Quality analytics for PureChem Analytics. Ask about quality events, batch records, deviation severity, root cause categories, CAPA effectiveness, and quality KPIs across 20 chemical products and 6 production lines.",
+  "schema_basename": "quality_rca",
+  "tables": [
+    {
+      "table_name": "quality_events",
+      "description": "Individual quality event records including deviations, non-conformances, customer complaints, and root cause classifications.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique quality event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QE-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date event was recorded",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Chemical product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Chemical product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Category: Acids, Bases, Solvents, Polymers, Specialty",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Production line where event occurred",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Line-A1' WHEN {status_noise} < 0.33 THEN 'Line-A2' WHEN {status_noise} < 0.50 THEN 'Line-B1' WHEN {status_noise} < 0.67 THEN 'Line-B2' WHEN {status_noise} < 0.83 THEN 'Line-C1' ELSE 'Line-C2' END"
+        },
+        {
+          "name": "event_type",
+          "sql_type": "STRING",
+          "comment": "Type: Deviation, Non-Conformance, Customer Complaint, Audit Finding",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Deviation' WHEN {status_noise} < 0.65 THEN 'Non-Conformance' WHEN {status_noise} < 0.85 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
+        },
+        {
+          "name": "severity",
+          "sql_type": "STRING",
+          "comment": "Severity: Critical, Major, Minor",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.35 THEN 'Major' ELSE 'Minor' END"
+        },
+        {
+          "name": "root_cause_category",
+          "sql_type": "STRING",
+          "comment": "Root cause: Equipment, Process, Material, Human Error, Environmental",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Equipment' WHEN {status_noise} < 0.50 THEN 'Process' WHEN {status_noise} < 0.70 THEN 'Material' WHEN {status_noise} < 0.88 THEN 'Human Error' ELSE 'Environmental' END"
+        },
+        {
+          "name": "cost_of_quality_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated cost of the quality event in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500 + {qty_noise} * 49500, 2)"
+        },
+        {
+          "name": "resolution_days",
+          "sql_type": "INT",
+          "comment": "Days from event to resolution",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 59) AS INT)"
+        },
+        {
+          "name": "capa_status",
+          "sql_type": "STRING",
+          "comment": "CAPA status: Open, In Progress, Closed Effective, Closed Ineffective",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Open' WHEN {status_noise} < 0.25 THEN 'In Progress' WHEN {status_noise} < 0.90 THEN 'Closed Effective' ELSE 'Closed Ineffective' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Acids": {
+          "6,7,8": 0.05
+        },
+        "Bases": {
+          "1,2": 0.045
+        },
+        "Solvents": {
+          "6,7,8": 0.055
+        },
+        "Polymers": {
+          "3,4,5": 0.05
+        },
+        "Specialty": {
+          "10,11": 0.045
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "product_id": "PC-001",
+          "product_name": "Sulfuric Acid 98%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-002",
+          "product_name": "Hydrochloric Acid 32%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-003",
+          "product_name": "Nitric Acid 68%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-004",
+          "product_name": "Phosphoric Acid 85%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-005",
+          "product_name": "Sodium Hydroxide 50%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-006",
+          "product_name": "Potassium Hydroxide 45%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-007",
+          "product_name": "Calcium Hydroxide Slurry",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-008",
+          "product_name": "Ammonia Solution 25%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-009",
+          "product_name": "Industrial Acetone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-010",
+          "product_name": "Methanol Technical Grade",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-011",
+          "product_name": "Toluene High Purity",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-012",
+          "product_name": "Ethyl Acetate",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-013",
+          "product_name": "Polyethylene Resin HD",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-014",
+          "product_name": "Polypropylene Granules",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-015",
+          "product_name": "PVC Compound K67",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-016",
+          "product_name": "Nylon 6,6 Chips",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-017",
+          "product_name": "Titanium Dioxide R-902",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-018",
+          "product_name": "Silica Gel Desiccant",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-019",
+          "product_name": "Activated Carbon Pellets",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-020",
+          "product_name": "Zinc Oxide Nano Powder",
+          "product_category": "Specialty"
+        }
+      ],
+      "category_distribution": {
+        "Acids": 0.04,
+        "Bases": 0.035,
+        "Solvents": 0.035,
+        "Polymers": 0.03,
+        "Specialty": 0.025
+      }
+    },
+    {
+      "table_name": "batch_records",
+      "description": "Weekly batch production records with process parameters, yield, purity, and quality pass/fail outcomes per product and production line.",
+      "columns": [
+        {
+          "name": "batch_id",
+          "sql_type": "STRING",
+          "comment": "Unique batch record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BAT-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "batch_date",
+          "sql_type": "DATE",
+          "comment": "Batch production date",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Chemical product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Chemical product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "production_line",
+          "sql_type": "STRING",
+          "comment": "Production line",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Line-A1' WHEN {status_noise} < 0.33 THEN 'Line-A2' WHEN {status_noise} < 0.50 THEN 'Line-B1' WHEN {status_noise} < 0.67 THEN 'Line-B2' WHEN {status_noise} < 0.83 THEN 'Line-C1' ELSE 'Line-C2' END"
+        },
+        {
+          "name": "batch_size_kg",
+          "sql_type": "DOUBLE",
+          "comment": "Batch size in kilograms",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1000 + {qty_noise} * 19000, 1)"
+        },
+        {
+          "name": "yield_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Batch yield percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75 + {qty_noise} * 24, 2)"
+        },
+        {
+          "name": "purity_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Batch purity percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(90 + {qty_noise} * 9.8, 2)"
+        },
+        {
+          "name": "temperature_deviation_c",
+          "sql_type": "DOUBLE",
+          "comment": "Temperature deviation from setpoint in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-5.0 + {qty_noise} * 10.0, 2)"
+        },
+        {
+          "name": "quality_result",
+          "sql_type": "STRING",
+          "comment": "Quality outcome: Pass, Conditional Pass, Fail",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.06 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional Pass' ELSE 'Pass' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "product_id": "PC-001",
+          "product_name": "Sulfuric Acid 98%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-002",
+          "product_name": "Hydrochloric Acid 32%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-003",
+          "product_name": "Nitric Acid 68%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-004",
+          "product_name": "Phosphoric Acid 85%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-005",
+          "product_name": "Sodium Hydroxide 50%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-006",
+          "product_name": "Potassium Hydroxide 45%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-007",
+          "product_name": "Calcium Hydroxide Slurry",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-008",
+          "product_name": "Ammonia Solution 25%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-009",
+          "product_name": "Industrial Acetone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-010",
+          "product_name": "Methanol Technical Grade",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-011",
+          "product_name": "Toluene High Purity",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-012",
+          "product_name": "Ethyl Acetate",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-013",
+          "product_name": "Polyethylene Resin HD",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-014",
+          "product_name": "Polypropylene Granules",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-015",
+          "product_name": "PVC Compound K67",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-016",
+          "product_name": "Nylon 6,6 Chips",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-017",
+          "product_name": "Titanium Dioxide R-902",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-018",
+          "product_name": "Silica Gel Desiccant",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-019",
+          "product_name": "Activated Carbon Pellets",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-020",
+          "product_name": "Zinc Oxide Nano Powder",
+          "product_category": "Specialty"
+        }
+      ],
+      "category_distribution": {
+        "Acids": 0.04,
+        "Bases": 0.035,
+        "Solvents": 0.035,
+        "Polymers": 0.03,
+        "Specialty": 0.025
+      }
+    },
+    {
+      "table_name": "quality_kpi_monthly",
+      "description": "Monthly quality KPIs per product including event counts by severity, CAPA closure rates, cost of quality, and batch pass rates.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('QKP-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of reporting month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "product_id",
+          "sql_type": "STRING",
+          "comment": "Chemical product identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_name",
+          "sql_type": "STRING",
+          "comment": "Chemical product name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "product_category",
+          "sql_type": "STRING",
+          "comment": "Product category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "total_events",
+          "sql_type": "INT",
+          "comment": "Total quality events in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 14) AS INT)"
+        },
+        {
+          "name": "critical_events",
+          "sql_type": "INT",
+          "comment": "Critical severity events in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 3) AS INT)"
+        },
+        {
+          "name": "capa_closure_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "CAPA closure rate for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60 + {qty_noise} * 38, 2)"
+        },
+        {
+          "name": "cost_of_quality_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total cost of quality for the month in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2000 + {qty_noise} * 48000, 2)"
+        },
+        {
+          "name": "batch_pass_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Batch quality pass rate for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80 + {qty_noise} * 19, 2)"
+        },
+        {
+          "name": "avg_resolution_days",
+          "sql_type": "DOUBLE",
+          "comment": "Average event resolution time in days",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3 + {qty_noise} * 27, 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Acids": {
+          "6,7,8": 0.05
+        },
+        "Bases": {
+          "1,2": 0.045
+        },
+        "Solvents": {
+          "6,7,8": 0.055
+        },
+        "Polymers": {
+          "3,4,5": 0.05
+        },
+        "Specialty": {
+          "10,11": 0.045
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "product_id": "PC-001",
+          "product_name": "Sulfuric Acid 98%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-002",
+          "product_name": "Hydrochloric Acid 32%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-003",
+          "product_name": "Nitric Acid 68%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-004",
+          "product_name": "Phosphoric Acid 85%",
+          "product_category": "Acids"
+        },
+        {
+          "product_id": "PC-005",
+          "product_name": "Sodium Hydroxide 50%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-006",
+          "product_name": "Potassium Hydroxide 45%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-007",
+          "product_name": "Calcium Hydroxide Slurry",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-008",
+          "product_name": "Ammonia Solution 25%",
+          "product_category": "Bases"
+        },
+        {
+          "product_id": "PC-009",
+          "product_name": "Industrial Acetone",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-010",
+          "product_name": "Methanol Technical Grade",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-011",
+          "product_name": "Toluene High Purity",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-012",
+          "product_name": "Ethyl Acetate",
+          "product_category": "Solvents"
+        },
+        {
+          "product_id": "PC-013",
+          "product_name": "Polyethylene Resin HD",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-014",
+          "product_name": "Polypropylene Granules",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-015",
+          "product_name": "PVC Compound K67",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-016",
+          "product_name": "Nylon 6,6 Chips",
+          "product_category": "Polymers"
+        },
+        {
+          "product_id": "PC-017",
+          "product_name": "Titanium Dioxide R-902",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-018",
+          "product_name": "Silica Gel Desiccant",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-019",
+          "product_name": "Activated Carbon Pellets",
+          "product_category": "Specialty"
+        },
+        {
+          "product_id": "PC-020",
+          "product_name": "Zinc Oxide Nano Powder",
+          "product_category": "Specialty"
+        }
+      ],
+      "category_distribution": {
+        "Acids": 0.04,
+        "Bases": 0.035,
+        "Solvents": 0.035,
+        "Polymers": 0.03,
+        "Specialty": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "quality_events_metrics",
+      "source_table": "quality_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "production_line",
+          "expr": "production_line"
+        },
+        {
+          "name": "event_type",
+          "expr": "event_type"
+        },
+        {
+          "name": "severity",
+          "expr": "severity"
+        },
+        {
+          "name": "root_cause_category",
+          "expr": "root_cause_category"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_quality_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total quality events"
+        },
+        {
+          "name": "critical_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN severity = 'Critical' THEN event_id END)",
+          "comment": "Count of critical severity events"
+        },
+        {
+          "name": "total_cost_of_quality_usd",
+          "expr": "SUM(cost_of_quality_usd)",
+          "comment": "Total cost of quality in USD"
+        },
+        {
+          "name": "avg_resolution_days",
+          "expr": "AVG(resolution_days)",
+          "comment": "Average days to resolve events"
+        },
+        {
+          "name": "closed_effective_count",
+          "expr": "COUNT(DISTINCT CASE WHEN capa_status = 'Closed Effective' THEN event_id END)",
+          "comment": "CAPAs closed effectively"
+        },
+        {
+          "name": "open_event_count",
+          "expr": "COUNT(DISTINCT CASE WHEN capa_status IN ('Open', 'In Progress') THEN event_id END)",
+          "comment": "Events still open or in progress"
+        },
+        {
+          "name": "unique_product_count",
+          "expr": "COUNT(DISTINCT product_id)",
+          "comment": "Number of distinct products"
+        },
+        {
+          "name": "max_cost_of_quality",
+          "expr": "MAX(cost_of_quality_usd)",
+          "comment": "Maximum cost of quality usd"
+        }
+      ]
+    },
+    {
+      "view_name": "quality_kpi_monthly_metrics",
+      "source_table": "quality_kpi_monthly",
+      "dimensions": [
+        {
+          "name": "report_month",
+          "expr": "report_month"
+        },
+        {
+          "name": "product_category",
+          "expr": "product_category"
+        },
+        {
+          "name": "product_id",
+          "expr": "product_id"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_monthly_events",
+          "expr": "SUM(total_events)",
+          "comment": "Total quality events per month"
+        },
+        {
+          "name": "total_critical_events",
+          "expr": "SUM(critical_events)",
+          "comment": "Total critical events per month"
+        },
+        {
+          "name": "avg_capa_closure_rate",
+          "expr": "AVG(capa_closure_rate_pct)",
+          "comment": "Average CAPA closure rate"
+        },
+        {
+          "name": "total_monthly_coq_usd",
+          "expr": "SUM(cost_of_quality_usd)",
+          "comment": "Total monthly cost of quality in USD"
+        },
+        {
+          "name": "avg_batch_pass_rate",
+          "expr": "AVG(batch_pass_rate_pct)",
+          "comment": "Average batch pass rate"
+        },
+        {
+          "name": "total_avg_resolution_days",
+          "expr": "SUM(avg_resolution_days)",
+          "comment": "Total avg resolution days"
+        },
+        {
+          "name": "max_total_events",
+          "expr": "MAX(total_events)",
+          "comment": "Maximum total events"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, product_category, production_line, event_type, severity, root_cause_category. Measures: total_quality_events, critical_event_count, total_cost_of_quality_usd, avg_resolution_days, closed_effective_count, open_event_count. The quality_kpi_monthly_metrics view (source: quality_kpi_monthly) has dimensions: report_month, product_category, product_id. Measures: total_monthly_events, total_critical_events, avg_capa_closure_rate, total_monthly_coq_usd, avg_batch_pass_rate. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name).",
+  "sample_questions": [
+    "What is the monthly trend in critical event count?",
+    "How has closed effective count changed over time?",
+    "What is the monthly trend in open event count?",
+    "How has unique total quality eventss changed over time?",
+    "What is the monthly trend in highest total events?",
+    "How has total quality events per month changed over time?",
+    "What is the monthly trend in total critical events per month?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in open event count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(open_event_count) AS open_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique total quality eventss changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_quality_events) AS total_quality_events",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total critical events per month?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_critical_events) AS total_critical_events",
+        "FROM {fqn}.quality_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How does total estimated cost of the quality event in usd break down by chemical product identifier for 'Open' records?",
+      "sql_lines": [
+        "SELECT product_id, COUNT(*) AS record_count, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
+        "FROM {fqn}.quality_events",
+        "WHERE capa_status = 'Open' GROUP BY product_id ORDER BY total_cost_of_quality_usd DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total batch size in kilograms over time?",
+      "sql_lines": [
+        "SELECT batch_date, SUM(batch_size_kg) AS total_batch_size_kg",
+        "FROM {fqn}.batch_records",
+        "GROUP BY batch_date ORDER BY batch_date"
+      ]
+    },
+    {
+      "question": "How has the average capa closure rate for the month changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(capa_closure_rate_pct) AS avg_capa_closure_rate_pct",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has open event count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(open_event_count) AS open_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "severity = 'Critical'",
+        "display_name": "critical events",
+        "synonyms": [
+          "critical deviations",
+          "high severity",
+          "critical quality"
+        ],
+        "instruction": "Use when filtering to the most severe quality events only."
+      },
+      {
+        "sql": "capa_status IN ('Open', 'In Progress')",
+        "display_name": "open CAPAs",
+        "synonyms": [
+          "unresolved events",
+          "pending CAPAs",
+          "active events"
+        ],
+        "instruction": "Use when analyzing events that have not yet been resolved."
+      },
+      {
+        "sql": "root_cause_category = 'Equipment'",
+        "display_name": "equipment-related events",
+        "synonyms": [
+          "equipment failures",
+          "machine issues",
+          "hardware root cause"
+        ],
+        "instruction": "Use when filtering to equipment-related root causes."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month",
+          "reporting month"
+        ]
+      },
+      {
+        "alias": "quality_cost_per_batch",
+        "sql": "cost_of_quality_usd / NULLIF(total_events, 0)",
+        "display_name": "quality cost per event",
+        "synonyms": [
+          "cost per deviation",
+          "unit quality cost"
+        ]
+      },
+      {
+        "alias": "temp_deviation_abs",
+        "sql": "ABS(temperature_deviation_c)",
+        "display_name": "absolute temperature deviation",
+        "synonyms": [
+          "temp offset",
+          "deviation magnitude"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_cost_of_quality",
+        "sql": "SUM(cost_of_quality_usd)",
+        "display_name": "total cost of quality",
+        "synonyms": [
+          "COQ",
+          "quality cost",
+          "total quality spend"
+        ]
+      },
+      {
+        "alias": "capa_effectiveness_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN capa_status = 'Closed Effective' THEN event_id END) * 1.0 / NULLIF(COUNT(DISTINCT event_id), 0)",
+        "display_name": "CAPA effectiveness rate",
+        "synonyms": [
+          "closure rate",
+          "resolution effectiveness"
+        ]
+      },
+      {
+        "alias": "batch_pass_rate",
+        "sql": "COUNT(DISTINCT CASE WHEN quality_result = 'Pass' THEN batch_id END) * 1.0 / NULLIF(COUNT(DISTINCT batch_id), 0)",
+        "display_name": "batch pass rate",
+        "synonyms": [
+          "quality rate",
+          "first-pass yield"
+        ]
+      },
+      {
+        "alias": "avg_resolution_time",
+        "sql": "AVG(resolution_days)",
+        "display_name": "average resolution time",
+        "synonyms": [
+          "mean time to resolution",
+          "MTTR",
+          "avg days to close"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical event count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(critical_event_count) AS critical_event_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has closed effective count changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(closed_effective_count) AS closed_effective_count",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest total events?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(max_total_events) AS max_total_events",
+        "FROM {fqn}.quality_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has total quality events per month changed over time?",
+      "sql_lines": [
+        "SELECT report_month, MEASURE(total_monthly_events) AS total_monthly_events",
+        "FROM {fqn}.quality_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "What are the top chemical product identifier by total estimated cost of the quality event in usd?",
+      "sql_lines": [
+        "SELECT product_id, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
+        "FROM {fqn}.quality_events",
+        "GROUP BY product_id ORDER BY total_cost_of_quality_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average batch yield percentage by chemical product name?",
+      "sql_lines": [
+        "SELECT product_name, AVG(yield_pct) AS avg_yield_pct",
+        "FROM {fqn}.batch_records",
+        "GROUP BY product_name ORDER BY avg_yield_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of reporting month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.quality_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

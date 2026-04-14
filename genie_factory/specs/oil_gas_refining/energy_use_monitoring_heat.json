@@ -1,0 +1,945 @@
+{
+  "company_name": "HeatTrack Refining",
+  "industry": "Oil & Gas Refining",
+  "use_case": "Energy use monitoring and heat exchange optimization for refinery operations",
+  "space_title": "HeatTrack Refining - Energy Use Monitoring & Heat Optimization 🌡️",
+  "space_description": "Energy analytics for HeatTrack Refining. Ask questions about energy consumption, heat exchanger performance, thermal efficiency, and energy KPIs across 20 heat exchangers and process heaters in the refinery.",
+  "schema_basename": "og_refining_energy",
+  "tables": [
+    {
+      "table_name": "energy_readings",
+      "description": "Daily energy consumption and heat transfer readings from refinery heat exchangers and furnaces.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ER-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.exchanger_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of the energy reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "exchanger_id",
+          "sql_type": "STRING",
+          "comment": "Heat exchanger identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "exchanger_name",
+          "sql_type": "STRING",
+          "comment": "Heat exchanger name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_category",
+          "sql_type": "STRING",
+          "comment": "Category: Shell-Tube, Plate, Air Cooler, Fired Heater, Waste Heat Recovery",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_unit",
+          "sql_type": "STRING",
+          "comment": "Refinery process unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "energy_consumption_mmbtu",
+          "sql_type": "DOUBLE",
+          "comment": "Energy consumption in MMBTU",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10.0, 50.0 + {qty_noise} * 450.0), 1)"
+        },
+        {
+          "name": "heat_duty_mmbtu_hr",
+          "sql_type": "DOUBLE",
+          "comment": "Heat duty in MMBTU per hour",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 5.0 + {qty_noise} * 95.0), 2)"
+        },
+        {
+          "name": "thermal_efficiency_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Thermal efficiency percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(55.0, 78.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "fouling_factor",
+          "sql_type": "DOUBLE",
+          "comment": "Fouling factor (higher = more fouled)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0001, 0.0005 + {qty_noise} * 0.004), 5)"
+        },
+        {
+          "name": "inlet_temp_f",
+          "sql_type": "DOUBLE",
+          "comment": "Inlet temperature in Fahrenheit",
+          "is_dimension": false,
+          "generation_expr": "ROUND(150.0 + {qty_noise} * 650.0, 0)"
+        },
+        {
+          "name": "outlet_temp_f",
+          "sql_type": "DOUBLE",
+          "comment": "Outlet temperature in Fahrenheit",
+          "is_dimension": false,
+          "generation_expr": "ROUND(250.0 + {qty_noise} * 550.0, 0)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Crude Preheat Train": {
+          "12,1,2": 0.06
+        },
+        "FCC Heat Recovery": {
+          "6,7,8": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "exchanger_id": "HT-ST-001",
+          "exchanger_name": "Crude Preheat E-101A",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-002",
+          "exchanger_name": "Crude Preheat E-101B",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-003",
+          "exchanger_name": "Crude Preheat E-102",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-004",
+          "exchanger_name": "Diesel Product Cooler E-201",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-PL-005",
+          "exchanger_name": "Naphtha Cooler E-301",
+          "equipment_category": "Plate",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-PL-006",
+          "exchanger_name": "Reformate Cooler E-302",
+          "equipment_category": "Plate",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "exchanger_id": "HT-AC-007",
+          "exchanger_name": "Overhead Air Cooler A-101",
+          "equipment_category": "Air Cooler",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-AC-008",
+          "exchanger_name": "FCC Product Air Cooler A-301",
+          "equipment_category": "Air Cooler",
+          "process_unit": "FCC Heat Recovery"
+        },
+        {
+          "exchanger_id": "HT-FH-009",
+          "exchanger_name": "Crude Heater H-101",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-FH-010",
+          "exchanger_name": "Vacuum Heater H-102",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Vacuum Unit"
+        },
+        {
+          "exchanger_id": "HT-FH-011",
+          "exchanger_name": "Reformer Heater H-301",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "exchanger_id": "HT-FH-012",
+          "exchanger_name": "Coker Heater H-401",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Coker"
+        },
+        {
+          "exchanger_id": "HT-WH-013",
+          "exchanger_name": "FCC Waste Heat Boiler WHB-301",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "FCC Heat Recovery"
+        },
+        {
+          "exchanger_id": "HT-WH-014",
+          "exchanger_name": "Sulfur Plant WHB-501",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "Sulfur Recovery"
+        },
+        {
+          "exchanger_id": "HT-ST-015",
+          "exchanger_name": "HDS Feed Exchanger E-401",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "exchanger_id": "HT-ST-016",
+          "exchanger_name": "HDS Effluent Cooler E-402",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "exchanger_id": "HT-AC-017",
+          "exchanger_name": "Alkylation Air Cooler A-501",
+          "equipment_category": "Air Cooler",
+          "process_unit": "Alkylation"
+        },
+        {
+          "exchanger_id": "HT-PL-018",
+          "exchanger_name": "Lean Amine Cooler E-601",
+          "equipment_category": "Plate",
+          "process_unit": "Gas Treating"
+        },
+        {
+          "exchanger_id": "HT-WH-019",
+          "exchanger_name": "H2 Plant WHB-701",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "Hydrogen Plant"
+        },
+        {
+          "exchanger_id": "HT-ST-020",
+          "exchanger_name": "Debutanizer Reboiler E-801",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "NGL Recovery"
+        }
+      ],
+      "category_distribution": {
+        "Shell-Tube": 0.06,
+        "Plate": 0.05,
+        "Air Cooler": 0.05,
+        "Fired Heater": 0.055,
+        "Waste Heat Recovery": 0.05
+      }
+    },
+    {
+      "table_name": "thermal_snapshots",
+      "description": "Weekly thermal performance snapshots including heat recovery effectiveness and energy intensity metrics.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.exchanger_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of the thermal snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "exchanger_id",
+          "sql_type": "STRING",
+          "comment": "Heat exchanger identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_category",
+          "sql_type": "STRING",
+          "comment": "Equipment category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_unit",
+          "sql_type": "STRING",
+          "comment": "Process unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "clean_ua_btu_hr_f",
+          "sql_type": "DOUBLE",
+          "comment": "Clean UA value BTU/hr/F",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5000.0, 20000.0 + {qty_noise} * 80000.0), 0)"
+        },
+        {
+          "name": "actual_ua_btu_hr_f",
+          "sql_type": "DOUBLE",
+          "comment": "Actual UA value BTU/hr/F",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(3000.0, 15000.0 + {qty_noise} * 65000.0), 0)"
+        },
+        {
+          "name": "effectiveness_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Heat transfer effectiveness percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(40.0, 75.0 + ({qty_noise} - 0.5) * 35.0)), 1)"
+        },
+        {
+          "name": "energy_intensity_btu_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Energy intensity BTU per barrel processed",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(50000.0, 100000.0 + {qty_noise} * 200000.0), 0)"
+        },
+        {
+          "name": "co2_emissions_tons",
+          "sql_type": "DOUBLE",
+          "comment": "CO2 emissions in metric tons",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 10.0 + {qty_noise} * 90.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "exchanger_id": "HT-ST-001",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-002",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-003",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-004",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-PL-005",
+          "equipment_category": "Plate",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-PL-006",
+          "equipment_category": "Plate",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "exchanger_id": "HT-AC-007",
+          "equipment_category": "Air Cooler",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-AC-008",
+          "equipment_category": "Air Cooler",
+          "process_unit": "FCC Heat Recovery"
+        },
+        {
+          "exchanger_id": "HT-FH-009",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-FH-010",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Vacuum Unit"
+        },
+        {
+          "exchanger_id": "HT-FH-011",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "exchanger_id": "HT-FH-012",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Coker"
+        },
+        {
+          "exchanger_id": "HT-WH-013",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "FCC Heat Recovery"
+        },
+        {
+          "exchanger_id": "HT-WH-014",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "Sulfur Recovery"
+        },
+        {
+          "exchanger_id": "HT-ST-015",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "exchanger_id": "HT-ST-016",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "exchanger_id": "HT-AC-017",
+          "equipment_category": "Air Cooler",
+          "process_unit": "Alkylation"
+        },
+        {
+          "exchanger_id": "HT-PL-018",
+          "equipment_category": "Plate",
+          "process_unit": "Gas Treating"
+        },
+        {
+          "exchanger_id": "HT-WH-019",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "Hydrogen Plant"
+        },
+        {
+          "exchanger_id": "HT-ST-020",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "NGL Recovery"
+        }
+      ],
+      "category_distribution": {
+        "Shell-Tube": 0.06,
+        "Plate": 0.05,
+        "Air Cooler": 0.05,
+        "Fired Heater": 0.055,
+        "Waste Heat Recovery": 0.05
+      }
+    },
+    {
+      "table_name": "energy_kpi_monthly",
+      "description": "Monthly energy KPIs including Solomon EII, heat recovery rates, and CO2 intensity.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('EK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.exchanger_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "First day of the KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "exchanger_id",
+          "sql_type": "STRING",
+          "comment": "Heat exchanger identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_category",
+          "sql_type": "STRING",
+          "comment": "Equipment category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_unit",
+          "sql_type": "STRING",
+          "comment": "Process unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "energy_efficiency_index",
+          "sql_type": "DOUBLE",
+          "comment": "Solomon Energy Efficiency Index (lower=better)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(70.0, 85.0 + ({qty_noise} - 0.5) * 30.0), 1)"
+        },
+        {
+          "name": "heat_recovery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Heat recovery percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(95.0, GREATEST(40.0, 68.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        },
+        {
+          "name": "total_energy_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total monthly energy cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10000.0, {qty_noise} * 800000.0), 2)"
+        },
+        {
+          "name": "co2_intensity_kg_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "CO2 intensity kg per barrel processed",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 12.0 + {qty_noise} * 28.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "exchanger_id": "HT-ST-001",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-002",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-003",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-ST-004",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-PL-005",
+          "equipment_category": "Plate",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-PL-006",
+          "equipment_category": "Plate",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "exchanger_id": "HT-AC-007",
+          "equipment_category": "Air Cooler",
+          "process_unit": "Distillation"
+        },
+        {
+          "exchanger_id": "HT-AC-008",
+          "equipment_category": "Air Cooler",
+          "process_unit": "FCC Heat Recovery"
+        },
+        {
+          "exchanger_id": "HT-FH-009",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Crude Preheat Train"
+        },
+        {
+          "exchanger_id": "HT-FH-010",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Vacuum Unit"
+        },
+        {
+          "exchanger_id": "HT-FH-011",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "exchanger_id": "HT-FH-012",
+          "equipment_category": "Fired Heater",
+          "process_unit": "Coker"
+        },
+        {
+          "exchanger_id": "HT-WH-013",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "FCC Heat Recovery"
+        },
+        {
+          "exchanger_id": "HT-WH-014",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "Sulfur Recovery"
+        },
+        {
+          "exchanger_id": "HT-ST-015",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "exchanger_id": "HT-ST-016",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "exchanger_id": "HT-AC-017",
+          "equipment_category": "Air Cooler",
+          "process_unit": "Alkylation"
+        },
+        {
+          "exchanger_id": "HT-PL-018",
+          "equipment_category": "Plate",
+          "process_unit": "Gas Treating"
+        },
+        {
+          "exchanger_id": "HT-WH-019",
+          "equipment_category": "Waste Heat Recovery",
+          "process_unit": "Hydrogen Plant"
+        },
+        {
+          "exchanger_id": "HT-ST-020",
+          "equipment_category": "Shell-Tube",
+          "process_unit": "NGL Recovery"
+        }
+      ],
+      "category_distribution": {
+        "Shell-Tube": 0.06,
+        "Plate": 0.05,
+        "Air Cooler": 0.05,
+        "Fired Heater": 0.055,
+        "Waste Heat Recovery": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "energy_readings_metrics",
+      "source_table": "energy_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "exchanger_id",
+          "expr": "exchanger_id"
+        },
+        {
+          "name": "equipment_category",
+          "expr": "equipment_category"
+        },
+        {
+          "name": "process_unit",
+          "expr": "process_unit"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_energy_mmbtu",
+          "expr": "SUM(energy_consumption_mmbtu)",
+          "comment": "Total energy consumption MMBTU"
+        },
+        {
+          "name": "avg_thermal_efficiency",
+          "expr": "AVG(thermal_efficiency_pct)",
+          "comment": "Average thermal efficiency"
+        },
+        {
+          "name": "avg_fouling_factor",
+          "expr": "AVG(fouling_factor)",
+          "comment": "Average fouling factor"
+        },
+        {
+          "name": "avg_heat_duty",
+          "expr": "AVG(heat_duty_mmbtu_hr)",
+          "comment": "Average heat duty MMBTU/hr"
+        },
+        {
+          "name": "total_inlet_temp_f",
+          "expr": "SUM(inlet_temp_f)",
+          "comment": "Total inlet temp f"
+        },
+        {
+          "name": "total_outlet_temp_f",
+          "expr": "SUM(outlet_temp_f)",
+          "comment": "Total outlet temp f"
+        },
+        {
+          "name": "max_energy_consumption_mmbtu",
+          "expr": "MAX(energy_consumption_mmbtu)",
+          "comment": "Maximum energy consumption mmbtu"
+        }
+      ]
+    },
+    {
+      "view_name": "thermal_snapshots_metrics",
+      "source_table": "thermal_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "exchanger_id",
+          "expr": "exchanger_id"
+        },
+        {
+          "name": "equipment_category",
+          "expr": "equipment_category"
+        },
+        {
+          "name": "process_unit",
+          "expr": "process_unit"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_effectiveness_pct",
+          "expr": "AVG(effectiveness_pct)",
+          "comment": "Average heat transfer effectiveness"
+        },
+        {
+          "name": "avg_energy_intensity",
+          "expr": "AVG(energy_intensity_btu_bbl)",
+          "comment": "Average energy intensity BTU/BBL"
+        },
+        {
+          "name": "total_co2_tons",
+          "expr": "SUM(co2_emissions_tons)",
+          "comment": "Total CO2 emissions in metric tons"
+        },
+        {
+          "name": "avg_ua_ratio",
+          "expr": "AVG(actual_ua_btu_hr_f / NULLIF(clean_ua_btu_hr_f, 0))",
+          "comment": "Average UA ratio (actual/clean)"
+        },
+        {
+          "name": "max_clean_ua_btu_hr_f",
+          "expr": "MAX(clean_ua_btu_hr_f)",
+          "comment": "Maximum clean ua btu hr f"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The energy_readings_metrics view (source: energy_readings) has dimensions: reading_date, exchanger_id, equipment_category, process_unit. Measures: total_energy_mmbtu, avg_thermal_efficiency, avg_fouling_factor, avg_heat_duty. The thermal_snapshots_metrics view (source: thermal_snapshots) has dimensions: snapshot_date, exchanger_id, equipment_category, process_unit. Measures: avg_effectiveness_pct, avg_energy_intensity, total_co2_tons, avg_ua_ratio. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. exchanger_name).",
+  "sample_questions": [
+    "What is the monthly trend in highest energy consumption mmbtu?",
+    "How has total energy consumption mmbtu changed over time?",
+    "What is the monthly trend in total inlet temp f?",
+    "How has total outlet temp f changed over time?",
+    "What is the monthly trend in highest clean ua btu hr f?",
+    "How has total co2 emissions in metric tons changed over time?",
+    "What is the monthly trend in average heat transfer effectiveness?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total inlet temp f?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_inlet_temp_f) AS total_inlet_temp_f",
+        "FROM {fqn}.energy_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total outlet temp f changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_outlet_temp_f) AS total_outlet_temp_f",
+        "FROM {fqn}.energy_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in average heat transfer effectiveness?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(avg_effectiveness_pct) AS avg_effectiveness_pct",
+        "FROM {fqn}.thermal_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total energy consumption in mmbtu over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(energy_consumption_mmbtu) AS total_energy_consumption_mmbtu",
+        "FROM {fqn}.energy_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total clean ua value btu/hr/f over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(clean_ua_btu_hr_f) AS total_clean_ua_btu_hr_f",
+        "FROM {fqn}.thermal_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average solomon energy efficiency index (lower=better) changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(energy_efficiency_index) AS avg_energy_efficiency_index",
+        "FROM {fqn}.energy_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has total inlet temp f changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_inlet_temp_f) AS total_inlet_temp_f",
+        "FROM {fqn}.energy_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "fouling_factor > 0.002",
+        "display_name": "high fouling",
+        "synonyms": [
+          "fouled",
+          "degraded"
+        ],
+        "instruction": "Filter to exchangers with high fouling."
+      },
+      {
+        "sql": "equipment_category = 'Fired Heater'",
+        "display_name": "fired heaters",
+        "synonyms": [
+          "furnaces",
+          "heaters"
+        ],
+        "instruction": "Filter to fired heaters."
+      },
+      {
+        "sql": "thermal_efficiency_pct < 70",
+        "display_name": "low efficiency",
+        "synonyms": [
+          "poor performance",
+          "inefficient"
+        ],
+        "instruction": "Filter to low efficiency readings."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "delta_temp_f",
+        "sql": "energy_readings.outlet_temp_f - energy_readings.inlet_temp_f",
+        "display_name": "temperature rise",
+        "synonyms": [
+          "delta T",
+          "temp gain"
+        ]
+      },
+      {
+        "alias": "ua_degradation_pct",
+        "sql": "ROUND(100.0 * (1 - thermal_snapshots.actual_ua_btu_hr_f / NULLIF(thermal_snapshots.clean_ua_btu_hr_f, 0)), 2)",
+        "display_name": "UA degradation",
+        "synonyms": [
+          "fouling impact",
+          "performance loss"
+        ]
+      },
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', energy_readings.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "month"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_energy",
+        "sql": "SUM(energy_readings.energy_consumption_mmbtu)",
+        "display_name": "total energy",
+        "synonyms": [
+          "energy consumption",
+          "MMBTU"
+        ]
+      },
+      {
+        "alias": "avg_efficiency",
+        "sql": "AVG(energy_readings.thermal_efficiency_pct)",
+        "display_name": "average efficiency",
+        "synonyms": [
+          "thermal efficiency"
+        ]
+      },
+      {
+        "alias": "total_co2",
+        "sql": "SUM(thermal_snapshots.co2_emissions_tons)",
+        "display_name": "total CO2",
+        "synonyms": [
+          "emissions",
+          "carbon"
+        ]
+      },
+      {
+        "alias": "total_energy_cost",
+        "sql": "SUM(energy_kpi_monthly.total_energy_cost_usd)",
+        "display_name": "total energy cost",
+        "synonyms": [
+          "energy spend",
+          "fuel cost"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in highest energy consumption mmbtu?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_energy_consumption_mmbtu) AS max_energy_consumption_mmbtu",
+        "FROM {fqn}.energy_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total energy consumption mmbtu changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_energy_mmbtu) AS total_energy_mmbtu",
+        "FROM {fqn}.energy_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest clean ua btu hr f?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_clean_ua_btu_hr_f) AS max_clean_ua_btu_hr_f",
+        "FROM {fqn}.thermal_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total co2 emissions in metric tons changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_co2_tons) AS total_co2_tons",
+        "FROM {fqn}.thermal_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top heat exchanger identifier by total energy consumption in mmbtu?",
+      "sql_lines": [
+        "SELECT exchanger_id, SUM(energy_consumption_mmbtu) AS total_energy_consumption_mmbtu",
+        "FROM {fqn}.energy_readings",
+        "GROUP BY exchanger_id ORDER BY total_energy_consumption_mmbtu DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average heat transfer effectiveness percentage by equipment category?",
+      "sql_lines": [
+        "SELECT equipment_category, AVG(effectiveness_pct) AS avg_effectiveness_pct",
+        "FROM {fqn}.thermal_snapshots",
+        "GROUP BY equipment_category ORDER BY avg_effectiveness_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.energy_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

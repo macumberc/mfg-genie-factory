@@ -1,0 +1,1205 @@
+{
+  "company_name": "DriveWell Automotive",
+  "industry": "Automotive",
+  "use_case": "Connected vehicle health monitoring and predictive maintenance reporting",
+  "space_title": "DriveWell - Vehicle Health & Maintenance Analytics 🚗",
+  "space_description": "Connected vehicle health analytics for DriveWell Automotive. Ask questions about sensor telemetry, maintenance records, health scores, predictive failure risks, and service patterns across 20 vehicle models and 6 connectivity tiers.",
+  "schema_basename": "vehicle_health",
+  "tables": [
+    {
+      "table_name": "vehicle_telemetry",
+      "description": "Daily sensor readings from connected vehicles including engine health, battery voltage, tire pressure, and diagnostic trouble codes.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique telemetry reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TEL-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date the sensor reading was captured",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle classification (Sedan, SUV, Truck, etc.)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "connectivity_tier",
+          "sql_type": "STRING",
+          "comment": "Connected services tier level",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "engine_temp_celsius",
+          "sql_type": "DOUBLE",
+          "comment": "Engine coolant temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75.0 + {qty_noise} * 35.0 + CASE WHEN MONTH(d.dt) IN (6,7,8) THEN 8.0 ELSE 0.0 END, 1)"
+        },
+        {
+          "name": "battery_voltage",
+          "sql_type": "DOUBLE",
+          "comment": "Battery voltage reading in volts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(11.5 + {qty_noise} * 2.5, 2)"
+        },
+        {
+          "name": "tire_pressure_psi",
+          "sql_type": "DOUBLE",
+          "comment": "Average tire pressure in PSI",
+          "is_dimension": false,
+          "generation_expr": "ROUND(28.0 + {qty_noise} * 10.0 - CASE WHEN MONTH(d.dt) IN (12,1,2) THEN 3.0 ELSE 0.0 END, 1)"
+        },
+        {
+          "name": "dtc_count",
+          "sql_type": "INT",
+          "comment": "Number of active diagnostic trouble codes",
+          "is_dimension": false,
+          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.60 THEN 0 WHEN {status_noise} < 0.82 THEN 1 WHEN {status_noise} < 0.93 THEN 2 ELSE FLOOR({qty_noise} * 5) + 3 END AS INT)"
+        },
+        {
+          "name": "health_score",
+          "sql_type": "DOUBLE",
+          "comment": "Overall vehicle health score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(35.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        },
+        {
+          "name": "alert_severity",
+          "sql_type": "STRING",
+          "comment": "Alert severity level for the reading",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.78 THEN 'Low' WHEN {status_noise} < 0.92 THEN 'Medium' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Sedan": {
+          "11,12": 0.055,
+          "6,7": 0.04
+        },
+        "SUV": {
+          "1,2": 0.05,
+          "7,8": 0.06
+        },
+        "Truck": {
+          "3,4": 0.045,
+          "9,10": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "vehicle_id": "DW-V001",
+          "make": "DriveWell",
+          "model": "Apex Sedan",
+          "model_year": 2024,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V002",
+          "make": "DriveWell",
+          "model": "Apex Sedan",
+          "model_year": 2025,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V003",
+          "make": "DriveWell",
+          "model": "Horizon SUV",
+          "model_year": 2024,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V004",
+          "make": "DriveWell",
+          "model": "Horizon SUV",
+          "model_year": 2025,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V005",
+          "make": "DriveWell",
+          "model": "Titan Truck",
+          "model_year": 2024,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V006",
+          "make": "DriveWell",
+          "model": "Titan Truck",
+          "model_year": 2025,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V007",
+          "make": "DriveWell",
+          "model": "Pulse EV",
+          "model_year": 2025,
+          "vehicle_class": "EV Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V008",
+          "make": "DriveWell",
+          "model": "Pulse EV",
+          "model_year": 2024,
+          "vehicle_class": "EV Sedan",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V009",
+          "make": "DriveWell",
+          "model": "Venture Crossover",
+          "model_year": 2024,
+          "vehicle_class": "Crossover",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V010",
+          "make": "DriveWell",
+          "model": "Venture Crossover",
+          "model_year": 2025,
+          "vehicle_class": "Crossover",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V011",
+          "make": "DriveWell",
+          "model": "Sierra Wagon",
+          "model_year": 2024,
+          "vehicle_class": "Wagon",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V012",
+          "make": "DriveWell",
+          "model": "Sierra Wagon",
+          "model_year": 2025,
+          "vehicle_class": "Wagon",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V013",
+          "make": "DriveWell",
+          "model": "Bolt Sport",
+          "model_year": 2025,
+          "vehicle_class": "Coupe",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V014",
+          "make": "DriveWell",
+          "model": "Bolt Sport",
+          "model_year": 2024,
+          "vehicle_class": "Coupe",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V015",
+          "make": "DriveWell",
+          "model": "Atlas Van",
+          "model_year": 2024,
+          "vehicle_class": "Van",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V016",
+          "make": "DriveWell",
+          "model": "Atlas Van",
+          "model_year": 2025,
+          "vehicle_class": "Van",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V017",
+          "make": "DriveWell",
+          "model": "Horizon SUV Hybrid",
+          "model_year": 2025,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V018",
+          "make": "DriveWell",
+          "model": "Apex Sedan Hybrid",
+          "model_year": 2025,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V019",
+          "make": "DriveWell",
+          "model": "Ranger Pickup",
+          "model_year": 2024,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V020",
+          "make": "DriveWell",
+          "model": "Ranger Pickup",
+          "model_year": 2025,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Premium"
+        }
+      ],
+      "category_distribution": {
+        "Sedan": 0.03,
+        "SUV": 0.035,
+        "Truck": 0.025,
+        "EV Sedan": 0.03,
+        "Crossover": 0.025,
+        "Wagon": 0.02,
+        "Coupe": 0.02,
+        "Van": 0.02
+      }
+    },
+    {
+      "table_name": "maintenance_records",
+      "description": "Weekly snapshot of service and repair records including work orders, parts replaced, labor hours, and warranty status.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique maintenance record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('MR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 5000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "service_date",
+          "sql_type": "DATE",
+          "comment": "Week-ending date of the service snapshot",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('week', d.dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle classification",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "service_type",
+          "sql_type": "STRING",
+          "comment": "Type of service performed",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Routine Maintenance' WHEN {status_noise} < 0.50 THEN 'Recall Repair' WHEN {status_noise} < 0.70 THEN 'Warranty Repair' WHEN {status_noise} < 0.85 THEN 'Diagnostic' ELSE 'Emergency Repair' END"
+        },
+        {
+          "name": "parts_replaced_count",
+          "sql_type": "INT",
+          "comment": "Number of parts replaced during service",
+          "is_dimension": false,
+          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.30 THEN FLOOR({qty_noise} * 3) WHEN {status_noise} < 0.70 THEN 1 + FLOOR({qty_noise} * 4) ELSE 2 + FLOOR({qty_noise} * 6) END AS INT)"
+        },
+        {
+          "name": "labor_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Total labor hours for service",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + {qty_noise} * 7.5, 1)"
+        },
+        {
+          "name": "repair_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total repair cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50.0 + {qty_noise} * 2450.0, 2)"
+        },
+        {
+          "name": "warranty_covered",
+          "sql_type": "STRING",
+          "comment": "Whether repair was covered by warranty",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Yes' WHEN {status_noise} < 0.80 THEN 'No' ELSE 'Partial' END"
+        },
+        {
+          "name": "service_region",
+          "sql_type": "STRING",
+          "comment": "Service center region",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Northeast' WHEN {status_noise} < 0.30 THEN 'Southeast' WHEN {status_noise} < 0.45 THEN 'Midwest' WHEN {status_noise} < 0.60 THEN 'Southwest' WHEN {status_noise} < 0.75 THEN 'West Coast' WHEN {status_noise} < 0.88 THEN 'Mountain' ELSE 'Pacific NW' END"
+        },
+        {
+          "name": "customer_satisfaction",
+          "sql_type": "DOUBLE",
+          "comment": "Post-service customer satisfaction score 1-5",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(5.0, GREATEST(1.0, 3.5 + ({qty_noise} - 0.5) * 3.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Sedan": {
+          "1,2": 0.04,
+          "11,12": 0.05
+        },
+        "SUV": {
+          "6,7": 0.045,
+          "12,1": 0.055
+        },
+        "Truck": {
+          "3,4": 0.04,
+          "9,10": 0.045
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "vehicle_id": "DW-V001",
+          "make": "DriveWell",
+          "model": "Apex Sedan",
+          "model_year": 2024,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V002",
+          "make": "DriveWell",
+          "model": "Apex Sedan",
+          "model_year": 2025,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V003",
+          "make": "DriveWell",
+          "model": "Horizon SUV",
+          "model_year": 2024,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V004",
+          "make": "DriveWell",
+          "model": "Horizon SUV",
+          "model_year": 2025,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V005",
+          "make": "DriveWell",
+          "model": "Titan Truck",
+          "model_year": 2024,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V006",
+          "make": "DriveWell",
+          "model": "Titan Truck",
+          "model_year": 2025,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V007",
+          "make": "DriveWell",
+          "model": "Pulse EV",
+          "model_year": 2025,
+          "vehicle_class": "EV Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V008",
+          "make": "DriveWell",
+          "model": "Pulse EV",
+          "model_year": 2024,
+          "vehicle_class": "EV Sedan",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V009",
+          "make": "DriveWell",
+          "model": "Venture Crossover",
+          "model_year": 2024,
+          "vehicle_class": "Crossover",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V010",
+          "make": "DriveWell",
+          "model": "Venture Crossover",
+          "model_year": 2025,
+          "vehicle_class": "Crossover",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V011",
+          "make": "DriveWell",
+          "model": "Sierra Wagon",
+          "model_year": 2024,
+          "vehicle_class": "Wagon",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V012",
+          "make": "DriveWell",
+          "model": "Sierra Wagon",
+          "model_year": 2025,
+          "vehicle_class": "Wagon",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V013",
+          "make": "DriveWell",
+          "model": "Bolt Sport",
+          "model_year": 2025,
+          "vehicle_class": "Coupe",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V014",
+          "make": "DriveWell",
+          "model": "Bolt Sport",
+          "model_year": 2024,
+          "vehicle_class": "Coupe",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V015",
+          "make": "DriveWell",
+          "model": "Atlas Van",
+          "model_year": 2024,
+          "vehicle_class": "Van",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V016",
+          "make": "DriveWell",
+          "model": "Atlas Van",
+          "model_year": 2025,
+          "vehicle_class": "Van",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V017",
+          "make": "DriveWell",
+          "model": "Horizon SUV Hybrid",
+          "model_year": 2025,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V018",
+          "make": "DriveWell",
+          "model": "Apex Sedan Hybrid",
+          "model_year": 2025,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V019",
+          "make": "DriveWell",
+          "model": "Ranger Pickup",
+          "model_year": 2024,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V020",
+          "make": "DriveWell",
+          "model": "Ranger Pickup",
+          "model_year": 2025,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Premium"
+        }
+      ],
+      "category_distribution": {
+        "Sedan": 0.03,
+        "SUV": 0.035,
+        "Truck": 0.025,
+        "EV Sedan": 0.03,
+        "Crossover": 0.025,
+        "Wagon": 0.02,
+        "Coupe": 0.02,
+        "Van": 0.02
+      }
+    },
+    {
+      "table_name": "vehicle_health_monthly",
+      "description": "Monthly aggregated vehicle health score forecasts vs actuals by model and region, with trend indicators.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly forecast record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('VHF-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 20000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Month the forecast covers",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Unique vehicle identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_class",
+          "sql_type": "STRING",
+          "comment": "Vehicle classification",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "forecasted_health_score",
+          "sql_type": "DOUBLE",
+          "comment": "Model-predicted health score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 80.0 + ({qty_noise} - 0.5) * 25.0)), 1)"
+        },
+        {
+          "name": "actual_health_score",
+          "sql_type": "DOUBLE",
+          "comment": "Actual observed average health score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(35.0, 80.0 + ({qty_noise} - 0.5) * 30.0 + ({status_noise} - 0.5) * 8.0)), 1)"
+        },
+        {
+          "name": "predicted_failure_rate",
+          "sql_type": "DOUBLE",
+          "comment": "Predicted failure probability 0-1",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(0.35, GREATEST(0.01, 0.08 + ({qty_noise} - 0.5) * 0.15)), 3)"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Predictive model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v2.0' WHEN {status_noise} < 0.60 THEN 'v2.1' ELSE 'v2.2' END"
+        },
+        {
+          "name": "trend_indicator",
+          "sql_type": "STRING",
+          "comment": "Health score trend direction",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Improving' WHEN {status_noise} < 0.70 THEN 'Stable' ELSE 'Declining' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Sedan": {
+          "11,12,1": 0.05
+        },
+        "SUV": {
+          "6,7,8": 0.055
+        },
+        "Truck": {
+          "3,4,5": 0.045
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "vehicle_id": "DW-V001",
+          "make": "DriveWell",
+          "model": "Apex Sedan",
+          "model_year": 2024,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V002",
+          "make": "DriveWell",
+          "model": "Apex Sedan",
+          "model_year": 2025,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V003",
+          "make": "DriveWell",
+          "model": "Horizon SUV",
+          "model_year": 2024,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V004",
+          "make": "DriveWell",
+          "model": "Horizon SUV",
+          "model_year": 2025,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V005",
+          "make": "DriveWell",
+          "model": "Titan Truck",
+          "model_year": 2024,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V006",
+          "make": "DriveWell",
+          "model": "Titan Truck",
+          "model_year": 2025,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V007",
+          "make": "DriveWell",
+          "model": "Pulse EV",
+          "model_year": 2025,
+          "vehicle_class": "EV Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V008",
+          "make": "DriveWell",
+          "model": "Pulse EV",
+          "model_year": 2024,
+          "vehicle_class": "EV Sedan",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V009",
+          "make": "DriveWell",
+          "model": "Venture Crossover",
+          "model_year": 2024,
+          "vehicle_class": "Crossover",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V010",
+          "make": "DriveWell",
+          "model": "Venture Crossover",
+          "model_year": 2025,
+          "vehicle_class": "Crossover",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V011",
+          "make": "DriveWell",
+          "model": "Sierra Wagon",
+          "model_year": 2024,
+          "vehicle_class": "Wagon",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V012",
+          "make": "DriveWell",
+          "model": "Sierra Wagon",
+          "model_year": 2025,
+          "vehicle_class": "Wagon",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V013",
+          "make": "DriveWell",
+          "model": "Bolt Sport",
+          "model_year": 2025,
+          "vehicle_class": "Coupe",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V014",
+          "make": "DriveWell",
+          "model": "Bolt Sport",
+          "model_year": 2024,
+          "vehicle_class": "Coupe",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V015",
+          "make": "DriveWell",
+          "model": "Atlas Van",
+          "model_year": 2024,
+          "vehicle_class": "Van",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V016",
+          "make": "DriveWell",
+          "model": "Atlas Van",
+          "model_year": 2025,
+          "vehicle_class": "Van",
+          "connectivity_tier": "Premium"
+        },
+        {
+          "vehicle_id": "DW-V017",
+          "make": "DriveWell",
+          "model": "Horizon SUV Hybrid",
+          "model_year": 2025,
+          "vehicle_class": "SUV",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V018",
+          "make": "DriveWell",
+          "model": "Apex Sedan Hybrid",
+          "model_year": 2025,
+          "vehicle_class": "Sedan",
+          "connectivity_tier": "Elite"
+        },
+        {
+          "vehicle_id": "DW-V019",
+          "make": "DriveWell",
+          "model": "Ranger Pickup",
+          "model_year": 2024,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Standard"
+        },
+        {
+          "vehicle_id": "DW-V020",
+          "make": "DriveWell",
+          "model": "Ranger Pickup",
+          "model_year": 2025,
+          "vehicle_class": "Truck",
+          "connectivity_tier": "Premium"
+        }
+      ],
+      "category_distribution": {
+        "Sedan": 0.03,
+        "SUV": 0.035,
+        "Truck": 0.025,
+        "EV Sedan": 0.03,
+        "Crossover": 0.025,
+        "Wagon": 0.02,
+        "Coupe": 0.02,
+        "Van": 0.02
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "vehicle_telemetry_metrics",
+      "source_table": "vehicle_telemetry",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "model",
+          "expr": "model"
+        },
+        {
+          "name": "vehicle_class",
+          "expr": "vehicle_class"
+        },
+        {
+          "name": "connectivity_tier",
+          "expr": "connectivity_tier"
+        },
+        {
+          "name": "alert_severity",
+          "expr": "alert_severity"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_readings",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total telemetry readings collected"
+        },
+        {
+          "name": "avg_health_score",
+          "expr": "AVG(health_score)",
+          "comment": "Average vehicle health score"
+        },
+        {
+          "name": "avg_engine_temp",
+          "expr": "AVG(engine_temp_celsius)",
+          "comment": "Average engine coolant temperature"
+        },
+        {
+          "name": "critical_alert_count",
+          "expr": "COUNT(DISTINCT CASE WHEN alert_severity = 'Critical' THEN reading_id END)",
+          "comment": "Readings with critical severity alerts"
+        },
+        {
+          "name": "avg_dtc_count",
+          "expr": "AVG(dtc_count)",
+          "comment": "Average diagnostic trouble codes per reading"
+        },
+        {
+          "name": "total_battery_voltage",
+          "expr": "SUM(battery_voltage)",
+          "comment": "Total battery voltage"
+        },
+        {
+          "name": "total_tire_pressure_psi",
+          "expr": "SUM(tire_pressure_psi)",
+          "comment": "Total tire pressure psi"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "max_engine_temp_celsius",
+          "expr": "MAX(engine_temp_celsius)",
+          "comment": "Maximum engine temp celsius"
+        }
+      ]
+    },
+    {
+      "view_name": "maintenance_records_metrics",
+      "source_table": "maintenance_records",
+      "dimensions": [
+        {
+          "name": "service_date",
+          "expr": "service_date"
+        },
+        {
+          "name": "model",
+          "expr": "model"
+        },
+        {
+          "name": "vehicle_class",
+          "expr": "vehicle_class"
+        },
+        {
+          "name": "service_type",
+          "expr": "service_type"
+        },
+        {
+          "name": "service_region",
+          "expr": "service_region"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_service_records",
+          "expr": "COUNT(DISTINCT record_id)",
+          "comment": "Total service records"
+        },
+        {
+          "name": "total_repair_cost",
+          "expr": "SUM(repair_cost_usd)",
+          "comment": "Total repair cost in USD"
+        },
+        {
+          "name": "avg_labor_hours",
+          "expr": "AVG(labor_hours)",
+          "comment": "Average labor hours per service"
+        },
+        {
+          "name": "warranty_covered_count",
+          "expr": "COUNT(DISTINCT CASE WHEN warranty_covered = 'Yes' THEN record_id END)",
+          "comment": "Services fully covered by warranty"
+        },
+        {
+          "name": "avg_customer_satisfaction",
+          "expr": "AVG(customer_satisfaction)",
+          "comment": "Average post-service satisfaction score"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "max_parts_replaced_count",
+          "expr": "MAX(parts_replaced_count)",
+          "comment": "Maximum parts replaced count"
+        },
+        {
+          "name": "total_parts_replaced_count",
+          "expr": "SUM(parts_replaced_count)",
+          "comment": "Total parts replaced count"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The vehicle_telemetry_metrics view (source: vehicle_telemetry) has dimensions: reading_date, model, vehicle_class, connectivity_tier, alert_severity. Measures: total_readings, avg_health_score, avg_engine_temp, critical_alert_count, avg_dtc_count. The maintenance_records_metrics view (source: maintenance_records) has dimensions: service_date, model, vehicle_class, service_type, service_region. Measures: total_service_records, total_repair_cost, avg_labor_hours, warranty_covered_count, avg_customer_satisfaction. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. vehicle_id).",
+  "sample_questions": [
+    "What is the monthly trend in critical alert count?",
+    "How has unique total readingss changed over time?",
+    "What is the monthly trend in unique vehicles?",
+    "How has highest engine temp celsius changed over time?",
+    "What is the monthly trend in warranty covered count?",
+    "How has unique total service recordss changed over time?",
+    "What is the monthly trend in unique vehicles?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique vehicles?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "FROM {fqn}.vehicle_telemetry_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest engine temp celsius changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_engine_temp_celsius) AS max_engine_temp_celsius",
+        "FROM {fqn}.vehicle_telemetry_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total tire pressure psi changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_tire_pressure_psi) AS total_tire_pressure_psi",
+        "FROM {fqn}.vehicle_telemetry_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "Which models have the highest total battery voltage?",
+      "sql_lines": [
+        "SELECT model, MEASURE(total_battery_voltage) AS total_battery_voltage",
+        "FROM {fqn}.vehicle_telemetry_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_battery_voltage DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total engine coolant temperature in celsius over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
+        "FROM {fqn}.vehicle_telemetry",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total number of parts replaced during service over time?",
+      "sql_lines": [
+        "SELECT service_date, SUM(parts_replaced_count) AS total_parts_replaced_count",
+        "FROM {fqn}.maintenance_records",
+        "GROUP BY service_date ORDER BY service_date"
+      ]
+    },
+    {
+      "question": "How has the average model-predicted health score 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, AVG(forecasted_health_score) AS avg_forecasted_health_score",
+        "FROM {fqn}.vehicle_health_monthly",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "vehicle_telemetry.alert_severity = 'Critical'",
+        "display_name": "critical alerts",
+        "synonyms": [
+          "critical readings",
+          "severe alerts",
+          "high severity"
+        ],
+        "instruction": "Use when filtering for only the most severe vehicle health alerts."
+      },
+      {
+        "sql": "maintenance_records.warranty_covered = 'Yes'",
+        "display_name": "warranty covered",
+        "synonyms": [
+          "under warranty",
+          "warranty repairs",
+          "covered by warranty"
+        ],
+        "instruction": "Use when analyzing only warranty-covered service events."
+      },
+      {
+        "sql": "vehicle_telemetry.reading_date >= ADD_MONTHS(CURRENT_DATE(), -90)",
+        "display_name": "last 90 days",
+        "synonyms": [
+          "recent readings",
+          "past 3 months",
+          "trailing quarter"
+        ],
+        "instruction": "Use to restrict telemetry analysis to the most recent 90-day window."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', vehicle_telemetry.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "telemetry month",
+          "month of reading"
+        ]
+      },
+      {
+        "alias": "health_forecast_gap",
+        "sql": "vehicle_health_monthly.forecasted_health_score - vehicle_health_monthly.actual_health_score",
+        "display_name": "health forecast gap",
+        "synonyms": [
+          "prediction error",
+          "forecast vs actual health"
+        ]
+      },
+      {
+        "alias": "cost_per_labor_hour",
+        "sql": "maintenance_records.repair_cost_usd / NULLIF(maintenance_records.labor_hours, 0)",
+        "display_name": "cost per labor hour",
+        "synonyms": [
+          "hourly repair cost",
+          "cost efficiency"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_repair_cost",
+        "sql": "SUM(maintenance_records.repair_cost_usd)",
+        "display_name": "total repair cost",
+        "synonyms": [
+          "total cost",
+          "repair spend",
+          "service cost"
+        ]
+      },
+      {
+        "alias": "avg_health_score",
+        "sql": "AVG(vehicle_telemetry.health_score)",
+        "display_name": "average health score",
+        "synonyms": [
+          "mean health",
+          "vehicle health",
+          "health rating"
+        ]
+      },
+      {
+        "alias": "critical_alert_count",
+        "sql": "COUNT(DISTINCT CASE WHEN vehicle_telemetry.alert_severity = 'Critical' THEN vehicle_telemetry.reading_id END)",
+        "display_name": "critical alert count",
+        "synonyms": [
+          "critical alerts",
+          "severe alert count"
+        ]
+      },
+      {
+        "alias": "avg_satisfaction",
+        "sql": "AVG(maintenance_records.customer_satisfaction)",
+        "display_name": "average satisfaction",
+        "synonyms": [
+          "CSAT",
+          "customer satisfaction",
+          "service satisfaction"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical alert count?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(critical_alert_count) AS critical_alert_count",
+        "FROM {fqn}.vehicle_telemetry_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique total readingss changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "FROM {fqn}.vehicle_telemetry_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in warranty covered count?",
+      "sql_lines": [
+        "SELECT service_date, MEASURE(warranty_covered_count) AS warranty_covered_count",
+        "FROM {fqn}.maintenance_records_metrics",
+        "GROUP BY ALL",
+        "ORDER BY service_date"
+      ]
+    },
+    {
+      "question": "How has unique total service recordss changed over time?",
+      "sql_lines": [
+        "SELECT service_date, MEASURE(total_service_records) AS total_service_records",
+        "FROM {fqn}.maintenance_records_metrics",
+        "GROUP BY ALL",
+        "ORDER BY service_date"
+      ]
+    },
+    {
+      "question": "What are the top unique vehicle identifier by total engine coolant temperature in celsius?",
+      "sql_lines": [
+        "SELECT vehicle_id, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
+        "FROM {fqn}.vehicle_telemetry",
+        "GROUP BY vehicle_id ORDER BY total_engine_temp_celsius DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per week-ending date of the service snapshot?",
+      "sql_lines": [
+        "SELECT service_date, COUNT(*) AS record_count",
+        "FROM {fqn}.maintenance_records",
+        "GROUP BY service_date ORDER BY service_date"
+      ]
+    },
+    {
+      "question": "How many records are there per month the forecast covers?",
+      "sql_lines": [
+        "SELECT forecast_month, COUNT(*) AS record_count",
+        "FROM {fqn}.vehicle_health_monthly",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    }
+  ]
+}

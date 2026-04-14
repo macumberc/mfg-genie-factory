@@ -1,0 +1,1087 @@
+{
+  "company_name": "GridGuard Utilities",
+  "industry": "Electric Utility",
+  "use_case": "Transformer asset health monitoring and failure prediction",
+  "space_title": "GridGuard Utilities - Transformer Asset Health ⚡",
+  "space_description": "Asset health analytics for GridGuard Utilities. Ask about transformer health scores, sensor anomalies, failure events, oil test results, and maintenance forecasts across 20 power transformers and 12 substations.",
+  "schema_basename": "utility_transformer_health",
+  "tables": [
+    {
+      "table_name": "sensor_readings",
+      "description": "Daily transformer sensor readings including dissolved gas analysis, oil temperature, load, and vibration data.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique sensor reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.transformer_id) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of sensor reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "transformer_id",
+          "sql_type": "STRING",
+          "comment": "Transformer asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "transformer_name",
+          "sql_type": "STRING",
+          "comment": "Transformer descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "substation",
+          "sql_type": "STRING",
+          "comment": "Substation where transformer is installed",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "voltage_class",
+          "sql_type": "STRING",
+          "comment": "Voltage class: 69kV, 138kV, 230kV, 345kV",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "oil_temp_celsius",
+          "sql_type": "DOUBLE",
+          "comment": "Top oil temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(45.0 + ({qty_noise} * 55.0) + (CASE WHEN MONTH(d.dt) IN (6,7,8) THEN 8.0 ELSE 0.0 END), 2)"
+        },
+        {
+          "name": "dissolved_gas_ppm",
+          "sql_type": "DOUBLE",
+          "comment": "Total dissolved gas in oil (ppm)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 490.0), 2)"
+        },
+        {
+          "name": "load_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Transformer load as percentage of rated capacity",
+          "is_dimension": false,
+          "generation_expr": "ROUND(25.0 + ({qty_noise} * 70.0) + (CASE WHEN MONTH(d.dt) IN (7,8) THEN 10.0 WHEN MONTH(d.dt) IN (1,2) THEN 5.0 ELSE 0.0 END), 2)"
+        },
+        {
+          "name": "vibration_mm_s",
+          "sql_type": "DOUBLE",
+          "comment": "Vibration reading in mm/s",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 9.5), 2)"
+        },
+        {
+          "name": "health_index",
+          "sql_type": "DOUBLE",
+          "comment": "Computed health index 0-100 (higher is healthier)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10.0, 100.0 - ({qty_noise} * 50.0) - (CASE WHEN {status_noise} < 0.05 THEN 30.0 ELSE 0.0 END)), 2)"
+        },
+        {
+          "name": "alert_level",
+          "sql_type": "STRING",
+          "comment": "Alert level: Normal, Watch, Warning, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'Normal' WHEN {status_noise} < 0.80 THEN 'Watch' WHEN {status_noise} < 0.93 THEN 'Warning' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "345kV": {
+          "7,8": 0.06,
+          "1,2": 0.05
+        },
+        "230kV": {
+          "6,7,8": 0.055
+        },
+        "138kV": {
+          "7,8": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "transformer_id": "TF-001",
+          "transformer_name": "Oakdale Main Bank A",
+          "substation": "Oakdale",
+          "voltage_class": "345kV",
+          "manufacturer": "ABB",
+          "age_years": 32,
+          "criticality": "Critical"
+        },
+        {
+          "transformer_id": "TF-002",
+          "transformer_name": "Oakdale Main Bank B",
+          "substation": "Oakdale",
+          "voltage_class": "345kV",
+          "manufacturer": "ABB",
+          "age_years": 32,
+          "criticality": "Critical"
+        },
+        {
+          "transformer_id": "TF-003",
+          "transformer_name": "Riverside Step-Down 1",
+          "substation": "Riverside",
+          "voltage_class": "230kV",
+          "manufacturer": "Siemens",
+          "age_years": 18,
+          "criticality": "High"
+        },
+        {
+          "transformer_id": "TF-004",
+          "transformer_name": "Riverside Step-Down 2",
+          "substation": "Riverside",
+          "voltage_class": "230kV",
+          "manufacturer": "Siemens",
+          "age_years": 20,
+          "criticality": "High"
+        },
+        {
+          "transformer_id": "TF-005",
+          "transformer_name": "Lakewood North Bank",
+          "substation": "Lakewood",
+          "voltage_class": "138kV",
+          "manufacturer": "GE",
+          "age_years": 25,
+          "criticality": "High"
+        },
+        {
+          "transformer_id": "TF-006",
+          "transformer_name": "Lakewood South Bank",
+          "substation": "Lakewood",
+          "voltage_class": "138kV",
+          "manufacturer": "GE",
+          "age_years": 27,
+          "criticality": "Medium"
+        },
+        {
+          "transformer_id": "TF-007",
+          "transformer_name": "Hillcrest Transmission",
+          "substation": "Hillcrest",
+          "voltage_class": "345kV",
+          "manufacturer": "Hitachi",
+          "age_years": 12,
+          "criticality": "Critical"
+        },
+        {
+          "transformer_id": "TF-008",
+          "transformer_name": "Pinewood Feeder 1",
+          "substation": "Pinewood",
+          "voltage_class": "69kV",
+          "manufacturer": "ABB",
+          "age_years": 35,
+          "criticality": "Medium"
+        },
+        {
+          "transformer_id": "TF-009",
+          "transformer_name": "Pinewood Feeder 2",
+          "substation": "Pinewood",
+          "voltage_class": "69kV",
+          "manufacturer": "Eaton",
+          "age_years": 8,
+          "criticality": "Low"
+        },
+        {
+          "transformer_id": "TF-010",
+          "transformer_name": "Summit Industrial Main",
+          "substation": "Summit",
+          "voltage_class": "230kV",
+          "manufacturer": "Siemens",
+          "age_years": 22,
+          "criticality": "High"
+        },
+        {
+          "transformer_id": "TF-011",
+          "transformer_name": "Summit Industrial Aux",
+          "substation": "Summit",
+          "voltage_class": "138kV",
+          "manufacturer": "GE",
+          "age_years": 15,
+          "criticality": "Medium"
+        },
+        {
+          "transformer_id": "TF-012",
+          "transformer_name": "Meadowbrook Dist 1",
+          "substation": "Meadowbrook",
+          "voltage_class": "69kV",
+          "manufacturer": "Eaton",
+          "age_years": 10,
+          "criticality": "Low"
+        },
+        {
+          "transformer_id": "TF-013",
+          "transformer_name": "Meadowbrook Dist 2",
+          "substation": "Meadowbrook",
+          "voltage_class": "69kV",
+          "manufacturer": "Eaton",
+          "age_years": 11,
+          "criticality": "Low"
+        },
+        {
+          "transformer_id": "TF-014",
+          "transformer_name": "Grandview Tie Bank",
+          "substation": "Grandview",
+          "voltage_class": "345kV",
+          "manufacturer": "Hitachi",
+          "age_years": 5,
+          "criticality": "Critical"
+        },
+        {
+          "transformer_id": "TF-015",
+          "transformer_name": "Grandview Aux",
+          "substation": "Grandview",
+          "voltage_class": "230kV",
+          "manufacturer": "ABB",
+          "age_years": 28,
+          "criticality": "High"
+        },
+        {
+          "transformer_id": "TF-016",
+          "transformer_name": "Cedarville Main",
+          "substation": "Cedarville",
+          "voltage_class": "138kV",
+          "manufacturer": "Siemens",
+          "age_years": 19,
+          "criticality": "Medium"
+        },
+        {
+          "transformer_id": "TF-017",
+          "transformer_name": "Cedarville Backup",
+          "substation": "Cedarville",
+          "voltage_class": "138kV",
+          "manufacturer": "GE",
+          "age_years": 30,
+          "criticality": "Medium"
+        },
+        {
+          "transformer_id": "TF-018",
+          "transformer_name": "Harbor Point Marine",
+          "substation": "Harbor Point",
+          "voltage_class": "230kV",
+          "manufacturer": "Hitachi",
+          "age_years": 7,
+          "criticality": "High"
+        },
+        {
+          "transformer_id": "TF-019",
+          "transformer_name": "Fairfield Residential",
+          "substation": "Fairfield",
+          "voltage_class": "69kV",
+          "manufacturer": "Eaton",
+          "age_years": 14,
+          "criticality": "Low"
+        },
+        {
+          "transformer_id": "TF-020",
+          "transformer_name": "Fairfield Commercial",
+          "substation": "Fairfield",
+          "voltage_class": "69kV",
+          "manufacturer": "ABB",
+          "age_years": 16,
+          "criticality": "Low"
+        }
+      ],
+      "category_distribution": {
+        "345kV": 0.035,
+        "230kV": 0.03,
+        "138kV": 0.03,
+        "69kV": 0.025
+      }
+    },
+    {
+      "table_name": "failure_events",
+      "description": "Snapshot of transformer failure and maintenance events including root cause, outage duration, and repair costs.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique failure event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.transformer_id) AS STRING), 6, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date of failure or maintenance event",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "transformer_id",
+          "sql_type": "STRING",
+          "comment": "Transformer asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "substation",
+          "sql_type": "STRING",
+          "comment": "Substation name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "voltage_class",
+          "sql_type": "STRING",
+          "comment": "Voltage class of the transformer",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "event_type",
+          "sql_type": "STRING",
+          "comment": "Event type: Failure, Preventive, Corrective, Inspection",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Failure' WHEN {status_noise} < 0.35 THEN 'Corrective' WHEN {status_noise} < 0.70 THEN 'Preventive' ELSE 'Inspection' END"
+        },
+        {
+          "name": "root_cause",
+          "sql_type": "STRING",
+          "comment": "Root cause: Insulation Degradation, Oil Contamination, Overloading, Lightning, Bushing Failure, Tap Changer, Cooling System, Age/Wear",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Insulation Degradation' WHEN {status_noise} < 0.28 THEN 'Oil Contamination' WHEN {status_noise} < 0.40 THEN 'Overloading' WHEN {status_noise} < 0.50 THEN 'Lightning' WHEN {status_noise} < 0.60 THEN 'Bushing Failure' WHEN {status_noise} < 0.72 THEN 'Tap Changer' WHEN {status_noise} < 0.85 THEN 'Cooling System' ELSE 'Age/Wear' END"
+        },
+        {
+          "name": "outage_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Duration of outage in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 72.0, 1)"
+        },
+        {
+          "name": "repair_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Repair cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2500.0 + ({qty_noise} * 247500.0), 2)"
+        },
+        {
+          "name": "customers_affected",
+          "sql_type": "INT",
+          "comment": "Number of customers affected by the event",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 15000) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "345kV": {
+          "7,8": 0.06,
+          "12,1": 0.05
+        },
+        "230kV": {
+          "6,7,8": 0.05
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "transformer_id": "TF-001",
+          "transformer_name": "Oakdale Main Bank A",
+          "substation": "Oakdale",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-002",
+          "transformer_name": "Oakdale Main Bank B",
+          "substation": "Oakdale",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-003",
+          "transformer_name": "Riverside Step-Down 1",
+          "substation": "Riverside",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-004",
+          "transformer_name": "Riverside Step-Down 2",
+          "substation": "Riverside",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-005",
+          "transformer_name": "Lakewood North Bank",
+          "substation": "Lakewood",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-006",
+          "transformer_name": "Lakewood South Bank",
+          "substation": "Lakewood",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-007",
+          "transformer_name": "Hillcrest Transmission",
+          "substation": "Hillcrest",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-008",
+          "transformer_name": "Pinewood Feeder 1",
+          "substation": "Pinewood",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-009",
+          "transformer_name": "Pinewood Feeder 2",
+          "substation": "Pinewood",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-010",
+          "transformer_name": "Summit Industrial Main",
+          "substation": "Summit",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-011",
+          "transformer_name": "Summit Industrial Aux",
+          "substation": "Summit",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-012",
+          "transformer_name": "Meadowbrook Dist 1",
+          "substation": "Meadowbrook",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-013",
+          "transformer_name": "Meadowbrook Dist 2",
+          "substation": "Meadowbrook",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-014",
+          "transformer_name": "Grandview Tie Bank",
+          "substation": "Grandview",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-015",
+          "transformer_name": "Grandview Aux",
+          "substation": "Grandview",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-016",
+          "transformer_name": "Cedarville Main",
+          "substation": "Cedarville",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-017",
+          "transformer_name": "Cedarville Backup",
+          "substation": "Cedarville",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-018",
+          "transformer_name": "Harbor Point Marine",
+          "substation": "Harbor Point",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-019",
+          "transformer_name": "Fairfield Residential",
+          "substation": "Fairfield",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-020",
+          "transformer_name": "Fairfield Commercial",
+          "substation": "Fairfield",
+          "voltage_class": "69kV"
+        }
+      ],
+      "category_distribution": {
+        "345kV": 0.035,
+        "230kV": 0.03,
+        "138kV": 0.03,
+        "69kV": 0.025
+      }
+    },
+    {
+      "table_name": "health_monthly",
+      "description": "Monthly aggregated transformer health KPIs including average health index, failure counts, and maintenance cost forecasts.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('HM-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.transformer_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "transformer_id",
+          "sql_type": "STRING",
+          "comment": "Transformer asset identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "substation",
+          "sql_type": "STRING",
+          "comment": "Substation name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "voltage_class",
+          "sql_type": "STRING",
+          "comment": "Voltage class",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "avg_health_index",
+          "sql_type": "DOUBLE",
+          "comment": "Average health index for the month (0-100)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(15.0, 85.0 - ({qty_noise} * 40.0)), 2)"
+        },
+        {
+          "name": "failure_count",
+          "sql_type": "INT",
+          "comment": "Number of failure events in the month",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 3) AS INT)"
+        },
+        {
+          "name": "forecasted_maintenance_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Forecasted maintenance cost for the next quarter in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000.0 + ({qty_noise} * 95000.0), 2)"
+        },
+        {
+          "name": "remaining_useful_life_years",
+          "sql_type": "DOUBLE",
+          "comment": "Estimated remaining useful life in years",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.5, 25.0 - ({qty_noise} * 20.0)), 1)"
+        },
+        {
+          "name": "risk_tier",
+          "sql_type": "STRING",
+          "comment": "Risk tier: Low, Moderate, High, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Moderate' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "transformer_id": "TF-001",
+          "transformer_name": "Oakdale Main Bank A",
+          "substation": "Oakdale",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-002",
+          "transformer_name": "Oakdale Main Bank B",
+          "substation": "Oakdale",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-003",
+          "transformer_name": "Riverside Step-Down 1",
+          "substation": "Riverside",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-004",
+          "transformer_name": "Riverside Step-Down 2",
+          "substation": "Riverside",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-005",
+          "transformer_name": "Lakewood North Bank",
+          "substation": "Lakewood",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-006",
+          "transformer_name": "Lakewood South Bank",
+          "substation": "Lakewood",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-007",
+          "transformer_name": "Hillcrest Transmission",
+          "substation": "Hillcrest",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-008",
+          "transformer_name": "Pinewood Feeder 1",
+          "substation": "Pinewood",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-009",
+          "transformer_name": "Pinewood Feeder 2",
+          "substation": "Pinewood",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-010",
+          "transformer_name": "Summit Industrial Main",
+          "substation": "Summit",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-011",
+          "transformer_name": "Summit Industrial Aux",
+          "substation": "Summit",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-012",
+          "transformer_name": "Meadowbrook Dist 1",
+          "substation": "Meadowbrook",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-013",
+          "transformer_name": "Meadowbrook Dist 2",
+          "substation": "Meadowbrook",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-014",
+          "transformer_name": "Grandview Tie Bank",
+          "substation": "Grandview",
+          "voltage_class": "345kV"
+        },
+        {
+          "transformer_id": "TF-015",
+          "transformer_name": "Grandview Aux",
+          "substation": "Grandview",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-016",
+          "transformer_name": "Cedarville Main",
+          "substation": "Cedarville",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-017",
+          "transformer_name": "Cedarville Backup",
+          "substation": "Cedarville",
+          "voltage_class": "138kV"
+        },
+        {
+          "transformer_id": "TF-018",
+          "transformer_name": "Harbor Point Marine",
+          "substation": "Harbor Point",
+          "voltage_class": "230kV"
+        },
+        {
+          "transformer_id": "TF-019",
+          "transformer_name": "Fairfield Residential",
+          "substation": "Fairfield",
+          "voltage_class": "69kV"
+        },
+        {
+          "transformer_id": "TF-020",
+          "transformer_name": "Fairfield Commercial",
+          "substation": "Fairfield",
+          "voltage_class": "69kV"
+        }
+      ],
+      "category_distribution": {
+        "345kV": 0.035,
+        "230kV": 0.03,
+        "138kV": 0.03,
+        "69kV": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "sensor_readings_metrics",
+      "source_table": "sensor_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "substation",
+          "expr": "substation"
+        },
+        {
+          "name": "voltage_class",
+          "expr": "voltage_class"
+        },
+        {
+          "name": "alert_level",
+          "expr": "alert_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_health_index",
+          "expr": "AVG(health_index)",
+          "comment": "Average transformer health index"
+        },
+        {
+          "name": "avg_oil_temp",
+          "expr": "AVG(oil_temp_celsius)",
+          "comment": "Average oil temperature in Celsius"
+        },
+        {
+          "name": "max_dissolved_gas_ppm",
+          "expr": "MAX(dissolved_gas_ppm)",
+          "comment": "Maximum dissolved gas reading in ppm"
+        },
+        {
+          "name": "avg_load_pct",
+          "expr": "AVG(load_pct)",
+          "comment": "Average transformer load percentage"
+        },
+        {
+          "name": "critical_alert_count",
+          "expr": "COUNT(DISTINCT CASE WHEN alert_level = 'Critical' THEN reading_id END)",
+          "comment": "Number of critical alert readings"
+        },
+        {
+          "name": "reading_count",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total number of sensor readings"
+        },
+        {
+          "name": "total_vibration_mm_s",
+          "expr": "SUM(vibration_mm_s)",
+          "comment": "Total vibration mm s"
+        },
+        {
+          "name": "unique_transformer_count",
+          "expr": "COUNT(DISTINCT transformer_id)",
+          "comment": "Number of distinct transformers"
+        },
+        {
+          "name": "max_oil_temp_celsius",
+          "expr": "MAX(oil_temp_celsius)",
+          "comment": "Maximum oil temp celsius"
+        }
+      ]
+    },
+    {
+      "view_name": "failure_events_metrics",
+      "source_table": "failure_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "substation",
+          "expr": "substation"
+        },
+        {
+          "name": "voltage_class",
+          "expr": "voltage_class"
+        },
+        {
+          "name": "event_type",
+          "expr": "event_type"
+        },
+        {
+          "name": "root_cause",
+          "expr": "root_cause"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_failure_events",
+          "expr": "COUNT(DISTINCT CASE WHEN event_type = 'Failure' THEN event_id END)",
+          "comment": "Number of failure events"
+        },
+        {
+          "name": "total_repair_cost_usd",
+          "expr": "SUM(repair_cost_usd)",
+          "comment": "Total repair costs in USD"
+        },
+        {
+          "name": "avg_outage_hours",
+          "expr": "AVG(outage_hours)",
+          "comment": "Average outage duration in hours"
+        },
+        {
+          "name": "total_customers_affected",
+          "expr": "SUM(customers_affected)",
+          "comment": "Total customers affected by events"
+        },
+        {
+          "name": "total_event_count",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total number of maintenance/failure events"
+        },
+        {
+          "name": "unique_transformer_count",
+          "expr": "COUNT(DISTINCT transformer_id)",
+          "comment": "Number of distinct transformers"
+        },
+        {
+          "name": "max_outage_hours",
+          "expr": "MAX(outage_hours)",
+          "comment": "Maximum outage hours"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_date, substation, voltage_class, alert_level. Measures: avg_health_index, avg_oil_temp, max_dissolved_gas_ppm, avg_load_pct, critical_alert_count, reading_count. The failure_events_metrics view (source: failure_events) has dimensions: event_date, substation, voltage_class, event_type, root_cause. Measures: total_failure_events, total_repair_cost_usd, avg_outage_hours, total_customers_affected, total_event_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. transformer_id, transformer_name).",
+  "sample_questions": [
+    "What is the monthly trend in critical alert count?",
+    "How has unique readings changed over time?",
+    "What is the monthly trend in unique transformers?",
+    "How has highest dissolved gas ppm changed over time?",
+    "What is the monthly trend in total failure events count?",
+    "How has unique total events changed over time?",
+    "What is the monthly trend in unique transformers?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique transformers?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_transformer_count) AS unique_transformer_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest dissolved gas ppm changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_dissolved_gas_ppm) AS max_dissolved_gas_ppm",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total vibration mm s changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_vibration_mm_s) AS total_vibration_mm_s",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How does the number of unique readings vary by substation?",
+      "sql_lines": [
+        "SELECT substation, MEASURE(reading_count) AS reading_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_count DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total top oil temperature in celsius over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(oil_temp_celsius) AS total_oil_temp_celsius",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total duration of outage in hours over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(outage_hours) AS total_outage_hours",
+        "FROM {fqn}.failure_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has the average average health index for the month (0-100) changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(avg_health_index) AS avg_avg_health_index",
+        "FROM {fqn}.health_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "sensor_readings.alert_level = 'Critical'",
+        "display_name": "critical alerts",
+        "synonyms": [
+          "critical readings",
+          "critical sensors"
+        ],
+        "instruction": "Use when filtering for critical-level transformer alerts."
+      },
+      {
+        "sql": "failure_events.event_type = 'Failure'",
+        "display_name": "failure events only",
+        "synonyms": [
+          "actual failures",
+          "transformer failures"
+        ],
+        "instruction": "Use when analyzing only actual failures, not preventive/corrective maintenance."
+      },
+      {
+        "sql": "health_monthly.risk_tier = 'Critical'",
+        "display_name": "critical risk tier",
+        "synonyms": [
+          "critical transformers",
+          "highest risk"
+        ],
+        "instruction": "Use when filtering for transformers in the critical risk category."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', sensor_readings.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "month of reading",
+          "monthly"
+        ]
+      },
+      {
+        "alias": "gas_severity",
+        "sql": "CASE WHEN sensor_readings.dissolved_gas_ppm > 300 THEN 'High' WHEN sensor_readings.dissolved_gas_ppm > 200 THEN 'Elevated' ELSE 'Normal' END",
+        "display_name": "dissolved gas severity",
+        "synonyms": [
+          "gas level category",
+          "DGA severity"
+        ]
+      },
+      {
+        "alias": "overloaded",
+        "sql": "CASE WHEN sensor_readings.load_pct > 90 THEN 'Overloaded' ELSE 'Normal' END",
+        "display_name": "overload status",
+        "synonyms": [
+          "load status",
+          "overloading flag"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_health_index",
+        "sql": "AVG(sensor_readings.health_index)",
+        "display_name": "average health index",
+        "synonyms": [
+          "health score",
+          "transformer health"
+        ]
+      },
+      {
+        "alias": "total_repair_cost",
+        "sql": "SUM(failure_events.repair_cost_usd)",
+        "display_name": "total repair cost",
+        "synonyms": [
+          "repair spend",
+          "maintenance cost"
+        ]
+      },
+      {
+        "alias": "total_outage_hours",
+        "sql": "SUM(failure_events.outage_hours)",
+        "display_name": "total outage hours",
+        "synonyms": [
+          "outage duration",
+          "downtime hours"
+        ]
+      },
+      {
+        "alias": "total_customers_affected",
+        "sql": "SUM(failure_events.customers_affected)",
+        "display_name": "total customers affected",
+        "synonyms": [
+          "customer impact",
+          "affected customers"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical alert count?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(critical_alert_count) AS critical_alert_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique readings changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total failure events count?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_failure_events) AS total_failure_events",
+        "FROM {fqn}.failure_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has unique total events changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_event_count) AS total_event_count",
+        "FROM {fqn}.failure_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What are the top transformer asset identifier by total top oil temperature in celsius?",
+      "sql_lines": [
+        "SELECT transformer_id, SUM(oil_temp_celsius) AS total_oil_temp_celsius",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY transformer_id ORDER BY total_oil_temp_celsius DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of failure or maintenance event?",
+      "sql_lines": [
+        "SELECT event_date, COUNT(*) AS record_count",
+        "FROM {fqn}.failure_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.health_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

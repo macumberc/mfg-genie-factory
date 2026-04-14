@@ -1,0 +1,1011 @@
+{
+  "company_name": "MineTruck Analytics",
+  "industry": "Mining",
+  "use_case": "Haul vehicle asset health monitoring and predictive maintenance",
+  "space_title": "MineTruck Analytics - Haul Vehicle Asset Health 🔧",
+  "space_description": "Mining haul truck analytics for MineTruck Analytics. Ask about vehicle health, tire wear, engine diagnostics, and failure predictions across 20 haul trucks.",
+  "schema_basename": "mining_haul_health",
+  "tables": [
+    {
+      "table_name": "haul_vehicles",
+      "description": "Daily haul truck operational records with loads, cycle times, and fuel consumption.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('HT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Record date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_name",
+          "sql_type": "STRING",
+          "comment": "Vehicle name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_model",
+          "sql_type": "STRING",
+          "comment": "Vehicle model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "pit",
+          "sql_type": "STRING",
+          "comment": "Mining pit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "loads_completed",
+          "sql_type": "INT",
+          "comment": "Loads completed",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 25) AS INT)"
+        },
+        {
+          "name": "payload_tons",
+          "sql_type": "DOUBLE",
+          "comment": "Total payload in tons",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 4500.0), 1)"
+        },
+        {
+          "name": "cycle_time_minutes",
+          "sql_type": "DOUBLE",
+          "comment": "Average cycle time minutes",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 30.0), 1)"
+        },
+        {
+          "name": "fuel_liters",
+          "sql_type": "DOUBLE",
+          "comment": "Fuel consumed in liters",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500.0 + ({qty_noise} * 4500.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "CAT 797F": {
+          "4,5,6": 0.06
+        },
+        "Komatsu 930E": {
+          "5,6,7": 0.05
+        },
+        "Liebherr T284": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "vehicle_id": "HV-001",
+          "vehicle_name": "CAT 797F Unit 101",
+          "vehicle_model": "CAT 797F",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-002",
+          "vehicle_name": "CAT 797F Unit 102",
+          "vehicle_model": "CAT 797F",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-003",
+          "vehicle_name": "CAT 797F Unit 103",
+          "vehicle_model": "CAT 797F",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-004",
+          "vehicle_name": "CAT 797F Unit 104",
+          "vehicle_model": "CAT 797F",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-005",
+          "vehicle_name": "CAT 797F Unit 105",
+          "vehicle_model": "CAT 797F",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-006",
+          "vehicle_name": "Komatsu 930E Unit 201",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-007",
+          "vehicle_name": "Komatsu 930E Unit 202",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-008",
+          "vehicle_name": "Komatsu 930E Unit 203",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-009",
+          "vehicle_name": "Komatsu 930E Unit 204",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-010",
+          "vehicle_name": "Komatsu 930E Unit 205",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-011",
+          "vehicle_name": "Liebherr T284 Unit 301",
+          "vehicle_model": "Liebherr T284",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-012",
+          "vehicle_name": "Liebherr T284 Unit 302",
+          "vehicle_model": "Liebherr T284",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-013",
+          "vehicle_name": "Liebherr T284 Unit 303",
+          "vehicle_model": "Liebherr T284",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-014",
+          "vehicle_name": "Hitachi EH5000 Unit 401",
+          "vehicle_model": "Hitachi EH5000",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-015",
+          "vehicle_name": "Hitachi EH5000 Unit 402",
+          "vehicle_model": "Hitachi EH5000",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-016",
+          "vehicle_name": "BelAZ 75710 Unit 501",
+          "vehicle_model": "BelAZ 75710",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-017",
+          "vehicle_name": "BelAZ 75710 Unit 502",
+          "vehicle_model": "BelAZ 75710",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-018",
+          "vehicle_name": "CAT 794AC Unit 601",
+          "vehicle_model": "CAT 794AC",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-019",
+          "vehicle_name": "CAT 794AC Unit 602",
+          "vehicle_model": "CAT 794AC",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-020",
+          "vehicle_name": "CAT 794AC Unit 603",
+          "vehicle_model": "CAT 794AC",
+          "pit": "East Pit"
+        }
+      ],
+      "category_distribution": {
+        "CAT 797F": 0.035,
+        "Komatsu 930E": 0.03,
+        "Liebherr T284": 0.025,
+        "Hitachi EH5000": 0.022,
+        "BelAZ 75710": 0.02,
+        "CAT 794AC": 0.028
+      }
+    },
+    {
+      "table_name": "sensor_readings",
+      "description": "Vehicle sensor readings with engine temp, tire pressure, hydraulics, and health scores.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Reading ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('VS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Reading date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_model",
+          "sql_type": "STRING",
+          "comment": "Model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "pit",
+          "sql_type": "STRING",
+          "comment": "Pit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "engine_temp_celsius",
+          "sql_type": "DOUBLE",
+          "comment": "Engine temperature C",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70.0 + ({qty_noise} * 40.0), 1)"
+        },
+        {
+          "name": "tire_pressure_psi",
+          "sql_type": "DOUBLE",
+          "comment": "Tire pressure PSI",
+          "is_dimension": false,
+          "generation_expr": "ROUND(80.0 + ({qty_noise} * 40.0), 1)"
+        },
+        {
+          "name": "hydraulic_pressure_bar",
+          "sql_type": "DOUBLE",
+          "comment": "Hydraulic pressure bar",
+          "is_dimension": false,
+          "generation_expr": "ROUND(200.0 + ({qty_noise} * 100.0), 1)"
+        },
+        {
+          "name": "health_score",
+          "sql_type": "DOUBLE",
+          "comment": "ML health score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 60.0), 1)"
+        },
+        {
+          "name": "alert_level",
+          "sql_type": "STRING",
+          "comment": "Alert: Normal, Caution, Warning, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Critical' WHEN {status_noise} < 0.10 THEN 'Warning' WHEN {status_noise} < 0.22 THEN 'Caution' ELSE 'Normal' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "CAT 797F": {
+          "4,5,6": 0.06
+        },
+        "Komatsu 930E": {
+          "5,6,7": 0.05
+        },
+        "Liebherr T284": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "vehicle_id": "HV-001",
+          "vehicle_name": "CAT 797F Unit 101",
+          "vehicle_model": "CAT 797F",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-002",
+          "vehicle_name": "CAT 797F Unit 102",
+          "vehicle_model": "CAT 797F",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-003",
+          "vehicle_name": "CAT 797F Unit 103",
+          "vehicle_model": "CAT 797F",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-004",
+          "vehicle_name": "CAT 797F Unit 104",
+          "vehicle_model": "CAT 797F",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-005",
+          "vehicle_name": "CAT 797F Unit 105",
+          "vehicle_model": "CAT 797F",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-006",
+          "vehicle_name": "Komatsu 930E Unit 201",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-007",
+          "vehicle_name": "Komatsu 930E Unit 202",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-008",
+          "vehicle_name": "Komatsu 930E Unit 203",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-009",
+          "vehicle_name": "Komatsu 930E Unit 204",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-010",
+          "vehicle_name": "Komatsu 930E Unit 205",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-011",
+          "vehicle_name": "Liebherr T284 Unit 301",
+          "vehicle_model": "Liebherr T284",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-012",
+          "vehicle_name": "Liebherr T284 Unit 302",
+          "vehicle_model": "Liebherr T284",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-013",
+          "vehicle_name": "Liebherr T284 Unit 303",
+          "vehicle_model": "Liebherr T284",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-014",
+          "vehicle_name": "Hitachi EH5000 Unit 401",
+          "vehicle_model": "Hitachi EH5000",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-015",
+          "vehicle_name": "Hitachi EH5000 Unit 402",
+          "vehicle_model": "Hitachi EH5000",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-016",
+          "vehicle_name": "BelAZ 75710 Unit 501",
+          "vehicle_model": "BelAZ 75710",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-017",
+          "vehicle_name": "BelAZ 75710 Unit 502",
+          "vehicle_model": "BelAZ 75710",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-018",
+          "vehicle_name": "CAT 794AC Unit 601",
+          "vehicle_model": "CAT 794AC",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-019",
+          "vehicle_name": "CAT 794AC Unit 602",
+          "vehicle_model": "CAT 794AC",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-020",
+          "vehicle_name": "CAT 794AC Unit 603",
+          "vehicle_model": "CAT 794AC",
+          "pit": "East Pit"
+        }
+      ],
+      "category_distribution": {
+        "CAT 797F": 0.035,
+        "Komatsu 930E": 0.03,
+        "Liebherr T284": 0.025,
+        "Hitachi EH5000": 0.022,
+        "BelAZ 75710": 0.02,
+        "CAT 794AC": 0.028
+      }
+    },
+    {
+      "table_name": "failure_events",
+      "description": "Monthly failure event records and RUL forecasts per vehicle.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Event ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FE-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.vehicle_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "event_month",
+          "sql_type": "DATE",
+          "comment": "Event month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "vehicle_id",
+          "sql_type": "STRING",
+          "comment": "Vehicle ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "vehicle_model",
+          "sql_type": "STRING",
+          "comment": "Model",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "pit",
+          "sql_type": "STRING",
+          "comment": "Pit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "failure_type",
+          "sql_type": "STRING",
+          "comment": "Type: Engine, Transmission, Tires, Hydraulic, Electrical, Structural",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Engine' WHEN {status_noise} < 0.40 THEN 'Tires' WHEN {status_noise} < 0.55 THEN 'Transmission' WHEN {status_noise} < 0.70 THEN 'Hydraulic' WHEN {status_noise} < 0.85 THEN 'Electrical' ELSE 'Structural' END"
+        },
+        {
+          "name": "downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Downtime hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(4.0 + ({qty_noise} * 196.0), 1)"
+        },
+        {
+          "name": "repair_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Repair cost USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2000.0 + ({qty_noise} * 148000.0), 2)"
+        },
+        {
+          "name": "rul_days",
+          "sql_type": "INT",
+          "comment": "Remaining useful life days",
+          "is_dimension": false,
+          "generation_expr": "CAST(20 + FLOOR({qty_noise} * 340) AS INT)"
+        },
+        {
+          "name": "failure_probability_pct",
+          "sql_type": "DOUBLE",
+          "comment": "30-day failure probability",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 45.0, 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "CAT 797F": {
+          "4,5,6": 0.06
+        },
+        "Komatsu 930E": {
+          "5,6,7": 0.05
+        },
+        "Liebherr T284": {
+          "3,4": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "vehicle_id": "HV-001",
+          "vehicle_name": "CAT 797F Unit 101",
+          "vehicle_model": "CAT 797F",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-002",
+          "vehicle_name": "CAT 797F Unit 102",
+          "vehicle_model": "CAT 797F",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-003",
+          "vehicle_name": "CAT 797F Unit 103",
+          "vehicle_model": "CAT 797F",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-004",
+          "vehicle_name": "CAT 797F Unit 104",
+          "vehicle_model": "CAT 797F",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-005",
+          "vehicle_name": "CAT 797F Unit 105",
+          "vehicle_model": "CAT 797F",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-006",
+          "vehicle_name": "Komatsu 930E Unit 201",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-007",
+          "vehicle_name": "Komatsu 930E Unit 202",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-008",
+          "vehicle_name": "Komatsu 930E Unit 203",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-009",
+          "vehicle_name": "Komatsu 930E Unit 204",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-010",
+          "vehicle_name": "Komatsu 930E Unit 205",
+          "vehicle_model": "Komatsu 930E",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-011",
+          "vehicle_name": "Liebherr T284 Unit 301",
+          "vehicle_model": "Liebherr T284",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-012",
+          "vehicle_name": "Liebherr T284 Unit 302",
+          "vehicle_model": "Liebherr T284",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-013",
+          "vehicle_name": "Liebherr T284 Unit 303",
+          "vehicle_model": "Liebherr T284",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-014",
+          "vehicle_name": "Hitachi EH5000 Unit 401",
+          "vehicle_model": "Hitachi EH5000",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-015",
+          "vehicle_name": "Hitachi EH5000 Unit 402",
+          "vehicle_model": "Hitachi EH5000",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-016",
+          "vehicle_name": "BelAZ 75710 Unit 501",
+          "vehicle_model": "BelAZ 75710",
+          "pit": "South Pit"
+        },
+        {
+          "vehicle_id": "HV-017",
+          "vehicle_name": "BelAZ 75710 Unit 502",
+          "vehicle_model": "BelAZ 75710",
+          "pit": "East Pit"
+        },
+        {
+          "vehicle_id": "HV-018",
+          "vehicle_name": "CAT 794AC Unit 601",
+          "vehicle_model": "CAT 794AC",
+          "pit": "North Pit"
+        },
+        {
+          "vehicle_id": "HV-019",
+          "vehicle_name": "CAT 794AC Unit 602",
+          "vehicle_model": "CAT 794AC",
+          "pit": "West Pit"
+        },
+        {
+          "vehicle_id": "HV-020",
+          "vehicle_name": "CAT 794AC Unit 603",
+          "vehicle_model": "CAT 794AC",
+          "pit": "East Pit"
+        }
+      ],
+      "category_distribution": {
+        "CAT 797F": 0.035,
+        "Komatsu 930E": 0.03,
+        "Liebherr T284": 0.025,
+        "Hitachi EH5000": 0.022,
+        "BelAZ 75710": 0.02,
+        "CAT 794AC": 0.028
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "health_monthly",
+      "source_table": "sensor_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "vehicle_model",
+          "expr": "vehicle_model"
+        },
+        {
+          "name": "pit",
+          "expr": "pit"
+        },
+        {
+          "name": "alert_level",
+          "expr": "alert_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_health_score",
+          "expr": "AVG(health_score)",
+          "comment": "Average health score"
+        },
+        {
+          "name": "avg_engine_temp",
+          "expr": "AVG(engine_temp_celsius)",
+          "comment": "Avg engine temp"
+        },
+        {
+          "name": "vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Monitored vehicles"
+        },
+        {
+          "name": "critical_count",
+          "expr": "COUNT(DISTINCT CASE WHEN alert_level = 'Critical' THEN vehicle_id END)",
+          "comment": "Critical alert count"
+        },
+        {
+          "name": "reading_count",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total readings"
+        },
+        {
+          "name": "total_tire_pressure_psi",
+          "expr": "SUM(tire_pressure_psi)",
+          "comment": "Total tire pressure psi"
+        },
+        {
+          "name": "total_hydraulic_pressure_bar",
+          "expr": "SUM(hydraulic_pressure_bar)",
+          "comment": "Total hydraulic pressure bar"
+        },
+        {
+          "name": "max_engine_temp_celsius",
+          "expr": "MAX(engine_temp_celsius)",
+          "comment": "Maximum engine temp celsius"
+        }
+      ]
+    },
+    {
+      "view_name": "failure_monthly",
+      "source_table": "failure_events",
+      "dimensions": [
+        {
+          "name": "event_month",
+          "expr": "event_month"
+        },
+        {
+          "name": "vehicle_model",
+          "expr": "vehicle_model"
+        },
+        {
+          "name": "pit",
+          "expr": "pit"
+        },
+        {
+          "name": "failure_type",
+          "expr": "failure_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_downtime",
+          "expr": "SUM(downtime_hours)",
+          "comment": "Total downtime hours"
+        },
+        {
+          "name": "total_repair_cost",
+          "expr": "SUM(repair_cost_usd)",
+          "comment": "Total repair cost"
+        },
+        {
+          "name": "avg_rul",
+          "expr": "AVG(rul_days)",
+          "comment": "Average RUL days"
+        },
+        {
+          "name": "failure_count",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Failure event count"
+        },
+        {
+          "name": "high_risk_count",
+          "expr": "COUNT(DISTINCT CASE WHEN failure_probability_pct > 25 THEN event_id END)",
+          "comment": "High risk count"
+        },
+        {
+          "name": "unique_vehicle_count",
+          "expr": "COUNT(DISTINCT vehicle_id)",
+          "comment": "Number of distinct vehicles"
+        },
+        {
+          "name": "max_downtime_hours",
+          "expr": "MAX(downtime_hours)",
+          "comment": "Maximum downtime hours"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The health_monthly view (source: sensor_readings) has dimensions: reading_date, vehicle_model, pit, alert_level. Measures: avg_health_score, avg_engine_temp, vehicle_count, critical_count, reading_count. The failure_monthly view (source: failure_events) has dimensions: event_month, vehicle_model, pit, failure_type. Measures: total_downtime, total_repair_cost, avg_rul, failure_count, high_risk_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. vehicle_id, vehicle_name).",
+  "sample_questions": [
+    "What is the monthly trend in critical count?",
+    "How has unique vehicles changed over time?",
+    "What is the monthly trend in unique readings?",
+    "How has highest engine temp celsius changed over time?",
+    "What is the monthly trend in high risk count?",
+    "How has unique failures changed over time?",
+    "What is the monthly trend in unique vehicles?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique readings?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "FROM {fqn}.health_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has highest engine temp celsius changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_engine_temp_celsius) AS max_engine_temp_celsius",
+        "FROM {fqn}.health_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique vehicles?",
+      "sql_lines": [
+        "SELECT event_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "FROM {fqn}.failure_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_month"
+      ]
+    },
+    {
+      "question": "How has high risk count changed over time?",
+      "sql_lines": [
+        "SELECT event_month, MEASURE(high_risk_count) AS high_risk_count",
+        "FROM {fqn}.failure_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_month"
+      ]
+    },
+    {
+      "question": "What is the trend of total loads completed over time?",
+      "sql_lines": [
+        "SELECT record_date, SUM(loads_completed) AS total_loads_completed",
+        "FROM {fqn}.haul_vehicles",
+        "GROUP BY record_date ORDER BY record_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total engine temperature c over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has the average 30-day failure probability changed over time?",
+      "sql_lines": [
+        "SELECT event_month, AVG(failure_probability_pct) AS avg_failure_probability_pct",
+        "FROM {fqn}.failure_events",
+        "GROUP BY event_month ORDER BY event_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "sensor_readings.alert_level = 'Critical'",
+        "display_name": "critical alerts",
+        "synonyms": [
+          "red alerts"
+        ],
+        "instruction": "Filter critical."
+      },
+      {
+        "sql": "failure_events.failure_probability_pct > 25",
+        "display_name": "high risk",
+        "synonyms": [
+          "at risk"
+        ],
+        "instruction": "Filter high risk."
+      },
+      {
+        "sql": "sensor_readings.engine_temp_celsius > 100",
+        "display_name": "overheating",
+        "synonyms": [
+          "hot engine"
+        ],
+        "instruction": "Filter overheating."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', sensor_readings.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "fuel_per_ton",
+        "sql": "haul_vehicles.fuel_liters / NULLIF(haul_vehicles.payload_tons, 0)",
+        "display_name": "fuel per ton",
+        "synonyms": [
+          "fuel efficiency"
+        ]
+      },
+      {
+        "alias": "cost_per_hour",
+        "sql": "failure_events.repair_cost_usd / NULLIF(failure_events.downtime_hours, 0)",
+        "display_name": "cost per downtime hour",
+        "synonyms": [
+          "hourly repair cost"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "avg_health",
+        "sql": "AVG(sensor_readings.health_score)",
+        "display_name": "avg health",
+        "synonyms": [
+          "fleet health"
+        ]
+      },
+      {
+        "alias": "total_repair_cost",
+        "sql": "SUM(failure_events.repair_cost_usd)",
+        "display_name": "total repair cost",
+        "synonyms": [
+          "maintenance cost"
+        ]
+      },
+      {
+        "alias": "total_payload",
+        "sql": "SUM(haul_vehicles.payload_tons)",
+        "display_name": "total payload tons",
+        "synonyms": [
+          "hauled tonnage"
+        ]
+      },
+      {
+        "alias": "avg_rul",
+        "sql": "AVG(failure_events.rul_days)",
+        "display_name": "avg RUL",
+        "synonyms": [
+          "remaining life"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in critical count?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(critical_count) AS critical_count",
+        "FROM {fqn}.health_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique vehicles changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(vehicle_count) AS vehicle_count",
+        "FROM {fqn}.health_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in high risk count?",
+      "sql_lines": [
+        "SELECT event_month, MEASURE(high_risk_count) AS high_risk_count",
+        "FROM {fqn}.failure_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_month"
+      ]
+    },
+    {
+      "question": "How has unique failures changed over time?",
+      "sql_lines": [
+        "SELECT event_month, MEASURE(failure_count) AS failure_count",
+        "FROM {fqn}.failure_monthly",
+        "GROUP BY ALL",
+        "ORDER BY event_month"
+      ]
+    },
+    {
+      "question": "What are the top vehicle id by total loads completed?",
+      "sql_lines": [
+        "SELECT vehicle_id, SUM(loads_completed) AS total_loads_completed",
+        "FROM {fqn}.haul_vehicles",
+        "GROUP BY vehicle_id ORDER BY total_loads_completed DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average ml health score 0-100 by model?",
+      "sql_lines": [
+        "SELECT vehicle_model, AVG(health_score) AS avg_health_score",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY vehicle_model ORDER BY avg_health_score DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per event month?",
+      "sql_lines": [
+        "SELECT event_month, COUNT(*) AS record_count",
+        "FROM {fqn}.failure_events",
+        "GROUP BY event_month ORDER BY event_month"
+      ]
+    }
+  ]
+}

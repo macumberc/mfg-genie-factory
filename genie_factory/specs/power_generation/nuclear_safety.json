@@ -1,0 +1,1020 @@
+{
+  "company_name": "NucleoSafe Systems",
+  "industry": "Power Generation",
+  "use_case": "Nuclear reactor safety monitoring and compliance tracking",
+  "space_title": "NucleoSafe Systems - Nuclear Safety & Compliance ☢️",
+  "space_description": "Nuclear safety analytics for NucleoSafe Systems. Ask about reactor component health, safety readings, inspection results, and regulatory compliance across 20 reactor components.",
+  "schema_basename": "nuclear_safety",
+  "tables": [
+    {
+      "table_name": "reactor_components",
+      "description": "Daily health records for reactor components including temperature, pressure, radiation, and operational status.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique component health record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('RCH-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.component_id) + 10000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "record_date",
+          "sql_type": "DATE",
+          "comment": "Date of health record",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "component_id",
+          "sql_type": "STRING",
+          "comment": "Reactor component identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_name",
+          "sql_type": "STRING",
+          "comment": "Component name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_type",
+          "sql_type": "STRING",
+          "comment": "Component type: Fuel Assembly, Control Rod, Coolant Pump, Steam Generator, Containment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "reactor_unit",
+          "sql_type": "STRING",
+          "comment": "Reactor unit designation",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "temperature_celsius",
+          "sql_type": "DOUBLE",
+          "comment": "Component temperature in Celsius",
+          "is_dimension": false,
+          "generation_expr": "ROUND(250.0 + ({qty_noise} * 100.0), 1)"
+        },
+        {
+          "name": "pressure_mpa",
+          "sql_type": "DOUBLE",
+          "comment": "Pressure in megapascals",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 7.0), 2)"
+        },
+        {
+          "name": "radiation_msv",
+          "sql_type": "DOUBLE",
+          "comment": "Radiation level in millisieverts",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.01 + ({qty_noise} * 0.99), 3)"
+        },
+        {
+          "name": "health_status",
+          "sql_type": "STRING",
+          "comment": "Component health: Normal, Watch, Warning, Critical",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Critical' WHEN {status_noise} < 0.08 THEN 'Warning' WHEN {status_noise} < 0.18 THEN 'Watch' ELSE 'Normal' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Fuel Assembly": {
+          "3,4": 0.04,
+          "9,10": 0.04
+        },
+        "Coolant Pump": {
+          "6,7,8": 0.05
+        },
+        "Steam Generator": {
+          "12,1,2": 0.04
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "component_id": "RC-FA-001",
+          "component_name": "Fuel Assembly A1",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-FA-002",
+          "component_name": "Fuel Assembly A2",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-FA-003",
+          "component_name": "Fuel Assembly B1",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-FA-004",
+          "component_name": "Fuel Assembly B2",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CR-005",
+          "component_name": "Control Rod Bank Alpha",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CR-006",
+          "component_name": "Control Rod Bank Beta",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CR-007",
+          "component_name": "Control Rod Bank Gamma",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CR-008",
+          "component_name": "Control Rod Bank Delta",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CP-009",
+          "component_name": "Primary Coolant Pump 1A",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CP-010",
+          "component_name": "Primary Coolant Pump 1B",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CP-011",
+          "component_name": "Primary Coolant Pump 2A",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CP-012",
+          "component_name": "Primary Coolant Pump 2B",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-SG-013",
+          "component_name": "Steam Generator SG-1A",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-SG-014",
+          "component_name": "Steam Generator SG-1B",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-SG-015",
+          "component_name": "Steam Generator SG-2A",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-SG-016",
+          "component_name": "Steam Generator SG-2B",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CT-017",
+          "component_name": "Containment Vessel Unit 1",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CT-018",
+          "component_name": "Containment Liner Unit 1",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CT-019",
+          "component_name": "Containment Vessel Unit 2",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CT-020",
+          "component_name": "Containment Liner Unit 2",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 2"
+        }
+      ],
+      "category_distribution": {
+        "Fuel Assembly": 0.03,
+        "Control Rod": 0.028,
+        "Coolant Pump": 0.032,
+        "Steam Generator": 0.03,
+        "Containment": 0.025
+      }
+    },
+    {
+      "table_name": "safety_readings",
+      "description": "Safety system readings including neutron flux, coolant flow, containment integrity, and alarm events.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique safety reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.component_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "reading_date",
+          "sql_type": "DATE",
+          "comment": "Date of safety reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "component_id",
+          "sql_type": "STRING",
+          "comment": "Reactor component identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_type",
+          "sql_type": "STRING",
+          "comment": "Component type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "reactor_unit",
+          "sql_type": "STRING",
+          "comment": "Reactor unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "neutron_flux_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Neutron flux as percentage of rated 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60.0 + ({qty_noise} * 38.0), 2)"
+        },
+        {
+          "name": "coolant_flow_rate_m3h",
+          "sql_type": "DOUBLE",
+          "comment": "Coolant flow rate in cubic meters per hour",
+          "is_dimension": false,
+          "generation_expr": "ROUND(5000.0 + ({qty_noise} * 15000.0), 1)"
+        },
+        {
+          "name": "containment_pressure_kpa",
+          "sql_type": "DOUBLE",
+          "comment": "Containment pressure in kilopascals",
+          "is_dimension": false,
+          "generation_expr": "ROUND(95.0 + ({qty_noise} * 15.0), 2)"
+        },
+        {
+          "name": "alarm_count",
+          "sql_type": "INT",
+          "comment": "Number of safety alarms triggered",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 5) AS INT)"
+        },
+        {
+          "name": "safety_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Distance to safety limit as percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 75.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Fuel Assembly": {
+          "3,4": 0.04,
+          "9,10": 0.04
+        },
+        "Coolant Pump": {
+          "6,7,8": 0.05
+        },
+        "Steam Generator": {
+          "12,1,2": 0.04
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "component_id": "RC-FA-001",
+          "component_name": "Fuel Assembly A1",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-FA-002",
+          "component_name": "Fuel Assembly A2",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-FA-003",
+          "component_name": "Fuel Assembly B1",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-FA-004",
+          "component_name": "Fuel Assembly B2",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CR-005",
+          "component_name": "Control Rod Bank Alpha",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CR-006",
+          "component_name": "Control Rod Bank Beta",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CR-007",
+          "component_name": "Control Rod Bank Gamma",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CR-008",
+          "component_name": "Control Rod Bank Delta",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CP-009",
+          "component_name": "Primary Coolant Pump 1A",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CP-010",
+          "component_name": "Primary Coolant Pump 1B",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CP-011",
+          "component_name": "Primary Coolant Pump 2A",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CP-012",
+          "component_name": "Primary Coolant Pump 2B",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-SG-013",
+          "component_name": "Steam Generator SG-1A",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-SG-014",
+          "component_name": "Steam Generator SG-1B",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-SG-015",
+          "component_name": "Steam Generator SG-2A",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-SG-016",
+          "component_name": "Steam Generator SG-2B",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CT-017",
+          "component_name": "Containment Vessel Unit 1",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CT-018",
+          "component_name": "Containment Liner Unit 1",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CT-019",
+          "component_name": "Containment Vessel Unit 2",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CT-020",
+          "component_name": "Containment Liner Unit 2",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 2"
+        }
+      ],
+      "category_distribution": {
+        "Fuel Assembly": 0.03,
+        "Control Rod": 0.028,
+        "Coolant Pump": 0.032,
+        "Steam Generator": 0.03,
+        "Containment": 0.025
+      }
+    },
+    {
+      "table_name": "inspection_snapshots",
+      "description": "Periodic inspection snapshots with NRC compliance scores, deficiency counts, and corrective action tracking.",
+      "columns": [
+        {
+          "name": "inspection_id",
+          "sql_type": "STRING",
+          "comment": "Unique inspection record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('INS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.component_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "inspection_date",
+          "sql_type": "DATE",
+          "comment": "Date of inspection",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "component_id",
+          "sql_type": "STRING",
+          "comment": "Reactor component identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "component_type",
+          "sql_type": "STRING",
+          "comment": "Component type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "reactor_unit",
+          "sql_type": "STRING",
+          "comment": "Reactor unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "compliance_score",
+          "sql_type": "DOUBLE",
+          "comment": "NRC compliance score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(75.0 + ({qty_noise} * 25.0), 1)"
+        },
+        {
+          "name": "deficiency_count",
+          "sql_type": "INT",
+          "comment": "Number of deficiencies found",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 8) AS INT)"
+        },
+        {
+          "name": "corrective_actions_open",
+          "sql_type": "INT",
+          "comment": "Number of open corrective actions",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 12) AS INT)"
+        },
+        {
+          "name": "days_since_last_inspection",
+          "sql_type": "INT",
+          "comment": "Days elapsed since previous inspection",
+          "is_dimension": false,
+          "generation_expr": "CAST(7 + FLOOR({qty_noise} * 83) AS INT)"
+        },
+        {
+          "name": "inspection_result",
+          "sql_type": "STRING",
+          "comment": "Result: Pass, Conditional Pass, Fail, Deferred",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fail' WHEN {status_noise} < 0.10 THEN 'Deferred' WHEN {status_noise} < 0.25 THEN 'Conditional Pass' ELSE 'Pass' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Fuel Assembly": {
+          "3,4": 0.04,
+          "9,10": 0.04
+        },
+        "Coolant Pump": {
+          "6,7,8": 0.05
+        },
+        "Steam Generator": {
+          "12,1,2": 0.04
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "component_id": "RC-FA-001",
+          "component_name": "Fuel Assembly A1",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-FA-002",
+          "component_name": "Fuel Assembly A2",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-FA-003",
+          "component_name": "Fuel Assembly B1",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-FA-004",
+          "component_name": "Fuel Assembly B2",
+          "component_type": "Fuel Assembly",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CR-005",
+          "component_name": "Control Rod Bank Alpha",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CR-006",
+          "component_name": "Control Rod Bank Beta",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CR-007",
+          "component_name": "Control Rod Bank Gamma",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CR-008",
+          "component_name": "Control Rod Bank Delta",
+          "component_type": "Control Rod",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CP-009",
+          "component_name": "Primary Coolant Pump 1A",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CP-010",
+          "component_name": "Primary Coolant Pump 1B",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CP-011",
+          "component_name": "Primary Coolant Pump 2A",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CP-012",
+          "component_name": "Primary Coolant Pump 2B",
+          "component_type": "Coolant Pump",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-SG-013",
+          "component_name": "Steam Generator SG-1A",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-SG-014",
+          "component_name": "Steam Generator SG-1B",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-SG-015",
+          "component_name": "Steam Generator SG-2A",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-SG-016",
+          "component_name": "Steam Generator SG-2B",
+          "component_type": "Steam Generator",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CT-017",
+          "component_name": "Containment Vessel Unit 1",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CT-018",
+          "component_name": "Containment Liner Unit 1",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 1"
+        },
+        {
+          "component_id": "RC-CT-019",
+          "component_name": "Containment Vessel Unit 2",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 2"
+        },
+        {
+          "component_id": "RC-CT-020",
+          "component_name": "Containment Liner Unit 2",
+          "component_type": "Containment",
+          "reactor_unit": "Unit 2"
+        }
+      ],
+      "category_distribution": {
+        "Fuel Assembly": 0.03,
+        "Control Rod": 0.028,
+        "Coolant Pump": 0.032,
+        "Steam Generator": 0.03,
+        "Containment": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "safety_kpi_monthly",
+      "source_table": "safety_readings",
+      "dimensions": [
+        {
+          "name": "reading_date",
+          "expr": "reading_date"
+        },
+        {
+          "name": "component_type",
+          "expr": "component_type"
+        },
+        {
+          "name": "reactor_unit",
+          "expr": "reactor_unit"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_neutron_flux_pct",
+          "expr": "AVG(neutron_flux_pct)",
+          "comment": "Average neutron flux percentage"
+        },
+        {
+          "name": "avg_coolant_flow_rate",
+          "expr": "AVG(coolant_flow_rate_m3h)",
+          "comment": "Average coolant flow rate m3/h"
+        },
+        {
+          "name": "total_alarm_count",
+          "expr": "SUM(alarm_count)",
+          "comment": "Total safety alarms triggered"
+        },
+        {
+          "name": "avg_safety_margin",
+          "expr": "AVG(safety_margin_pct)",
+          "comment": "Average safety margin percentage"
+        },
+        {
+          "name": "reading_count",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Number of safety readings"
+        },
+        {
+          "name": "total_containment_pressure_kpa",
+          "expr": "SUM(containment_pressure_kpa)",
+          "comment": "Total containment pressure kpa"
+        },
+        {
+          "name": "unique_component_count",
+          "expr": "COUNT(DISTINCT component_id)",
+          "comment": "Number of distinct components"
+        },
+        {
+          "name": "max_neutron_flux_percent",
+          "expr": "MAX(neutron_flux_pct)",
+          "comment": "Maximum neutron flux pct"
+        }
+      ]
+    },
+    {
+      "view_name": "inspection_kpi_monthly",
+      "source_table": "inspection_snapshots",
+      "dimensions": [
+        {
+          "name": "inspection_date",
+          "expr": "inspection_date"
+        },
+        {
+          "name": "component_type",
+          "expr": "component_type"
+        },
+        {
+          "name": "reactor_unit",
+          "expr": "reactor_unit"
+        },
+        {
+          "name": "inspection_result",
+          "expr": "inspection_result"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_compliance_score",
+          "expr": "AVG(compliance_score)",
+          "comment": "Average NRC compliance score"
+        },
+        {
+          "name": "total_deficiencies",
+          "expr": "SUM(deficiency_count)",
+          "comment": "Total deficiencies found"
+        },
+        {
+          "name": "total_open_corrective_actions",
+          "expr": "SUM(corrective_actions_open)",
+          "comment": "Total open corrective actions"
+        },
+        {
+          "name": "inspection_count",
+          "expr": "COUNT(DISTINCT inspection_id)",
+          "comment": "Total inspections conducted"
+        },
+        {
+          "name": "fail_count",
+          "expr": "COUNT(DISTINCT CASE WHEN inspection_result = 'Fail' THEN inspection_id END)",
+          "comment": "Number of failed inspections"
+        },
+        {
+          "name": "unique_component_count",
+          "expr": "COUNT(DISTINCT component_id)",
+          "comment": "Number of distinct components"
+        },
+        {
+          "name": "max_compliance_score",
+          "expr": "MAX(compliance_score)",
+          "comment": "Maximum compliance score"
+        },
+        {
+          "name": "total_days_since_last_inspection",
+          "expr": "SUM(days_since_last_inspection)",
+          "comment": "Total days since last inspection"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The safety_kpi_monthly view (source: safety_readings) has dimensions: reading_date, component_type, reactor_unit. Measures: avg_neutron_flux_pct, avg_coolant_flow_rate, total_alarm_count, avg_safety_margin, reading_count. The inspection_kpi_monthly view (source: inspection_snapshots) has dimensions: inspection_date, component_type, reactor_unit, inspection_result. Measures: avg_compliance_score, total_deficiencies, total_open_corrective_actions, inspection_count, fail_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. component_id, component_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique readings?",
+    "How has unique components changed over time?",
+    "What is the monthly trend in highest neutron flux percent?",
+    "How has total safety alarms triggered changed over time?",
+    "What is the monthly trend in fail count?",
+    "How has unique inspections changed over time?",
+    "What is the monthly trend in unique components?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest neutron flux percent?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(max_neutron_flux_percent) AS max_neutron_flux_percent",
+        "FROM {fqn}.safety_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has total safety alarms triggered changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(total_alarm_count) AS total_alarm_count",
+        "FROM {fqn}.safety_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique components?",
+      "sql_lines": [
+        "SELECT inspection_date, MEASURE(unique_component_count) AS unique_component_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "How does fail count vary across component types?",
+      "sql_lines": [
+        "SELECT component_type, MEASURE(fail_count) AS fail_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY fail_count DESC"
+      ]
+    },
+    {
+      "question": "How does total component temperature in celsius break down by reactor component identifier for 'Critical' records?",
+      "sql_lines": [
+        "SELECT component_id, COUNT(*) AS record_count, SUM(temperature_celsius) AS total_temperature_celsius",
+        "FROM {fqn}.reactor_components",
+        "WHERE health_status = 'Critical' GROUP BY component_id ORDER BY total_temperature_celsius DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total containment pressure in kilopascals over time?",
+      "sql_lines": [
+        "SELECT reading_date, SUM(containment_pressure_kpa) AS total_containment_pressure_kpa",
+        "FROM {fqn}.safety_readings",
+        "GROUP BY reading_date ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has the average nrc compliance score 0-100 changed over time?",
+      "sql_lines": [
+        "SELECT inspection_date, AVG(compliance_score) AS avg_compliance_score",
+        "FROM {fqn}.inspection_snapshots",
+        "GROUP BY inspection_date ORDER BY inspection_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "reactor_components.health_status IN ('Warning', 'Critical')",
+        "display_name": "at-risk components",
+        "synonyms": [
+          "unhealthy components",
+          "flagged components"
+        ],
+        "instruction": "Use when filtering to components with elevated health concerns."
+      },
+      {
+        "sql": "inspection_snapshots.inspection_result = 'Fail'",
+        "display_name": "failed inspections",
+        "synonyms": [
+          "non-compliant",
+          "failed audits"
+        ],
+        "instruction": "Use when analyzing failed NRC inspections."
+      },
+      {
+        "sql": "safety_readings.alarm_count > 0",
+        "display_name": "alarm events",
+        "synonyms": [
+          "triggered alarms",
+          "safety alerts"
+        ],
+        "instruction": "Use when filtering to readings with at least one alarm."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "reading_month",
+        "sql": "DATE_TRUNC('month', safety_readings.reading_date)",
+        "display_name": "reading month",
+        "synonyms": [
+          "month of reading"
+        ]
+      },
+      {
+        "alias": "compliance_gap",
+        "sql": "100.0 - inspection_snapshots.compliance_score",
+        "display_name": "compliance gap",
+        "synonyms": [
+          "compliance shortfall",
+          "gap to 100"
+        ]
+      },
+      {
+        "alias": "safety_margin_status",
+        "sql": "CASE WHEN safety_readings.safety_margin_pct < 20 THEN 'Below Target' ELSE 'Acceptable' END",
+        "display_name": "safety margin status",
+        "synonyms": [
+          "margin classification"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_alarms",
+        "sql": "SUM(safety_readings.alarm_count)",
+        "display_name": "total safety alarms",
+        "synonyms": [
+          "alarm count",
+          "alerts"
+        ]
+      },
+      {
+        "alias": "avg_compliance",
+        "sql": "AVG(inspection_snapshots.compliance_score)",
+        "display_name": "average compliance score",
+        "synonyms": [
+          "NRC score",
+          "compliance rating"
+        ]
+      },
+      {
+        "alias": "total_deficiencies",
+        "sql": "SUM(inspection_snapshots.deficiency_count)",
+        "display_name": "total deficiencies",
+        "synonyms": [
+          "deficiency count",
+          "findings"
+        ]
+      },
+      {
+        "alias": "avg_safety_margin",
+        "sql": "AVG(safety_readings.safety_margin_pct)",
+        "display_name": "average safety margin",
+        "synonyms": [
+          "safety buffer",
+          "margin to limit"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique readings?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "FROM {fqn}.safety_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "How has unique components changed over time?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(unique_component_count) AS unique_component_count",
+        "FROM {fqn}.safety_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY reading_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in fail count?",
+      "sql_lines": [
+        "SELECT inspection_date, MEASURE(fail_count) AS fail_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "How has unique inspections changed over time?",
+      "sql_lines": [
+        "SELECT inspection_date, MEASURE(inspection_count) AS inspection_count",
+        "FROM {fqn}.inspection_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY inspection_date"
+      ]
+    },
+    {
+      "question": "What are the top reactor component identifier by total component temperature in celsius?",
+      "sql_lines": [
+        "SELECT component_id, SUM(temperature_celsius) AS total_temperature_celsius",
+        "FROM {fqn}.reactor_components",
+        "GROUP BY component_id ORDER BY total_temperature_celsius DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average neutron flux as percentage of rated 0-100 by component type?",
+      "sql_lines": [
+        "SELECT component_type, AVG(neutron_flux_pct) AS avg_neutron_flux_pct",
+        "FROM {fqn}.safety_readings",
+        "GROUP BY component_type ORDER BY avg_neutron_flux_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per date of inspection?",
+      "sql_lines": [
+        "SELECT inspection_date, COUNT(*) AS record_count",
+        "FROM {fqn}.inspection_snapshots",
+        "GROUP BY inspection_date ORDER BY inspection_date"
+      ]
+    }
+  ]
+}

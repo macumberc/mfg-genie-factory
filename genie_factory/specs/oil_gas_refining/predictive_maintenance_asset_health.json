@@ -1,0 +1,1000 @@
+{
+  "company_name": "RefineGuard Systems",
+  "industry": "Oil & Gas Refining",
+  "use_case": "Predictive maintenance and asset health monitoring for refinery equipment",
+  "space_title": "RefineGuard Systems - Predictive Maintenance & Asset Health 🔧",
+  "space_description": "Asset health analytics for RefineGuard Systems. Ask questions about refinery equipment health, sensor readings, maintenance events, and failure predictions across 20 critical refinery assets including pumps, compressors, heat exchangers, and reactors.",
+  "schema_basename": "og_refining_pred_maint",
+  "tables": [
+    {
+      "table_name": "sensor_readings",
+      "description": "Real-time sensor telemetry from refinery equipment including temperature, pressure, vibration, and flow measurements.",
+      "columns": [
+        {
+          "name": "reading_id",
+          "sql_type": "STRING",
+          "comment": "Unique sensor reading identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SR-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.equipment_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "reading_timestamp",
+          "sql_type": "DATE",
+          "comment": "Date of the sensor reading",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "equipment_id",
+          "sql_type": "STRING",
+          "comment": "Refinery equipment identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_name",
+          "sql_type": "STRING",
+          "comment": "Equipment name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_type",
+          "sql_type": "STRING",
+          "comment": "Equipment type: Pump, Compressor, Heat Exchanger, Reactor, Column, Furnace",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_unit",
+          "sql_type": "STRING",
+          "comment": "Refinery process unit name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "sensor_type",
+          "sql_type": "STRING",
+          "comment": "Sensor measurement type",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Vibration' WHEN {status_noise} < 0.20 THEN 'Temperature' WHEN {status_noise} < 0.30 THEN 'Pressure' WHEN {status_noise} < 0.40 THEN 'Flow Rate' WHEN {status_noise} < 0.50 THEN 'Motor Current' WHEN {status_noise} < 0.58 THEN 'Bearing Temp' WHEN {status_noise} < 0.66 THEN 'Corrosion Rate' WHEN {status_noise} < 0.74 THEN 'Thickness' WHEN {status_noise} < 0.82 THEN 'Acoustic Emission' WHEN {status_noise} < 0.90 THEN 'RPM' ELSE 'Differential Pressure' END"
+        },
+        {
+          "name": "sensor_value",
+          "sql_type": "DOUBLE",
+          "comment": "Raw sensor measurement value",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + {qty_noise} * 480.0, 2)"
+        },
+        {
+          "name": "health_score",
+          "sql_type": "DOUBLE",
+          "comment": "AI-computed equipment health score 0-100",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 70.0 + ({qty_noise} - 0.5) * 60.0)), 1)"
+        },
+        {
+          "name": "alert_level",
+          "sql_type": "STRING",
+          "comment": "Alert level: Normal, Advisory, Warning, Alarm, Trip",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
+        },
+        {
+          "name": "predicted_rul_days",
+          "sql_type": "INT",
+          "comment": "Predicted remaining useful life in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(1, 10 + FLOOR({qty_noise} * 300)) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "Crude Distillation": {
+          "3,4,9,10": 0.05
+        },
+        "Catalytic Cracking": {
+          "6,7,8": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "equipment_id": "RG-PMP-001",
+          "equipment_name": "Crude Charge Pump P-101",
+          "equipment_type": "Pump",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-PMP-002",
+          "equipment_name": "Reflux Pump P-201",
+          "equipment_type": "Pump",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-CMP-003",
+          "equipment_name": "Wet Gas Compressor C-301",
+          "equipment_type": "Compressor",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-CMP-004",
+          "equipment_name": "Hydrogen Compressor C-401",
+          "equipment_type": "Compressor",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "equipment_id": "RG-HX-005",
+          "equipment_name": "Crude Preheat Exchanger E-101",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-HX-006",
+          "equipment_name": "FCC Feed Exchanger E-301",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-HX-007",
+          "equipment_name": "Reformer Effluent Cooler E-501",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-RX-008",
+          "equipment_name": "FCC Reactor R-301",
+          "equipment_type": "Reactor",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-RX-009",
+          "equipment_name": "Hydrotreater Reactor R-401",
+          "equipment_type": "Reactor",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "equipment_id": "RG-RX-010",
+          "equipment_name": "Reformer Reactor R-501",
+          "equipment_type": "Reactor",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-COL-011",
+          "equipment_name": "Atmospheric Column T-101",
+          "equipment_type": "Column",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-COL-012",
+          "equipment_name": "Vacuum Column T-102",
+          "equipment_type": "Column",
+          "process_unit": "Vacuum Distillation"
+        },
+        {
+          "equipment_id": "RG-COL-013",
+          "equipment_name": "FCC Main Fractionator T-301",
+          "equipment_type": "Column",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-FUR-014",
+          "equipment_name": "Crude Heater H-101",
+          "equipment_type": "Furnace",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-FUR-015",
+          "equipment_name": "Vacuum Heater H-102",
+          "equipment_type": "Furnace",
+          "process_unit": "Vacuum Distillation"
+        },
+        {
+          "equipment_id": "RG-FUR-016",
+          "equipment_name": "Reformer Heater H-501",
+          "equipment_type": "Furnace",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-PMP-017",
+          "equipment_name": "Alkylation Feed Pump P-601",
+          "equipment_type": "Pump",
+          "process_unit": "Alkylation"
+        },
+        {
+          "equipment_id": "RG-CMP-018",
+          "equipment_name": "Reformer Recycle Compressor C-501",
+          "equipment_type": "Compressor",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-HX-019",
+          "equipment_name": "Alkylation Cooler E-601",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Alkylation"
+        },
+        {
+          "equipment_id": "RG-PMP-020",
+          "equipment_name": "Product Transfer Pump P-701",
+          "equipment_type": "Pump",
+          "process_unit": "Blending & Dispatch"
+        }
+      ],
+      "category_distribution": {
+        "Pump": 0.055,
+        "Compressor": 0.05,
+        "Heat Exchanger": 0.055,
+        "Reactor": 0.05,
+        "Column": 0.05,
+        "Furnace": 0.05
+      }
+    },
+    {
+      "table_name": "maintenance_events",
+      "description": "Maintenance work orders for refinery equipment including planned turnarounds, predictive actions, and corrective repairs.",
+      "columns": [
+        {
+          "name": "event_id",
+          "sql_type": "STRING",
+          "comment": "Unique maintenance event identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('ME-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.equipment_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "event_date",
+          "sql_type": "DATE",
+          "comment": "Date of the maintenance event",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "equipment_id",
+          "sql_type": "STRING",
+          "comment": "Equipment identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_name",
+          "sql_type": "STRING",
+          "comment": "Equipment name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_type",
+          "sql_type": "STRING",
+          "comment": "Equipment type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_unit",
+          "sql_type": "STRING",
+          "comment": "Refinery process unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "event_type",
+          "sql_type": "STRING",
+          "comment": "Type: Planned PM, Predictive, Corrective, Turnaround, Inspection, Emergency",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.28 THEN 'Planned PM' WHEN {status_noise} < 0.48 THEN 'Predictive' WHEN {status_noise} < 0.65 THEN 'Corrective' WHEN {status_noise} < 0.78 THEN 'Turnaround' WHEN {status_noise} < 0.90 THEN 'Inspection' ELSE 'Emergency' END"
+        },
+        {
+          "name": "failure_mode",
+          "sql_type": "STRING",
+          "comment": "Root cause failure mode",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Fouling' WHEN {status_noise} < 0.20 THEN 'Corrosion' WHEN {status_noise} < 0.30 THEN 'Erosion' WHEN {status_noise} < 0.40 THEN 'Catalyst Deactivation' WHEN {status_noise} < 0.50 THEN 'Seal Failure' WHEN {status_noise} < 0.58 THEN 'Bearing Wear' WHEN {status_noise} < 0.66 THEN 'Tube Leak' WHEN {status_noise} < 0.74 THEN 'Coking' WHEN {status_noise} < 0.82 THEN 'Vibration Fatigue' WHEN {status_noise} < 0.90 THEN 'Tray Damage' ELSE 'Refractory Failure' END"
+        },
+        {
+          "name": "was_predicted",
+          "sql_type": "BOOLEAN",
+          "comment": "Whether the failure was predicted by the ML model",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.42 THEN TRUE ELSE FALSE END"
+        },
+        {
+          "name": "downtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Equipment downtime in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.5, 2.0 + {qty_noise} * 96.0), 1)"
+        },
+        {
+          "name": "throughput_loss_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Refinery throughput loss in barrels",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 12000.0), 0)"
+        },
+        {
+          "name": "repair_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Total repair cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3000 + {qty_noise} * 350000, 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "equipment_id": "RG-PMP-001",
+          "equipment_name": "Crude Charge Pump P-101",
+          "equipment_type": "Pump",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-PMP-002",
+          "equipment_name": "Reflux Pump P-201",
+          "equipment_type": "Pump",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-CMP-003",
+          "equipment_name": "Wet Gas Compressor C-301",
+          "equipment_type": "Compressor",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-CMP-004",
+          "equipment_name": "Hydrogen Compressor C-401",
+          "equipment_type": "Compressor",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "equipment_id": "RG-HX-005",
+          "equipment_name": "Crude Preheat Exchanger E-101",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-HX-006",
+          "equipment_name": "FCC Feed Exchanger E-301",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-HX-007",
+          "equipment_name": "Reformer Effluent Cooler E-501",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-RX-008",
+          "equipment_name": "FCC Reactor R-301",
+          "equipment_type": "Reactor",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-RX-009",
+          "equipment_name": "Hydrotreater Reactor R-401",
+          "equipment_type": "Reactor",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "equipment_id": "RG-RX-010",
+          "equipment_name": "Reformer Reactor R-501",
+          "equipment_type": "Reactor",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-COL-011",
+          "equipment_name": "Atmospheric Column T-101",
+          "equipment_type": "Column",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-COL-012",
+          "equipment_name": "Vacuum Column T-102",
+          "equipment_type": "Column",
+          "process_unit": "Vacuum Distillation"
+        },
+        {
+          "equipment_id": "RG-COL-013",
+          "equipment_name": "FCC Main Fractionator T-301",
+          "equipment_type": "Column",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-FUR-014",
+          "equipment_name": "Crude Heater H-101",
+          "equipment_type": "Furnace",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-FUR-015",
+          "equipment_name": "Vacuum Heater H-102",
+          "equipment_type": "Furnace",
+          "process_unit": "Vacuum Distillation"
+        },
+        {
+          "equipment_id": "RG-FUR-016",
+          "equipment_name": "Reformer Heater H-501",
+          "equipment_type": "Furnace",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-PMP-017",
+          "equipment_name": "Alkylation Feed Pump P-601",
+          "equipment_type": "Pump",
+          "process_unit": "Alkylation"
+        },
+        {
+          "equipment_id": "RG-CMP-018",
+          "equipment_name": "Reformer Recycle Compressor C-501",
+          "equipment_type": "Compressor",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-HX-019",
+          "equipment_name": "Alkylation Cooler E-601",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Alkylation"
+        },
+        {
+          "equipment_id": "RG-PMP-020",
+          "equipment_name": "Product Transfer Pump P-701",
+          "equipment_type": "Pump",
+          "process_unit": "Blending & Dispatch"
+        }
+      ],
+      "category_distribution": {
+        "Pump": 0.055,
+        "Compressor": 0.05,
+        "Heat Exchanger": 0.055,
+        "Reactor": 0.05,
+        "Column": 0.05,
+        "Furnace": 0.05
+      }
+    },
+    {
+      "table_name": "equipment_health_monthly",
+      "description": "Monthly aggregated equipment health KPIs including MTBF, MTTR, availability, and failure prediction accuracy.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('EH-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.equipment_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "snapshot_month",
+          "sql_type": "DATE",
+          "comment": "First day of the snapshot month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "equipment_id",
+          "sql_type": "STRING",
+          "comment": "Equipment identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "equipment_type",
+          "sql_type": "STRING",
+          "comment": "Equipment type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "process_unit",
+          "sql_type": "STRING",
+          "comment": "Refinery process unit",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "avg_health_score",
+          "sql_type": "DOUBLE",
+          "comment": "Average health score for the month",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 72.0 + ({qty_noise} - 0.5) * 44.0)), 1)"
+        },
+        {
+          "name": "mtbf_days",
+          "sql_type": "DOUBLE",
+          "comment": "Mean time between failures in days",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(5.0, 25.0 + {qty_noise} * 120.0), 1)"
+        },
+        {
+          "name": "mttr_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Mean time to repair in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 3.0 + {qty_noise} * 45.0), 1)"
+        },
+        {
+          "name": "availability_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Equipment availability percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(82.0, 94.0 + ({qty_noise} - 0.5) * 12.0)), 2)"
+        },
+        {
+          "name": "prediction_accuracy_pct",
+          "sql_type": "DOUBLE",
+          "comment": "ML prediction accuracy percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(50.0, 75.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "equipment_id": "RG-PMP-001",
+          "equipment_type": "Pump",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-PMP-002",
+          "equipment_type": "Pump",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-CMP-003",
+          "equipment_type": "Compressor",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-CMP-004",
+          "equipment_type": "Compressor",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "equipment_id": "RG-HX-005",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-HX-006",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-HX-007",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-RX-008",
+          "equipment_type": "Reactor",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-RX-009",
+          "equipment_type": "Reactor",
+          "process_unit": "Hydrotreating"
+        },
+        {
+          "equipment_id": "RG-RX-010",
+          "equipment_type": "Reactor",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-COL-011",
+          "equipment_type": "Column",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-COL-012",
+          "equipment_type": "Column",
+          "process_unit": "Vacuum Distillation"
+        },
+        {
+          "equipment_id": "RG-COL-013",
+          "equipment_type": "Column",
+          "process_unit": "Catalytic Cracking"
+        },
+        {
+          "equipment_id": "RG-FUR-014",
+          "equipment_type": "Furnace",
+          "process_unit": "Crude Distillation"
+        },
+        {
+          "equipment_id": "RG-FUR-015",
+          "equipment_type": "Furnace",
+          "process_unit": "Vacuum Distillation"
+        },
+        {
+          "equipment_id": "RG-FUR-016",
+          "equipment_type": "Furnace",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-PMP-017",
+          "equipment_type": "Pump",
+          "process_unit": "Alkylation"
+        },
+        {
+          "equipment_id": "RG-CMP-018",
+          "equipment_type": "Compressor",
+          "process_unit": "Catalytic Reforming"
+        },
+        {
+          "equipment_id": "RG-HX-019",
+          "equipment_type": "Heat Exchanger",
+          "process_unit": "Alkylation"
+        },
+        {
+          "equipment_id": "RG-PMP-020",
+          "equipment_type": "Pump",
+          "process_unit": "Blending & Dispatch"
+        }
+      ],
+      "category_distribution": {
+        "Pump": 0.055,
+        "Compressor": 0.05,
+        "Heat Exchanger": 0.055,
+        "Reactor": 0.05,
+        "Column": 0.05,
+        "Furnace": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "sensor_readings_metrics",
+      "source_table": "sensor_readings",
+      "dimensions": [
+        {
+          "name": "reading_timestamp",
+          "expr": "reading_timestamp"
+        },
+        {
+          "name": "equipment_id",
+          "expr": "equipment_id"
+        },
+        {
+          "name": "equipment_type",
+          "expr": "equipment_type"
+        },
+        {
+          "name": "process_unit",
+          "expr": "process_unit"
+        },
+        {
+          "name": "alert_level",
+          "expr": "alert_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_health_score",
+          "expr": "AVG(health_score)",
+          "comment": "Average equipment health score"
+        },
+        {
+          "name": "total_readings",
+          "expr": "COUNT(DISTINCT reading_id)",
+          "comment": "Total sensor readings"
+        },
+        {
+          "name": "alarm_trip_count",
+          "expr": "COUNT(DISTINCT CASE WHEN alert_level IN ('Alarm', 'Trip') THEN reading_id END)",
+          "comment": "Count of alarm and trip events"
+        },
+        {
+          "name": "min_rul_days",
+          "expr": "MIN(predicted_rul_days)",
+          "comment": "Minimum predicted remaining useful life"
+        },
+        {
+          "name": "total_sensor_value",
+          "expr": "SUM(sensor_value)",
+          "comment": "Total sensor value"
+        },
+        {
+          "name": "max_sensor_value",
+          "expr": "MAX(sensor_value)",
+          "comment": "Maximum sensor value"
+        }
+      ]
+    },
+    {
+      "view_name": "maintenance_events_metrics",
+      "source_table": "maintenance_events",
+      "dimensions": [
+        {
+          "name": "event_date",
+          "expr": "event_date"
+        },
+        {
+          "name": "equipment_id",
+          "expr": "equipment_id"
+        },
+        {
+          "name": "equipment_type",
+          "expr": "equipment_type"
+        },
+        {
+          "name": "process_unit",
+          "expr": "process_unit"
+        },
+        {
+          "name": "event_type",
+          "expr": "event_type"
+        },
+        {
+          "name": "failure_mode",
+          "expr": "failure_mode"
+        },
+        {
+          "name": "was_predicted",
+          "expr": "was_predicted"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_events",
+          "expr": "COUNT(DISTINCT event_id)",
+          "comment": "Total maintenance events"
+        },
+        {
+          "name": "total_downtime_hours",
+          "expr": "SUM(downtime_hours)",
+          "comment": "Total equipment downtime"
+        },
+        {
+          "name": "total_throughput_loss_bbl",
+          "expr": "SUM(throughput_loss_bbl)",
+          "comment": "Total throughput loss in barrels"
+        },
+        {
+          "name": "total_repair_cost_usd",
+          "expr": "SUM(repair_cost_usd)",
+          "comment": "Total repair cost in USD"
+        },
+        {
+          "name": "avg_repair_cost_usd",
+          "expr": "AVG(repair_cost_usd)",
+          "comment": "Average repair cost per event"
+        },
+        {
+          "name": "max_downtime_hours",
+          "expr": "MAX(downtime_hours)",
+          "comment": "Maximum downtime hours"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_timestamp, equipment_id, equipment_type, process_unit, alert_level. Measures: avg_health_score, total_readings, alarm_trip_count, min_rul_days. The maintenance_events_metrics view (source: maintenance_events) has dimensions: event_date, equipment_id, equipment_type, process_unit, event_type, failure_mode, was_predicted. Measures: total_events, total_downtime_hours, total_throughput_loss_bbl, total_repair_cost_usd, avg_repair_cost_usd. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_name).",
+  "sample_questions": [
+    "What is the alarm trip count by reading timestamp?",
+    "Which reading timestamps have the most unique total readingss?",
+    "What is the highest sensor value for each reading timestamp?",
+    "Rank reading timestamps by total sensor value",
+    "What is the monthly trend in unique total eventss?",
+    "How has highest downtime hours changed over time?",
+    "What is the monthly trend in total equipment downtime?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the highest sensor value for each reading timestamp?",
+      "sql_lines": [
+        "SELECT reading_timestamp, MEASURE(max_sensor_value) AS max_sensor_value",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY max_sensor_value DESC"
+      ]
+    },
+    {
+      "question": "Rank reading timestamps by total sensor value",
+      "sql_lines": [
+        "SELECT reading_timestamp, MEASURE(total_sensor_value) AS total_sensor_value",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_sensor_value DESC"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total equipment downtime?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
+        "FROM {fqn}.maintenance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total raw sensor measurement value over time?",
+      "sql_lines": [
+        "SELECT reading_timestamp, SUM(sensor_value) AS total_sensor_value",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY reading_timestamp ORDER BY reading_timestamp"
+      ]
+    },
+    {
+      "question": "What is the trend of total equipment downtime in hours over time?",
+      "sql_lines": [
+        "SELECT event_date, SUM(downtime_hours) AS total_downtime_hours",
+        "FROM {fqn}.maintenance_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has the average average health score for the month changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_month, AVG(avg_health_score) AS avg_avg_health_score",
+        "FROM {fqn}.equipment_health_monthly",
+        "GROUP BY snapshot_month ORDER BY snapshot_month"
+      ]
+    },
+    {
+      "question": "Rank reading timestamps by lowest rul days",
+      "sql_lines": [
+        "SELECT reading_timestamp, MEASURE(min_rul_days) AS min_rul_days",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY min_rul_days DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "alert_level IN ('Alarm', 'Trip')",
+        "display_name": "critical alerts",
+        "synonyms": [
+          "alarm",
+          "trip",
+          "critical"
+        ],
+        "instruction": "Use to filter sensor readings to critical alerts."
+      },
+      {
+        "sql": "event_type = 'Turnaround'",
+        "display_name": "turnaround events",
+        "synonyms": [
+          "shutdown",
+          "TAR",
+          "planned shutdown"
+        ],
+        "instruction": "Use to filter to turnaround maintenance events."
+      },
+      {
+        "sql": "predicted_rul_days < 30",
+        "display_name": "near end of life",
+        "synonyms": [
+          "low RUL",
+          "critical assets"
+        ],
+        "instruction": "Use to find equipment near predicted failure."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "prediction_rate_pct",
+        "sql": "ROUND(100.0 * COUNT(DISTINCT CASE WHEN maintenance_events.was_predicted = TRUE THEN maintenance_events.event_id END) / NULLIF(COUNT(DISTINCT maintenance_events.event_id), 0), 2)",
+        "display_name": "prediction rate",
+        "synonyms": [
+          "accuracy",
+          "predicted pct"
+        ]
+      },
+      {
+        "alias": "cost_per_downtime_hr",
+        "sql": "ROUND(maintenance_events.repair_cost_usd / NULLIF(maintenance_events.downtime_hours, 0), 2)",
+        "display_name": "cost per downtime hour",
+        "synonyms": [
+          "cost efficiency"
+        ]
+      },
+      {
+        "alias": "event_month",
+        "sql": "DATE_TRUNC('month', maintenance_events.event_date)",
+        "display_name": "event month",
+        "synonyms": [
+          "month"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_repair_cost",
+        "sql": "SUM(maintenance_events.repair_cost_usd)",
+        "display_name": "total repair cost",
+        "synonyms": [
+          "maintenance cost",
+          "repair spend"
+        ]
+      },
+      {
+        "alias": "total_downtime",
+        "sql": "SUM(maintenance_events.downtime_hours)",
+        "display_name": "total downtime",
+        "synonyms": [
+          "downtime hours",
+          "hours offline"
+        ]
+      },
+      {
+        "alias": "total_throughput_loss",
+        "sql": "SUM(maintenance_events.throughput_loss_bbl)",
+        "display_name": "total throughput loss",
+        "synonyms": [
+          "lost barrels",
+          "production loss"
+        ]
+      },
+      {
+        "alias": "avg_health",
+        "sql": "AVG(sensor_readings.health_score)",
+        "display_name": "average health score",
+        "synonyms": [
+          "health",
+          "equipment health"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the alarm trip count by reading timestamp?",
+      "sql_lines": [
+        "SELECT reading_timestamp, MEASURE(alarm_trip_count) AS alarm_trip_count",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY alarm_trip_count DESC"
+      ]
+    },
+    {
+      "question": "Which reading timestamps have the most unique total readingss?",
+      "sql_lines": [
+        "SELECT reading_timestamp, MEASURE(total_readings) AS total_readings",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_readings DESC"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique total eventss?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.maintenance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How has highest downtime hours changed over time?",
+      "sql_lines": [
+        "SELECT event_date, MEASURE(max_downtime_hours) AS max_downtime_hours",
+        "FROM {fqn}.maintenance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "What are the top refinery equipment identifier by total raw sensor measurement value?",
+      "sql_lines": [
+        "SELECT equipment_id, SUM(sensor_value) AS total_sensor_value",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY equipment_id ORDER BY total_sensor_value DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per date of the maintenance event?",
+      "sql_lines": [
+        "SELECT event_date, COUNT(*) AS record_count",
+        "FROM {fqn}.maintenance_events",
+        "GROUP BY event_date ORDER BY event_date"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of the snapshot month?",
+      "sql_lines": [
+        "SELECT snapshot_month, COUNT(*) AS record_count",
+        "FROM {fqn}.equipment_health_monthly",
+        "GROUP BY snapshot_month ORDER BY snapshot_month"
+      ]
+    }
+  ]
+}

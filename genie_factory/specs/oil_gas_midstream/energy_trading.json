@@ -1,0 +1,891 @@
+{
+  "company_name": "TradeFlow Energy",
+  "industry": "Oil & Gas Midstream",
+  "use_case": "Energy trading and position management for midstream commodities",
+  "space_title": "TradeFlow Energy - Energy Trading Analytics ⚡",
+  "space_description": "Trading analytics for TradeFlow Energy. Ask questions about trade positions, P&L, volume, and risk across 20 contracts spanning crude oil, natural gas, NGL, and power.",
+  "schema_basename": "og_midstream_trading",
+  "tables": [
+    {
+      "table_name": "trade_transactions",
+      "description": "Daily trade transactions including buys, sells, and settlements.",
+      "columns": [
+        {
+          "name": "trade_id",
+          "sql_type": "STRING",
+          "comment": "Trade ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.contract_id) + 100000 AS STRING), 8, '0'))"
+        },
+        {
+          "name": "trade_date",
+          "sql_type": "DATE",
+          "comment": "Trade date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "contract_id",
+          "sql_type": "STRING",
+          "comment": "Contract ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "contract_name",
+          "sql_type": "STRING",
+          "comment": "Contract name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "commodity",
+          "sql_type": "STRING",
+          "comment": "Commodity",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "counterparty_type",
+          "sql_type": "STRING",
+          "comment": "Counterparty type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "trade_type",
+          "sql_type": "STRING",
+          "comment": "Type: Buy, Sell, Swap, Option",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Buy' WHEN {status_noise} < 0.65 THEN 'Sell' WHEN {status_noise} < 0.85 THEN 'Swap' ELSE 'Option' END"
+        },
+        {
+          "name": "volume_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Volume in BBL equivalent",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1000.0, {qty_noise} * 100000.0), 0)"
+        },
+        {
+          "name": "price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Price USD per unit",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(1.0, 10.0 + {qty_noise} * 80.0), 2)"
+        },
+        {
+          "name": "pnl_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Realized P&L USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-200000.0 + {qty_noise} * 600000.0, 2)"
+        },
+        {
+          "name": "settlement_status",
+          "sql_type": "STRING",
+          "comment": "Status: Settled, Pending, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Settled' WHEN {status_noise} < 0.90 THEN 'Pending' ELSE 'Cancelled' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Natural Gas": {
+          "12,1,2": 0.07
+        },
+        "Power": {
+          "7,8": 0.06
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "contract_id": "TF-CRD-001",
+          "contract_name": "WTI Physical Forward Q1",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-CRD-002",
+          "contract_name": "WTI Physical Forward Q2",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-CRD-003",
+          "contract_name": "Brent Swap H1",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Trading House"
+        },
+        {
+          "contract_id": "TF-GAS-004",
+          "contract_name": "Henry Hub Baseload",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-GAS-005",
+          "contract_name": "Henry Hub Swing",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-GAS-006",
+          "contract_name": "Waha Basis Swap",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-NGL-007",
+          "contract_name": "Mont Belvieu Ethane",
+          "commodity": "NGL",
+          "counterparty_type": "Petrochemical"
+        },
+        {
+          "contract_id": "TF-NGL-008",
+          "contract_name": "Mont Belvieu Propane",
+          "commodity": "NGL",
+          "counterparty_type": "Petrochemical"
+        },
+        {
+          "contract_id": "TF-NGL-009",
+          "contract_name": "Conway Butane",
+          "commodity": "NGL",
+          "counterparty_type": "Refiner"
+        },
+        {
+          "contract_id": "TF-PWR-010",
+          "contract_name": "ERCOT Power",
+          "commodity": "Power",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-PWR-011",
+          "contract_name": "PJM Power",
+          "commodity": "Power",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-CRD-012",
+          "contract_name": "Mars Crude Differential",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Refiner"
+        },
+        {
+          "contract_id": "TF-GAS-013",
+          "contract_name": "Appalachian Basis",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-GAS-014",
+          "contract_name": "Permian Basin Gas",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-NGL-015",
+          "contract_name": "Enterprise Y-Grade",
+          "commodity": "NGL",
+          "counterparty_type": "Midstream"
+        },
+        {
+          "contract_id": "TF-CRD-016",
+          "contract_name": "WTI Calendar Spread",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Trading House"
+        },
+        {
+          "contract_id": "TF-GAS-017",
+          "contract_name": "Dominion South Basis",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-NGL-018",
+          "contract_name": "Isobutane Physical",
+          "commodity": "NGL",
+          "counterparty_type": "Refiner"
+        },
+        {
+          "contract_id": "TF-PWR-019",
+          "contract_name": "MISO Power",
+          "commodity": "Power",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-CRD-020",
+          "contract_name": "LLS Physical",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Refiner"
+        }
+      ],
+      "category_distribution": {
+        "Crude Oil": 0.06,
+        "Natural Gas": 0.06,
+        "NGL": 0.055,
+        "Power": 0.05
+      }
+    },
+    {
+      "table_name": "position_snapshots",
+      "description": "Weekly position snapshots with mark-to-market and risk metrics.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.contract_id) + 50000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "contract_id",
+          "sql_type": "STRING",
+          "comment": "Contract ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "commodity",
+          "sql_type": "STRING",
+          "comment": "Commodity",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "counterparty_type",
+          "sql_type": "STRING",
+          "comment": "Counterparty type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "net_position_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Net position BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-500000.0 + {qty_noise} * 1000000.0, 0)"
+        },
+        {
+          "name": "mtm_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Mark-to-market USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-1000000.0 + {qty_noise} * 3000000.0, 2)"
+        },
+        {
+          "name": "var_95_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Value at Risk 95% USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10000.0, {qty_noise} * 500000.0), 2)"
+        },
+        {
+          "name": "delta",
+          "sql_type": "DOUBLE",
+          "comment": "Position delta",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-1.0 + {qty_noise} * 2.0, 4)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "contract_id": "TF-CRD-001",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-CRD-002",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-CRD-003",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Trading House"
+        },
+        {
+          "contract_id": "TF-GAS-004",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-GAS-005",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-GAS-006",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-NGL-007",
+          "commodity": "NGL",
+          "counterparty_type": "Petrochemical"
+        },
+        {
+          "contract_id": "TF-NGL-008",
+          "commodity": "NGL",
+          "counterparty_type": "Petrochemical"
+        },
+        {
+          "contract_id": "TF-NGL-009",
+          "commodity": "NGL",
+          "counterparty_type": "Refiner"
+        },
+        {
+          "contract_id": "TF-PWR-010",
+          "commodity": "Power",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-PWR-011",
+          "commodity": "Power",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-CRD-012",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Refiner"
+        },
+        {
+          "contract_id": "TF-GAS-013",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-GAS-014",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Producer"
+        },
+        {
+          "contract_id": "TF-NGL-015",
+          "commodity": "NGL",
+          "counterparty_type": "Midstream"
+        },
+        {
+          "contract_id": "TF-CRD-016",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Trading House"
+        },
+        {
+          "contract_id": "TF-GAS-017",
+          "commodity": "Natural Gas",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-NGL-018",
+          "commodity": "NGL",
+          "counterparty_type": "Refiner"
+        },
+        {
+          "contract_id": "TF-PWR-019",
+          "commodity": "Power",
+          "counterparty_type": "Utility"
+        },
+        {
+          "contract_id": "TF-CRD-020",
+          "commodity": "Crude Oil",
+          "counterparty_type": "Refiner"
+        }
+      ],
+      "category_distribution": {
+        "Crude Oil": 0.06,
+        "Natural Gas": 0.06,
+        "NGL": 0.055,
+        "Power": 0.05
+      }
+    },
+    {
+      "table_name": "trading_kpi_monthly",
+      "description": "Monthly trading KPIs.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "KPI ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('TK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.contract_id) + 30000 AS STRING), 6, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "KPI month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "contract_id",
+          "sql_type": "STRING",
+          "comment": "Contract ID",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "commodity",
+          "sql_type": "STRING",
+          "comment": "Commodity",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "monthly_pnl_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly P&L USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-500000.0 + {qty_noise} * 2000000.0, 2)"
+        },
+        {
+          "name": "monthly_volume_bbl",
+          "sql_type": "DOUBLE",
+          "comment": "Monthly volume BBL",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(10000.0, {qty_noise} * 3000000.0), 0)"
+        },
+        {
+          "name": "sharpe_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Sharpe ratio",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-0.5 + {qty_noise} * 3.0, 2)"
+        },
+        {
+          "name": "win_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Trade win rate pct",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 55.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "contract_id": "TF-CRD-001",
+          "commodity": "Crude Oil"
+        },
+        {
+          "contract_id": "TF-CRD-002",
+          "commodity": "Crude Oil"
+        },
+        {
+          "contract_id": "TF-CRD-003",
+          "commodity": "Crude Oil"
+        },
+        {
+          "contract_id": "TF-GAS-004",
+          "commodity": "Natural Gas"
+        },
+        {
+          "contract_id": "TF-GAS-005",
+          "commodity": "Natural Gas"
+        },
+        {
+          "contract_id": "TF-GAS-006",
+          "commodity": "Natural Gas"
+        },
+        {
+          "contract_id": "TF-NGL-007",
+          "commodity": "NGL"
+        },
+        {
+          "contract_id": "TF-NGL-008",
+          "commodity": "NGL"
+        },
+        {
+          "contract_id": "TF-NGL-009",
+          "commodity": "NGL"
+        },
+        {
+          "contract_id": "TF-PWR-010",
+          "commodity": "Power"
+        },
+        {
+          "contract_id": "TF-PWR-011",
+          "commodity": "Power"
+        },
+        {
+          "contract_id": "TF-CRD-012",
+          "commodity": "Crude Oil"
+        },
+        {
+          "contract_id": "TF-GAS-013",
+          "commodity": "Natural Gas"
+        },
+        {
+          "contract_id": "TF-GAS-014",
+          "commodity": "Natural Gas"
+        },
+        {
+          "contract_id": "TF-NGL-015",
+          "commodity": "NGL"
+        },
+        {
+          "contract_id": "TF-CRD-016",
+          "commodity": "Crude Oil"
+        },
+        {
+          "contract_id": "TF-GAS-017",
+          "commodity": "Natural Gas"
+        },
+        {
+          "contract_id": "TF-NGL-018",
+          "commodity": "NGL"
+        },
+        {
+          "contract_id": "TF-PWR-019",
+          "commodity": "Power"
+        },
+        {
+          "contract_id": "TF-CRD-020",
+          "commodity": "Crude Oil"
+        }
+      ],
+      "category_distribution": {
+        "Crude Oil": 0.06,
+        "Natural Gas": 0.06,
+        "NGL": 0.055,
+        "Power": 0.05
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "trade_transactions_metrics",
+      "source_table": "trade_transactions",
+      "dimensions": [
+        {
+          "name": "trade_date",
+          "expr": "trade_date"
+        },
+        {
+          "name": "contract_id",
+          "expr": "contract_id"
+        },
+        {
+          "name": "commodity",
+          "expr": "commodity"
+        },
+        {
+          "name": "counterparty_type",
+          "expr": "counterparty_type"
+        },
+        {
+          "name": "trade_type",
+          "expr": "trade_type"
+        },
+        {
+          "name": "settlement_status",
+          "expr": "settlement_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_pnl_usd",
+          "expr": "SUM(pnl_usd)",
+          "comment": "Total P&L USD"
+        },
+        {
+          "name": "total_volume_bbl",
+          "expr": "SUM(volume_bbl)",
+          "comment": "Total volume BBL"
+        },
+        {
+          "name": "total_trades",
+          "expr": "COUNT(DISTINCT trade_id)",
+          "comment": "Total trades"
+        },
+        {
+          "name": "avg_price_usd",
+          "expr": "AVG(price_usd)",
+          "comment": "Avg price USD"
+        },
+        {
+          "name": "max_volume_bbl",
+          "expr": "MAX(volume_bbl)",
+          "comment": "Maximum volume bbl"
+        }
+      ]
+    },
+    {
+      "view_name": "position_snapshots_metrics",
+      "source_table": "position_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "contract_id",
+          "expr": "contract_id"
+        },
+        {
+          "name": "commodity",
+          "expr": "commodity"
+        },
+        {
+          "name": "counterparty_type",
+          "expr": "counterparty_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_mtm_usd",
+          "expr": "SUM(mtm_value_usd)",
+          "comment": "Total MTM USD"
+        },
+        {
+          "name": "total_var_usd",
+          "expr": "SUM(var_95_usd)",
+          "comment": "Total VaR USD"
+        },
+        {
+          "name": "avg_net_position_bbl",
+          "expr": "AVG(net_position_bbl)",
+          "comment": "Avg net position BBL"
+        },
+        {
+          "name": "total_delta",
+          "expr": "SUM(delta)",
+          "comment": "Total delta"
+        },
+        {
+          "name": "max_net_position_bbl",
+          "expr": "MAX(net_position_bbl)",
+          "comment": "Maximum net position bbl"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The trade_transactions_metrics view (source: trade_transactions) has dimensions: trade_date, contract_id, commodity, counterparty_type, trade_type, settlement_status. Measures: total_pnl_usd, total_volume_bbl, total_trades, avg_price_usd. The position_snapshots_metrics view (source: position_snapshots) has dimensions: snapshot_date, contract_id, commodity, counterparty_type. Measures: total_mtm_usd, total_var_usd, avg_net_position_bbl. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. contract_name).",
+  "sample_questions": [
+    "What is the monthly trend in unique total tradess?",
+    "How has highest volume bbl changed over time?",
+    "What is the monthly trend in total p&l usd?",
+    "How has total volume bbl changed over time?",
+    "What is the monthly trend in highest net position bbl?",
+    "How has total mtm usd changed over time?",
+    "What is the monthly trend in total var usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total p&l usd?",
+      "sql_lines": [
+        "SELECT trade_date, MEASURE(total_pnl_usd) AS total_pnl_usd",
+        "FROM {fqn}.trade_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY trade_date"
+      ]
+    },
+    {
+      "question": "How has total volume bbl changed over time?",
+      "sql_lines": [
+        "SELECT trade_date, MEASURE(total_volume_bbl) AS total_volume_bbl",
+        "FROM {fqn}.trade_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY trade_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total var usd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_var_usd) AS total_var_usd",
+        "FROM {fqn}.position_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How does total volume in bbl equivalent break down by contract id for 'Settled' records?",
+      "sql_lines": [
+        "SELECT contract_id, COUNT(*) AS record_count, SUM(volume_bbl) AS total_volume_bbl",
+        "FROM {fqn}.trade_transactions",
+        "WHERE settlement_status = 'Settled' GROUP BY contract_id ORDER BY total_volume_bbl DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total net position bbl over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(net_position_bbl) AS total_net_position_bbl",
+        "FROM {fqn}.position_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average sharpe ratio changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(sharpe_ratio) AS avg_sharpe_ratio",
+        "FROM {fqn}.trading_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has unique total tradess changed over time?",
+      "sql_lines": [
+        "SELECT trade_date, MEASURE(total_trades) AS total_trades",
+        "FROM {fqn}.trade_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY trade_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "settlement_status = 'Settled'",
+        "display_name": "settled trades",
+        "synonyms": [
+          "realized"
+        ],
+        "instruction": "Settled trades only."
+      },
+      {
+        "sql": "commodity = 'Natural Gas'",
+        "display_name": "natural gas",
+        "synonyms": [
+          "gas trades"
+        ],
+        "instruction": "Gas trades only."
+      },
+      {
+        "sql": "pnl_usd < 0",
+        "display_name": "loss trades",
+        "synonyms": [
+          "losses"
+        ],
+        "instruction": "Losing trades."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "revenue_per_bbl",
+        "sql": "ROUND(trade_transactions.pnl_usd / NULLIF(trade_transactions.volume_bbl, 0), 2)",
+        "display_name": "P&L per barrel",
+        "synonyms": [
+          "unit P&L"
+        ]
+      },
+      {
+        "alias": "var_pct_mtm",
+        "sql": "ROUND(100.0 * position_snapshots.var_95_usd / NULLIF(ABS(position_snapshots.mtm_value_usd), 0), 2)",
+        "display_name": "VaR as pct of MTM",
+        "synonyms": [
+          "risk ratio"
+        ]
+      },
+      {
+        "alias": "trade_month",
+        "sql": "DATE_TRUNC('month', trade_transactions.trade_date)",
+        "display_name": "month",
+        "synonyms": [
+          "period"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_pnl",
+        "sql": "SUM(trade_transactions.pnl_usd)",
+        "display_name": "total P&L",
+        "synonyms": [
+          "profit"
+        ]
+      },
+      {
+        "alias": "total_volume",
+        "sql": "SUM(trade_transactions.volume_bbl)",
+        "display_name": "total volume",
+        "synonyms": [
+          "volume"
+        ]
+      },
+      {
+        "alias": "total_mtm",
+        "sql": "SUM(position_snapshots.mtm_value_usd)",
+        "display_name": "total MTM",
+        "synonyms": [
+          "mark to market"
+        ]
+      },
+      {
+        "alias": "total_var",
+        "sql": "SUM(position_snapshots.var_95_usd)",
+        "display_name": "total VaR",
+        "synonyms": [
+          "risk"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total tradess?",
+      "sql_lines": [
+        "SELECT trade_date, MEASURE(total_trades) AS total_trades",
+        "FROM {fqn}.trade_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY trade_date"
+      ]
+    },
+    {
+      "question": "How has highest volume bbl changed over time?",
+      "sql_lines": [
+        "SELECT trade_date, MEASURE(max_volume_bbl) AS max_volume_bbl",
+        "FROM {fqn}.trade_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY trade_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest net position bbl?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_net_position_bbl) AS max_net_position_bbl",
+        "FROM {fqn}.position_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total mtm usd changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_mtm_usd) AS total_mtm_usd",
+        "FROM {fqn}.position_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top contract id by total volume in bbl equivalent?",
+      "sql_lines": [
+        "SELECT contract_id, SUM(volume_bbl) AS total_volume_bbl",
+        "FROM {fqn}.trade_transactions",
+        "GROUP BY contract_id ORDER BY total_volume_bbl DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many records are there per snapshot date?",
+      "sql_lines": [
+        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "FROM {fqn}.position_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How many records are there per kpi month?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.trading_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}

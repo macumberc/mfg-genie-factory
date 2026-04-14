@@ -1,0 +1,917 @@
+{
+  "company_name": "AeroParts Supply",
+  "industry": "Aerospace",
+  "use_case": "Aerospace aftermarket parts demand forecasting and backlog management",
+  "space_title": "AeroParts Supply - Demand Forecasting & Backlog 📈",
+  "space_description": "Demand forecasting analytics for AeroParts Supply. Ask about aftermarket order trends, forecast accuracy, backlog aging, lead times, and fill rates across 20 aerospace parts and 5 customer segments.",
+  "schema_basename": "aerospace_demand_forecast",
+  "tables": [
+    {
+      "table_name": "aftermarket_orders",
+      "description": "Daily aftermarket spare parts orders with quantities, pricing, lead time, and fulfillment status.",
+      "columns": [
+        {
+          "name": "order_id",
+          "sql_type": "STRING",
+          "comment": "Unique order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('AO-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.part_number) + 10000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "order_date",
+          "sql_type": "DATE",
+          "comment": "Date order was placed",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "part_number",
+          "sql_type": "STRING",
+          "comment": "Part number identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "part_name",
+          "sql_type": "STRING",
+          "comment": "Part descriptive name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "part_category",
+          "sql_type": "STRING",
+          "comment": "Part category: Rotable, Expendable, Repairable, Consumable",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "customer_segment",
+          "sql_type": "STRING",
+          "comment": "Customer segment: Airline, MRO, Military, OEM, Leasing",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Airline' WHEN {status_noise} < 0.55 THEN 'MRO' WHEN {status_noise} < 0.70 THEN 'Military' WHEN {status_noise} < 0.85 THEN 'OEM' ELSE 'Leasing' END"
+        },
+        {
+          "name": "order_quantity",
+          "sql_type": "INT",
+          "comment": "Units ordered",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 99) AS INT)"
+        },
+        {
+          "name": "unit_price_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Price per unit USD",
+          "is_dimension": false,
+          "generation_expr": ""
+        },
+        {
+          "name": "lead_time_days",
+          "sql_type": "INT",
+          "comment": "Quoted lead time in days",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 175) AS INT)"
+        },
+        {
+          "name": "order_status",
+          "sql_type": "STRING",
+          "comment": "Order status: Shipped, Backlog, In Production, Cancelled",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.18 THEN 'Backlog' WHEN {status_noise} < 0.30 THEN 'In Production' ELSE 'Shipped' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Rotable": {
+          "3,4,9,10": 0.055
+        },
+        "Expendable": {
+          "6,7,8": 0.05
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "part_number": "AP-1001",
+          "part_name": "Fan Blade Assembly",
+          "part_category": "Rotable",
+          "unit_price_usd": 28500.0
+        },
+        {
+          "part_number": "AP-1002",
+          "part_name": "Turbine Nozzle Guide Vane",
+          "part_category": "Rotable",
+          "unit_price_usd": 15200.0
+        },
+        {
+          "part_number": "AP-1003",
+          "part_name": "HPT Disk",
+          "part_category": "Rotable",
+          "unit_price_usd": 42000.0
+        },
+        {
+          "part_number": "AP-1004",
+          "part_name": "Combustor Liner Segment",
+          "part_category": "Repairable",
+          "unit_price_usd": 8900.0
+        },
+        {
+          "part_number": "AP-1005",
+          "part_name": "Fuel Nozzle",
+          "part_category": "Repairable",
+          "unit_price_usd": 4200.0
+        },
+        {
+          "part_number": "AP-1006",
+          "part_name": "Main Bearing Assembly",
+          "part_category": "Rotable",
+          "unit_price_usd": 18700.0
+        },
+        {
+          "part_number": "AP-1007",
+          "part_name": "Compressor Blade Set",
+          "part_category": "Rotable",
+          "unit_price_usd": 12400.0
+        },
+        {
+          "part_number": "AP-1008",
+          "part_name": "Oil Filter Element",
+          "part_category": "Expendable",
+          "unit_price_usd": 85.0
+        },
+        {
+          "part_number": "AP-1009",
+          "part_name": "Gasket Kit - Hot Section",
+          "part_category": "Consumable",
+          "unit_price_usd": 320.0
+        },
+        {
+          "part_number": "AP-1010",
+          "part_name": "Igniter Plug",
+          "part_category": "Expendable",
+          "unit_price_usd": 1250.0
+        },
+        {
+          "part_number": "AP-1011",
+          "part_name": "Hydraulic Actuator",
+          "part_category": "Repairable",
+          "unit_price_usd": 6800.0
+        },
+        {
+          "part_number": "AP-1012",
+          "part_name": "Landing Gear Seal Kit",
+          "part_category": "Consumable",
+          "unit_price_usd": 450.0
+        },
+        {
+          "part_number": "AP-1013",
+          "part_name": "Brake Heat Stack",
+          "part_category": "Repairable",
+          "unit_price_usd": 5600.0
+        },
+        {
+          "part_number": "AP-1014",
+          "part_name": "Avionics Display Unit",
+          "part_category": "Rotable",
+          "unit_price_usd": 22000.0
+        },
+        {
+          "part_number": "AP-1015",
+          "part_name": "Flight Data Recorder",
+          "part_category": "Rotable",
+          "unit_price_usd": 35000.0
+        },
+        {
+          "part_number": "AP-1016",
+          "part_name": "O-Ring Assortment Pack",
+          "part_category": "Consumable",
+          "unit_price_usd": 45.0
+        },
+        {
+          "part_number": "AP-1017",
+          "part_name": "Wire Harness - Cockpit",
+          "part_category": "Expendable",
+          "unit_price_usd": 2100.0
+        },
+        {
+          "part_number": "AP-1018",
+          "part_name": "Pneumatic Valve",
+          "part_category": "Repairable",
+          "unit_price_usd": 3400.0
+        },
+        {
+          "part_number": "AP-1019",
+          "part_name": "APU Starter Motor",
+          "part_category": "Rotable",
+          "unit_price_usd": 19500.0
+        },
+        {
+          "part_number": "AP-1020",
+          "part_name": "Cabin Pressure Controller",
+          "part_category": "Repairable",
+          "unit_price_usd": 7200.0
+        }
+      ],
+      "category_distribution": {
+        "Rotable": 0.035,
+        "Expendable": 0.04,
+        "Repairable": 0.03,
+        "Consumable": 0.035
+      }
+    },
+    {
+      "table_name": "demand_forecasts",
+      "description": "Monthly demand forecasts vs actuals per part and customer segment with model accuracy tracking.",
+      "columns": [
+        {
+          "name": "forecast_id",
+          "sql_type": "STRING",
+          "comment": "Unique forecast record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DF-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.part_number) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "forecast_month",
+          "sql_type": "DATE",
+          "comment": "Forecast month (first day)",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "part_number",
+          "sql_type": "STRING",
+          "comment": "Part number",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "part_category",
+          "sql_type": "STRING",
+          "comment": "Part category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "customer_segment",
+          "sql_type": "STRING",
+          "comment": "Customer segment",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Airline' WHEN {status_noise} < 0.55 THEN 'MRO' WHEN {status_noise} < 0.70 THEN 'Military' WHEN {status_noise} < 0.85 THEN 'OEM' ELSE 'Leasing' END"
+        },
+        {
+          "name": "forecasted_units",
+          "sql_type": "INT",
+          "comment": "Forecasted demand units",
+          "is_dimension": false,
+          "generation_expr": "CAST(5 + FLOOR({qty_noise} * 95) AS INT)"
+        },
+        {
+          "name": "actual_units",
+          "sql_type": "INT",
+          "comment": "Actual units ordered",
+          "is_dimension": false,
+          "generation_expr": "CAST(GREATEST(1, (5 + FLOOR({qty_noise} * 95)) * (0.75 + {status_noise} * 0.50)) AS INT)"
+        },
+        {
+          "name": "forecast_error_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Absolute forecast error percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(ABS(({qty_noise} * 0.40) - 0.10) * 100.0, 2)"
+        },
+        {
+          "name": "model_version",
+          "sql_type": "STRING",
+          "comment": "Forecast model version",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v4.0' WHEN {status_noise} < 0.55 THEN 'v4.1' ELSE 'v4.2' END"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "part_number": "AP-1001",
+          "part_name": "Fan Blade Assembly",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1002",
+          "part_name": "Turbine Nozzle Guide Vane",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1003",
+          "part_name": "HPT Disk",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1004",
+          "part_name": "Combustor Liner Segment",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1005",
+          "part_name": "Fuel Nozzle",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1006",
+          "part_name": "Main Bearing Assembly",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1007",
+          "part_name": "Compressor Blade Set",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1008",
+          "part_name": "Oil Filter Element",
+          "part_category": "Expendable"
+        },
+        {
+          "part_number": "AP-1009",
+          "part_name": "Gasket Kit - Hot Section",
+          "part_category": "Consumable"
+        },
+        {
+          "part_number": "AP-1010",
+          "part_name": "Igniter Plug",
+          "part_category": "Expendable"
+        },
+        {
+          "part_number": "AP-1011",
+          "part_name": "Hydraulic Actuator",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1012",
+          "part_name": "Landing Gear Seal Kit",
+          "part_category": "Consumable"
+        },
+        {
+          "part_number": "AP-1013",
+          "part_name": "Brake Heat Stack",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1014",
+          "part_name": "Avionics Display Unit",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1015",
+          "part_name": "Flight Data Recorder",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1016",
+          "part_name": "O-Ring Assortment Pack",
+          "part_category": "Consumable"
+        },
+        {
+          "part_number": "AP-1017",
+          "part_name": "Wire Harness - Cockpit",
+          "part_category": "Expendable"
+        },
+        {
+          "part_number": "AP-1018",
+          "part_name": "Pneumatic Valve",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1019",
+          "part_name": "APU Starter Motor",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1020",
+          "part_name": "Cabin Pressure Controller",
+          "part_category": "Repairable"
+        }
+      ],
+      "category_distribution": {
+        "Rotable": 0.035,
+        "Expendable": 0.04,
+        "Repairable": 0.03,
+        "Consumable": 0.035
+      }
+    },
+    {
+      "table_name": "demand_kpi_monthly",
+      "description": "Monthly demand KPIs including fill rate, backlog value, average lead time, and inventory turns.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly KPI record",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('DK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.part_number) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "part_number",
+          "sql_type": "STRING",
+          "comment": "Part number",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "part_category",
+          "sql_type": "STRING",
+          "comment": "Part category",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "fill_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Order fill rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.5, 75.0 + ({qty_noise} * 24.0)), 2)"
+        },
+        {
+          "name": "backlog_value_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Open backlog value in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10000.0 + ({qty_noise} * 490000.0), 2)"
+        },
+        {
+          "name": "avg_lead_time_days",
+          "sql_type": "DOUBLE",
+          "comment": "Average actual lead time in days",
+          "is_dimension": false,
+          "generation_expr": "ROUND(10.0 + ({qty_noise} * 110.0), 1)"
+        },
+        {
+          "name": "inventory_turns",
+          "sql_type": "DOUBLE",
+          "comment": "Inventory turns per year",
+          "is_dimension": false,
+          "generation_expr": "ROUND(1.0 + ({qty_noise} * 11.0), 2)"
+        },
+        {
+          "name": "on_time_delivery_pct",
+          "sql_type": "DOUBLE",
+          "comment": "On-time delivery percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(LEAST(99.0, 70.0 + ({qty_noise} * 28.0)), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "part_number": "AP-1001",
+          "part_name": "Fan Blade Assembly",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1002",
+          "part_name": "Turbine Nozzle Guide Vane",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1003",
+          "part_name": "HPT Disk",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1004",
+          "part_name": "Combustor Liner Segment",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1005",
+          "part_name": "Fuel Nozzle",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1006",
+          "part_name": "Main Bearing Assembly",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1007",
+          "part_name": "Compressor Blade Set",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1008",
+          "part_name": "Oil Filter Element",
+          "part_category": "Expendable"
+        },
+        {
+          "part_number": "AP-1009",
+          "part_name": "Gasket Kit - Hot Section",
+          "part_category": "Consumable"
+        },
+        {
+          "part_number": "AP-1010",
+          "part_name": "Igniter Plug",
+          "part_category": "Expendable"
+        },
+        {
+          "part_number": "AP-1011",
+          "part_name": "Hydraulic Actuator",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1012",
+          "part_name": "Landing Gear Seal Kit",
+          "part_category": "Consumable"
+        },
+        {
+          "part_number": "AP-1013",
+          "part_name": "Brake Heat Stack",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1014",
+          "part_name": "Avionics Display Unit",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1015",
+          "part_name": "Flight Data Recorder",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1016",
+          "part_name": "O-Ring Assortment Pack",
+          "part_category": "Consumable"
+        },
+        {
+          "part_number": "AP-1017",
+          "part_name": "Wire Harness - Cockpit",
+          "part_category": "Expendable"
+        },
+        {
+          "part_number": "AP-1018",
+          "part_name": "Pneumatic Valve",
+          "part_category": "Repairable"
+        },
+        {
+          "part_number": "AP-1019",
+          "part_name": "APU Starter Motor",
+          "part_category": "Rotable"
+        },
+        {
+          "part_number": "AP-1020",
+          "part_name": "Cabin Pressure Controller",
+          "part_category": "Repairable"
+        }
+      ],
+      "category_distribution": {
+        "Rotable": 0.035,
+        "Expendable": 0.04,
+        "Repairable": 0.03,
+        "Consumable": 0.035
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "order_metrics",
+      "source_table": "aftermarket_orders",
+      "dimensions": [
+        {
+          "name": "order_date",
+          "expr": "order_date"
+        },
+        {
+          "name": "part_category",
+          "expr": "part_category"
+        },
+        {
+          "name": "customer_segment",
+          "expr": "customer_segment"
+        },
+        {
+          "name": "order_status",
+          "expr": "order_status"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_order_revenue",
+          "expr": "SUM(order_quantity * unit_price_usd)",
+          "comment": "Total order revenue in USD"
+        },
+        {
+          "name": "total_backlog_units",
+          "expr": "SUM(order_quantity) FILTER (WHERE order_status = 'Backlog')",
+          "comment": "Total units in backlog"
+        },
+        {
+          "name": "total_order_count",
+          "expr": "COUNT(DISTINCT order_id)",
+          "comment": "Total orders placed"
+        },
+        {
+          "name": "avg_lead_time_days",
+          "expr": "AVG(lead_time_days)",
+          "comment": "Average quoted lead time"
+        },
+        {
+          "name": "shipped_order_count",
+          "expr": "COUNT(DISTINCT CASE WHEN order_status = 'Shipped' THEN order_id END)",
+          "comment": "Number of shipped orders"
+        },
+        {
+          "name": "max_order_quantity",
+          "expr": "MAX(order_quantity)",
+          "comment": "Maximum order quantity"
+        }
+      ]
+    },
+    {
+      "view_name": "forecast_metrics",
+      "source_table": "demand_forecasts",
+      "dimensions": [
+        {
+          "name": "forecast_month",
+          "expr": "forecast_month"
+        },
+        {
+          "name": "part_category",
+          "expr": "part_category"
+        },
+        {
+          "name": "model_version",
+          "expr": "model_version"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_forecast_error_pct",
+          "expr": "AVG(forecast_error_pct)",
+          "comment": "Average forecast error percentage"
+        },
+        {
+          "name": "total_forecasted_units",
+          "expr": "SUM(forecasted_units)",
+          "comment": "Total forecasted demand units"
+        },
+        {
+          "name": "total_actual_units",
+          "expr": "SUM(actual_units)",
+          "comment": "Total actual demand units"
+        },
+        {
+          "name": "forecast_count",
+          "expr": "COUNT(DISTINCT forecast_id)",
+          "comment": "Number of forecast records"
+        },
+        {
+          "name": "over_forecast_count",
+          "expr": "COUNT(DISTINCT CASE WHEN forecasted_units > actual_units THEN forecast_id END)",
+          "comment": "Records where forecast exceeded actuals"
+        },
+        {
+          "name": "max_forecasted_units",
+          "expr": "MAX(forecasted_units)",
+          "comment": "Maximum forecasted units"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The order_metrics view (source: aftermarket_orders) has dimensions: order_date, part_category, customer_segment, order_status. Measures: total_order_revenue, total_backlog_units, total_order_count, avg_lead_time_days, shipped_order_count. The forecast_metrics view (source: demand_forecasts) has dimensions: forecast_month, part_category, model_version. Measures: avg_forecast_error_pct, total_forecasted_units, total_actual_units, forecast_count, over_forecast_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. part_name, part_number).",
+  "sample_questions": [
+    "What is the monthly trend in total backlog units count?",
+    "How has shipped order count changed over time?",
+    "What is the monthly trend in unique total orders?",
+    "How has highest order quantity changed over time?",
+    "What is the monthly trend in over forecast count?",
+    "How has unique forecasts changed over time?",
+    "What is the monthly trend in highest forecasted units?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in unique total orders?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_order_count) AS total_order_count",
+        "FROM {fqn}.order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has highest order quantity changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(max_order_quantity) AS max_order_quantity",
+        "FROM {fqn}.order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in highest forecasted units?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(max_forecasted_units) AS max_forecasted_units",
+        "FROM {fqn}.forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How does total units ordered break down by part number identifier for 'Backlog' records?",
+      "sql_lines": [
+        "SELECT part_number, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
+        "FROM {fqn}.aftermarket_orders",
+        "WHERE order_status = 'Backlog' GROUP BY part_number ORDER BY total_order_quantity DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total forecasted demand units over time?",
+      "sql_lines": [
+        "SELECT forecast_month, SUM(forecasted_units) AS total_forecasted_units",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY forecast_month ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has the average order fill rate percentage changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(fill_rate_pct) AS avg_fill_rate_pct",
+        "FROM {fqn}.demand_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    },
+    {
+      "question": "How has average quoted lead time changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(avg_lead_time_days) AS avg_lead_time_days",
+        "FROM {fqn}.order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "aftermarket_orders.order_status = 'Backlog'",
+        "display_name": "backlog orders",
+        "synonyms": [
+          "open orders",
+          "unfulfilled"
+        ],
+        "instruction": "Filter for orders in backlog status."
+      },
+      {
+        "sql": "demand_forecasts.model_version = 'v4.2'",
+        "display_name": "latest forecast model",
+        "synonyms": [
+          "v4.2",
+          "newest model"
+        ],
+        "instruction": "Filter for latest forecast model version."
+      },
+      {
+        "sql": "aftermarket_orders.customer_segment = 'Military'",
+        "display_name": "military orders",
+        "synonyms": [
+          "defense orders",
+          "government"
+        ],
+        "instruction": "Filter for military customer segment."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "order_month",
+        "sql": "DATE_TRUNC('month', aftermarket_orders.order_date)",
+        "display_name": "order month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "order_value",
+        "sql": "aftermarket_orders.order_quantity * aftermarket_orders.unit_price_usd",
+        "display_name": "order value USD",
+        "synonyms": [
+          "line value",
+          "revenue"
+        ]
+      },
+      {
+        "alias": "forecast_bias",
+        "sql": "demand_forecasts.forecasted_units - demand_forecasts.actual_units",
+        "display_name": "forecast bias",
+        "synonyms": [
+          "over/under forecast"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(aftermarket_orders.order_quantity * aftermarket_orders.unit_price_usd)",
+        "display_name": "total order revenue",
+        "synonyms": [
+          "revenue",
+          "sales"
+        ]
+      },
+      {
+        "alias": "avg_forecast_error",
+        "sql": "AVG(demand_forecasts.forecast_error_pct)",
+        "display_name": "average forecast error",
+        "synonyms": [
+          "MAPE",
+          "forecast accuracy"
+        ]
+      },
+      {
+        "alias": "avg_fill_rate",
+        "sql": "AVG(demand_kpi_monthly.fill_rate_pct)",
+        "display_name": "average fill rate",
+        "synonyms": [
+          "service level",
+          "fulfillment rate"
+        ]
+      },
+      {
+        "alias": "total_backlog_value",
+        "sql": "SUM(demand_kpi_monthly.backlog_value_usd)",
+        "display_name": "total backlog value",
+        "synonyms": [
+          "open backlog",
+          "backlog dollars"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in total backlog units count?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(total_backlog_units) AS total_backlog_units",
+        "FROM {fqn}.order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "How has shipped order count changed over time?",
+      "sql_lines": [
+        "SELECT order_date, MEASURE(shipped_order_count) AS shipped_order_count",
+        "FROM {fqn}.order_metrics",
+        "GROUP BY ALL",
+        "ORDER BY order_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in over forecast count?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(over_forecast_count) AS over_forecast_count",
+        "FROM {fqn}.forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "How has unique forecasts changed over time?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
+        "FROM {fqn}.forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "What are the top part number identifier by total units ordered?",
+      "sql_lines": [
+        "SELECT part_number, SUM(order_quantity) AS total_order_quantity",
+        "FROM {fqn}.aftermarket_orders",
+        "GROUP BY part_number ORDER BY total_order_quantity DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average absolute forecast error percentage by part category?",
+      "sql_lines": [
+        "SELECT part_category, AVG(forecast_error_pct) AS avg_forecast_error_pct",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY part_category ORDER BY avg_forecast_error_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.demand_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

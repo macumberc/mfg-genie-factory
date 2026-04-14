@@ -1,0 +1,929 @@
+{
+  "company_name": "AeroLedger Corp",
+  "industry": "Aerospace",
+  "use_case": "Aerospace financial analytics, cost reporting, and margin analysis",
+  "space_title": "AeroLedger Corp - Financial Analytics & Cost Reporting 💰",
+  "space_description": "Financial analytics for AeroLedger Corp. Ask about revenue, cost of goods sold, gross margins, operating expenses, program profitability, and budget variance across 20 cost centers and 5 business segments.",
+  "schema_basename": "aerospace_financial_analytics",
+  "tables": [
+    {
+      "table_name": "financial_transactions",
+      "description": "Daily financial transactions including revenue, COGS, and operating expenses with GL account classification.",
+      "columns": [
+        {
+          "name": "txn_id",
+          "sql_type": "STRING",
+          "comment": "Unique financial transaction identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FT-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) + 100000 AS STRING), 7, '0'))"
+        },
+        {
+          "name": "txn_date",
+          "sql_type": "DATE",
+          "comment": "Transaction date",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "cost_center_name",
+          "sql_type": "STRING",
+          "comment": "Cost center name",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_segment",
+          "sql_type": "STRING",
+          "comment": "Business segment: Commercial Aviation, Defense, Space, Business Jets, Services",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "gl_category",
+          "sql_type": "STRING",
+          "comment": "GL category: Revenue, COGS, Labor, Materials, Overhead, R&D, SGA",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Revenue' WHEN {status_noise} < 0.38 THEN 'COGS' WHEN {status_noise} < 0.52 THEN 'Labor' WHEN {status_noise} < 0.65 THEN 'Materials' WHEN {status_noise} < 0.78 THEN 'Overhead' WHEN {status_noise} < 0.90 THEN 'R&D' ELSE 'SGA' END"
+        },
+        {
+          "name": "amount_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Transaction amount in USD (revenue positive, expenses negative)",
+          "is_dimension": false,
+          "generation_expr": "ROUND((CASE WHEN {status_noise} < 0.20 THEN 1.0 ELSE -1.0 END) * (10000.0 + ({qty_noise} * 990000.0)), 2)"
+        },
+        {
+          "name": "currency",
+          "sql_type": "STRING",
+          "comment": "Original currency: USD, EUR, GBP",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'USD' WHEN {status_noise} < 0.85 THEN 'EUR' ELSE 'GBP' END"
+        },
+        {
+          "name": "project_code",
+          "sql_type": "STRING",
+          "comment": "Project code for cost allocation",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'PROD-NB' WHEN {status_noise} < 0.45 THEN 'PROD-WB' WHEN {status_noise} < 0.60 THEN 'DEF-FW' WHEN {status_noise} < 0.72 THEN 'SPC-SAT' WHEN {status_noise} < 0.82 THEN 'BJ-CABIN' WHEN {status_noise} < 0.92 THEN 'SVC-MRO' ELSE 'RD-NXT' END"
+        },
+        {
+          "name": "is_recurring",
+          "sql_type": "STRING",
+          "comment": "Recurring vs one-time: Recurring, One-Time",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Recurring' ELSE 'One-Time' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "Commercial Aviation": {
+          "3,4,9,10": 0.05
+        },
+        "Defense": {
+          "9,10": 0.06
+        },
+        "Services": {
+          "6,7,8": 0.045
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "cost_center_id": "CC-101",
+          "cost_center_name": "Narrowbody Production",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-102",
+          "cost_center_name": "Widebody Production",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-103",
+          "cost_center_name": "Wing Assembly",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-104",
+          "cost_center_name": "Fuselage Assembly",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-201",
+          "cost_center_name": "Fighter Programs",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-202",
+          "cost_center_name": "Rotorcraft Division",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-203",
+          "cost_center_name": "Unmanned Systems",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-204",
+          "cost_center_name": "Defense Sustainment",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-301",
+          "cost_center_name": "Satellite Systems",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-302",
+          "cost_center_name": "Launch Services",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-303",
+          "cost_center_name": "Space Exploration R&D",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-401",
+          "cost_center_name": "Business Jet Production",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-402",
+          "cost_center_name": "Cabin Interiors",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-403",
+          "cost_center_name": "Completions Center",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-501",
+          "cost_center_name": "Engine MRO Services",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-502",
+          "cost_center_name": "Component Repair",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-503",
+          "cost_center_name": "Fleet Management",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-504",
+          "cost_center_name": "Training & Simulation",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-105",
+          "cost_center_name": "Composites Center",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-205",
+          "cost_center_name": "Missile Systems",
+          "business_segment": "Defense"
+        }
+      ],
+      "category_distribution": {
+        "Commercial Aviation": 0.035,
+        "Defense": 0.03,
+        "Space": 0.025,
+        "Business Jets": 0.03,
+        "Services": 0.03
+      }
+    },
+    {
+      "table_name": "budget_snapshots",
+      "description": "Monthly budget vs actual snapshot per cost center with variance analysis and forecast updates.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique budget snapshot identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('BS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date of budget snapshot",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_segment",
+          "sql_type": "STRING",
+          "comment": "Business segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "budgeted_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budgeted revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(500000.0 + ({qty_noise} * 9500000.0), 2)"
+        },
+        {
+          "name": "actual_revenue_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual revenue in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, (500000.0 + ({qty_noise} * 9500000.0)) * (0.85 + {status_noise} * 0.30)), 2)"
+        },
+        {
+          "name": "budgeted_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Budgeted cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(400000.0 + ({qty_noise} * 7600000.0), 2)"
+        },
+        {
+          "name": "actual_cost_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Actual cost in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(GREATEST(100000.0, (400000.0 + ({qty_noise} * 7600000.0)) * (0.90 + {status_noise} * 0.25)), 2)"
+        },
+        {
+          "name": "headcount",
+          "sql_type": "INT",
+          "comment": "Full-time equivalent headcount",
+          "is_dimension": false,
+          "generation_expr": "CAST(20 + FLOOR({qty_noise} * 480) AS INT)"
+        },
+        {
+          "name": "revenue_variance_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue variance as percentage (positive = favorable)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(-15.0 + ({qty_noise} * 30.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "cost_center_id": "CC-101",
+          "cost_center_name": "Narrowbody Production",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-102",
+          "cost_center_name": "Widebody Production",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-103",
+          "cost_center_name": "Wing Assembly",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-104",
+          "cost_center_name": "Fuselage Assembly",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-201",
+          "cost_center_name": "Fighter Programs",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-202",
+          "cost_center_name": "Rotorcraft Division",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-203",
+          "cost_center_name": "Unmanned Systems",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-204",
+          "cost_center_name": "Defense Sustainment",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-301",
+          "cost_center_name": "Satellite Systems",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-302",
+          "cost_center_name": "Launch Services",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-303",
+          "cost_center_name": "Space Exploration R&D",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-401",
+          "cost_center_name": "Business Jet Production",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-402",
+          "cost_center_name": "Cabin Interiors",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-403",
+          "cost_center_name": "Completions Center",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-501",
+          "cost_center_name": "Engine MRO Services",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-502",
+          "cost_center_name": "Component Repair",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-503",
+          "cost_center_name": "Fleet Management",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-504",
+          "cost_center_name": "Training & Simulation",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-105",
+          "cost_center_name": "Composites Center",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-205",
+          "cost_center_name": "Missile Systems",
+          "business_segment": "Defense"
+        }
+      ],
+      "category_distribution": {
+        "Commercial Aviation": 0.035,
+        "Defense": 0.03,
+        "Space": 0.025,
+        "Business Jets": 0.03,
+        "Services": 0.03
+      }
+    },
+    {
+      "table_name": "financial_kpi_monthly",
+      "description": "Monthly financial KPIs including gross margin, operating margin, EBITDA, revenue per employee, and cost efficiency metrics.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly record",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('FK-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.cost_center_id) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "cost_center_id",
+          "sql_type": "STRING",
+          "comment": "Cost center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "business_segment",
+          "sql_type": "STRING",
+          "comment": "Business segment",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "gross_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Gross margin percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15.0 + ({qty_noise} * 30.0), 2)"
+        },
+        {
+          "name": "operating_margin_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Operating margin percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 18.0), 2)"
+        },
+        {
+          "name": "ebitda_usd",
+          "sql_type": "DOUBLE",
+          "comment": "EBITDA in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(50000.0 + ({qty_noise} * 2950000.0), 2)"
+        },
+        {
+          "name": "revenue_per_employee_usd",
+          "sql_type": "DOUBLE",
+          "comment": "Revenue per employee in USD",
+          "is_dimension": false,
+          "generation_expr": "ROUND(15000.0 + ({qty_noise} * 35000.0), 2)"
+        },
+        {
+          "name": "cost_efficiency_ratio",
+          "sql_type": "DOUBLE",
+          "comment": "Cost efficiency ratio (lower is better)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.65 + ({qty_noise} * 0.30), 3)"
+        },
+        {
+          "name": "backlog_book_to_bill",
+          "sql_type": "DOUBLE",
+          "comment": "Book-to-bill ratio (orders / revenue)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.7 + ({qty_noise} * 1.0), 2)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "cost_center_id": "CC-101",
+          "cost_center_name": "Narrowbody Production",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-102",
+          "cost_center_name": "Widebody Production",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-103",
+          "cost_center_name": "Wing Assembly",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-104",
+          "cost_center_name": "Fuselage Assembly",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-201",
+          "cost_center_name": "Fighter Programs",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-202",
+          "cost_center_name": "Rotorcraft Division",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-203",
+          "cost_center_name": "Unmanned Systems",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-204",
+          "cost_center_name": "Defense Sustainment",
+          "business_segment": "Defense"
+        },
+        {
+          "cost_center_id": "CC-301",
+          "cost_center_name": "Satellite Systems",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-302",
+          "cost_center_name": "Launch Services",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-303",
+          "cost_center_name": "Space Exploration R&D",
+          "business_segment": "Space"
+        },
+        {
+          "cost_center_id": "CC-401",
+          "cost_center_name": "Business Jet Production",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-402",
+          "cost_center_name": "Cabin Interiors",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-403",
+          "cost_center_name": "Completions Center",
+          "business_segment": "Business Jets"
+        },
+        {
+          "cost_center_id": "CC-501",
+          "cost_center_name": "Engine MRO Services",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-502",
+          "cost_center_name": "Component Repair",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-503",
+          "cost_center_name": "Fleet Management",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-504",
+          "cost_center_name": "Training & Simulation",
+          "business_segment": "Services"
+        },
+        {
+          "cost_center_id": "CC-105",
+          "cost_center_name": "Composites Center",
+          "business_segment": "Commercial Aviation"
+        },
+        {
+          "cost_center_id": "CC-205",
+          "cost_center_name": "Missile Systems",
+          "business_segment": "Defense"
+        }
+      ],
+      "category_distribution": {
+        "Commercial Aviation": 0.035,
+        "Defense": 0.03,
+        "Space": 0.025,
+        "Business Jets": 0.03,
+        "Services": 0.03
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "financial_txn_metrics",
+      "source_table": "financial_transactions",
+      "dimensions": [
+        {
+          "name": "txn_date",
+          "expr": "txn_date"
+        },
+        {
+          "name": "business_segment",
+          "expr": "business_segment"
+        },
+        {
+          "name": "gl_category",
+          "expr": "gl_category"
+        },
+        {
+          "name": "project_code",
+          "expr": "project_code"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_revenue",
+          "expr": "SUM(CASE WHEN gl_category = 'Revenue' THEN amount_usd ELSE 0 END)",
+          "comment": "Total revenue in USD"
+        },
+        {
+          "name": "total_cogs",
+          "expr": "SUM(CASE WHEN gl_category = 'COGS' THEN ABS(amount_usd) ELSE 0 END)",
+          "comment": "Total cost of goods sold USD"
+        },
+        {
+          "name": "total_opex",
+          "expr": "SUM(CASE WHEN gl_category IN ('Labor', 'Overhead', 'SGA') THEN ABS(amount_usd) ELSE 0 END)",
+          "comment": "Total operating expenses USD"
+        },
+        {
+          "name": "total_rd_spend",
+          "expr": "SUM(CASE WHEN gl_category = 'R&D' THEN ABS(amount_usd) ELSE 0 END)",
+          "comment": "Total R&D spending USD"
+        },
+        {
+          "name": "txn_count",
+          "expr": "COUNT(DISTINCT txn_id)",
+          "comment": "Total financial transactions"
+        },
+        {
+          "name": "unique_cost_center_count",
+          "expr": "COUNT(DISTINCT cost_center_id)",
+          "comment": "Number of distinct cost centers"
+        },
+        {
+          "name": "max_amount",
+          "expr": "MAX(amount_usd)",
+          "comment": "Maximum amount usd"
+        }
+      ]
+    },
+    {
+      "view_name": "budget_metrics",
+      "source_table": "budget_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "business_segment",
+          "expr": "business_segment"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_budgeted_revenue",
+          "expr": "SUM(budgeted_revenue_usd)",
+          "comment": "Total budgeted revenue USD"
+        },
+        {
+          "name": "total_actual_revenue",
+          "expr": "SUM(actual_revenue_usd)",
+          "comment": "Total actual revenue USD"
+        },
+        {
+          "name": "total_budgeted_cost",
+          "expr": "SUM(budgeted_cost_usd)",
+          "comment": "Total budgeted cost USD"
+        },
+        {
+          "name": "total_actual_cost",
+          "expr": "SUM(actual_cost_usd)",
+          "comment": "Total actual cost USD"
+        },
+        {
+          "name": "total_headcount",
+          "expr": "SUM(headcount)",
+          "comment": "Total headcount"
+        },
+        {
+          "name": "total_revenue_variance_percent",
+          "expr": "SUM(revenue_variance_pct)",
+          "comment": "Total revenue variance pct"
+        },
+        {
+          "name": "unique_cost_center_count",
+          "expr": "COUNT(DISTINCT cost_center_id)",
+          "comment": "Number of distinct cost centers"
+        },
+        {
+          "name": "max_budgeted_revenue",
+          "expr": "MAX(budgeted_revenue_usd)",
+          "comment": "Maximum budgeted revenue usd"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_txn_metrics view (source: financial_transactions) has dimensions: txn_date, business_segment, gl_category, project_code. Measures: total_revenue, total_cogs, total_opex, total_rd_spend, txn_count. The budget_metrics view (source: budget_snapshots) has dimensions: snapshot_date, business_segment. Measures: total_budgeted_revenue, total_actual_revenue, total_budgeted_cost, total_actual_cost, total_headcount. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id, cost_center_name).",
+  "sample_questions": [
+    "What is the monthly trend in total revenue count?",
+    "How has total cogs count changed over time?",
+    "What is the monthly trend in total opex count?",
+    "How has total rd spend count changed over time?",
+    "What is the monthly trend in unique cost centers?",
+    "How has highest budgeted revenue changed over time?",
+    "What is the monthly trend in total budgeted revenue usd?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total opex count?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_opex) AS total_opex",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "How has total rd spend count changed over time?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_rd_spend) AS total_rd_spend",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total budgeted revenue usd?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_budgeted_revenue) AS total_budgeted_revenue",
+        "FROM {fqn}.budget_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has total revenue variance pct changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(total_revenue_variance_percent) AS total_revenue_variance_percent",
+        "FROM {fqn}.budget_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total transaction amount in usd (revenue positive, expenses negative) over time?",
+      "sql_lines": [
+        "SELECT txn_date, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY txn_date ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the trend of total budgeted revenue in usd over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(budgeted_revenue_usd) AS total_budgeted_revenue_usd",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average gross margin percentage changed over time?",
+      "sql_lines": [
+        "SELECT report_month, AVG(gross_margin_pct) AS avg_gross_margin_pct",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "financial_transactions.gl_category = 'Revenue'",
+        "display_name": "revenue transactions",
+        "synonyms": [
+          "sales",
+          "top line"
+        ],
+        "instruction": "Filter for revenue GL entries."
+      },
+      {
+        "sql": "financial_kpi_monthly.gross_margin_pct < 20",
+        "display_name": "low margin cost centers",
+        "synonyms": [
+          "margin risk",
+          "unprofitable"
+        ],
+        "instruction": "Filter for cost centers with below-target gross margins."
+      },
+      {
+        "sql": "budget_snapshots.revenue_variance_pct < -10",
+        "display_name": "unfavorable budget variance",
+        "synonyms": [
+          "budget miss",
+          "underperformance"
+        ],
+        "instruction": "Filter for cost centers significantly behind budget."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "txn_month",
+        "sql": "DATE_TRUNC('month', financial_transactions.txn_date)",
+        "display_name": "transaction month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "gross_profit",
+        "sql": "budget_snapshots.actual_revenue_usd - budget_snapshots.actual_cost_usd",
+        "display_name": "gross profit USD",
+        "synonyms": [
+          "profit",
+          "margin dollars"
+        ]
+      },
+      {
+        "alias": "revenue_per_head",
+        "sql": "budget_snapshots.actual_revenue_usd / NULLIF(budget_snapshots.headcount, 0)",
+        "display_name": "revenue per headcount",
+        "synonyms": [
+          "productivity",
+          "rev per FTE"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_revenue",
+        "sql": "SUM(CASE WHEN financial_transactions.gl_category = 'Revenue' THEN financial_transactions.amount_usd ELSE 0 END)",
+        "display_name": "total revenue",
+        "synonyms": [
+          "top line",
+          "sales"
+        ]
+      },
+      {
+        "alias": "total_cogs",
+        "sql": "SUM(CASE WHEN financial_transactions.gl_category = 'COGS' THEN ABS(financial_transactions.amount_usd) ELSE 0 END)",
+        "display_name": "total COGS",
+        "synonyms": [
+          "cost of goods sold",
+          "production cost"
+        ]
+      },
+      {
+        "alias": "avg_gross_margin",
+        "sql": "AVG(financial_kpi_monthly.gross_margin_pct)",
+        "display_name": "average gross margin",
+        "synonyms": [
+          "margin",
+          "gross margin"
+        ]
+      },
+      {
+        "alias": "total_ebitda",
+        "sql": "SUM(financial_kpi_monthly.ebitda_usd)",
+        "display_name": "total EBITDA",
+        "synonyms": [
+          "earnings",
+          "operating profit"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in total revenue count?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_revenue) AS total_revenue",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "How has total cogs count changed over time?",
+      "sql_lines": [
+        "SELECT txn_date, MEASURE(total_cogs) AS total_cogs",
+        "FROM {fqn}.financial_txn_metrics",
+        "GROUP BY ALL",
+        "ORDER BY txn_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique cost centers?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(unique_cost_center_count) AS unique_cost_center_count",
+        "FROM {fqn}.budget_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has highest budgeted revenue changed over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, MEASURE(max_budgeted_revenue) AS max_budgeted_revenue",
+        "FROM {fqn}.budget_metrics",
+        "GROUP BY ALL",
+        "ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "What are the top cost center identifier by total transaction amount in usd (revenue positive, expenses negative)?",
+      "sql_lines": [
+        "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY cost_center_id ORDER BY total_amount_usd DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average revenue variance as percentage (positive = favorable) by business segment?",
+      "sql_lines": [
+        "SELECT business_segment, AVG(revenue_variance_pct) AS avg_revenue_variance_pct",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY business_segment ORDER BY avg_revenue_variance_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per first day of report month?",
+      "sql_lines": [
+        "SELECT report_month, COUNT(*) AS record_count",
+        "FROM {fqn}.financial_kpi_monthly",
+        "GROUP BY report_month ORDER BY report_month"
+      ]
+    }
+  ]
+}

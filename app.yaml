@@ -1,0 +1,11 @@
+command:
+  - "python"
+  - "app.py"
+
+# Optional environment variables (set via Databricks Apps config or workspace env):
+#
+# GENIE_FACTORY_CATALOG       - Unity Catalog catalog for metadata tables (deployment log,
+#                                managers, settings). Defaults to the workspace's current catalog.
+# GENIE_FACTORY_SCHEMA        - Schema within the catalog. Defaults to "genie_factory".
+# GENIE_FACTORY_ADMIN_EMAIL   - Contact email shown in the app footer.
+#                                If unset, footer shows "Contact your workspace admin".

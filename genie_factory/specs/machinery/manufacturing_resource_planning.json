@@ -1,0 +1,982 @@
+{
+  "company_name": "PlanWorks Manufacturing",
+  "industry": "Machinery",
+  "use_case": "Manufacturing resource planning and capacity optimization",
+  "space_title": "PlanWorks Manufacturing - Resource Planning 🏭",
+  "space_description": "MRP analytics for PlanWorks. Ask about work order status, capacity utilization, schedule adherence, and planning KPIs across 20 work centers.",
+  "schema_basename": "mach_mrp",
+  "tables": [
+    {
+      "table_name": "work_orders",
+      "description": "Work order records with routing, quantities, and completion status.",
+      "columns": [
+        {
+          "name": "wo_id",
+          "sql_type": "STRING",
+          "comment": "Unique work order identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WO-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "wo_date",
+          "sql_type": "DATE",
+          "comment": "Work order creation date",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "work_center_id",
+          "sql_type": "STRING",
+          "comment": "Work center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "work_center_type",
+          "sql_type": "STRING",
+          "comment": "Work center type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "wo_status",
+          "sql_type": "STRING",
+          "comment": "Status: Released, In Progress, Complete, On Hold",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Released' WHEN {status_noise} < 0.40 THEN 'In Progress' WHEN {status_noise} < 0.90 THEN 'Complete' ELSE 'On Hold' END"
+        },
+        {
+          "name": "planned_qty",
+          "sql_type": "INT",
+          "comment": "Planned production quantity",
+          "is_dimension": false,
+          "generation_expr": "CAST(10 + FLOOR({qty_noise} * 490) AS INT)"
+        },
+        {
+          "name": "completed_qty",
+          "sql_type": "INT",
+          "comment": "Completed quantity",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({qty_noise} * 500) AS INT)"
+        },
+        {
+          "name": "planned_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Planned labor/machine hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 38.0), 1)"
+        },
+        {
+          "name": "actual_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Actual hours consumed",
+          "is_dimension": false,
+          "generation_expr": "ROUND(2.0 + ({qty_noise} * 46.0), 1)"
+        },
+        {
+          "name": "priority",
+          "sql_type": "STRING",
+          "comment": "Priority: Low, Medium, High, Rush",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Rush' END"
+        }
+      ],
+      "seasonal_patterns": {
+        "CNC Machining": {
+          "9,10,11": 0.06,
+          "3,4": 0.05
+        },
+        "Lathe Operations": {
+          "6,7": 0.055
+        },
+        "Welding": {
+          "1,2": 0.04,
+          "10,11": 0.055
+        },
+        "Assembly": {
+          "8,9,10": 0.065
+        },
+        "Painting": {
+          "4,5": 0.05
+        },
+        "Testing": {
+          "11,12": 0.055
+        }
+      },
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "work_center_id": "WC-CNC-01",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-CNC-02",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-CNC-03",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-CNC-04",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-LTH-05",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-LTH-06",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-LTH-07",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-LTH-08",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-WLD-09",
+          "work_center_type": "Welding",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-WLD-10",
+          "work_center_type": "Welding",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-WLD-11",
+          "work_center_type": "Welding",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-WLD-12",
+          "work_center_type": "Welding",
+          "department": "Dept-D"
+        },
+        {
+          "work_center_id": "WC-ASM-13",
+          "work_center_type": "Assembly",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-ASM-14",
+          "work_center_type": "Assembly",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-ASM-15",
+          "work_center_type": "Assembly",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-ASM-16",
+          "work_center_type": "Assembly",
+          "department": "Dept-D"
+        },
+        {
+          "work_center_id": "WC-PNT-17",
+          "work_center_type": "Painting",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-PNT-18",
+          "work_center_type": "Painting",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-TST-19",
+          "work_center_type": "Testing",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-TST-20",
+          "work_center_type": "Testing",
+          "department": "Dept-D"
+        }
+      ],
+      "category_distribution": {
+        "CNC Machining": 0.035,
+        "Lathe Operations": 0.03,
+        "Welding": 0.03,
+        "Assembly": 0.032,
+        "Painting": 0.025,
+        "Testing": 0.025
+      }
+    },
+    {
+      "table_name": "capacity_snapshots",
+      "description": "Weekly capacity utilization snapshots by work center.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('CS-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Snapshot date",
+          "is_dimension": false,
+          "generation_expr": "dt"
+        },
+        {
+          "name": "work_center_id",
+          "sql_type": "STRING",
+          "comment": "Work center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "work_center_type",
+          "sql_type": "STRING",
+          "comment": "Work center type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "available_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Available capacity in hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 80.0), 1)"
+        },
+        {
+          "name": "loaded_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours loaded with work orders",
+          "is_dimension": false,
+          "generation_expr": "ROUND(20.0 + ({qty_noise} * 100.0), 1)"
+        },
+        {
+          "name": "utilization_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Capacity utilization percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 2)"
+        },
+        {
+          "name": "queue_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Hours of work in queue",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 40.0, 1)"
+        },
+        {
+          "name": "overtime_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Overtime hours worked",
+          "is_dimension": false,
+          "generation_expr": "ROUND({qty_noise} * 16.0, 1)"
+        },
+        {
+          "name": "headcount",
+          "sql_type": "INT",
+          "comment": "Operators assigned",
+          "is_dimension": false,
+          "generation_expr": "CAST(2 + FLOOR({qty_noise} * 10) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {
+        "CNC Machining": {
+          "9,10,11": 0.06,
+          "3,4": 0.05
+        },
+        "Lathe Operations": {
+          "6,7": 0.055
+        },
+        "Welding": {
+          "1,2": 0.04,
+          "10,11": 0.055
+        },
+        "Assembly": {
+          "8,9,10": 0.065
+        },
+        "Painting": {
+          "4,5": 0.05
+        },
+        "Testing": {
+          "11,12": 0.055
+        }
+      },
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "work_center_id": "WC-CNC-01",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-CNC-02",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-CNC-03",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-CNC-04",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-LTH-05",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-LTH-06",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-LTH-07",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-LTH-08",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-WLD-09",
+          "work_center_type": "Welding",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-WLD-10",
+          "work_center_type": "Welding",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-WLD-11",
+          "work_center_type": "Welding",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-WLD-12",
+          "work_center_type": "Welding",
+          "department": "Dept-D"
+        },
+        {
+          "work_center_id": "WC-ASM-13",
+          "work_center_type": "Assembly",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-ASM-14",
+          "work_center_type": "Assembly",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-ASM-15",
+          "work_center_type": "Assembly",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-ASM-16",
+          "work_center_type": "Assembly",
+          "department": "Dept-D"
+        },
+        {
+          "work_center_id": "WC-PNT-17",
+          "work_center_type": "Painting",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-PNT-18",
+          "work_center_type": "Painting",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-TST-19",
+          "work_center_type": "Testing",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-TST-20",
+          "work_center_type": "Testing",
+          "department": "Dept-D"
+        }
+      ],
+      "category_distribution": {
+        "CNC Machining": 0.035,
+        "Lathe Operations": 0.03,
+        "Welding": 0.03,
+        "Assembly": 0.032,
+        "Painting": 0.025,
+        "Testing": 0.025
+      }
+    },
+    {
+      "table_name": "planning_kpi_monthly",
+      "description": "Monthly planning KPIs including schedule adherence, throughput, and efficiency.",
+      "columns": [
+        {
+          "name": "kpi_id",
+          "sql_type": "STRING",
+          "comment": "Unique KPI record ID",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('PK-', LPAD(CAST({id_seq} AS STRING), 5, '0'))"
+        },
+        {
+          "name": "kpi_month",
+          "sql_type": "DATE",
+          "comment": "Month of KPI record",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', dt)"
+        },
+        {
+          "name": "work_center_id",
+          "sql_type": "STRING",
+          "comment": "Work center identifier",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "work_center_type",
+          "sql_type": "STRING",
+          "comment": "Work center type",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "schedule_adherence_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Schedule adherence percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(65.0 + ({qty_noise} * 33.0), 2)"
+        },
+        {
+          "name": "throughput_units",
+          "sql_type": "INT",
+          "comment": "Total units throughput",
+          "is_dimension": false,
+          "generation_expr": "CAST(500 + FLOOR({qty_noise} * 9500) AS INT)"
+        },
+        {
+          "name": "efficiency_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Labor/machine efficiency percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(70.0 + ({qty_noise} * 28.0), 2)"
+        },
+        {
+          "name": "on_time_completion_pct",
+          "sql_type": "DOUBLE",
+          "comment": "On-time work order completion rate",
+          "is_dimension": false,
+          "generation_expr": "ROUND(60.0 + ({qty_noise} * 38.0), 2)"
+        },
+        {
+          "name": "scrap_rate_pct",
+          "sql_type": "DOUBLE",
+          "comment": "Scrap rate percentage",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 6.5), 2)"
+        },
+        {
+          "name": "changeover_hours",
+          "sql_type": "DOUBLE",
+          "comment": "Total changeover hours",
+          "is_dimension": false,
+          "generation_expr": "ROUND(4.0 + ({qty_noise} * 36.0), 1)"
+        }
+      ],
+      "seasonal_patterns": {
+        "CNC Machining": {
+          "9,10,11": 0.06,
+          "3,4": 0.05
+        },
+        "Lathe Operations": {
+          "6,7": 0.055
+        },
+        "Welding": {
+          "1,2": 0.04,
+          "10,11": 0.055
+        },
+        "Assembly": {
+          "8,9,10": 0.065
+        },
+        "Painting": {
+          "4,5": 0.05
+        },
+        "Testing": {
+          "11,12": 0.055
+        }
+      },
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "work_center_id": "WC-CNC-01",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-CNC-02",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-CNC-03",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-CNC-04",
+          "work_center_type": "CNC Machining",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-LTH-05",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-LTH-06",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-LTH-07",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-LTH-08",
+          "work_center_type": "Lathe Operations",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-WLD-09",
+          "work_center_type": "Welding",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-WLD-10",
+          "work_center_type": "Welding",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-WLD-11",
+          "work_center_type": "Welding",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-WLD-12",
+          "work_center_type": "Welding",
+          "department": "Dept-D"
+        },
+        {
+          "work_center_id": "WC-ASM-13",
+          "work_center_type": "Assembly",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-ASM-14",
+          "work_center_type": "Assembly",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-ASM-15",
+          "work_center_type": "Assembly",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-ASM-16",
+          "work_center_type": "Assembly",
+          "department": "Dept-D"
+        },
+        {
+          "work_center_id": "WC-PNT-17",
+          "work_center_type": "Painting",
+          "department": "Dept-A"
+        },
+        {
+          "work_center_id": "WC-PNT-18",
+          "work_center_type": "Painting",
+          "department": "Dept-B"
+        },
+        {
+          "work_center_id": "WC-TST-19",
+          "work_center_type": "Testing",
+          "department": "Dept-C"
+        },
+        {
+          "work_center_id": "WC-TST-20",
+          "work_center_type": "Testing",
+          "department": "Dept-D"
+        }
+      ],
+      "category_distribution": {
+        "CNC Machining": 0.035,
+        "Lathe Operations": 0.03,
+        "Welding": 0.03,
+        "Assembly": 0.032,
+        "Painting": 0.025,
+        "Testing": 0.025
+      }
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "work_orders_metrics",
+      "source_table": "work_orders",
+      "dimensions": [
+        {
+          "name": "wo_date",
+          "expr": "wo_date"
+        },
+        {
+          "name": "work_center_type",
+          "expr": "work_center_type"
+        },
+        {
+          "name": "wo_status",
+          "expr": "wo_status"
+        },
+        {
+          "name": "priority",
+          "expr": "priority"
+        }
+      ],
+      "measures": [
+        {
+          "name": "total_work_orders",
+          "expr": "COUNT(DISTINCT wo_id)",
+          "comment": "Total work orders"
+        },
+        {
+          "name": "total_planned_hours",
+          "expr": "SUM(planned_hours)",
+          "comment": "Total planned hours"
+        },
+        {
+          "name": "total_actual_hours",
+          "expr": "SUM(actual_hours)",
+          "comment": "Total actual hours consumed"
+        },
+        {
+          "name": "total_completed_qty",
+          "expr": "SUM(completed_qty)",
+          "comment": "Total completed quantity"
+        },
+        {
+          "name": "unique_work_center_count",
+          "expr": "COUNT(DISTINCT work_center_id)",
+          "comment": "Number of distinct work centers"
+        },
+        {
+          "name": "max_planned_qty",
+          "expr": "MAX(planned_qty)",
+          "comment": "Maximum planned qty"
+        },
+        {
+          "name": "total_planned_qty",
+          "expr": "SUM(planned_qty)",
+          "comment": "Total planned qty"
+        }
+      ]
+    },
+    {
+      "view_name": "planning_kpi_metrics",
+      "source_table": "planning_kpi_monthly",
+      "dimensions": [
+        {
+          "name": "kpi_month",
+          "expr": "kpi_month"
+        },
+        {
+          "name": "work_center_type",
+          "expr": "work_center_type"
+        }
+      ],
+      "measures": [
+        {
+          "name": "avg_schedule_adherence",
+          "expr": "AVG(schedule_adherence_pct)",
+          "comment": "Average schedule adherence"
+        },
+        {
+          "name": "total_throughput",
+          "expr": "SUM(throughput_units)",
+          "comment": "Total throughput units"
+        },
+        {
+          "name": "avg_efficiency",
+          "expr": "AVG(efficiency_pct)",
+          "comment": "Average efficiency percentage"
+        },
+        {
+          "name": "avg_on_time_completion",
+          "expr": "AVG(on_time_completion_pct)",
+          "comment": "Average on-time completion rate"
+        },
+        {
+          "name": "total_scrap_rate_percent",
+          "expr": "SUM(scrap_rate_pct)",
+          "comment": "Total scrap rate pct"
+        },
+        {
+          "name": "total_changeover_hours",
+          "expr": "SUM(changeover_hours)",
+          "comment": "Total changeover hours"
+        },
+        {
+          "name": "unique_work_center_count",
+          "expr": "COUNT(DISTINCT work_center_id)",
+          "comment": "Number of distinct work centers"
+        },
+        {
+          "name": "max_schedule_adherence_percent",
+          "expr": "MAX(schedule_adherence_pct)",
+          "comment": "Maximum schedule adherence pct"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The work_orders_metrics view (source: work_orders) has dimensions: wo_date, work_center_type, wo_status, priority. Measures: total_work_orders, total_planned_hours, total_actual_hours, total_completed_qty. The planning_kpi_metrics view (source: planning_kpi_monthly) has dimensions: kpi_month, work_center_type. Measures: avg_schedule_adherence, total_throughput, avg_efficiency, avg_on_time_completion. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. work_center_id).",
+  "sample_questions": [
+    "What is the monthly trend in unique total work orderss?",
+    "How has unique work centers changed over time?",
+    "What is the monthly trend in highest planned qty?",
+    "How has total planned hours changed over time?",
+    "What is the monthly trend in unique work centers?",
+    "How has highest schedule adherence percent changed over time?",
+    "What is the monthly trend in total throughput units?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in highest planned qty?",
+      "sql_lines": [
+        "SELECT wo_date, MEASURE(max_planned_qty) AS max_planned_qty",
+        "FROM {fqn}.work_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY wo_date"
+      ]
+    },
+    {
+      "question": "How has total planned hours changed over time?",
+      "sql_lines": [
+        "SELECT wo_date, MEASURE(total_planned_hours) AS total_planned_hours",
+        "FROM {fqn}.work_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY wo_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in total throughput units?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_throughput) AS total_throughput",
+        "FROM {fqn}.planning_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has total changeover hours changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(total_changeover_hours) AS total_changeover_hours",
+        "FROM {fqn}.planning_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How does total planned production quantity break down by work center identifier for 'Released' records?",
+      "sql_lines": [
+        "SELECT work_center_id, COUNT(*) AS record_count, SUM(planned_qty) AS total_planned_qty",
+        "FROM {fqn}.work_orders",
+        "WHERE wo_status = 'Released' GROUP BY work_center_id ORDER BY total_planned_qty DESC"
+      ]
+    },
+    {
+      "question": "What is the trend of total available capacity in hours over time?",
+      "sql_lines": [
+        "SELECT snapshot_date, SUM(available_hours) AS total_available_hours",
+        "FROM {fqn}.capacity_snapshots",
+        "GROUP BY snapshot_date ORDER BY snapshot_date"
+      ]
+    },
+    {
+      "question": "How has the average schedule adherence percentage changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, AVG(schedule_adherence_pct) AS avg_schedule_adherence_pct",
+        "FROM {fqn}.planning_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "sql": "work_orders.wo_status = 'On Hold'",
+        "display_name": "on hold work orders",
+        "synonyms": [
+          "blocked",
+          "held"
+        ],
+        "instruction": "Use when analyzing blocked or delayed work orders."
+      },
+      {
+        "sql": "work_orders.priority = 'Rush'",
+        "display_name": "rush orders",
+        "synonyms": [
+          "urgent",
+          "expedited"
+        ],
+        "instruction": "Use when filtering for highest-priority rush work orders."
+      },
+      {
+        "sql": "capacity_snapshots.utilization_pct > 90",
+        "display_name": "overloaded work centers",
+        "synonyms": [
+          "bottleneck",
+          "at capacity"
+        ],
+        "instruction": "Use when identifying capacity bottlenecks."
+      }
+    ],
+    "expressions": [
+      {
+        "alias": "wo_month",
+        "sql": "DATE_TRUNC('month', work_orders.wo_date)",
+        "display_name": "work order month",
+        "synonyms": [
+          "monthly"
+        ]
+      },
+      {
+        "alias": "hours_variance",
+        "sql": "work_orders.actual_hours - work_orders.planned_hours",
+        "display_name": "hours variance",
+        "synonyms": [
+          "schedule variance",
+          "plan deviation"
+        ]
+      },
+      {
+        "alias": "completion_rate",
+        "sql": "100.0 * work_orders.completed_qty / NULLIF(work_orders.planned_qty, 0)",
+        "display_name": "completion rate",
+        "synonyms": [
+          "yield",
+          "plan attainment"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "alias": "total_work_orders",
+        "sql": "COUNT(DISTINCT work_orders.wo_id)",
+        "display_name": "total work orders",
+        "synonyms": [
+          "WO count"
+        ]
+      },
+      {
+        "alias": "total_throughput",
+        "sql": "SUM(planning_kpi_monthly.throughput_units)",
+        "display_name": "total throughput",
+        "synonyms": [
+          "output",
+          "production volume"
+        ]
+      },
+      {
+        "alias": "avg_schedule_adherence",
+        "sql": "AVG(planning_kpi_monthly.schedule_adherence_pct)",
+        "display_name": "average schedule adherence",
+        "synonyms": [
+          "on-schedule rate"
+        ]
+      },
+      {
+        "alias": "avg_utilization",
+        "sql": "AVG(capacity_snapshots.utilization_pct)",
+        "display_name": "average utilization",
+        "synonyms": [
+          "capacity usage"
+        ]
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in unique total work orderss?",
+      "sql_lines": [
+        "SELECT wo_date, MEASURE(total_work_orders) AS total_work_orders",
+        "FROM {fqn}.work_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY wo_date"
+      ]
+    },
+    {
+      "question": "How has unique work centers changed over time?",
+      "sql_lines": [
+        "SELECT wo_date, MEASURE(unique_work_center_count) AS unique_work_center_count",
+        "FROM {fqn}.work_orders_metrics",
+        "GROUP BY ALL",
+        "ORDER BY wo_date"
+      ]
+    },
+    {
+      "question": "What is the monthly trend in unique work centers?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(unique_work_center_count) AS unique_work_center_count",
+        "FROM {fqn}.planning_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "How has highest schedule adherence percent changed over time?",
+      "sql_lines": [
+        "SELECT kpi_month, MEASURE(max_schedule_adherence_percent) AS max_schedule_adherence_percent",
+        "FROM {fqn}.planning_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY kpi_month"
+      ]
+    },
+    {
+      "question": "What are the top work center identifier by total planned production quantity?",
+      "sql_lines": [
+        "SELECT work_center_id, SUM(planned_qty) AS total_planned_qty",
+        "FROM {fqn}.work_orders",
+        "GROUP BY work_center_id ORDER BY total_planned_qty DESC LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average capacity utilization percentage by work center type?",
+      "sql_lines": [
+        "SELECT work_center_type, AVG(utilization_pct) AS avg_utilization_pct",
+        "FROM {fqn}.capacity_snapshots",
+        "GROUP BY work_center_type ORDER BY avg_utilization_pct DESC"
+      ]
+    },
+    {
+      "question": "How many records are there per month of kpi record?",
+      "sql_lines": [
+        "SELECT kpi_month, COUNT(*) AS record_count",
+        "FROM {fqn}.planning_kpi_monthly",
+        "GROUP BY kpi_month ORDER BY kpi_month"
+      ]
+    }
+  ]
+}
