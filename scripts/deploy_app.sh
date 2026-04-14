@@ -11,7 +11,7 @@ set -euo pipefail
 PROFILE="${DATABRICKS_PROFILE:-mfg-genie-factory}"
 APP_NAME="genie-factory"
 SCHEMA="genie_factory"
-BRANCH="manufacturing"
+BRANCH="main"
 WORKSPACE_PATH=""
 
 # Parse args
