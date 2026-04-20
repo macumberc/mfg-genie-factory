@@ -169,8 +169,12 @@ def build_genie_payload(
             }
         )
 
-    join_specs = _derive_join_specs(domain_spec, fqn, next_id)
-
+    # join_specs stays empty: the JoinSpec protobuf schema is not publicly
+    # documented and schema probes revealed an undocumented required field
+    # beyond {id, left.identifier, right.identifier}. Join hints are conveyed
+    # via genie_instructions text instead. _derive_join_specs is retained as
+    # dead code so we can flip this back once the real schema is known.
+    _ = _derive_join_specs  # keep referenced to avoid "unused" linter warning
     serialized_space = {
         "version": 2,
         "config": {"sample_questions": sample_questions},
@@ -178,7 +182,7 @@ def build_genie_payload(
         "instructions": {
             "text_instructions": text_instructions,
             "example_question_sqls": example_question_sqls,
-            "join_specs": join_specs,
+            "join_specs": [],
             "sql_snippets": {
                 "filters": filters,
                 "expressions": expressions,
