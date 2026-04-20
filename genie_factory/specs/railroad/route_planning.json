@@ -980,10 +980,10 @@
     {
       "question": "What is the monthly trend in total gtm millions?",
       "sql_lines": [
-        "SELECT movement_date, MEASURE(total_gross_ton_miles) AS total_gross_ton_miles",
+        "SELECT DATE_TRUNC('month', movement_date) AS movement_date_month, MEASURE(total_gross_ton_miles) AS total_gross_ton_miles",
         "FROM {fqn}.route_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY movement_date"
+        "ORDER BY movement_date_month"
       ],
       "usage_guidance": "Monthly trend aggregate of gross ton miles (GTM) volume; matches phrases like 'GTM over time' or 'freight tonnage trend' using route_kpi_monthly total_gross_ton_miles."
     },
@@ -1157,10 +1157,10 @@
     {
       "question": "What is the monthly trend in unique corridors?",
       "sql_lines": [
-        "SELECT movement_date, MEASURE(corridor_count) AS corridor_count",
+        "SELECT DATE_TRUNC('month', movement_date) AS movement_date_month, MEASURE(corridor_count) AS corridor_count",
         "FROM {fqn}.route_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY movement_date"
+        "ORDER BY movement_date_month"
       ]
     },
     {
@@ -1175,10 +1175,10 @@
     {
       "question": "What is the monthly trend in high risk count?",
       "sql_lines": [
-        "SELECT plan_month, MEASURE(high_risk_count) AS high_risk_count",
+        "SELECT DATE_TRUNC('month', plan_month) AS plan_month_month, MEASURE(high_risk_count) AS high_risk_count",
         "FROM {fqn}.capacity_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY plan_month"
+        "ORDER BY plan_month_month"
       ]
     },
     {
@@ -1191,7 +1191,7 @@
       ]
     },
     {
-      "question": "What are the top rail corridor by total number of trains on corridor?",
+      "question": "What are the top 10 rail corridor by total number of trains on corridor?",
       "sql_lines": [
         "SELECT corridor_id, SUM(trains_count) AS total_trains_count",
         "FROM {fqn}.rail_corridors",

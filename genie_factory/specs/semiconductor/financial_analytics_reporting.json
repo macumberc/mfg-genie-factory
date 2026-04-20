@@ -983,10 +983,10 @@
     {
       "question": "What is the monthly trend in total opex usd count?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_opex_usd) AS total_opex_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS transaction_date_month, MEASURE(total_opex_usd) AS total_opex_usd",
         "FROM {fqn}.financial_transaction_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date_month"
       ],
       "usage_guidance": "Monthly trend of semiconductor operating expenditure; matches phrases like 'opex over time' or 'monthly opex spend' using financial_transaction_metrics."
     },
@@ -1003,10 +1003,10 @@
     {
       "question": "What is the monthly trend in highest budgeted amount?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_budgeted_amount) AS max_budgeted_amount",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_budgeted_amount) AS max_budgeted_amount",
         "FROM {fqn}.budget_variance_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of peak budgeted amounts; matches 'highest budget over time' or 'max planned spend trend' using budget_variance_metrics."
     },
@@ -1160,10 +1160,10 @@
     {
       "question": "What is the monthly trend in total revenue usd count?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_revenue_usd) AS total_revenue_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS transaction_date_month, MEASURE(total_revenue_usd) AS total_revenue_usd",
         "FROM {fqn}.financial_transaction_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date_month"
       ]
     },
     {
@@ -1178,10 +1178,10 @@
     {
       "question": "What is the monthly trend in critical overrun count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(critical_overrun_count) AS critical_overrun_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(critical_overrun_count) AS critical_overrun_count",
         "FROM {fqn}.budget_variance_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1194,7 +1194,7 @@
       ]
     },
     {
-      "question": "What are the top cost center by total transaction amount in usd (positive = credit/revenue, negative = debit/expense)?",
+      "question": "What are the top 10 cost center by total transaction amount in usd (positive = credit/revenue, negative = debit/expense)?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

@@ -962,10 +962,10 @@
     {
       "question": "What is the monthly trend in highest solar generation kwh?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(max_solar_generation_kwh) AS max_solar_generation_kwh",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(max_solar_generation_kwh) AS max_solar_generation_kwh",
         "FROM {fqn}.solar_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ],
       "usage_guidance": "Monthly trend of peak/highest solar generation KWh, spotting record-output months across all sites using max_solar_generation_kwh."
     },
@@ -982,10 +982,10 @@
     {
       "question": "What is the monthly trend in highest state of charge percent?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_state_of_charge_percent) AS max_state_of_charge_percent",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_state_of_charge_percent) AS max_state_of_charge_percent",
         "FROM {fqn}.battery_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of peak battery state-of-charge percent, identifying months where storage reached maximum charge levels across the fleet."
     },
@@ -1139,10 +1139,10 @@
     {
       "question": "What is the monthly trend in online site count?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(online_site_count) AS online_site_count",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(online_site_count) AS online_site_count",
         "FROM {fqn}.solar_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ]
     },
     {
@@ -1157,10 +1157,10 @@
     {
       "question": "What is the monthly trend in fault count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(fault_count) AS fault_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(fault_count) AS fault_count",
         "FROM {fqn}.battery_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1173,7 +1173,7 @@
       ]
     },
     {
-      "question": "What are the top solar+storage site by total solar irradiance in kwh/m2?",
+      "question": "What are the top 10 solar+storage site by total solar irradiance in kwh/m2?",
       "sql_lines": [
         "SELECT site_id, SUM(irradiance_kwh_m2) AS total_irradiance_kwh_m2",
         "FROM {fqn}.solar_installations",

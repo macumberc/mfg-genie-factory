@@ -865,10 +865,10 @@
     {
       "question": "What is the monthly trend in total methane tons?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_methane_tons) AS total_methane_tons",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_methane_tons) AS total_methane_tons",
         "FROM {fqn}.emission_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about methane emissions volume, such as 'show methane tons by month' using total_methane_tons from emission_readings_metrics."
     },
@@ -885,10 +885,10 @@
     {
       "question": "What is the monthly trend in total detected leaks?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_leaks) AS total_leaks",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_leaks) AS total_leaks",
         "FROM {fqn}.carbon_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about leak detection counts, such as 'are leaks increasing over time' using total_leaks from carbon_snapshots_metrics."
     },
@@ -1042,10 +1042,10 @@
     {
       "question": "What is the monthly trend in highest co2e metric tons?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_co2e_metric_tons) AS max_co2e_metric_tons",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_co2e_metric_tons) AS max_co2e_metric_tons",
         "FROM {fqn}.emission_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1060,10 +1060,10 @@
     {
       "question": "What is the monthly trend in highest monthly co2e tons?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_monthly_co2e_tons) AS max_monthly_co2e_tons",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_monthly_co2e_tons) AS max_monthly_co2e_tons",
         "FROM {fqn}.carbon_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1076,7 +1076,7 @@
       ]
     },
     {
-      "question": "What are the top emission source id by total co2 equivalent metric tons?",
+      "question": "What are the top 10 emission source id by total co2 equivalent metric tons?",
       "sql_lines": [
         "SELECT source_id, SUM(co2e_metric_tons) AS total_co2e_metric_tons",
         "FROM {fqn}.emission_readings",

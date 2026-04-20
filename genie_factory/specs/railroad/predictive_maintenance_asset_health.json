@@ -997,10 +997,10 @@
     {
       "question": "What is the monthly trend in highest vibration g?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_vibration_g) AS max_vibration_g",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_vibration_g) AS max_vibration_g",
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of peak vibration levels across rolling stock; matches phrases like 'highest vibration over time' using max_vibration_g from health_monthly."
     },
@@ -1017,10 +1017,10 @@
     {
       "question": "What is the monthly trend in unique assets?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(unique_asset_count) AS unique_asset_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(unique_asset_count) AS unique_asset_count",
         "FROM {fqn}.maintenance_cost_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of distinct assets appearing in maintenance events; matches 'unique assets over time' or 'how many assets had events each month' from maintenance_cost_monthly."
     },
@@ -1174,10 +1174,10 @@
     {
       "question": "What is the monthly trend in low health count?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(low_health_count) AS low_health_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(low_health_count) AS low_health_count",
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1192,10 +1192,10 @@
     {
       "question": "What is the monthly trend in emergency count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(emergency_count) AS emergency_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(emergency_count) AS emergency_count",
         "FROM {fqn}.maintenance_cost_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1208,7 +1208,7 @@
       ]
     },
     {
-      "question": "What are the top rolling stock asset id by total bearing temperature celsius?",
+      "question": "What are the top 10 rolling stock asset id by total bearing temperature celsius?",
       "sql_lines": [
         "SELECT asset_id, SUM(bearing_temp_celsius) AS total_bearing_temp_celsius",
         "FROM {fqn}.rolling_stock",

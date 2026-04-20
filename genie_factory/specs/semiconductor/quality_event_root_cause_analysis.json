@@ -1055,10 +1055,10 @@
     {
       "question": "What is the monthly trend in open event count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(open_event_count) AS open_event_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(open_event_count) AS open_event_count",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Route for time-series trend of open (unresolved) quality events count using the quality_events_metrics metric view."
     },
@@ -1075,10 +1075,10 @@
     {
       "question": "What is the monthly trend in unique products?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(unique_product_count) AS unique_product_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(unique_product_count) AS unique_product_count",
         "FROM {fqn}.lot_yield_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Route for monthly trend of unique product count tracked in manufacturing lots using lot_yield_metrics snapshot dates."
     },
@@ -1232,10 +1232,10 @@
     {
       "question": "What is the monthly trend in critical event count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(critical_event_count) AS critical_event_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(critical_event_count) AS critical_event_count",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1250,10 +1250,10 @@
     {
       "question": "What is the monthly trend in grade c lot count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(grade_c_lot_count) AS grade_c_lot_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(grade_c_lot_count) AS grade_c_lot_count",
         "FROM {fqn}.lot_yield_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1266,7 +1266,7 @@
       ]
     },
     {
-      "question": "What are the top product by total number of wafers affected by the event?",
+      "question": "What are the top 10 product by total number of wafers affected by the event?",
       "sql_lines": [
         "SELECT product_id, SUM(affected_wafer_count) AS total_affected_wafer_count",
         "FROM {fqn}.quality_events",

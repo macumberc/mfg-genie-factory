@@ -882,10 +882,10 @@
     {
       "question": "What is the monthly trend in highest fine amount?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(max_fine_amount) AS max_fine_amount",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(max_fine_amount) AS max_fine_amount",
         "FROM {fqn}.compliance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of peak fine amounts; matches phrases like 'highest penalty over time' or 'worst single fine by month' using max_fine_amount from compliance_events_metrics."
     },
@@ -902,10 +902,10 @@
     {
       "question": "What is the monthly trend in total overdue actions?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_overdue_actions) AS total_overdue_actions",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_overdue_actions) AS total_overdue_actions",
         "FROM {fqn}.audit_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Time-series trend of overdue audit actions; matches phrases like 'overdue actions over time' or 'are we falling behind on audit remediation' using total_overdue_actions from audit_snapshots_metrics."
     },
@@ -1059,10 +1059,10 @@
     {
       "question": "What is the monthly trend in violation count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(violation_count) AS violation_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(violation_count) AS violation_count",
         "FROM {fqn}.compliance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1077,10 +1077,10 @@
     {
       "question": "What is the monthly trend in highest compliance score?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_compliance_score) AS max_compliance_score",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_compliance_score) AS max_compliance_score",
         "FROM {fqn}.audit_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1093,7 +1093,7 @@
       ]
     },
     {
-      "question": "What are the top regulation id by total fine/penalty amount usd?",
+      "question": "What are the top 10 regulation id by total fine/penalty amount usd?",
       "sql_lines": [
         "SELECT reg_id, SUM(fine_amount_usd) AS total_fine_amount_usd",
         "FROM {fqn}.compliance_events",

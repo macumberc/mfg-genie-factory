@@ -109,12 +109,12 @@ def build_genie_payload(
 
     data_sources.sort(key=lambda x: x["identifier"])
 
-    # Text instructions
-    deployer_prefix = f"Deployed by {username} using Genie Factory.\n\n"
+    # Text instructions — just the directive content, no "Deployed by ..." prefix
+    # (the prefix was a human meta-note that diluted Genie's directive signal).
     text_instructions = [
         {
             "id": next_id(),
-            "content": [f"{deployer_prefix}{domain_spec.genie_instructions}"],
+            "content": [domain_spec.genie_instructions],
         }
     ]
 

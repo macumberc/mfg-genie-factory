@@ -1112,10 +1112,10 @@
     {
       "question": "What is the monthly trend in unique vehicles?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
         "FROM {fqn}.feature_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of unique vehicles engaging with in-vehicle features, answering questions like 'how is vehicle adoption growing over time' using event_date and unique_vehicle_count."
     },
@@ -1289,10 +1289,10 @@
     {
       "question": "What is the monthly trend in failed activation count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(failed_activation_count) AS failed_activation_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(failed_activation_count) AS failed_activation_count",
         "FROM {fqn}.feature_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1307,10 +1307,10 @@
     {
       "question": "What is the monthly trend in high churn risk count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(high_churn_risk_count) AS high_churn_risk_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(high_churn_risk_count) AS high_churn_risk_count",
         "FROM {fqn}.user_engagement_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1323,7 +1323,7 @@
       ]
     },
     {
-      "question": "What are the top unique vehicle by total number of user interactions during the session?",
+      "question": "What are the top 10 unique vehicle by total number of user interactions during the session?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(interaction_count) AS total_interaction_count",
         "FROM {fqn}.feature_events",

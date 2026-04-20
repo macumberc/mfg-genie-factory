@@ -1014,10 +1014,10 @@
     {
       "question": "What is the monthly trend in open event count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(open_event_count) AS open_event_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(open_event_count) AS open_event_count",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about unresolved or open quality events using the quality_events_metrics metric view with open_event_count measure."
     },
@@ -1034,10 +1034,10 @@
     {
       "question": "What is the monthly trend in total critical events per month?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(total_critical_events) AS total_critical_events",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(total_critical_events) AS total_critical_events",
         "FROM {fqn}.quality_kpi_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ],
       "usage_guidance": "Route monthly trend questions about critical-severity event counts using the quality_kpi_monthly_metrics metric view with total_critical_events measure."
     },
@@ -1191,10 +1191,10 @@
     {
       "question": "What is the monthly trend in critical event count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(critical_event_count) AS critical_event_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(critical_event_count) AS critical_event_count",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1209,10 +1209,10 @@
     {
       "question": "What is the monthly trend in highest total events?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(max_total_events) AS max_total_events",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(max_total_events) AS max_total_events",
         "FROM {fqn}.quality_kpi_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ]
     },
     {
@@ -1225,7 +1225,7 @@
       ]
     },
     {
-      "question": "What are the top chemical product by total estimated cost of the quality event in usd?",
+      "question": "What are the top 10 chemical product by total estimated cost of the quality event in usd?",
       "sql_lines": [
         "SELECT product_id, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",

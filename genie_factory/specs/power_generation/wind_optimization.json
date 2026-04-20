@@ -961,10 +961,10 @@
     {
       "question": "What is the monthly trend in highest generation mwh?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(max_generation_mwh) AS max_generation_mwh",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(max_generation_mwh) AS max_generation_mwh",
         "FROM {fqn}.turbine_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ],
       "usage_guidance": "Monthly trend of peak/highest single-turbine generation MWh, using the turbine_kpi_monthly metric view max_generation_mwh measure."
     },
@@ -981,10 +981,10 @@
     {
       "question": "What is the monthly trend in total forecasted generation mwh?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_forecasted_mwh) AS total_forecasted_mwh",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_forecasted_mwh) AS total_forecasted_mwh",
         "FROM {fqn}.wind_forecast_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of total forecasted wind generation MWh across farms, sourced from wind_forecast_monthly total_forecasted_mwh measure."
     },
@@ -1138,10 +1138,10 @@
     {
       "question": "What is the monthly trend in generating count?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(generating_count) AS generating_count",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(generating_count) AS generating_count",
         "FROM {fqn}.turbine_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ]
     },
     {
@@ -1156,10 +1156,10 @@
     {
       "question": "What is the monthly trend in unique turbines?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(unique_turbine_count) AS unique_turbine_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(unique_turbine_count) AS unique_turbine_count",
         "FROM {fqn}.wind_forecast_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1172,7 +1172,7 @@
       ]
     },
     {
-      "question": "What are the top wind turbine by total average wind speed in meters per second?",
+      "question": "What are the top 10 wind turbine by total average wind speed in meters per second?",
       "sql_lines": [
         "SELECT turbine_id, SUM(avg_wind_speed_ms) AS total_avg_wind_speed_ms",
         "FROM {fqn}.wind_turbines",

@@ -899,10 +899,10 @@
     {
       "question": "What is the monthly trend in total feed quality api?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_feed_quality_api) AS total_feed_quality_api",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_feed_quality_api) AS total_feed_quality_api",
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of feed quality API gravity across all readings, matching phrases like 'feed quality over time' or 'API gravity trend'."
     },
@@ -919,10 +919,10 @@
     {
       "question": "What is the monthly trend in total downtime hours?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.production_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of total downtime hours from production_snapshots_metrics, matching 'downtime trend' or 'how has downtime changed over time'."
     },
@@ -1076,10 +1076,10 @@
     {
       "question": "What is the monthly trend in unique total readingss?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_readings) AS total_readings",
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1094,10 +1094,10 @@
     {
       "question": "What is the monthly trend in highest avg throughput bpd?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_avg_throughput_bpd) AS max_avg_throughput_bpd",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_avg_throughput_bpd) AS max_avg_throughput_bpd",
         "FROM {fqn}.production_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1110,7 +1110,7 @@
       ]
     },
     {
-      "question": "What are the top process unit id by total throughput in barrels per day?",
+      "question": "What are the top 10 process unit id by total throughput in barrels per day?",
       "sql_lines": [
         "SELECT unit_id, SUM(throughput_bpd) AS total_throughput_bpd",
         "FROM {fqn}.throughput_readings",

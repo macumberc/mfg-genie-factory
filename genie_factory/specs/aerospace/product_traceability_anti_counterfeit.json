@@ -968,10 +968,10 @@
     {
       "question": "What is the monthly trend in scrapped count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(scrapped_count) AS scrapped_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(scrapped_count) AS scrapped_count",
         "FROM {fqn}.lifecycle_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of scrapped component counts; user asks about disposal or scrap rates over time using lifecycle_metrics scrapped_count."
     },
@@ -988,10 +988,10 @@
     {
       "question": "What is the monthly trend in unique snapshots?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(snapshot_count) AS snapshot_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(snapshot_count) AS snapshot_count",
         "FROM {fqn}.certification_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of certification snapshot counts; user asks how frequently airworthiness snapshots are captured over time in certification_metrics."
     },
@@ -1145,10 +1145,10 @@
     {
       "question": "What is the monthly trend in custody gap events count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(custody_gap_events) AS custody_gap_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(custody_gap_events) AS custody_gap_events",
         "FROM {fqn}.lifecycle_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1163,10 +1163,10 @@
     {
       "question": "What is the monthly trend in serviceable count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(serviceable_count) AS serviceable_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(serviceable_count) AS serviceable_count",
         "FROM {fqn}.certification_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {

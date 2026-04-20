@@ -927,10 +927,10 @@
     {
       "question": "What is the monthly trend in total inlet temp f?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_inlet_temp_f) AS total_inlet_temp_f",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_inlet_temp_f) AS total_inlet_temp_f",
         "FROM {fqn}.energy_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of total inlet temperature across all heat exchangers; matches questions about inlet temp patterns or feed temperature over time."
     },
@@ -947,10 +947,10 @@
     {
       "question": "What is the monthly trend in average heat transfer effectiveness?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_effectiveness_pct) AS avg_effectiveness_pct",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(avg_effectiveness_pct) AS avg_effectiveness_pct",
         "FROM {fqn}.thermal_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of average heat transfer effectiveness percentage; matches questions about exchanger effectiveness or thermal performance over time."
     },
@@ -1104,10 +1104,10 @@
     {
       "question": "What is the monthly trend in highest energy consumption mmbtu?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_energy_consumption_mmbtu) AS max_energy_consumption_mmbtu",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_energy_consumption_mmbtu) AS max_energy_consumption_mmbtu",
         "FROM {fqn}.energy_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1122,10 +1122,10 @@
     {
       "question": "What is the monthly trend in highest clean ua btu hr f?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_clean_ua_btu_hr_f) AS max_clean_ua_btu_hr_f",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_clean_ua_btu_hr_f) AS max_clean_ua_btu_hr_f",
         "FROM {fqn}.thermal_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1138,7 +1138,7 @@
       ]
     },
     {
-      "question": "What are the top heat exchanger by total energy consumption in mmbtu?",
+      "question": "What are the top 10 heat exchanger by total energy consumption in mmbtu?",
       "sql_lines": [
         "SELECT exchanger_id, SUM(energy_consumption_mmbtu) AS total_energy_consumption_mmbtu",
         "FROM {fqn}.energy_readings",

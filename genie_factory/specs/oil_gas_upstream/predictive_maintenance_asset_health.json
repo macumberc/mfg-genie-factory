@@ -1001,10 +1001,10 @@
     {
       "question": "What is the monthly trend in highest sensor value?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_sensor_value) AS max_sensor_value",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_sensor_value) AS max_sensor_value",
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of peak sensor readings; matches questions about highest or maximum sensor values spiking over time using the sensor_readings_metrics metric view."
     },
@@ -1021,10 +1021,10 @@
     {
       "question": "What is the monthly trend in total downtime hours?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly downtime hours trend; matches questions about equipment outage duration patterns over time using the maintenance_events_metrics metric view."
     },
@@ -1178,10 +1178,10 @@
     {
       "question": "What is the monthly trend in alarm trip count?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(alarm_trip_count) AS alarm_trip_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(alarm_trip_count) AS alarm_trip_count",
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1196,10 +1196,10 @@
     {
       "question": "What is the monthly trend in unique total eventss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_events) AS total_events",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1212,7 +1212,7 @@
       ]
     },
     {
-      "question": "What are the top equipment id by total sensor value?",
+      "question": "What are the top 10 equipment id by total sensor value?",
       "sql_lines": [
         "SELECT equipment_id, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",

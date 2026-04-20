@@ -1111,10 +1111,10 @@
     {
       "question": "What is the monthly trend in highest downtime hours?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(max_downtime_hours) AS max_downtime_hours",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(max_downtime_hours) AS max_downtime_hours",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of worst single downtime event; matches questions about how maximum equipment outage duration has changed over time."
     },
@@ -1286,10 +1286,10 @@
     {
       "question": "What is the monthly trend in predicted event count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(predicted_event_count) AS predicted_event_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(predicted_event_count) AS predicted_event_count",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1302,7 +1302,7 @@
       ]
     },
     {
-      "question": "What are the top equipment asset by total raw sensor measurement value?",
+      "question": "What are the top 10 equipment asset by total raw sensor measurement value?",
       "sql_lines": [
         "SELECT asset_id, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",

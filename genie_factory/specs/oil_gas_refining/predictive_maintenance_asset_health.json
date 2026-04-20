@@ -1056,10 +1056,10 @@
     {
       "question": "What is the monthly trend in total equipment downtime?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Route monthly equipment downtime trend questions — total downtime hours over time across the refinery — to this time-series aggregate on event_date."
     },
@@ -1231,10 +1231,10 @@
     {
       "question": "What is the monthly trend in unique total eventss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_events) AS total_events",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1247,7 +1247,7 @@
       ]
     },
     {
-      "question": "What are the top refinery equipment by total raw sensor measurement value?",
+      "question": "What are the top 10 refinery equipment by total raw sensor measurement value?",
       "sql_lines": [
         "SELECT equipment_id, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",

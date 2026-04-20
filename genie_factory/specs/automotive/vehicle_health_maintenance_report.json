@@ -1205,10 +1205,10 @@
     {
       "question": "What is the monthly trend in unique vehicles?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
         "FROM {fqn}.vehicle_telemetry_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of unique connected vehicles tracked across the DriveWell fleet, using reading_date and unique_vehicle_count from telemetry metrics."
     },
@@ -1382,10 +1382,10 @@
     {
       "question": "What is the monthly trend in critical alert count?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(critical_alert_count) AS critical_alert_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(critical_alert_count) AS critical_alert_count",
         "FROM {fqn}.vehicle_telemetry_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1400,10 +1400,10 @@
     {
       "question": "What is the monthly trend in warranty covered count?",
       "sql_lines": [
-        "SELECT service_date, MEASURE(warranty_covered_count) AS warranty_covered_count",
+        "SELECT DATE_TRUNC('month', service_date) AS service_date_month, MEASURE(warranty_covered_count) AS warranty_covered_count",
         "FROM {fqn}.maintenance_records_metrics",
         "GROUP BY ALL",
-        "ORDER BY service_date"
+        "ORDER BY service_date_month"
       ]
     },
     {
@@ -1416,7 +1416,7 @@
       ]
     },
     {
-      "question": "What are the top unique vehicle by total engine coolant temperature in celsius?",
+      "question": "What are the top 10 unique vehicle by total engine coolant temperature in celsius?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
         "FROM {fqn}.vehicle_telemetry",

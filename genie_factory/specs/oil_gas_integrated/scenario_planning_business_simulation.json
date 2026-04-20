@@ -861,10 +861,10 @@
     {
       "question": "What is the monthly trend in total capital expenditure allocation in millions?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_capex_mm) AS total_capex_mm",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(total_capex_mm) AS total_capex_mm",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Monthly trend of capital expenditure allocation in millions; matches phrases like 'capex over time' or 'spending trend' using total_capex_mm from simulation_runs_metrics."
     },
@@ -881,20 +881,20 @@
     {
       "question": "What is the monthly trend in average projected ebitda in millions usd?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_projected_ebitda_mm) AS avg_projected_ebitda_mm",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(avg_projected_ebitda_mm) AS avg_projected_ebitda_mm",
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of average projected EBITDA in USD millions; matches phrases like 'earnings trend' or 'EBITDA outlook over time' using avg_projected_ebitda_mm from outcome_snapshots_metrics."
     },
     {
       "question": "What is the monthly trend in average co2 intensity kg per boe?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_co2_intensity) AS avg_co2_intensity",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(avg_co2_intensity) AS avg_co2_intensity",
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of average CO2 intensity per barrel of oil equivalent; matches phrases like 'emissions intensity trend' or 'carbon footprint over time' using avg_co2_intensity."
     },
@@ -1038,10 +1038,10 @@
     {
       "question": "What is the monthly trend in unique total runss?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_runs) AS total_runs",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(total_runs) AS total_runs",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1056,10 +1056,10 @@
     {
       "question": "What is the monthly trend in highest projected revenue mm?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_projected_revenue_mm) AS max_projected_revenue_mm",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_projected_revenue_mm) AS max_projected_revenue_mm",
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1072,7 +1072,7 @@
       ]
     },
     {
-      "question": "What are the top scenario by total assumed wti oil price usd per barrel?",
+      "question": "What are the top 10 scenario by total assumed wti oil price usd per barrel?",
       "sql_lines": [
         "SELECT scenario_id, SUM(oil_price_assumption) AS total_oil_price_assumption",
         "FROM {fqn}.simulation_runs",

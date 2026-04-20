@@ -1030,10 +1030,10 @@
     {
       "question": "What is the monthly trend in unique engines?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(unique_engine_count) AS unique_engine_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(unique_engine_count) AS unique_engine_count",
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Trend over time of fleet size; triggered by phrases like 'how many engines monitored monthly' using unique_engine_count from sensor_readings_metrics."
     },
@@ -1207,10 +1207,10 @@
     {
       "question": "What is the monthly trend in critical alert count?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(critical_alert_count) AS critical_alert_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(critical_alert_count) AS critical_alert_count",
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1225,10 +1225,10 @@
     {
       "question": "What is the monthly trend in unscheduled removal count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(unscheduled_removal_count) AS unscheduled_removal_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(unscheduled_removal_count) AS unscheduled_removal_count",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1241,7 +1241,7 @@
       ]
     },
     {
-      "question": "What are the top engine serial by total exhaust gas temperature in celsius?",
+      "question": "What are the top 10 engine serial by total exhaust gas temperature in celsius?",
       "sql_lines": [
         "SELECT engine_id, SUM(egt_celsius) AS total_egt_celsius",
         "FROM {fqn}.sensor_readings",

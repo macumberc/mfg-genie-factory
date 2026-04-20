@@ -1005,10 +1005,10 @@
     {
       "question": "What is the monthly trend in unique total production eventss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_production_events) AS total_production_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_production_events) AS total_production_events",
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of total production event counts; matches phrases like 'production volume over time' or 'how many events per month' using event_date."
     },
@@ -1025,10 +1025,10 @@
     {
       "question": "What is the monthly trend in lots with complete genealogy?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(total_lots_full_genealogy) AS total_lots_full_genealogy",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(total_lots_full_genealogy) AS total_lots_full_genealogy",
         "FROM {fqn}.traceability_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ],
       "usage_guidance": "Monthly trend of lots achieving full genealogy documentation; matches 'genealogy completeness over time' or 'fully traced lots per month' using report_month."
     },
@@ -1182,10 +1182,10 @@
     {
       "question": "What is the monthly trend in passed quality checks count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(passed_quality_checks) AS passed_quality_checks",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(passed_quality_checks) AS passed_quality_checks",
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1200,10 +1200,10 @@
     {
       "question": "What is the monthly trend in highest lots produced?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(max_lots_produced) AS max_lots_produced",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(max_lots_produced) AS max_lots_produced",
         "FROM {fqn}.traceability_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ]
     },
     {
@@ -1216,7 +1216,7 @@
       ]
     },
     {
-      "question": "What are the top product by total input material quantity in kg?",
+      "question": "What are the top 10 product by total input material quantity in kg?",
       "sql_lines": [
         "SELECT product_id, SUM(input_quantity_kg) AS total_input_quantity_kg",
         "FROM {fqn}.production_events",

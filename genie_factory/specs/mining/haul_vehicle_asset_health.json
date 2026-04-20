@@ -994,10 +994,10 @@
     {
       "question": "What is the monthly trend in unique readings?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(reading_count) AS reading_count",
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of sensor reading volume; matches phrases like 'how many readings per month' or 'reading count over time' using health_monthly.reading_count."
     },
@@ -1014,10 +1014,10 @@
     {
       "question": "What is the monthly trend in unique vehicles?",
       "sql_lines": [
-        "SELECT event_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "SELECT DATE_TRUNC('month', event_month) AS event_month_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
         "FROM {fqn}.failure_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_month"
+        "ORDER BY event_month_month"
       ],
       "usage_guidance": "Monthly trend of distinct haul vehicles experiencing failures; matches 'how many unique trucks had failures per month' using failure_monthly.unique_vehicle_count."
     },
@@ -1171,10 +1171,10 @@
     {
       "question": "What is the monthly trend in critical count?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(critical_count) AS critical_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(critical_count) AS critical_count",
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1189,10 +1189,10 @@
     {
       "question": "What is the monthly trend in high risk count?",
       "sql_lines": [
-        "SELECT event_month, MEASURE(high_risk_count) AS high_risk_count",
+        "SELECT DATE_TRUNC('month', event_month) AS event_month_month, MEASURE(high_risk_count) AS high_risk_count",
         "FROM {fqn}.failure_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_month"
+        "ORDER BY event_month_month"
       ]
     },
     {
@@ -1205,7 +1205,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle id by total loads completed?",
+      "question": "What are the top 10 vehicle id by total loads completed?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(loads_completed) AS total_loads_completed",
         "FROM {fqn}.haul_vehicles",

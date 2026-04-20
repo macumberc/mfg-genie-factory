@@ -1385,7 +1385,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle model by total number of vehicles affected by the recall?",
+      "question": "What are the top 10 vehicle model by total number of vehicles affected by the recall?",
       "sql_lines": [
         "SELECT vehicle_model_id, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.recall_events",

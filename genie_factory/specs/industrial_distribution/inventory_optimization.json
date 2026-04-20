@@ -1080,10 +1080,10 @@
     {
       "question": "What is the monthly trend in unique wps?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(unique_wp_count) AS unique_wp_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(unique_wp_count) AS unique_wp_count",
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of unique warehouse-product count; matches phrases like 'how many distinct WPs tracked each month' using unique_wp_count from inventory_kpi_monthly."
     },
@@ -1100,10 +1100,10 @@
     {
       "question": "What is the monthly trend in total stockout days?",
       "sql_lines": [
-        "SELECT perf_month, MEASURE(total_stockout_days) AS total_stockout_days",
+        "SELECT DATE_TRUNC('month', perf_month) AS perf_month_month, MEASURE(total_stockout_days) AS total_stockout_days",
         "FROM {fqn}.inventory_perf_monthly",
         "GROUP BY ALL",
-        "ORDER BY perf_month"
+        "ORDER BY perf_month_month"
       ],
       "usage_guidance": "Monthly trend of total stockout days across all warehouses; matches phrases like 'how often were we out of stock each month' using total_stockout_days from inventory_perf_monthly."
     },
@@ -1257,10 +1257,10 @@
     {
       "question": "What is the monthly trend in stockout count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(stockout_count) AS stockout_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(stockout_count) AS stockout_count",
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1275,10 +1275,10 @@
     {
       "question": "What is the monthly trend in unique items?",
       "sql_lines": [
-        "SELECT perf_month, MEASURE(item_count) AS item_count",
+        "SELECT DATE_TRUNC('month', perf_month) AS perf_month_month, MEASURE(item_count) AS item_count",
         "FROM {fqn}.inventory_perf_monthly",
         "GROUP BY ALL",
-        "ORDER BY perf_month"
+        "ORDER BY perf_month_month"
       ]
     },
     {
@@ -1291,7 +1291,7 @@
       ]
     },
     {
-      "question": "What are the top warehouse-product combo by total units moved (positive=receipt, negative=issue)?",
+      "question": "What are the top 10 warehouse-product combo by total units moved (positive=receipt, negative=issue)?",
       "sql_lines": [
         "SELECT wp_id, SUM(quantity_moved) AS total_quantity_moved",
         "FROM {fqn}.warehouse_products",

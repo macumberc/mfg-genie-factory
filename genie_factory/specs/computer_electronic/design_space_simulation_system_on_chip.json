@@ -886,10 +886,10 @@
     {
       "question": "What is the monthly trend in highest clock freq ghz?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(max_clock_freq_ghz) AS max_clock_freq_ghz",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(max_clock_freq_ghz) AS max_clock_freq_ghz",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Monthly trend of peak clock frequency (GHz) across simulation runs, matching phrases like 'highest clock speed over time' using max_clock_freq_ghz from simulation_runs_metrics."
     },
@@ -906,10 +906,10 @@
     {
       "question": "What is the monthly trend in total simulation compute hours?",
       "sql_lines": [
-        "SELECT opt_month, MEASURE(total_sim_hours) AS total_sim_hours",
+        "SELECT DATE_TRUNC('month', opt_month) AS opt_month_month, MEASURE(total_sim_hours) AS total_sim_hours",
         "FROM {fqn}.optimization_metrics",
         "GROUP BY ALL",
-        "ORDER BY opt_month"
+        "ORDER BY opt_month_month"
       ],
       "usage_guidance": "Monthly trend of total compute hours consumed by optimization jobs, matching phrases like 'simulation compute cost over time' using total_sim_hours from optimization_metrics."
     },
@@ -1063,10 +1063,10 @@
     {
       "question": "What is the monthly trend in converged count?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(converged_count) AS converged_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(converged_count) AS converged_count",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1081,10 +1081,10 @@
     {
       "question": "What is the monthly trend in highest convergence rate percent?",
       "sql_lines": [
-        "SELECT opt_month, MEASURE(max_convergence_rate_percent) AS max_convergence_rate_percent",
+        "SELECT DATE_TRUNC('month', opt_month) AS opt_month_month, MEASURE(max_convergence_rate_percent) AS max_convergence_rate_percent",
         "FROM {fqn}.optimization_metrics",
         "GROUP BY ALL",
-        "ORDER BY opt_month"
+        "ORDER BY opt_month_month"
       ]
     },
     {
@@ -1097,7 +1097,7 @@
       ]
     },
     {
-      "question": "What are the top soc design by total simulated clock frequency in ghz?",
+      "question": "What are the top 10 soc design by total simulated clock frequency in ghz?",
       "sql_lines": [
         "SELECT soc_design, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
         "FROM {fqn}.simulation_runs",

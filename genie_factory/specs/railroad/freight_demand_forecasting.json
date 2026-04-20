@@ -1088,10 +1088,10 @@
     {
       "question": "What is the monthly trend in unique lanes?",
       "sql_lines": [
-        "SELECT shipment_date, MEASURE(unique_lane_count) AS unique_lane_count",
+        "SELECT DATE_TRUNC('month', shipment_date) AS shipment_date_month, MEASURE(unique_lane_count) AS unique_lane_count",
         "FROM {fqn}.freight_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY shipment_date"
+        "ORDER BY shipment_date_month"
       ],
       "usage_guidance": "Monthly trend of distinct active freight lanes; matches phrases like 'lane count over time' or 'how many lanes per month' using unique_lane_count from freight_kpi_monthly."
     },
@@ -1108,10 +1108,10 @@
     {
       "question": "What is the monthly trend in highest forecasted carloads?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(max_forecasted_carloads) AS max_forecasted_carloads",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(max_forecasted_carloads) AS max_forecasted_carloads",
         "FROM {fqn}.forecast_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ],
       "usage_guidance": "Monthly trend of peak forecasted carload volume; matches 'highest forecasted carloads over time' or 'max forecast by month' using max_forecasted_carloads from forecast_kpi_monthly."
     },
@@ -1265,10 +1265,10 @@
     {
       "question": "What is the monthly trend in delayed count?",
       "sql_lines": [
-        "SELECT shipment_date, MEASURE(delayed_count) AS delayed_count",
+        "SELECT DATE_TRUNC('month', shipment_date) AS shipment_date_month, MEASURE(delayed_count) AS delayed_count",
         "FROM {fqn}.freight_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY shipment_date"
+        "ORDER BY shipment_date_month"
       ]
     },
     {
@@ -1283,10 +1283,10 @@
     {
       "question": "What is the monthly trend in unique forecasts?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(forecast_count) AS forecast_count",
         "FROM {fqn}.forecast_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ]
     },
     {
@@ -1299,7 +1299,7 @@
       ]
     },
     {
-      "question": "What are the top freight lane by total number of carloads?",
+      "question": "What are the top 10 freight lane by total number of carloads?",
       "sql_lines": [
         "SELECT lane_id, SUM(carloads) AS total_carloads",
         "FROM {fqn}.shipping_lanes",

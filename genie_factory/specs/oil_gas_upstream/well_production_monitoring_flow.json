@@ -968,10 +968,10 @@
     {
       "question": "What is the monthly trend in avg oil bpd?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about daily oil production rate (bpd) using the production_readings_metrics metric view."
     },
@@ -988,10 +988,10 @@
     {
       "question": "What is the monthly trend in total gor scf bbl?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_gor_scf_bbl) AS total_gor_scf_bbl",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_gor_scf_bbl) AS total_gor_scf_bbl",
         "FROM {fqn}.well_status_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about gas-oil ratio (GOR in scf/bbl) using the well_status_snapshots_metrics metric view."
     },
@@ -1145,10 +1145,10 @@
     {
       "question": "What is the monthly trend in highest oil bpd?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_oil_bpd) AS max_oil_bpd",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_oil_bpd) AS max_oil_bpd",
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1163,10 +1163,10 @@
     {
       "question": "What is the monthly trend in highest cumulative oil bbl?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_cumulative_oil_bbl) AS max_cumulative_oil_bbl",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_cumulative_oil_bbl) AS max_cumulative_oil_bbl",
         "FROM {fqn}.well_status_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1179,7 +1179,7 @@
       ]
     },
     {
-      "question": "What are the top well id by total oil bpd?",
+      "question": "What are the top 10 well id by total oil bpd?",
       "sql_lines": [
         "SELECT well_id, SUM(oil_bpd) AS total_oil_bpd",
         "FROM {fqn}.production_readings",

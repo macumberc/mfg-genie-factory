@@ -955,10 +955,10 @@
     {
       "question": "What is the monthly trend in total transaction amount in usd?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_amount_usd) AS total_amount_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS transaction_date_month, MEASURE(total_amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about actual transaction spend or total amount USD using the financial_transactions_metrics metric view."
     },
@@ -975,10 +975,10 @@
     {
       "question": "What is the monthly trend in total planned revenue in usd?",
       "sql_lines": [
-        "SELECT snapshot_month, MEASURE(total_planned_revenue) AS total_planned_revenue",
+        "SELECT DATE_TRUNC('month', snapshot_month) AS snapshot_month_month, MEASURE(total_planned_revenue) AS total_planned_revenue",
         "FROM {fqn}.budget_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_month"
+        "ORDER BY snapshot_month_month"
       ],
       "usage_guidance": "Route monthly trend questions about planned revenue using the budget_snapshots_metrics metric view with snapshot_month as the time axis."
     },
@@ -1132,10 +1132,10 @@
     {
       "question": "What is the monthly trend in unique total transactionss?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "SELECT DATE_TRUNC('month', transaction_date) AS transaction_date_month, MEASURE(total_transactions) AS total_transactions",
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date_month"
       ]
     },
     {
@@ -1150,10 +1150,10 @@
     {
       "question": "What is the monthly trend in highest planned revenue?",
       "sql_lines": [
-        "SELECT snapshot_month, MEASURE(max_planned_revenue) AS max_planned_revenue",
+        "SELECT DATE_TRUNC('month', snapshot_month) AS snapshot_month_month, MEASURE(max_planned_revenue) AS max_planned_revenue",
         "FROM {fqn}.budget_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_month"
+        "ORDER BY snapshot_month_month"
       ]
     },
     {
@@ -1166,7 +1166,7 @@
       ]
     },
     {
-      "question": "What are the top cost center by total transaction amount in usd?",
+      "question": "What are the top 10 cost center by total transaction amount in usd?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

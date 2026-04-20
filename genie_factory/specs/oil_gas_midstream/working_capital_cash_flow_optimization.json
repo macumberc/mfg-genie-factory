@@ -987,10 +987,10 @@
     {
       "question": "What is the monthly trend in unique total transactionss?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
+        "SELECT DATE_TRUNC('month', transaction_date) AS transaction_date_month, MEASURE(total_transactions) AS total_transactions",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date_month"
       ],
       "usage_guidance": "Monthly trend of transaction count volume; matches phrases like 'how many cash transactions per month' using total_transactions measure from cash_transactions_metrics."
     },
@@ -1007,10 +1007,10 @@
     {
       "question": "What is the monthly trend in total ap usd?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_payables_usd) AS total_payables_usd",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_payables_usd) AS total_payables_usd",
         "FROM {fqn}.working_capital_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of total accounts payable balance; matches 'how are payables changing over time' using total_payables_usd from working_capital_snapshots_metrics."
     },
@@ -1164,10 +1164,10 @@
     {
       "question": "What is the monthly trend in total inflows usd count?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_inflows_usd) AS total_inflows_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS transaction_date_month, MEASURE(total_inflows_usd) AS total_inflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date_month"
       ]
     },
     {
@@ -1182,10 +1182,10 @@
     {
       "question": "What is the monthly trend in highest accounts receivable?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
         "FROM {fqn}.working_capital_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1198,7 +1198,7 @@
       ]
     },
     {
-      "question": "What are the top business unit id by total cash flow amount usd (positive=inflow)?",
+      "question": "What are the top 10 business unit id by total cash flow amount usd (positive=inflow)?",
       "sql_lines": [
         "SELECT business_unit_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",

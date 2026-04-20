@@ -1005,10 +1005,10 @@
     {
       "question": "What is the monthly trend in unique units?",
       "sql_lines": [
-        "SELECT outage_date, MEASURE(unique_unit_count) AS unique_unit_count",
+        "SELECT DATE_TRUNC('month', outage_date) AS outage_date_month, MEASURE(unique_unit_count) AS unique_unit_count",
         "FROM {fqn}.outage_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY outage_date"
+        "ORDER BY outage_date_month"
       ],
       "usage_guidance": "Monthly trend of distinct affected generators; matches phrases like 'how many unique units had outages each month' using outage_kpi_monthly.unique_unit_count."
     },
@@ -1025,10 +1025,10 @@
     {
       "question": "What is the monthly trend in highest runtime hours?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(max_runtime_hours) AS max_runtime_hours",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(max_runtime_hours) AS max_runtime_hours",
         "FROM {fqn}.unit_availability_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ],
       "usage_guidance": "Monthly trend of peak generator runtime hours; matches 'highest runtime hours over time' using unit_availability_monthly.max_runtime_hours."
     },
@@ -1182,10 +1182,10 @@
     {
       "question": "What is the monthly trend in forced outage count?",
       "sql_lines": [
-        "SELECT outage_date, MEASURE(forced_outage_count) AS forced_outage_count",
+        "SELECT DATE_TRUNC('month', outage_date) AS outage_date_month, MEASURE(forced_outage_count) AS forced_outage_count",
         "FROM {fqn}.outage_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY outage_date"
+        "ORDER BY outage_date_month"
       ]
     },
     {
@@ -1200,10 +1200,10 @@
     {
       "question": "What is the monthly trend in running unit count?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(running_unit_count) AS running_unit_count",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(running_unit_count) AS running_unit_count",
         "FROM {fqn}.unit_availability_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ]
     },
     {
@@ -1216,7 +1216,7 @@
       ]
     },
     {
-      "question": "What are the top generator unit by total hours of operation in the day?",
+      "question": "What are the top 10 generator unit by total hours of operation in the day?",
       "sql_lines": [
         "SELECT unit_id, SUM(runtime_hours) AS total_runtime_hours",
         "FROM {fqn}.generating_units",

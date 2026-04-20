@@ -858,10 +858,10 @@
     {
       "question": "What is the monthly trend in total p&l usd?",
       "sql_lines": [
-        "SELECT trade_date, MEASURE(total_pnl_usd) AS total_pnl_usd",
+        "SELECT DATE_TRUNC('month', trade_date) AS trade_date_month, MEASURE(total_pnl_usd) AS total_pnl_usd",
         "FROM {fqn}.trade_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY trade_date"
+        "ORDER BY trade_date_month"
       ],
       "usage_guidance": "Monthly P&L trend over time using trade_date; matches questions about profit/loss performance, earnings trajectory, or cumulative PnL across trading periods."
     },
@@ -878,10 +878,10 @@
     {
       "question": "What is the monthly trend in total var usd?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_var_usd) AS total_var_usd",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_var_usd) AS total_var_usd",
         "FROM {fqn}.position_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Daily or periodic Value-at-Risk trend using snapshot_date; matches questions about risk exposure changes, VaR movement, or portfolio risk over time."
     },
@@ -1035,10 +1035,10 @@
     {
       "question": "What is the monthly trend in unique total tradess?",
       "sql_lines": [
-        "SELECT trade_date, MEASURE(total_trades) AS total_trades",
+        "SELECT DATE_TRUNC('month', trade_date) AS trade_date_month, MEASURE(total_trades) AS total_trades",
         "FROM {fqn}.trade_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY trade_date"
+        "ORDER BY trade_date_month"
       ]
     },
     {
@@ -1053,10 +1053,10 @@
     {
       "question": "What is the monthly trend in highest net position bbl?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_net_position_bbl) AS max_net_position_bbl",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_net_position_bbl) AS max_net_position_bbl",
         "FROM {fqn}.position_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1069,7 +1069,7 @@
       ]
     },
     {
-      "question": "What are the top contract id by total volume in bbl equivalent?",
+      "question": "What are the top 10 contract id by total volume in bbl equivalent?",
       "sql_lines": [
         "SELECT contract_id, SUM(volume_bbl) AS total_volume_bbl",
         "FROM {fqn}.trade_transactions",

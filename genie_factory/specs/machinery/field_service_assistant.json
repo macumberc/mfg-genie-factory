@@ -865,10 +865,10 @@
     {
       "question": "What is the monthly trend in highest resolution hours?",
       "sql_lines": [
-        "SELECT ticket_date, MEASURE(max_resolution_hours) AS max_resolution_hours",
+        "SELECT DATE_TRUNC('month', ticket_date) AS ticket_date_month, MEASURE(max_resolution_hours) AS max_resolution_hours",
         "FROM {fqn}.service_tickets_metrics",
         "GROUP BY ALL",
-        "ORDER BY ticket_date"
+        "ORDER BY ticket_date_month"
       ],
       "usage_guidance": "Trend over time for peak or worst-case resolution hours; user mentions 'highest', 'maximum', or 'longest' repair durations across ticket dates."
     },
@@ -885,10 +885,10 @@
     {
       "question": "What is the monthly trend in total repeat visit pct?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(total_repeat_visit_percent) AS total_repeat_visit_percent",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(total_repeat_visit_percent) AS total_repeat_visit_percent",
         "FROM {fqn}.service_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ],
       "usage_guidance": "Monthly trend for repeat visit percentage from KPI data; user mentions 'repeat visits', 'callback rate', or 'revisit trend' aggregated by kpi_month."
     },
@@ -1042,10 +1042,10 @@
     {
       "question": "What is the monthly trend in first time fix count?",
       "sql_lines": [
-        "SELECT ticket_date, MEASURE(first_time_fix_count) AS first_time_fix_count",
+        "SELECT DATE_TRUNC('month', ticket_date) AS ticket_date_month, MEASURE(first_time_fix_count) AS first_time_fix_count",
         "FROM {fqn}.service_tickets_metrics",
         "GROUP BY ALL",
-        "ORDER BY ticket_date"
+        "ORDER BY ticket_date_month"
       ]
     },
     {
@@ -1060,10 +1060,10 @@
     {
       "question": "What is the monthly trend in highest first time fix rate percent?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(max_first_time_fix_rate_percent) AS max_first_time_fix_rate_percent",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(max_first_time_fix_rate_percent) AS max_first_time_fix_rate_percent",
         "FROM {fqn}.service_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ]
     },
     {
@@ -1076,7 +1076,7 @@
       ]
     },
     {
-      "question": "What are the top equipment model at customer site by total time to resolution in hours?",
+      "question": "What are the top 10 equipment model at customer site by total time to resolution in hours?",
       "sql_lines": [
         "SELECT equipment_model, SUM(resolution_hours) AS total_resolution_hours",
         "FROM {fqn}.service_tickets",

@@ -913,10 +913,10 @@
     {
       "question": "What is the monthly trend in unique total eventss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_events) AS total_events",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of total quality event counts over time; matches phrases like 'event volume trend' or 'how many quality events per month'."
     },
@@ -933,10 +933,10 @@
     {
       "question": "What is the monthly trend in unique components?",
       "sql_lines": [
-        "SELECT inspection_date, MEASURE(unique_component_count) AS unique_component_count",
+        "SELECT DATE_TRUNC('month', inspection_date) AS inspection_date_month, MEASURE(unique_component_count) AS unique_component_count",
         "FROM {fqn}.inspection_metrics",
         "GROUP BY ALL",
-        "ORDER BY inspection_date"
+        "ORDER BY inspection_date_month"
       ],
       "usage_guidance": "Time-series trend of distinct components appearing in inspection records; matches 'unique components inspected over time' using inspection_metrics unique_component_count."
     },
@@ -1090,10 +1090,10 @@
     {
       "question": "What is the monthly trend in critical event count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(critical_event_count) AS critical_event_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(critical_event_count) AS critical_event_count",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1108,10 +1108,10 @@
     {
       "question": "What is the monthly trend in fail count?",
       "sql_lines": [
-        "SELECT inspection_date, MEASURE(fail_count) AS fail_count",
+        "SELECT DATE_TRUNC('month', inspection_date) AS inspection_date_month, MEASURE(fail_count) AS fail_count",
         "FROM {fqn}.inspection_metrics",
         "GROUP BY ALL",
-        "ORDER BY inspection_date"
+        "ORDER BY inspection_date_month"
       ]
     },
     {
@@ -1124,7 +1124,7 @@
       ]
     },
     {
-      "question": "What are the top component part number by total cost of quality (rework, scrap, warranty) in usd?",
+      "question": "What are the top 10 component part number by total cost of quality (rework, scrap, warranty) in usd?",
       "sql_lines": [
         "SELECT component_id, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",

@@ -1026,10 +1026,10 @@
     {
       "question": "What is the monthly trend in unique total orders?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_order_count) AS total_order_count",
+        "SELECT DATE_TRUNC('month', order_date) AS order_date_month, MEASURE(total_order_count) AS total_order_count",
         "FROM {fqn}.chemical_orders_metrics",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY order_date_month"
       ],
       "usage_guidance": "Monthly trend of total order volume; matches phrases like 'order count over time' or 'how many orders per month' using order_date dimension."
     },
@@ -1203,10 +1203,10 @@
     {
       "question": "What is the monthly trend in fulfilled order count?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(fulfilled_order_count) AS fulfilled_order_count",
+        "SELECT DATE_TRUNC('month', order_date) AS order_date_month, MEASURE(fulfilled_order_count) AS fulfilled_order_count",
         "FROM {fqn}.chemical_orders_metrics",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY order_date_month"
       ]
     },
     {
@@ -1221,23 +1221,23 @@
     {
       "question": "What is the monthly trend in unique forecast records?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_record_count) AS forecast_record_count",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(forecast_record_count) AS forecast_record_count",
         "FROM {fqn}.demand_forecasts_metrics",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ]
     },
     {
       "question": "What is the monthly trend in highest forecasted quantity kg?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(max_forecasted_quantity_kg) AS max_forecasted_quantity_kg",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(max_forecasted_quantity_kg) AS max_forecasted_quantity_kg",
         "FROM {fqn}.demand_forecasts_metrics",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ]
     },
     {
-      "question": "What are the top chemical product by total order quantity in kilograms?",
+      "question": "What are the top 10 chemical product by total order quantity in kilograms?",
       "sql_lines": [
         "SELECT product_id, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.chemical_orders",

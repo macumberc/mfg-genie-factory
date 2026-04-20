@@ -995,10 +995,10 @@
     {
       "question": "What is the monthly trend in highest peak demand mw?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_peak_demand_mw) AS max_peak_demand_mw",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_peak_demand_mw) AS max_peak_demand_mw",
         "FROM {fqn}.demand_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about highest or maximum peak demand MW across all territories using the demand_readings_metrics metric view."
     },
@@ -1172,10 +1172,10 @@
     {
       "question": "What is the monthly trend in unique readings?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(reading_count) AS reading_count",
         "FROM {fqn}.demand_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1190,23 +1190,23 @@
     {
       "question": "What is the monthly trend in unique forecasts?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(forecast_count) AS forecast_count",
         "FROM {fqn}.demand_forecast_metrics",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ]
     },
     {
       "question": "What is the monthly trend in highest forecasted peak mw?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(max_forecasted_peak_mw) AS max_forecasted_peak_mw",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(max_forecasted_peak_mw) AS max_forecasted_peak_mw",
         "FROM {fqn}.demand_forecast_metrics",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ]
     },
     {
-      "question": "What are the top service territory by total daily peak demand in mw?",
+      "question": "What are the top 10 service territory by total daily peak demand in mw?",
       "sql_lines": [
         "SELECT territory_id, SUM(peak_demand_mw) AS total_peak_demand_mw",
         "FROM {fqn}.demand_readings",

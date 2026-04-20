@@ -897,10 +897,10 @@
     {
       "question": "What is the monthly trend in highest planned qty?",
       "sql_lines": [
-        "SELECT wo_date, MEASURE(max_planned_qty) AS max_planned_qty",
+        "SELECT DATE_TRUNC('month', wo_date) AS wo_date_month, MEASURE(max_planned_qty) AS max_planned_qty",
         "FROM {fqn}.work_orders_metrics",
         "GROUP BY ALL",
-        "ORDER BY wo_date"
+        "ORDER BY wo_date_month"
       ],
       "usage_guidance": "Monthly trend of peak planned production quantity; matches phrases like 'highest planned qty over time' using max_planned_qty from work_orders_metrics."
     },
@@ -917,10 +917,10 @@
     {
       "question": "What is the monthly trend in total throughput units?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(total_throughput) AS total_throughput",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(total_throughput) AS total_throughput",
         "FROM {fqn}.planning_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ],
       "usage_guidance": "Monthly trend of total throughput units produced; matches phrases like 'production output over time' using total_throughput from planning_kpi_metrics."
     },
@@ -1074,10 +1074,10 @@
     {
       "question": "What is the monthly trend in unique total work orderss?",
       "sql_lines": [
-        "SELECT wo_date, MEASURE(total_work_orders) AS total_work_orders",
+        "SELECT DATE_TRUNC('month', wo_date) AS wo_date_month, MEASURE(total_work_orders) AS total_work_orders",
         "FROM {fqn}.work_orders_metrics",
         "GROUP BY ALL",
-        "ORDER BY wo_date"
+        "ORDER BY wo_date_month"
       ]
     },
     {
@@ -1092,10 +1092,10 @@
     {
       "question": "What is the monthly trend in unique work centers?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(unique_work_center_count) AS unique_work_center_count",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(unique_work_center_count) AS unique_work_center_count",
         "FROM {fqn}.planning_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ]
     },
     {
@@ -1108,7 +1108,7 @@
       ]
     },
     {
-      "question": "What are the top work center by total planned production quantity?",
+      "question": "What are the top 10 work center by total planned production quantity?",
       "sql_lines": [
         "SELECT work_center_id, SUM(planned_qty) AS total_planned_qty",
         "FROM {fqn}.work_orders",

@@ -984,10 +984,10 @@
     {
       "question": "What is the monthly trend in highest neutron flux percent?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_neutron_flux_percent) AS max_neutron_flux_percent",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(max_neutron_flux_percent) AS max_neutron_flux_percent",
         "FROM {fqn}.safety_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of peak neutron flux percentage; matches questions about highest or maximum neutron flux levels over time using safety_kpi_monthly."
     },
@@ -1004,10 +1004,10 @@
     {
       "question": "What is the monthly trend in unique components?",
       "sql_lines": [
-        "SELECT inspection_date, MEASURE(unique_component_count) AS unique_component_count",
+        "SELECT DATE_TRUNC('month', inspection_date) AS inspection_date_month, MEASURE(unique_component_count) AS unique_component_count",
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY inspection_date"
+        "ORDER BY inspection_date_month"
       ],
       "usage_guidance": "Monthly trend of distinct inspected components; matches questions about inspection coverage or how many unique components were evaluated over time."
     },
@@ -1161,10 +1161,10 @@
     {
       "question": "What is the monthly trend in unique readings?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(reading_count) AS reading_count",
         "FROM {fqn}.safety_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1179,10 +1179,10 @@
     {
       "question": "What is the monthly trend in fail count?",
       "sql_lines": [
-        "SELECT inspection_date, MEASURE(fail_count) AS fail_count",
+        "SELECT DATE_TRUNC('month', inspection_date) AS inspection_date_month, MEASURE(fail_count) AS fail_count",
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY inspection_date"
+        "ORDER BY inspection_date_month"
       ]
     },
     {
@@ -1195,7 +1195,7 @@
       ]
     },
     {
-      "question": "What are the top reactor component by total component temperature in celsius?",
+      "question": "What are the top 10 reactor component by total component temperature in celsius?",
       "sql_lines": [
         "SELECT component_id, SUM(temperature_celsius) AS total_temperature_celsius",
         "FROM {fqn}.reactor_components",

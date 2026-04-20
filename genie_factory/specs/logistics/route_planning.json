@@ -1254,10 +1254,10 @@
     {
       "question": "What is the monthly trend in unique routes?",
       "sql_lines": [
-        "SELECT segment_date, MEASURE(unique_route_count) AS unique_route_count",
+        "SELECT DATE_TRUNC('month', segment_date) AS segment_date_month, MEASURE(unique_route_count) AS unique_route_count",
         "FROM {fqn}.route_segments_metrics",
         "GROUP BY ALL",
-        "ORDER BY segment_date"
+        "ORDER BY segment_date_month"
       ],
       "usage_guidance": "Monthly trend of unique routes over time; matches questions about route variety, network coverage, or how many distinct routes ran each month."
     },
@@ -1431,10 +1431,10 @@
     {
       "question": "What is the monthly trend in unique segments?",
       "sql_lines": [
-        "SELECT segment_date, MEASURE(segment_count) AS segment_count",
+        "SELECT DATE_TRUNC('month', segment_date) AS segment_date_month, MEASURE(segment_count) AS segment_count",
         "FROM {fqn}.route_segments_metrics",
         "GROUP BY ALL",
-        "ORDER BY segment_date"
+        "ORDER BY segment_date_month"
       ]
     },
     {
@@ -1465,7 +1465,7 @@
       ]
     },
     {
-      "question": "What are the top unique vehicle by total maximum load capacity in kilograms?",
+      "question": "What are the top 10 unique vehicle by total maximum load capacity in kilograms?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(capacity_kg) AS total_capacity_kg",
         "FROM {fqn}.vehicles",

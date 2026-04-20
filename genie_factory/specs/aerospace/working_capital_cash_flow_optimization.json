@@ -862,10 +862,10 @@
     {
       "question": "What is the monthly trend in unique txns?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(txn_count) AS txn_count",
+        "SELECT DATE_TRUNC('month', txn_date) AS txn_date_month, MEASURE(txn_count) AS txn_count",
         "FROM {fqn}.cash_txn_metrics",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY txn_date_month"
       ],
       "usage_guidance": "Monthly trend of transaction volume; matches phrases like 'how many cash transactions per month' using txn_count from cash_txn_metrics."
     },
@@ -882,10 +882,10 @@
     {
       "question": "What is the monthly trend in total accounts receivable usd?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_receivables) AS total_receivables",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(total_receivables) AS total_receivables",
         "FROM {fqn}.working_capital_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of total accounts receivable balance; matches 'show receivables growth over time' using total_receivables from working_capital_metrics."
     },
@@ -1039,10 +1039,10 @@
     {
       "question": "What is the monthly trend in total inflows count?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(total_inflows) AS total_inflows",
+        "SELECT DATE_TRUNC('month', txn_date) AS txn_date_month, MEASURE(total_inflows) AS total_inflows",
         "FROM {fqn}.cash_txn_metrics",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY txn_date_month"
       ]
     },
     {
@@ -1057,10 +1057,10 @@
     {
       "question": "What is the monthly trend in unique programs?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(unique_program_count) AS unique_program_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(unique_program_count) AS unique_program_count",
         "FROM {fqn}.working_capital_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1073,7 +1073,7 @@
       ]
     },
     {
-      "question": "What are the top aerospace program by total transaction amount in usd (positive = inflow, negative = outflow)?",
+      "question": "What are the top 10 aerospace program by total transaction amount in usd (positive = inflow, negative = outflow)?",
       "sql_lines": [
         "SELECT program_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",

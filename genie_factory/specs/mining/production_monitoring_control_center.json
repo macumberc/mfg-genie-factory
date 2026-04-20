@@ -1030,10 +1030,10 @@
     {
       "question": "What is the monthly trend in highest throughput tph?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(max_throughput_tph) AS max_throughput_tph",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(max_throughput_tph) AS max_throughput_tph",
         "FROM {fqn}.production_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ],
       "usage_guidance": "Monthly trend of peak throughput tph; matches phrases like 'highest throughput over time' or 'maximum tph by month' using max_throughput_tph from production_kpi_monthly."
     },
@@ -1050,10 +1050,10 @@
     {
       "question": "What is the monthly trend in highest planned throughput tpd?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_planned_throughput_tpd) AS max_planned_throughput_tpd",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_planned_throughput_tpd) AS max_planned_throughput_tpd",
         "FROM {fqn}.throughput_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of peak planned throughput tpd; matches phrases like 'highest planned tonnage per day over time' using max_planned_throughput_tpd from throughput_kpi_monthly."
     },
@@ -1207,10 +1207,10 @@
     {
       "question": "What is the monthly trend in running count?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(running_count) AS running_count",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(running_count) AS running_count",
         "FROM {fqn}.production_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ]
     },
     {
@@ -1225,10 +1225,10 @@
     {
       "question": "What is the monthly trend in bottleneck count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(bottleneck_count) AS bottleneck_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(bottleneck_count) AS bottleneck_count",
         "FROM {fqn}.throughput_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1241,7 +1241,7 @@
       ]
     },
     {
-      "question": "What are the top unit id by total throughput tons per hour?",
+      "question": "What are the top 10 unit id by total throughput tons per hour?",
       "sql_lines": [
         "SELECT unit_id, SUM(throughput_tph) AS total_throughput_tph",
         "FROM {fqn}.processing_units",

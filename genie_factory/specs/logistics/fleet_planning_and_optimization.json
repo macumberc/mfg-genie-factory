@@ -960,10 +960,10 @@
     {
       "question": "What is the monthly trend in unique vehicles?",
       "sql_lines": [
-        "SELECT operation_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
+        "SELECT DATE_TRUNC('month', operation_date) AS operation_date_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
         "FROM {fqn}.fleet_operations_metrics",
         "GROUP BY ALL",
-        "ORDER BY operation_date"
+        "ORDER BY operation_date_month"
       ],
       "usage_guidance": "Monthly trend of active vehicle count; matches questions about fleet size changes, vehicle deployment frequency, or unique vehicles dispatched over time."
     },
@@ -980,10 +980,10 @@
     {
       "question": "What is the monthly trend in total monthly fuel cost in usd?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(total_monthly_fuel_cost) AS total_monthly_fuel_cost",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(total_monthly_fuel_cost) AS total_monthly_fuel_cost",
         "FROM {fqn}.fleet_kpi_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ],
       "usage_guidance": "Monthly trend of total fuel expenditure in USD; matches questions about fuel cost trajectory, spending on fuel over months, or fleet-wide fuel budget trends."
     },
@@ -1137,10 +1137,10 @@
     {
       "question": "What is the monthly trend in on time operation count?",
       "sql_lines": [
-        "SELECT operation_date, MEASURE(on_time_operation_count) AS on_time_operation_count",
+        "SELECT DATE_TRUNC('month', operation_date) AS operation_date_month, MEASURE(on_time_operation_count) AS on_time_operation_count",
         "FROM {fqn}.fleet_operations_metrics",
         "GROUP BY ALL",
-        "ORDER BY operation_date"
+        "ORDER BY operation_date_month"
       ]
     },
     {
@@ -1155,10 +1155,10 @@
     {
       "question": "What is the monthly trend in highest monthly revenue?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(max_monthly_revenue) AS max_monthly_revenue",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(max_monthly_revenue) AS max_monthly_revenue",
         "FROM {fqn}.fleet_kpi_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ]
     },
     {
@@ -1171,7 +1171,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle asset by total total route distance in kilometers?",
+      "question": "What are the top 10 vehicle asset by total total route distance in kilometers?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(route_distance_km) AS total_route_distance_km",
         "FROM {fqn}.fleet_operations",

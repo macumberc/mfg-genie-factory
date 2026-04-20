@@ -992,10 +992,10 @@
     {
       "question": "What is the monthly trend in unique designs?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(unique_design_count) AS unique_design_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(unique_design_count) AS unique_design_count",
         "FROM {fqn}.simulation_run_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Monthly trend of unique design count across simulation runs, matching phrases like 'how many distinct designs were simulated each month'."
     },
@@ -1169,10 +1169,10 @@
     {
       "question": "What is the monthly trend in completed runs count?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(completed_runs) AS completed_runs",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(completed_runs) AS completed_runs",
         "FROM {fqn}.simulation_run_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1187,10 +1187,10 @@
     {
       "question": "What is the monthly trend in blocked design count?",
       "sql_lines": [
-        "SELECT result_month, MEASURE(blocked_design_count) AS blocked_design_count",
+        "SELECT DATE_TRUNC('month', result_month) AS result_month_month, MEASURE(blocked_design_count) AS blocked_design_count",
         "FROM {fqn}.optimization_result_metrics",
         "GROUP BY ALL",
-        "ORDER BY result_month"
+        "ORDER BY result_month_month"
       ]
     },
     {
@@ -1203,7 +1203,7 @@
       ]
     },
     {
-      "question": "What are the top chip design by total target process node in nanometers?",
+      "question": "What are the top 10 chip design by total target process node in nanometers?",
       "sql_lines": [
         "SELECT design_id, SUM(target_node_nm) AS total_target_node_nm",
         "FROM {fqn}.simulation_runs",

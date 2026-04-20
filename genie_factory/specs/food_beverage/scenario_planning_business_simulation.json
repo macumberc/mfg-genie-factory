@@ -1025,10 +1025,10 @@
     {
       "question": "What is the monthly trend in unique categorys?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(unique_category_count) AS unique_category_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(unique_category_count) AS unique_category_count",
         "FROM {fqn}.scenario_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Monthly trend of unique product categories tracked across scenario simulation runs, matching phrases like 'how many categories per month' or 'category count over time'."
     },
@@ -1045,10 +1045,10 @@
     {
       "question": "What is the monthly trend in highest expected revenue?",
       "sql_lines": [
-        "SELECT outcome_month, MEASURE(max_expected_revenue) AS max_expected_revenue",
+        "SELECT DATE_TRUNC('month', outcome_month) AS outcome_month_month, MEASURE(max_expected_revenue) AS max_expected_revenue",
         "FROM {fqn}.portfolio_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY outcome_month"
+        "ORDER BY outcome_month_month"
       ],
       "usage_guidance": "Monthly trend of maximum expected portfolio revenue from market outcome snapshots, matching phrases like 'top expected revenue over time' or 'peak portfolio revenue by month'."
     },
@@ -1202,10 +1202,10 @@
     {
       "question": "What is the monthly trend in disruption count?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(disruption_count) AS disruption_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(disruption_count) AS disruption_count",
         "FROM {fqn}.scenario_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1220,10 +1220,10 @@
     {
       "question": "What is the monthly trend in invest count?",
       "sql_lines": [
-        "SELECT outcome_month, MEASURE(invest_count) AS invest_count",
+        "SELECT DATE_TRUNC('month', outcome_month) AS outcome_month_month, MEASURE(invest_count) AS invest_count",
         "FROM {fqn}.portfolio_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY outcome_month"
+        "ORDER BY outcome_month_month"
       ]
     },
     {
@@ -1236,7 +1236,7 @@
       ]
     },
     {
-      "question": "What are the top category id by total simulated revenue usd?",
+      "question": "What are the top 10 category id by total simulated revenue usd?",
       "sql_lines": [
         "SELECT category_id, SUM(simulated_revenue_usd) AS total_simulated_revenue_usd",
         "FROM {fqn}.product_categories",

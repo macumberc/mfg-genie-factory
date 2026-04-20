@@ -1047,10 +1047,10 @@
     {
       "question": "What is the monthly trend in unique total lotss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_lots) AS total_lots",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_lots) AS total_lots",
         "FROM {fqn}.traceability_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of total lot counts; matches questions about lot volume over time using the traceability_monthly metric view."
     },
@@ -1067,10 +1067,10 @@
     {
       "question": "What is the monthly trend in highest lots traced?",
       "sql_lines": [
-        "SELECT perf_month, MEASURE(max_lots_traced) AS max_lots_traced",
+        "SELECT DATE_TRUNC('month', perf_month) AS perf_month_month, MEASURE(max_lots_traced) AS max_lots_traced",
         "FROM {fqn}.recall_readiness_monthly",
         "GROUP BY ALL",
-        "ORDER BY perf_month"
+        "ORDER BY perf_month_month"
       ],
       "usage_guidance": "Monthly trend of peak lots traced in recall readiness; matches questions about maximum lot tracing capacity or highest recall throughput over time."
     },
@@ -1224,10 +1224,10 @@
     {
       "question": "What is the monthly trend in full trace count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(full_trace_count) AS full_trace_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(full_trace_count) AS full_trace_count",
         "FROM {fqn}.traceability_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1242,10 +1242,10 @@
     {
       "question": "What is the monthly trend in fail sim count?",
       "sql_lines": [
-        "SELECT perf_month, MEASURE(fail_sim_count) AS fail_sim_count",
+        "SELECT DATE_TRUNC('month', perf_month) AS perf_month_month, MEASURE(fail_sim_count) AS fail_sim_count",
         "FROM {fqn}.recall_readiness_monthly",
         "GROUP BY ALL",
-        "ORDER BY perf_month"
+        "ORDER BY perf_month_month"
       ]
     },
     {
@@ -1258,7 +1258,7 @@
       ]
     },
     {
-      "question": "What are the top product id by total units in lot?",
+      "question": "What are the top 10 product id by total units in lot?",
       "sql_lines": [
         "SELECT product_id, SUM(units_in_lot) AS total_units_in_lot",
         "FROM {fqn}.products",

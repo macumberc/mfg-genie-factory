@@ -874,10 +874,10 @@
     {
       "question": "What is the monthly trend in total good units produced?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_actual_qty) AS total_actual_qty",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(total_actual_qty) AS total_actual_qty",
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about good units, actual output, or production volume using the production_runs_metrics metric view."
     },
@@ -894,10 +894,10 @@
     {
       "question": "What is the monthly trend in total planned downtime hours?",
       "sql_lines": [
-        "SELECT oee_month, MEASURE(total_planned_downtime_hours) AS total_planned_downtime_hours",
+        "SELECT DATE_TRUNC('month', oee_month) AS oee_month_month, MEASURE(total_planned_downtime_hours) AS total_planned_downtime_hours",
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
-        "ORDER BY oee_month"
+        "ORDER BY oee_month_month"
       ],
       "usage_guidance": "Route monthly trend questions about planned downtime hours or scheduled maintenance duration using the oee_metrics metric view."
     },
@@ -1051,10 +1051,10 @@
     {
       "question": "What is the monthly trend in unique lines?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(unique_line_count) AS unique_line_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(unique_line_count) AS unique_line_count",
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1078,14 +1078,14 @@
     {
       "question": "What is the monthly trend in total output units?",
       "sql_lines": [
-        "SELECT oee_month, MEASURE(total_output) AS total_output",
+        "SELECT DATE_TRUNC('month', oee_month) AS oee_month_month, MEASURE(total_output) AS total_output",
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
-        "ORDER BY oee_month"
+        "ORDER BY oee_month_month"
       ]
     },
     {
-      "question": "What are the top production line by total planned production quantity?",
+      "question": "What are the top 10 production line by total planned production quantity?",
       "sql_lines": [
         "SELECT line_id, SUM(planned_qty) AS total_planned_qty",
         "FROM {fqn}.production_runs",

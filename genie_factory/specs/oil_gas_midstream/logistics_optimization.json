@@ -995,10 +995,10 @@
     {
       "question": "What is the monthly trend in total pressure psi?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_pressure_psi) AS total_pressure_psi",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_pressure_psi) AS total_pressure_psi",
         "FROM {fqn}.flow_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of total pressure PSI across pipeline segments; matches questions about pressure levels or pipeline integrity over time using flow_readings_metrics."
     },
@@ -1015,10 +1015,10 @@
     {
       "question": "What is the monthly trend in total volume impact bbl?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_volume_impact_bbl) AS total_volume_impact_bbl",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_volume_impact_bbl) AS total_volume_impact_bbl",
         "FROM {fqn}.logistics_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of total volume impact in barrels from logistics disruptions; matches questions about cumulative volume losses or event impact over time using logistics_events_metrics."
     },
@@ -1172,10 +1172,10 @@
     {
       "question": "What is the monthly trend in unique total readingss?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_readings) AS total_readings",
         "FROM {fqn}.flow_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1190,10 +1190,10 @@
     {
       "question": "What is the monthly trend in unique total eventss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_events) AS total_events",
         "FROM {fqn}.logistics_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1206,7 +1206,7 @@
       ]
     },
     {
-      "question": "What are the top pipeline segment id by total throughput in bpd?",
+      "question": "What are the top 10 pipeline segment id by total throughput in bpd?",
       "sql_lines": [
         "SELECT segment_id, SUM(throughput_bpd) AS total_throughput_bpd",
         "FROM {fqn}.flow_readings",

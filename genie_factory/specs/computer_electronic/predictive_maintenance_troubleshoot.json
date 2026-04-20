@@ -933,10 +933,10 @@
     {
       "question": "What is the monthly trend in unique machines?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(unique_machine_count) AS unique_machine_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(unique_machine_count) AS unique_machine_count",
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Route trend-over-time questions about active machine counts or fleet size across sensor reading dates on assembly lines."
     },
@@ -1110,10 +1110,10 @@
     {
       "question": "What is the monthly trend in critical alert count?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(critical_alert_count) AS critical_alert_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(critical_alert_count) AS critical_alert_count",
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1137,14 +1137,14 @@
     {
       "question": "What is the monthly trend in total maintenance cost in usd?",
       "sql_lines": [
-        "SELECT health_month, MEASURE(total_maintenance_cost) AS total_maintenance_cost",
+        "SELECT DATE_TRUNC('month', health_month) AS health_month_month, MEASURE(total_maintenance_cost) AS total_maintenance_cost",
         "FROM {fqn}.equipment_health_metrics",
         "GROUP BY ALL",
-        "ORDER BY health_month"
+        "ORDER BY health_month_month"
       ]
     },
     {
-      "question": "What are the top assembly line machine by total operating temperature in celsius?",
+      "question": "What are the top 10 assembly line machine by total operating temperature in celsius?",
       "sql_lines": [
         "SELECT machine_id, SUM(temperature_c) AS total_temperature_c",
         "FROM {fqn}.sensor_readings",

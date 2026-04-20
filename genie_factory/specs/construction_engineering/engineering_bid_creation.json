@@ -1007,10 +1007,10 @@
     {
       "question": "What is the monthly trend in unique projects?",
       "sql_lines": [
-        "SELECT bid_date, MEASURE(unique_project_count) AS unique_project_count",
+        "SELECT DATE_TRUNC('month', bid_date) AS bid_date_month, MEASURE(unique_project_count) AS unique_project_count",
         "FROM {fqn}.bid_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY bid_date"
+        "ORDER BY bid_date_month"
       ],
       "usage_guidance": "Monthly trend of unique projects tracked in bid_kpi_monthly; matches questions about project count volume or portfolio breadth over time."
     },
@@ -1184,10 +1184,10 @@
     {
       "question": "What is the monthly trend in won count?",
       "sql_lines": [
-        "SELECT bid_date, MEASURE(won_count) AS won_count",
+        "SELECT DATE_TRUNC('month', bid_date) AS bid_date_month, MEASURE(won_count) AS won_count",
         "FROM {fqn}.bid_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY bid_date"
+        "ORDER BY bid_date_month"
       ]
     },
     {
@@ -1211,14 +1211,14 @@
     {
       "question": "What is the monthly trend in total bids submitted?",
       "sql_lines": [
-        "SELECT perf_month, MEASURE(total_bids_submitted) AS total_bids_submitted",
+        "SELECT DATE_TRUNC('month', perf_month) AS perf_month_month, MEASURE(total_bids_submitted) AS total_bids_submitted",
         "FROM {fqn}.pipeline_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY perf_month"
+        "ORDER BY perf_month_month"
       ]
     },
     {
-      "question": "What are the top project id by total estimated project cost usd?",
+      "question": "What are the top 10 project id by total estimated project cost usd?",
       "sql_lines": [
         "SELECT project_id, SUM(estimated_cost_usd) AS total_estimated_cost_usd",
         "FROM {fqn}.projects",

@@ -881,10 +881,10 @@
     {
       "question": "What is the monthly trend in total off-spec volume in barrels?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_off_spec_bbl) AS total_off_spec_bbl",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_off_spec_bbl) AS total_off_spec_bbl",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of off-spec barrel volume using the quality_events_metrics metric view; triggered by phrases like 'off-spec volume over time' or 'monthly off-spec barrels'."
     },
@@ -901,10 +901,10 @@
     {
       "question": "What is the monthly trend in total batch volume in barrels?",
       "sql_lines": [
-        "SELECT batch_date, MEASURE(total_volume_bbl) AS total_volume_bbl",
+        "SELECT DATE_TRUNC('month', batch_date) AS batch_date_month, MEASURE(total_volume_bbl) AS total_volume_bbl",
         "FROM {fqn}.batch_records_metrics",
         "GROUP BY ALL",
-        "ORDER BY batch_date"
+        "ORDER BY batch_date_month"
       ],
       "usage_guidance": "Monthly trend of total batch throughput volume in barrels using batch_records_metrics; triggered by phrases like 'batch volume over time' or 'monthly production volume trend'."
     },
@@ -1058,10 +1058,10 @@
     {
       "question": "What is the monthly trend in unique total eventss?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_events) AS total_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(total_events) AS total_events",
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1076,10 +1076,10 @@
     {
       "question": "What is the monthly trend in unique total batchess?",
       "sql_lines": [
-        "SELECT batch_date, MEASURE(total_batches) AS total_batches",
+        "SELECT DATE_TRUNC('month', batch_date) AS batch_date_month, MEASURE(total_batches) AS total_batches",
         "FROM {fqn}.batch_records_metrics",
         "GROUP BY ALL",
-        "ORDER BY batch_date"
+        "ORDER BY batch_date_month"
       ]
     },
     {
@@ -1092,7 +1092,7 @@
       ]
     },
     {
-      "question": "What are the top process unit by total off-spec product volume in barrels?",
+      "question": "What are the top 10 process unit by total off-spec product volume in barrels?",
       "sql_lines": [
         "SELECT unit_id, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
         "FROM {fqn}.quality_events",

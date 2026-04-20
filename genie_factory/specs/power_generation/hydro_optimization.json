@@ -984,10 +984,10 @@
     {
       "question": "What is the monthly trend in highest generation mwh?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(max_generation_mwh) AS max_generation_mwh",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(max_generation_mwh) AS max_generation_mwh",
         "FROM {fqn}.generation_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ],
       "usage_guidance": "Monthly trend of peak/highest single-turbine generation MWh, matching phrases like 'best performing month' or 'maximum output over time'."
     },
@@ -1004,10 +1004,10 @@
     {
       "question": "What is the monthly trend in highest water level m?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_water_level_m) AS max_water_level_m",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_water_level_m) AS max_water_level_m",
         "FROM {fqn}.reservoir_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of peak reservoir water level in meters, matching phrases like 'highest water level over time' or 'maximum reservoir height by month'."
     },
@@ -1161,10 +1161,10 @@
     {
       "question": "What is the monthly trend in generating turbine count?",
       "sql_lines": [
-        "SELECT record_date, MEASURE(generating_turbine_count) AS generating_turbine_count",
+        "SELECT DATE_TRUNC('month', record_date) AS record_date_month, MEASURE(generating_turbine_count) AS generating_turbine_count",
         "FROM {fqn}.generation_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY record_date"
+        "ORDER BY record_date_month"
       ]
     },
     {
@@ -1179,10 +1179,10 @@
     {
       "question": "What is the monthly trend in high drought risk count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(high_drought_risk_count) AS high_drought_risk_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(high_drought_risk_count) AS high_drought_risk_count",
         "FROM {fqn}.reservoir_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1195,7 +1195,7 @@
       ]
     },
     {
-      "question": "What are the top turbine unit by total water flow rate in cubic meters per second?",
+      "question": "What are the top 10 turbine unit by total water flow rate in cubic meters per second?",
       "sql_lines": [
         "SELECT turbine_id, SUM(water_flow_m3s) AS total_water_flow_m3s",
         "FROM {fqn}.turbine_units",

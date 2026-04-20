@@ -1000,10 +1000,10 @@
     {
       "question": "What is the monthly trend in unique total material orderss?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_material_orders) AS total_material_orders",
+        "SELECT DATE_TRUNC('month', order_date) AS order_date_month, MEASURE(total_material_orders) AS total_material_orders",
         "FROM {fqn}.material_order_metrics",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY order_date_month"
       ],
       "usage_guidance": "Monthly trend of total material orders volume; matches phrases like 'order count over time' or 'how many orders per month' using order_date dimension."
     },
@@ -1177,10 +1177,10 @@
     {
       "question": "What is the monthly trend in delayed order count?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(delayed_order_count) AS delayed_order_count",
+        "SELECT DATE_TRUNC('month', order_date) AS order_date_month, MEASURE(delayed_order_count) AS delayed_order_count",
         "FROM {fqn}.material_order_metrics",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY order_date_month"
       ]
     },
     {
@@ -1195,23 +1195,23 @@
     {
       "question": "What is the monthly trend in critical bottleneck count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(critical_bottleneck_count) AS critical_bottleneck_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(critical_bottleneck_count) AS critical_bottleneck_count",
         "FROM {fqn}.capacity_utilization_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
       "question": "What is the monthly trend in highest utilization percent?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_utilization_percent) AS max_utilization_percent",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(max_utilization_percent) AS max_utilization_percent",
         "FROM {fqn}.capacity_utilization_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
-      "question": "What are the top material or component by total quantity ordered (units vary by material)?",
+      "question": "What are the top 10 material or component by total quantity ordered (units vary by material)?",
       "sql_lines": [
         "SELECT material_id, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.material_orders",

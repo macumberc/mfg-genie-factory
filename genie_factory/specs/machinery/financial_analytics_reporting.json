@@ -885,10 +885,10 @@
     {
       "question": "What is the monthly trend in open posting status count?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(open_financial_transaction_count) AS open_financial_transaction_count",
+        "SELECT DATE_TRUNC('month', txn_date) AS txn_date_month, MEASURE(open_financial_transaction_count) AS open_financial_transaction_count",
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY txn_date_month"
       ],
       "usage_guidance": "Monthly trend of open/unposted transaction counts; matches phrases like 'pending postings over time' using open_financial_transaction_count from financial_txn_metrics."
     },
@@ -905,10 +905,10 @@
     {
       "question": "What is the monthly trend in total budget utilization pct?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(total_budget_utilization_percent) AS total_budget_utilization_percent",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(total_budget_utilization_percent) AS total_budget_utilization_percent",
         "FROM {fqn}.financial_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ],
       "usage_guidance": "Monthly trend of budget utilization percentage; matches phrases like 'budget consumption over time' using total_budget_utilization_percent from financial_kpi_metrics."
     },
@@ -1062,10 +1062,10 @@
     {
       "question": "What is the monthly trend in total monthly revenue?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(total_revenue) AS total_revenue",
+        "SELECT DATE_TRUNC('month', txn_date) AS txn_date_month, MEASURE(total_revenue) AS total_revenue",
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY txn_date_month"
       ]
     },
     {
@@ -1080,10 +1080,10 @@
     {
       "question": "What is the monthly trend in unique cost centers?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(unique_cost_center_count) AS unique_cost_center_count",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(unique_cost_center_count) AS unique_cost_center_count",
         "FROM {fqn}.financial_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ]
     },
     {
@@ -1096,7 +1096,7 @@
       ]
     },
     {
-      "question": "What are the top cost center by total transaction amount in usd?",
+      "question": "What are the top 10 cost center by total transaction amount in usd?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

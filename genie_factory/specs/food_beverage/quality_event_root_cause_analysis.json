@@ -1049,10 +1049,10 @@
     {
       "question": "What is the monthly trend in unique products?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(unique_product_count) AS unique_product_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(unique_product_count) AS unique_product_count",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of distinct products with quality events; matches phrases like 'unique product count over time' using quality_kpi_monthly.unique_product_count."
     },
@@ -1069,10 +1069,10 @@
     {
       "question": "What is the monthly trend in highest events count?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(max_events_count) AS max_events_count",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(max_events_count) AS max_events_count",
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ],
       "usage_guidance": "Monthly trend of highest single-line event counts; matches 'peak inspection events per month' using inspection_kpi_monthly.max_events_count."
     },
@@ -1226,10 +1226,10 @@
     {
       "question": "What is the monthly trend in critical events count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(critical_events) AS critical_events",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(critical_events) AS critical_events",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1244,10 +1244,10 @@
     {
       "question": "What is the monthly trend in nc count?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(nc_count) AS nc_count",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(nc_count) AS nc_count",
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ]
     },
     {
@@ -1260,7 +1260,7 @@
       ]
     },
     {
-      "question": "What are the top product id by total units affected?",
+      "question": "What are the top 10 product id by total units affected?",
       "sql_lines": [
         "SELECT product_id, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.product_lines",

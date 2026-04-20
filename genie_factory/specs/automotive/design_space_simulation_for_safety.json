@@ -1149,10 +1149,10 @@
     {
       "question": "What is the monthly trend in unique total simulation runss?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_simulation_runs) AS total_simulation_runs",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(total_simulation_runs) AS total_simulation_runs",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Monthly trend of total simulation run volume; matches phrases like 'how many simulations ran each month' using simulation_runs_metrics total_simulation_runs measure."
     },
@@ -1169,10 +1169,10 @@
     {
       "question": "What is the monthly trend in unique configs?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(unique_config_count) AS unique_config_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(unique_config_count) AS unique_config_count",
         "FROM {fqn}.parameter_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ],
       "usage_guidance": "Monthly trend of unique parameter snapshot configurations; matches 'how many distinct configs were snapshotted over time' using parameter_snapshots_metrics unique_config_count."
     },
@@ -1326,10 +1326,10 @@
     {
       "question": "What is the monthly trend in fail count?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(fail_count) AS fail_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(fail_count) AS fail_count",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1344,10 +1344,10 @@
     {
       "question": "What is the monthly trend in converged count?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(converged_count) AS converged_count",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS snapshot_date_month, MEASURE(converged_count) AS converged_count",
         "FROM {fqn}.parameter_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY snapshot_date_month"
       ]
     },
     {
@@ -1360,7 +1360,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle configuration by total impact speed in km/h?",
+      "question": "What are the top 10 vehicle configuration by total impact speed in km/h?",
       "sql_lines": [
         "SELECT config_id, SUM(impact_speed_kmh) AS total_impact_speed_kmh",
         "FROM {fqn}.simulation_runs",

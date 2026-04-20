@@ -890,10 +890,10 @@
     {
       "question": "What is the monthly trend in unique machines?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(unique_machine_count) AS unique_machine_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(unique_machine_count) AS unique_machine_count",
         "FROM {fqn}.machining_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ],
       "usage_guidance": "Monthly trend of unique active machines from machining_events_metrics; matches questions about machine count over time by event date."
     },
@@ -1067,10 +1067,10 @@
     {
       "question": "What is the monthly trend in defect count?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(defect_count) AS defect_count",
+        "SELECT DATE_TRUNC('month', event_date) AS event_date_month, MEASURE(defect_count) AS defect_count",
         "FROM {fqn}.machining_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date_month"
       ]
     },
     {
@@ -1094,14 +1094,14 @@
     {
       "question": "What is the monthly trend in total scrap cost in usd?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(total_scrap_cost) AS total_scrap_cost",
+        "SELECT DATE_TRUNC('month', kpi_month) AS kpi_month_month, MEASURE(total_scrap_cost) AS total_scrap_cost",
         "FROM {fqn}.defect_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month_month"
       ]
     },
     {
-      "question": "What are the top cnc machine by total surface roughness ra in micrometers?",
+      "question": "What are the top 10 cnc machine by total surface roughness ra in micrometers?",
       "sql_lines": [
         "SELECT machine_id, SUM(surface_finish_um) AS total_surface_finish_um",
         "FROM {fqn}.machining_events",

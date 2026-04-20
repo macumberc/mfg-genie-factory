@@ -1023,10 +1023,10 @@
     {
       "question": "What is the monthly trend in total oil temperature c?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_oil_temperature_c) AS total_oil_temperature_c",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(total_oil_temperature_c) AS total_oil_temperature_c",
         "FROM {fqn}.condition_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ],
       "usage_guidance": "Monthly trend of total oil temperature across all assets; matches phrases like 'oil temperature over time' using condition_readings_metrics."
     },
@@ -1043,10 +1043,10 @@
     {
       "question": "What is the monthly trend in total avg health index?",
       "sql_lines": [
-        "SELECT summary_month, MEASURE(total_avg_health_index) AS total_avg_health_index",
+        "SELECT DATE_TRUNC('month', summary_month) AS summary_month_month, MEASURE(total_avg_health_index) AS total_avg_health_index",
         "FROM {fqn}.asset_health_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY summary_month"
+        "ORDER BY summary_month_month"
       ],
       "usage_guidance": "Monthly trend of aggregated fleet health index; matches 'how is overall asset health trending' using asset_health_monthly_metrics total_avg_health_index."
     },
@@ -1200,10 +1200,10 @@
     {
       "question": "What is the monthly trend in unique assets?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(unique_asset_count) AS unique_asset_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS reading_date_month, MEASURE(unique_asset_count) AS unique_asset_count",
         "FROM {fqn}.condition_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY reading_date_month"
       ]
     },
     {
@@ -1227,14 +1227,14 @@
     {
       "question": "What is the monthly trend in total maintenance cost in usd?",
       "sql_lines": [
-        "SELECT summary_month, MEASURE(total_maintenance_cost) AS total_maintenance_cost",
+        "SELECT DATE_TRUNC('month', summary_month) AS summary_month_month, MEASURE(total_maintenance_cost) AS total_maintenance_cost",
         "FROM {fqn}.asset_health_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY summary_month"
+        "ORDER BY summary_month_month"
       ]
     },
     {
-      "question": "What are the top industrial asset by total bearing temperature in celsius?",
+      "question": "What are the top 10 industrial asset by total bearing temperature in celsius?",
       "sql_lines": [
         "SELECT asset_id, SUM(bearing_temperature_c) AS total_bearing_temperature_c",
         "FROM {fqn}.condition_readings",

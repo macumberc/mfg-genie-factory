@@ -996,10 +996,10 @@
     {
       "question": "What is the monthly trend in highest order quantity?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(max_order_quantity) AS max_order_quantity",
+        "SELECT DATE_TRUNC('month', order_date) AS order_date_month, MEASURE(max_order_quantity) AS max_order_quantity",
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY order_date_month"
       ],
       "usage_guidance": "Monthly trend of peak/highest order quantity over time; user mentions 'max order quantity', 'highest orders', or 'order volume spikes' across periods."
     },
@@ -1016,10 +1016,10 @@
     {
       "question": "What is the monthly trend in highest forecasted units?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(max_forecasted_units) AS max_forecasted_units",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(max_forecasted_units) AS max_forecasted_units",
         "FROM {fqn}.forecast_accuracy_monthly",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ],
       "usage_guidance": "Monthly trend of peak forecasted units; user asks about 'highest forecast', 'max forecasted demand', or 'forecast volume spikes' over time."
     },
@@ -1173,10 +1173,10 @@
     {
       "question": "What is the monthly trend in backordered count?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(backordered_count) AS backordered_count",
+        "SELECT DATE_TRUNC('month', order_date) AS order_date_month, MEASURE(backordered_count) AS backordered_count",
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY order_date_month"
       ]
     },
     {
@@ -1191,10 +1191,10 @@
     {
       "question": "What is the monthly trend in over forecast count?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(over_forecast_count) AS over_forecast_count",
+        "SELECT DATE_TRUNC('month', forecast_month) AS forecast_month_month, MEASURE(over_forecast_count) AS over_forecast_count",
         "FROM {fqn}.forecast_accuracy_monthly",
         "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "ORDER BY forecast_month_month"
       ]
     },
     {
@@ -1207,7 +1207,7 @@
       ]
     },
     {
-      "question": "What are the top product sku code by total units ordered?",
+      "question": "What are the top 10 product sku code by total units ordered?",
       "sql_lines": [
         "SELECT sku, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.product_skus",

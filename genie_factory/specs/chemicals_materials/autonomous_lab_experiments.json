@@ -982,10 +982,10 @@
     {
       "question": "What is the monthly trend in unique formulations?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(unique_formulation_count) AS unique_formulation_count",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(unique_formulation_count) AS unique_formulation_count",
         "FROM {fqn}.experiment_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ],
       "usage_guidance": "Monthly trend of distinct formulations tested; matches phrases like 'how many unique formulations per month' using unique_formulation_count from experiment_runs_metrics."
     },
@@ -1002,10 +1002,10 @@
     {
       "question": "What is the monthly trend in total best yield pct?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(total_best_yield_percent) AS total_best_yield_percent",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(total_best_yield_percent) AS total_best_yield_percent",
         "FROM {fqn}.optimization_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ],
       "usage_guidance": "Monthly cumulative best-yield trend across optimization cycles; matches phrases like 'total best yield per month' using total_best_yield_percent from optimization_monthly_metrics."
     },
@@ -1159,10 +1159,10 @@
     {
       "question": "What is the monthly trend in passed experiments count?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(passed_experiments) AS passed_experiments",
+        "SELECT DATE_TRUNC('month', run_date) AS run_date_month, MEASURE(passed_experiments) AS passed_experiments",
         "FROM {fqn}.experiment_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date_month"
       ]
     },
     {
@@ -1177,10 +1177,10 @@
     {
       "question": "What is the monthly trend in highest experiments run?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(max_experiments_run) AS max_experiments_run",
+        "SELECT DATE_TRUNC('month', report_month) AS report_month_month, MEASURE(max_experiments_run) AS max_experiments_run",
         "FROM {fqn}.optimization_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
+        "ORDER BY report_month_month"
       ]
     },
     {
@@ -1193,7 +1193,7 @@
       ]
     },
     {
-      "question": "What are the top target formulation by total reaction temperature in celsius?",
+      "question": "What are the top 10 target formulation by total reaction temperature in celsius?",
       "sql_lines": [
         "SELECT formulation_id, SUM(temperature_c) AS total_temperature_c",
         "FROM {fqn}.experiment_runs",
