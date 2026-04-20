@@ -45,18 +45,23 @@ def build_genie_payload(
         column_configs = []
         for col in table.columns:
             if col.is_dimension:
-                if "date" in col.name.lower() or col.sql_type == "DATE":
-                    column_configs.append(
-                        {"column_name": col.name, "enable_format_assistance": True}
-                    )
-                else:
-                    column_configs.append(
-                        {
-                            "column_name": col.name,
-                            "enable_format_assistance": True,
-                            "enable_entity_matching": True,
-                        }
-                    )
+                is_date = "date" in col.name.lower() or col.sql_type == "DATE"
+                cfg: dict[str, Any] = {
+                    "column_name": col.name,
+                    "enable_format_assistance": True,
+                }
+                if not is_date:
+                    cfg["enable_entity_matching"] = True
+                synonyms = getattr(col, "synonyms", []) or []
+                if synonyms:
+                    cfg["synonyms"] = list(synonyms)
+                entity_values = getattr(col, "entity_values", []) or []
+                if entity_values and not is_date:
+                    # Cap at 1024 values, each <=127 chars per Genie entity-matching spec.
+                    trimmed = [str(v)[:127] for v in entity_values[:1024] if v is not None]
+                    if trimmed:
+                        cfg["sample_values"] = trimmed
+                column_configs.append(cfg)
         entry: dict[str, Any] = {
             "identifier": identifier,
             "description": [table.description],
@@ -116,9 +121,15 @@ def build_genie_payload(
     example_question_sqls = []
     for ex in domain_spec.example_sqls:
         sql_lines = _interpolate_fqn(ex.sql_lines, fqn)
-        example_question_sqls.append(
-            {"id": next_id(), "question": [ex.question], "sql": ["\n".join(sql_lines)]}
-        )
+        entry: dict[str, Any] = {
+            "id": next_id(),
+            "question": [ex.question],
+            "sql": ["\n".join(sql_lines)],
+        }
+        usage = getattr(ex, "usage_guidance", "") or ""
+        if usage.strip():
+            entry["usage_guidance"] = [usage.strip()]
+        example_question_sqls.append(entry)
 
     # SQL snippets
     filters = []

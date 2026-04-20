@@ -27,6 +27,10 @@ class ColumnSpec:
     comment: str
     is_dimension: bool
     generation_expr: str
+    synonyms: list[str] = field(default_factory=list)
+    # Entity-matched categorical values. Flows to column_configs[].sample_values
+    # in the Genie payload. Up to 1024 per column, each <=127 chars.
+    entity_values: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -52,6 +56,10 @@ class MetricViewSpec:
 class ExampleSQL:
     question: str
     sql_lines: list[str]
+    # Optional WHEN-to-use hint that tells Genie how to route matching
+    # user phrasing to this example's SQL template. Flows to Genie as
+    # example_question_sqls[].usage_guidance.
+    usage_guidance: str = ""
 
 
 @dataclass
@@ -105,7 +113,18 @@ class DomainSpec:
                 TableSpec(
                     table_name=t["table_name"],
                     description=t["description"],
-                    columns=[ColumnSpec(**c) for c in t["columns"]],
+                    columns=[
+                        ColumnSpec(
+                            name=c["name"],
+                            sql_type=c["sql_type"],
+                            comment=c["comment"],
+                            is_dimension=c["is_dimension"],
+                            generation_expr=c.get("generation_expr", ""),
+                            synonyms=c.get("synonyms", []),
+                            entity_values=c.get("entity_values", []),
+                        )
+                        for c in t["columns"]
+                    ],
                     seasonal_patterns=t.get("seasonal_patterns", {}),
                     entity_dimension=t.get("entity_dimension", "transaction"),
                     dimension_values=t.get("dimension_values", []),
@@ -116,7 +135,14 @@ class DomainSpec:
             metric_views=[MetricViewSpec(**mv) for mv in d["metric_views"]],
             genie_instructions=d["genie_instructions"],
             sample_questions=d["sample_questions"],
-            example_sqls=[ExampleSQL(**e) for e in d["example_sqls"]],
+            example_sqls=[
+                ExampleSQL(
+                    question=e["question"],
+                    sql_lines=e["sql_lines"],
+                    usage_guidance=e.get("usage_guidance", ""),
+                )
+                for e in d["example_sqls"]
+            ],
             sql_snippets=SQLSnippets(**d["sql_snippets"]),
             benchmarks=[BenchmarkSpec(**b) for b in d["benchmarks"]],
         )
@@ -418,7 +444,11 @@ def _parse_domain_spec(raw: dict) -> DomainSpec:
     tables = [_parse_table_spec(t) for t in raw["tables"]]
     metric_views = [_parse_metric_view_spec(mv) for mv in raw["metric_views"]]
     example_sqls = [
-        ExampleSQL(question=e["question"], sql_lines=e["sql_lines"])
+        ExampleSQL(
+            question=e["question"],
+            sql_lines=e["sql_lines"],
+            usage_guidance=e.get("usage_guidance", ""),
+        )
         for e in raw["example_sqls"]
     ]
     benchmarks = [
@@ -459,6 +489,8 @@ def _parse_table_spec(raw: dict) -> TableSpec:
             comment=c["comment"],
             is_dimension=c["is_dimension"],
             generation_expr=c.get("generation_expr", ""),
+            synonyms=c.get("synonyms", []),
+            entity_values=c.get("entity_values", []),
         )
         for c in raw["columns"]
     ]
