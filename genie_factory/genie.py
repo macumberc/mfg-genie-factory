@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import logging
+import random
+import time
 from typing import Any, Optional
 import urllib.error
 import urllib.request
@@ -167,6 +169,8 @@ def build_genie_payload(
             }
         )
 
+    join_specs = _derive_join_specs(domain_spec, fqn, next_id)
+
     serialized_space = {
         "version": 2,
         "config": {"sample_questions": sample_questions},
@@ -174,7 +178,7 @@ def build_genie_payload(
         "instructions": {
             "text_instructions": text_instructions,
             "example_question_sqls": example_question_sqls,
-            "join_specs": [],
+            "join_specs": join_specs,
             "sql_snippets": {
                 "filters": filters,
                 "expressions": expressions,
@@ -199,6 +203,61 @@ def build_genie_payload(
 def _interpolate_fqn(sql_lines: list[str], fqn: str) -> list[str]:
     """Replace {fqn} placeholders in SQL lines."""
     return [line.replace("{fqn}", fqn) for line in sql_lines]
+
+
+# FK-looking column suffixes used to derive joins between base tables.
+_JOIN_KEY_SUFFIXES = ("_id", "_sku", "_code", "_number")
+# Columns that share names across tables but are NOT FK relationships.
+_JOIN_KEY_EXCLUDE = {
+    "status", "region", "model_year", "make", "model",
+    "month_date", "metric_period", "recall_date", "claim_date", "order_date",
+}
+
+
+def _derive_join_specs(domain_spec: Any, fqn: str, next_id: Any) -> list[dict[str, Any]]:
+    """Derive Many-to-One join hints from FK-looking columns shared across base tables.
+
+    Field names follow the documented Genie API schema:
+      - left_table / right_table: fully qualified table identifiers
+      - condition: SQL boolean expression (e.g. "a.id = b.a_id")
+      - relationship_type: "Many-to-One" (default for inferred FK joins)
+
+    Metric views are skipped — joins are structural hints for base tables only.
+    """
+    tables = list(domain_spec.tables)
+    col_to_tables: dict[str, list[str]] = {}
+    for table in tables:
+        seen = set()
+        for col in table.columns:
+            name = col.name.lower()
+            if name in seen:
+                continue
+            seen.add(name)
+            if name in _JOIN_KEY_EXCLUDE:
+                continue
+            if not any(name.endswith(suf) for suf in _JOIN_KEY_SUFFIXES):
+                continue
+            col_to_tables.setdefault(name, []).append(table.table_name)
+
+    join_specs: list[dict[str, Any]] = []
+    for col_name, table_names in col_to_tables.items():
+        if len(table_names) < 2:
+            continue
+        ordered = sorted(set(table_names))
+        for i in range(len(ordered)):
+            for j in range(i + 1, len(ordered)):
+                left = f"{fqn}.{ordered[i]}"
+                right = f"{fqn}.{ordered[j]}"
+                join_specs.append(
+                    {
+                        "id": next_id(),
+                        "left_table": left,
+                        "right_table": right,
+                        "condition": f"{left}.{col_name} = {right}.{col_name}",
+                        "relationship_type": "Many-to-One",
+                    }
+                )
+    return join_specs
 
 
 def resolve_warehouse_id(
@@ -389,17 +448,40 @@ def _api_request(
         headers=headers,
     )
 
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            status_code = response.getcode()
-            response_text = response.read().decode("utf-8")
-    except urllib.error.HTTPError as exc:
-        error_body = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(
-            f"{method} {path} failed with status {exc.code}: {error_body}"
-        ) from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(f"{method} {path} failed: {exc}") from exc
+    # Retry with exponential backoff on 429 RESOURCE_EXHAUSTED. The Genie
+    # Spaces and Conversation APIs enforce sustained rate limits (5 qpm on the
+    # Conversation API free tier) and batch workloads easily produce minutes
+    # of backlog. Backoff: 1, 2, 4, 8, 16, 30, 60, 120, 120, 120 seconds plus
+    # jitter — ~8 min cumulative across 10 attempts.
+    max_attempts = 10
+    for attempt in range(max_attempts):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                status_code = response.getcode()
+                response_text = response.read().decode("utf-8")
+            break
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode("utf-8", errors="replace")
+            if exc.code == 429 and attempt < max_attempts - 1:
+                sleep_seconds = min(2 ** attempt, 120) + random.uniform(0, 2.0)
+                _logger.warning(
+                    "%s %s returned 429; retrying in %.1fs (attempt %d/%d)",
+                    method, path, sleep_seconds, attempt + 1, max_attempts,
+                )
+                time.sleep(sleep_seconds)
+                # Rebuild the request — body bytes can be consumed by urlopen.
+                request = urllib.request.Request(
+                    url=f"{host}{path}", data=request_body,
+                    method=method, headers=headers,
+                )
+                continue
+            raise RuntimeError(
+                f"{method} {path} failed with status {exc.code}: {error_body}"
+            ) from exc
+        except urllib.error.URLError as exc:
+            raise RuntimeError(f"{method} {path} failed: {exc}") from exc
+    else:
+        raise RuntimeError(f"{method} {path} failed after {max_attempts} attempts")
 
     if status_code not in expected_statuses:
         raise RuntimeError(
