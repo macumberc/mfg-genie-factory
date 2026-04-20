@@ -55,12 +55,13 @@ def build_genie_payload(
                 synonyms = getattr(col, "synonyms", []) or []
                 if synonyms:
                     cfg["synonyms"] = list(synonyms)
-                entity_values = getattr(col, "entity_values", []) or []
-                if entity_values and not is_date:
-                    # Cap at 1024 values, each <=127 chars per Genie entity-matching spec.
-                    trimmed = [str(v)[:127] for v in entity_values[:1024] if v is not None]
-                    if trimmed:
-                        cfg["sample_values"] = trimmed
+                # Note: we do NOT emit user-provided value lists to column_configs.
+                # The Genie ColumnConfig proto does not accept any of sample_values /
+                # values / value_dictionary / enum_values / example_values / distinct_values.
+                # Entity matching (enable_entity_matching=True above) tells Genie to
+                # discover the distinct values from the underlying table data itself.
+                # We still keep ColumnSpec.entity_values populated as spec metadata
+                # (useful for validation + doc, not for the payload).
                 column_configs.append(cfg)
         entry: dict[str, Any] = {
             "identifier": identifier,
