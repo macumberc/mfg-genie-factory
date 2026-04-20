@@ -1,0 +1,888 @@
+{
+  "timestamp": "20260420_164338",
+  "workspace": "https://fevm-mfg-genie-factory.cloud.databricks.com",
+  "total_spaces": 88,
+  "elapsed_seconds": 8198.2,
+  "summaries": [
+    {
+      "title": "AutoMetrics - Feature Usage & Adoption Analytics \ud83d\udcf1",
+      "run_id": "01f13cd8151017d7a5239cf6456d55be",
+      "status": "DONE",
+      "total": 7,
+      "good": 3,
+      "bad": 4,
+      "review": 0,
+      "pass_rate": 0.42857142857142855
+    },
+    {
+      "title": "NanoVista - Quality Event RCA \ud83d\udd0d",
+      "run_id": "01f13cd8150e1e9590c95c709257c5e6",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "FabSight - Virtual Metrology & Defect Detection \ud83d\udd2c",
+      "run_id": "01f13cd87d231717a95e9db7cea2ba4f",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "ChipArchitect Labs - SoC Design Space Simulation \ud83e\uddea",
+      "run_id": "01f13cd87d3614e79ad6ee454fb322f0",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "ChemFlow Industries - Demand Forecasting & Inventory Optimization \ud83d\udcc8",
+      "run_id": "01f13cd8f19c1e85ada04cda3764305e",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "CargoSight Analytics - Load Demand & Shipment Forecasting \ud83d\udcc8",
+      "run_id": "01f13cd8fe101179b13fe5a10ccc90dc",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "LabAuto Sciences - Autonomous Lab Experiments & Optimization \ud83e\uddea",
+      "run_id": "01f13cd95a1d198cb70b831512541cda",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "PrecisionEdge Corp - Machining Defect Detection \u2699\ufe0f",
+      "run_id": "01f13cd972a11527a3546a02c25f31c2",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "ForecastPro Machinery - Demand Forecasting \ud83d\udcc8",
+      "run_id": "01f13cd9c20a1dfbabafbb6685e28471",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "QualityFirst Manufacturing - Quality RCA \ud83d\udd0d",
+      "run_id": "01f13cd9db461321a91bed659dc32944",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "SpendLens Manufacturing - Spend Intelligence \ud83d\udcb0",
+      "run_id": "01f13cda2a4f1f5d9202875f80b14bbe",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "StratOil Dynamics - Scenario Planning & Business Simulation \ud83c\udfaf",
+      "run_id": "01f13cda4f771b158aa12ed429bedec2",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "PetroLedger Corp - Financial Analytics & Reporting \ud83d\udcb0",
+      "run_id": "01f13cda92791ac19b0cc7eebf53f2cb",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "CashFlow Energy - Working Capital & Cash Flow Optimization \ud83d\udcb0",
+      "run_id": "01f13cdad11414148c6428f726b9fd96",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "RefineGuard Systems - Predictive Maintenance & Asset Health \ud83d\udd27",
+      "run_id": "01f13cdb078e1818a57d2e6d68131ca9",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "RefineOps Central - Production Monitoring \ud83d\udcca",
+      "run_id": "01f13cdb399c1a4d89d0a7b6799c9ff2",
+      "status": "DONE",
+      "total": 7,
+      "good": 3,
+      "bad": 4,
+      "review": 0,
+      "pass_rate": 0.42857142857142855
+    },
+    {
+      "title": "RefineLedger Corp - Financial Analytics & Reporting \ud83d\udcb0",
+      "run_id": "01f13cdb7c32177b8720e75b970ddaec",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "PipeRoute Midstream - Logistics Optimization \ud83d\ude9a",
+      "run_id": "01f13cdbbaea1a6cbac1c1d9ed0926b1",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "MidStream Dynamics - Scenario Planning & Simulation \ud83c\udfaf",
+      "run_id": "01f13cdbf1b11f5db8b002f203576e1d",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "TradeFlow Energy - Energy Trading Analytics \u26a1",
+      "run_id": "01f13cdc23851950bac9f1199c2ab95e",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "AeroQuality Corp - Quality Event Root Cause Analysis \ud83d\udd0d",
+      "run_id": "01f13cdc732819cfb25a2e2d795679d3",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "DriveWell - Vehicle Health & Maintenance Analytics \ud83d\ude97",
+      "run_id": "01f13cdc988b1a568d378c09b762af1c",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "SafeDesign - Safety Simulation Analytics \ud83e\uddea",
+      "run_id": "01f13cdce8631dad9ecebad57e1b9c89",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "SiliconPath - Design Space Simulation \ud83e\uddea",
+      "run_id": "01f13cdd00f610e88c8da51b16494092",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "WaferVault - Salable Inventory Optimization \ud83d\udce6",
+      "run_id": "01f13cdd5d7115309b39a93e6949221f",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "ChipFlow - Demand Forecasting \ud83d\udcc8",
+      "run_id": "01f13cdd69061e9a8c10fad48e3aa5a1",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "VisionTech Electronics - Visual Defect Detection \ud83d\udd2c",
+      "run_id": "01f13cddde081cefb3c2438b5164246c",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "CapAlloc - Supply & Capacity Allocation \ud83d\udd17",
+      "run_id": "01f13cddd26b1d6282acd7d0783499b0",
+      "status": "DONE",
+      "total": 7,
+      "good": 3,
+      "bad": 4,
+      "review": 0,
+      "pass_rate": 0.42857142857142855
+    },
+    {
+      "title": "SemiLedger - Financial Analytics & Reporting \ud83d\udcb0",
+      "run_id": "01f13cde46db1672b7ecdd62764e98c9",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "TransRoute Logistics - Route Planning & Delivery Efficiency \ud83d\uddfa\ufe0f",
+      "run_id": "01f13cde53b11bc2ad6b3d5435c03137",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "FleetEdge Solutions - Fleet Planning & Optimization \ud83d\ude9a",
+      "run_id": "01f13cdeaf1a1f61af5ade8ae42ae2ea",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "PureChem Analytics - Quality Event Root Cause Analysis \ud83d\udd0d",
+      "run_id": "01f13cdec8751fd8b61758156ed7e0b2",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "TraceCore Materials - Product & Process Traceability \ud83d\udccb",
+      "run_id": "01f13cdf175817919c0617344bca9255",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "IronPulse Manufacturing - Asset Health Monitor \ud83d\udd27",
+      "run_id": "01f13cdf3d5b13cf8aa78371334fdc29",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "FactoryPulse Systems - Production Monitoring \ud83d\udcca",
+      "run_id": "01f13cdf8c3e120c8064dacbc65c3cc7",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "FieldForce Machinery - Field Service Assistant \ud83d\udee0\ufe0f",
+      "run_id": "01f13cdfb1c416b79299097365bf1fad",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "PartsVault Industrial - Spare Parts Optimization \ud83d\udce6",
+      "run_id": "01f13cdff4c91da0949bcac441554bd1",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "PlanWorks Manufacturing - Resource Planning \ud83c\udfed",
+      "run_id": "01f13ce026581ca5be06603734cdeabb",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "CapitalFlow Machinery - Working Capital Optimization \ud83d\udcb0",
+      "run_id": "01f13ce0514711de8dd26148060017a5",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "LedgerView Industrial - Financial Analytics \ud83d\udcb0",
+      "run_id": "01f13ce09b2c12e797b3b2aa8c2f6b07",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "DeepHorizon Energy - Predictive Maintenance & Asset Health \ud83d\udd27",
+      "run_id": "01f13ce0b9a71490b99377ceb7d20085",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "CapVenture Energy - Capital Investment Simulation \ud83d\udcb0",
+      "run_id": "01f13ce10fff1d6e8c50643575a281af",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "HeatTrack Refining - Energy Use Monitoring & Heat Optimization \ud83c\udf21\ufe0f",
+      "run_id": "01f13ce12eb31b0ba05f35c4f5fe400b",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "RefineCapital Systems - Working Capital & Cash Flow Optimization \ud83d\udcb0",
+      "run_id": "01f13ce1789c18da8b52733799e56070",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "ReservoirSight Analytics - Reservoir Management \ud83d\udee2\ufe0f",
+      "run_id": "01f13ce1974f15a4833ef547b64cd093",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "WellFlow Monitoring - Well Production Monitoring \ud83d\udcca",
+      "run_id": "01f13ce1f9c3198cabb8fffd95453c2c",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "LoadCast Energy - Demand Forecasting & Capacity Planning \ud83d\udcc8",
+      "run_id": "01f13ce1ff4e1968ab839d177a485094",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "AeroCapital Finance - Working Capital & Cash Flow \ud83d\udcb0",
+      "run_id": "01f13ce266e7101e9468ba99560e1d8b",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "AeroChain Logistics - Supply & Materials Planning \ud83d\udd17",
+      "run_id": "01f13ce2620514a58298514d6cee77cd",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "HydroFlow Energy - Hydro Optimization & Reservoir Mgmt \ud83d\udca7",
+      "run_id": "01f13ce2d6e21b81ae860d9d74eb5edc",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "AeroLedger Corp - Financial Analytics & Cost Reporting \ud83d\udcb0",
+      "run_id": "01f13ce2cfbc1ccbb4aa9c1aae42a09e",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "WindPeak Energy - Wind Farm Optimization \ud83d\udca8",
+      "run_id": "01f13ce33f501855b20474c5cf937884",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "DistroForecast Systems - Demand Forecasting & Backlog \ud83d\udcc8",
+      "run_id": "01f13ce3449719509dc5ce4fb9c5d301",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "StockSmart Distribution - Inventory Optimization \ud83d\udce6",
+      "run_id": "01f13ce3a7e917ebb093f4bf69a98096",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "TrackGuard Systems - Predictive Maintenance & Asset Health \ud83d\udd27",
+      "run_id": "01f13ce3acd613ad9daabdd8d040e30e",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "FreightSight Analytics - Freight Demand Forecasting \ud83d\udcc8",
+      "run_id": "01f13ce410971665a2c194ef656a89b7",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "MineTruck Analytics - Haul Vehicle Asset Health \ud83d\udd27",
+      "run_id": "01f13ce4159c189da7a5e65d1b84e167",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "MineOps Central - Production Monitoring Control Center \ud83d\udcca",
+      "run_id": "01f13ce478cc1b9c8cece1b5646823f0",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "FreshStock Solutions - Perishable Inventory Optimization \ud83d\udce6",
+      "run_id": "01f13ce489b6196a87c38348298e87c7",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "AssemblyGuard Systems - Predictive Maintenance \ud83d\udd27",
+      "run_id": "01f13ce4ed791bf7ba2d0c842083cef9",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "PetroPulse Integrated - Production Monitoring Control Center \ud83d\udcca",
+      "run_id": "01f13ce4fef214b8b7e53a6a06888cb9",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "Apex Motor Group - Recall & Defect Analytics \ud83d\udea8",
+      "run_id": "01f13ce555601f408086bbfd23ccd0e4",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "QualityRefine Analytics - Quality Event Root Cause Analysis \ud83d\udd0d",
+      "run_id": "01f13ce567a01daa84f6a6e3facc0a18",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "CompliFlow Systems - Regulation & Compliance \ud83d\udccb",
+      "run_id": "01f13ce5bd92198bbd8ee46e7b0a6c24",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "CarbonTrack Midstream - Carbon Intensity Reporting \ud83c\udf31",
+      "run_id": "01f13ce5cff71cfea62a9057ca903d39",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "MidLedger Analytics - Financial Analytics & Reporting \ud83d\udcb0",
+      "run_id": "01f13ce631dd1d4caea3af248b202f96",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "MidSpend Analytics - Spend Intelligence \ud83d\udcb0",
+      "run_id": "01f13ce638901c71a9603184eace03cc",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "GridGuard Utilities - Transformer Asset Health \u26a1",
+      "run_id": "01f13ce69a1b1a8fada7baf4d718b3d5",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "RestorePower Systems - Outage Response & Crew Dispatch \ud83d\udd0c",
+      "run_id": "01f13ce6ad6d1811b04a8618d7d248b8",
+      "status": "DONE",
+      "total": 7,
+      "good": 3,
+      "bad": 4,
+      "review": 0,
+      "pass_rate": 0.42857142857142855
+    },
+    {
+      "title": "AeroParts Supply - Demand Forecasting & Backlog \ud83d\udcc8",
+      "run_id": "01f13ce715d0188e9077af236b7b3838",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "AeroGuard Systems - Predictive Maintenance & Asset Health \ud83d\udd27",
+      "run_id": "01f13ce70ebc1747b808ef7a43ab808e",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "AeroTrace Systems - Product Traceability & Anti-Counterfeit \ud83d\udee1\ufe0f",
+      "run_id": "01f13ce77e1a18cbba689c96b05b2efa",
+      "status": "DONE",
+      "total": 7,
+      "good": 7,
+      "bad": 0,
+      "review": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "title": "PowerMix Dynamics - Grid Management & Energy Mix \u26a1",
+      "run_id": "01f13ce783af103187d0c2a0289b9b20",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "NucleoSafe Systems - Nuclear Safety & Compliance \u2622\ufe0f",
+      "run_id": "01f13ce7e6621a64b1a94225624b5588",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "PowerLedger Corp - Financial Analytics & Reporting \ud83d\udcb0",
+      "run_id": "01f13ce7ec381e1b831ed3a244980597",
+      "status": "DONE",
+      "total": 7,
+      "good": 6,
+      "bad": 1,
+      "review": 0,
+      "pass_rate": 0.8571428571428571
+    },
+    {
+      "title": "DistroCapital Finance - Working Capital & Cash Flow \ud83d\udcb0",
+      "run_id": "01f13ce84e6f1f16b8528f29295e1407",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "FreshGuard Foods - Quality Event Root Cause Analysis \ud83d\udd0d",
+      "run_id": "01f13ce8547012eb94fdfde0a8a97551",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "FoodPlan Analytics - Scenario Planning & Simulation \ud83c\udfaf",
+      "run_id": "01f13ce8bcf61ef3b412a227dd889d02",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "TraceFood Systems - Product Traceability & Recall \ud83d\udccb",
+      "run_id": "01f13ce8b70513f2ba59dff333b18571",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "BuildBid Engineering - Bid Creation & Cost Estimation \ud83d\udcdd",
+      "run_id": "01f13ce91c3d1e2f9d3064a4734d4201",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "MidCapital Systems - Working Capital & Cash Flow Optimization \ud83d\udcb0",
+      "run_id": "01f13ce92b44179290d24ecb6fc5ef6e",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "WellGuard Upstream - Predictive Maintenance & Asset Health \ud83d\udd27",
+      "run_id": "01f13ce984661d9a8c6ac1ee19ebc3bc",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "PowerGrid Analytics - Grid Management & Energy Mix \u26a1",
+      "run_id": "01f13ce9936a1faabc24f7855b556a8a",
+      "status": "DONE",
+      "total": 7,
+      "good": 4,
+      "bad": 3,
+      "review": 0,
+      "pass_rate": 0.5714285714285714
+    },
+    {
+      "title": "AeroSim Dynamics - Fuel Efficiency Design Optimization \ud83e\uddea",
+      "run_id": "01f13ce9f00a1403a492171dabc3005f",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "RestorePower Gen - Outage Response & Restoration \ud83d\udd0c",
+      "run_id": "01f13ce9fb761abe96e195ab77c26bbb",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "SolarEdge Power - Solar & Storage Optimization \u2600\ufe0f",
+      "run_id": "01f13cea58281ae29bcca4045931680a",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "RailRoute Logistics - Route Planning & Optimization \ud83d\uddfa\ufe0f",
+      "run_id": "01f13cea63991bce89e9782cf7400ebb",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    },
+    {
+      "title": "SiteTrack Construction - Project Completion Monitoring \ud83c\udfd7\ufe0f",
+      "run_id": "01f13ceac02a1671857e598516893e80",
+      "status": "DONE",
+      "total": 7,
+      "good": 5,
+      "bad": 2,
+      "review": 0,
+      "pass_rate": 0.7142857142857143
+    }
+  ]
+}
