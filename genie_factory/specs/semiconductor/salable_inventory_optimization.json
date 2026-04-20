@@ -29,35 +29,100 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WV-LP-001",
+            "WV-LP-002",
+            "WV-LP-003",
+            "WV-LP-004",
+            "WV-MP-001",
+            "WV-MP-002",
+            "WV-MP-003",
+            "WV-MP-004",
+            "WV-AP-001",
+            "WV-AP-002",
+            "WV-AP-003",
+            "WV-AP-004",
+            "WV-PW-001",
+            "WV-PW-002",
+            "WV-PW-003",
+            "WV-PW-004",
+            "WV-IF-001",
+            "WV-IF-002",
+            "WV-IF-003",
+            "WV-IF-004"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Human-readable product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VaultCore SoC A72",
+            "VaultCore MCU M33",
+            "VaultCore NPU Edge",
+            "VaultCore FPGA Flex-7",
+            "VaultMem DDR5 8Gb",
+            "VaultMem DDR5 16Gb",
+            "VaultMem NAND 256Gb",
+            "VaultMem LPDDR5X 12Gb",
+            "VaultSense ADC 24-bit",
+            "VaultSense DAC 16-bit",
+            "VaultSense Op-Amp Precision",
+            "VaultSense Comparator Hi-Speed",
+            "VaultPower LDO Ultra-Low-Noise",
+            "VaultPower Buck 12V-1V 10A",
+            "VaultPower GaN HB 650V",
+            "VaultPower Wireless Charger IC",
+            "VaultLink PCIe 5.0 Switch",
+            "VaultLink USB4 Retimer",
+            "VaultLink HDMI 2.1 Mux",
+            "VaultLink I3C Hub Controller"
+          ]
         },
         {
           "name": "product_line",
           "sql_type": "STRING",
           "comment": "Product line grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Logic Products",
+            "Memory Products",
+            "Analog Products",
+            "Power Products",
+            "Interface Products"
+          ]
         },
         {
           "name": "transaction_type",
           "sql_type": "STRING",
           "comment": "Type of inventory transaction",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Receipt' WHEN {status_noise} < 0.65 THEN 'Shipment' WHEN {status_noise} < 0.80 THEN 'Transfer' WHEN {status_noise} < 0.92 THEN 'Adjustment' ELSE 'Scrap' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Receipt' WHEN {status_noise} < 0.65 THEN 'Shipment' WHEN {status_noise} < 0.80 THEN 'Transfer' WHEN {status_noise} < 0.92 THEN 'Adjustment' ELSE 'Scrap' END",
+          "entity_values": [
+            "Receipt",
+            "Shipment",
+            "Transfer",
+            "Adjustment",
+            "Scrap"
+          ]
         },
         {
           "name": "warehouse_location",
           "sql_type": "STRING",
           "comment": "Warehouse or storage location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END",
+          "entity_values": [
+            "WH-Taiwan",
+            "WH-Chandler",
+            "WH-Penang",
+            "WH-Shanghai",
+            "WH-Munich"
+          ]
         },
         {
           "name": "quantity_units",
@@ -85,7 +150,13 @@
           "sql_type": "STRING",
           "comment": "Stage of inventory in the supply chain",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Wafer Bank' WHEN {status_noise} < 0.55 THEN 'Die Bank' WHEN {status_noise} < 0.80 THEN 'Finished Goods' ELSE 'WIP' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Wafer Bank' WHEN {status_noise} < 0.55 THEN 'Die Bank' WHEN {status_noise} < 0.80 THEN 'Finished Goods' ELSE 'WIP' END",
+          "entity_values": [
+            "Wafer Bank",
+            "Die Bank",
+            "Finished Goods",
+            "WIP"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -235,28 +306,86 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WV-LP-001",
+            "WV-LP-002",
+            "WV-LP-003",
+            "WV-LP-004",
+            "WV-MP-001",
+            "WV-MP-002",
+            "WV-MP-003",
+            "WV-MP-004",
+            "WV-AP-001",
+            "WV-AP-002",
+            "WV-AP-003",
+            "WV-AP-004",
+            "WV-PW-001",
+            "WV-PW-002",
+            "WV-PW-003",
+            "WV-PW-004",
+            "WV-IF-001",
+            "WV-IF-002",
+            "WV-IF-003",
+            "WV-IF-004"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Human-readable product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VaultCore SoC A72",
+            "VaultCore MCU M33",
+            "VaultCore NPU Edge",
+            "VaultCore FPGA Flex-7",
+            "VaultMem DDR5 8Gb",
+            "VaultMem DDR5 16Gb",
+            "VaultMem NAND 256Gb",
+            "VaultMem LPDDR5X 12Gb",
+            "VaultSense ADC 24-bit",
+            "VaultSense DAC 16-bit",
+            "VaultSense Op-Amp Precision",
+            "VaultSense Comparator Hi-Speed",
+            "VaultPower LDO Ultra-Low-Noise",
+            "VaultPower Buck 12V-1V 10A",
+            "VaultPower GaN HB 650V",
+            "VaultPower Wireless Charger IC",
+            "VaultLink PCIe 5.0 Switch",
+            "VaultLink USB4 Retimer",
+            "VaultLink HDMI 2.1 Mux",
+            "VaultLink I3C Hub Controller"
+          ]
         },
         {
           "name": "product_line",
           "sql_type": "STRING",
           "comment": "Product line grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Logic Products",
+            "Memory Products",
+            "Analog Products",
+            "Power Products",
+            "Interface Products"
+          ]
         },
         {
           "name": "warehouse_location",
           "sql_type": "STRING",
           "comment": "Warehouse or storage location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END",
+          "entity_values": [
+            "WH-Taiwan",
+            "WH-Chandler",
+            "WH-Penang",
+            "WH-Shanghai",
+            "WH-Munich"
+          ]
         },
         {
           "name": "on_hand_units",
@@ -291,7 +420,14 @@
           "sql_type": "STRING",
           "comment": "Inventory age classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN '0-30 days' WHEN {status_noise} < 0.65 THEN '31-60 days' WHEN {status_noise} < 0.82 THEN '61-90 days' WHEN {status_noise} < 0.93 THEN '91-180 days' ELSE '180+ days' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN '0-30 days' WHEN {status_noise} < 0.65 THEN '31-60 days' WHEN {status_noise} < 0.82 THEN '61-90 days' WHEN {status_noise} < 0.93 THEN '91-180 days' ELSE '180+ days' END",
+          "entity_values": [
+            "0-30 days",
+            "31-60 days",
+            "61-90 days",
+            "91-180 days",
+            "180+ days"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -440,21 +576,72 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WV-LP-001",
+            "WV-LP-002",
+            "WV-LP-003",
+            "WV-LP-004",
+            "WV-MP-001",
+            "WV-MP-002",
+            "WV-MP-003",
+            "WV-MP-004",
+            "WV-AP-001",
+            "WV-AP-002",
+            "WV-AP-003",
+            "WV-AP-004",
+            "WV-PW-001",
+            "WV-PW-002",
+            "WV-PW-003",
+            "WV-PW-004",
+            "WV-IF-001",
+            "WV-IF-002",
+            "WV-IF-003",
+            "WV-IF-004"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Human-readable product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VaultCore SoC A72",
+            "VaultCore MCU M33",
+            "VaultCore NPU Edge",
+            "VaultCore FPGA Flex-7",
+            "VaultMem DDR5 8Gb",
+            "VaultMem DDR5 16Gb",
+            "VaultMem NAND 256Gb",
+            "VaultMem LPDDR5X 12Gb",
+            "VaultSense ADC 24-bit",
+            "VaultSense DAC 16-bit",
+            "VaultSense Op-Amp Precision",
+            "VaultSense Comparator Hi-Speed",
+            "VaultPower LDO Ultra-Low-Noise",
+            "VaultPower Buck 12V-1V 10A",
+            "VaultPower GaN HB 650V",
+            "VaultPower Wireless Charger IC",
+            "VaultLink PCIe 5.0 Switch",
+            "VaultLink USB4 Retimer",
+            "VaultLink HDMI 2.1 Mux",
+            "VaultLink I3C Hub Controller"
+          ]
         },
         {
           "name": "product_line",
           "sql_type": "STRING",
           "comment": "Product line grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Logic Products",
+            "Memory Products",
+            "Analog Products",
+            "Power Products",
+            "Interface Products"
+          ]
         },
         {
           "name": "inventory_turns",
@@ -734,7 +921,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_transaction_metrics view (source: inventory_transactions) has dimensions: transaction_date, product_line, transaction_type, warehouse_location, stock_stage. Measures: total_transactions, total_transaction_value_usd, total_units_moved, scrap_transaction_count, avg_unit_cost_usd. The inventory_snapshot_metrics view (source: inventory_snapshots) has dimensions: snapshot_date, product_line, warehouse_location, aging_bucket. Measures: total_on_hand_units, total_available_to_sell, total_inventory_value_usd, avg_committed_units. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for WaferVault Systems. Answer questions about salable inventory optimization across wafer, die, and finished goods stock using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_id, product_name), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across inventory_kpi_monthly, inventory_snapshots, inventory_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in scrap transaction count?",
     "How has unique total transactionss changed over time?",
@@ -944,7 +1131,7 @@
       ]
     },
     {
-      "question": "What are the top product identifier by total transaction quantity in units?",
+      "question": "What are the top product by total transaction quantity in units?",
       "sql_lines": [
         "SELECT product_id, SUM(quantity_units) AS total_quantity_units",
         "FROM {fqn}.inventory_transactions",

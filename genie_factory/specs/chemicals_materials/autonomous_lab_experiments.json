@@ -29,28 +29,85 @@
           "sql_type": "STRING",
           "comment": "Target formulation identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FRM-001",
+            "FRM-002",
+            "FRM-003",
+            "FRM-004",
+            "FRM-005",
+            "FRM-006",
+            "FRM-007",
+            "FRM-008",
+            "FRM-009",
+            "FRM-010",
+            "FRM-011",
+            "FRM-012",
+            "FRM-013",
+            "FRM-014",
+            "FRM-015",
+            "FRM-016",
+            "FRM-017",
+            "FRM-018",
+            "FRM-019",
+            "FRM-020"
+          ]
         },
         {
           "name": "formulation_name",
           "sql_type": "STRING",
           "comment": "Human-readable formulation name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pt-Pd Bimetallic Catalyst",
+            "Zeolite Cracking Catalyst",
+            "Iron-Oxide Fischer-Tropsch",
+            "Nickel Hydrogenation Catalyst",
+            "UV-Cure Epoxy Coating",
+            "Ceramic Thermal Barrier",
+            "Anti-Corrosion Zinc Primer",
+            "Hydrophobic Silicone Coat",
+            "Bio-PLA Blend Polymer",
+            "High-Impact ABS Resin",
+            "Conductive PEDOT Polymer",
+            "Self-Healing Polyurethane",
+            "mRNA Lipid Nanoparticle",
+            "Sustained-Release Tablet",
+            "Antibody-Drug Conjugate",
+            "Oral Bioavailability Enhancer",
+            "Graphene Oxide Nanosheet",
+            "Silver Nanoparticle Ink",
+            "Quantum Dot CdSe/ZnS",
+            "Carbon Nanotube Composite"
+          ]
         },
         {
           "name": "formulation_category",
           "sql_type": "STRING",
           "comment": "Category: Catalysts, Coatings, Polymers, Pharmaceuticals, Nanomaterials",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Catalysts",
+            "Coatings",
+            "Polymers",
+            "Pharmaceuticals",
+            "Nanomaterials"
+          ]
         },
         {
           "name": "lab_facility",
           "sql_type": "STRING",
           "comment": "Lab facility where experiment ran",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Lab-Boston' WHEN {status_noise} < 0.50 THEN 'Lab-SanDiego' WHEN {status_noise} < 0.75 THEN 'Lab-Basel' ELSE 'Lab-Shanghai' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Lab-Boston' WHEN {status_noise} < 0.50 THEN 'Lab-SanDiego' WHEN {status_noise} < 0.75 THEN 'Lab-Basel' ELSE 'Lab-Shanghai' END",
+          "entity_values": [
+            "Lab-Boston",
+            "Lab-SanDiego",
+            "Lab-Basel",
+            "Lab-Shanghai"
+          ]
         },
         {
           "name": "temperature_c",
@@ -92,7 +149,12 @@
           "sql_type": "STRING",
           "comment": "Result: Pass, Fail, Inconclusive",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Fail' WHEN {status_noise} < 0.20 THEN 'Inconclusive' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Fail' WHEN {status_noise} < 0.20 THEN 'Inconclusive' ELSE 'Pass' END",
+          "entity_values": [
+            "Fail",
+            "Inconclusive",
+            "Pass"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -246,21 +308,72 @@
           "sql_type": "STRING",
           "comment": "Target formulation identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FRM-001",
+            "FRM-002",
+            "FRM-003",
+            "FRM-004",
+            "FRM-005",
+            "FRM-006",
+            "FRM-007",
+            "FRM-008",
+            "FRM-009",
+            "FRM-010",
+            "FRM-011",
+            "FRM-012",
+            "FRM-013",
+            "FRM-014",
+            "FRM-015",
+            "FRM-016",
+            "FRM-017",
+            "FRM-018",
+            "FRM-019",
+            "FRM-020"
+          ]
         },
         {
           "name": "formulation_name",
           "sql_type": "STRING",
           "comment": "Human-readable formulation name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pt-Pd Bimetallic Catalyst",
+            "Zeolite Cracking Catalyst",
+            "Iron-Oxide Fischer-Tropsch",
+            "Nickel Hydrogenation Catalyst",
+            "UV-Cure Epoxy Coating",
+            "Ceramic Thermal Barrier",
+            "Anti-Corrosion Zinc Primer",
+            "Hydrophobic Silicone Coat",
+            "Bio-PLA Blend Polymer",
+            "High-Impact ABS Resin",
+            "Conductive PEDOT Polymer",
+            "Self-Healing Polyurethane",
+            "mRNA Lipid Nanoparticle",
+            "Sustained-Release Tablet",
+            "Antibody-Drug Conjugate",
+            "Oral Bioavailability Enhancer",
+            "Graphene Oxide Nanosheet",
+            "Silver Nanoparticle Ink",
+            "Quantum Dot CdSe/ZnS",
+            "Carbon Nanotube Composite"
+          ]
         },
         {
           "name": "formulation_category",
           "sql_type": "STRING",
           "comment": "Formulation category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Catalysts",
+            "Coatings",
+            "Polymers",
+            "Pharmaceuticals",
+            "Nanomaterials"
+          ]
         },
         {
           "name": "optimal_temp_c",
@@ -440,21 +553,72 @@
           "sql_type": "STRING",
           "comment": "Target formulation identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FRM-001",
+            "FRM-002",
+            "FRM-003",
+            "FRM-004",
+            "FRM-005",
+            "FRM-006",
+            "FRM-007",
+            "FRM-008",
+            "FRM-009",
+            "FRM-010",
+            "FRM-011",
+            "FRM-012",
+            "FRM-013",
+            "FRM-014",
+            "FRM-015",
+            "FRM-016",
+            "FRM-017",
+            "FRM-018",
+            "FRM-019",
+            "FRM-020"
+          ]
         },
         {
           "name": "formulation_name",
           "sql_type": "STRING",
           "comment": "Human-readable formulation name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pt-Pd Bimetallic Catalyst",
+            "Zeolite Cracking Catalyst",
+            "Iron-Oxide Fischer-Tropsch",
+            "Nickel Hydrogenation Catalyst",
+            "UV-Cure Epoxy Coating",
+            "Ceramic Thermal Barrier",
+            "Anti-Corrosion Zinc Primer",
+            "Hydrophobic Silicone Coat",
+            "Bio-PLA Blend Polymer",
+            "High-Impact ABS Resin",
+            "Conductive PEDOT Polymer",
+            "Self-Healing Polyurethane",
+            "mRNA Lipid Nanoparticle",
+            "Sustained-Release Tablet",
+            "Antibody-Drug Conjugate",
+            "Oral Bioavailability Enhancer",
+            "Graphene Oxide Nanosheet",
+            "Silver Nanoparticle Ink",
+            "Quantum Dot CdSe/ZnS",
+            "Carbon Nanotube Composite"
+          ]
         },
         {
           "name": "formulation_category",
           "sql_type": "STRING",
           "comment": "Formulation category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Catalysts",
+            "Coatings",
+            "Polymers",
+            "Pharmaceuticals",
+            "Nanomaterials"
+          ]
         },
         {
           "name": "experiments_run",
@@ -759,7 +923,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The experiment_runs_metrics view (source: experiment_runs) has dimensions: run_date, formulation_category, lab_facility, run_result. Measures: total_experiments, passed_experiments, avg_yield_pct, avg_purity_pct, avg_reaction_time_minutes, max_yield_pct. The optimization_monthly_metrics view (source: optimization_monthly) has dimensions: report_month, formulation_category, formulation_id. Measures: total_experiments_run, avg_pass_rate_pct, avg_yield_pct, avg_cost_per_experiment, avg_model_accuracy_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. formulation_name).",
+  "genie_instructions": "You are a chemicals & materials analytics assistant for LabAuto Sciences. Answer questions about autonomous lab experiment tracking and formulation optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (formulation_name), query the base tables directly.\n- When joining tables, use the shared keys: formulation_id (shared across experiment_runs, optimization_monthly, parameter_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in passed experiments count?",
     "How has unique total experimentss changed over time?",
@@ -967,7 +1131,7 @@
       ]
     },
     {
-      "question": "What are the top target formulation identifier by total reaction temperature in celsius?",
+      "question": "What are the top target formulation by total reaction temperature in celsius?",
       "sql_lines": [
         "SELECT formulation_id, SUM(temperature_c) AS total_temperature_c",
         "FROM {fqn}.experiment_runs",

@@ -29,28 +29,88 @@
           "sql_type": "STRING",
           "comment": "Material identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MAT-001",
+            "MAT-002",
+            "MAT-003",
+            "MAT-004",
+            "MAT-005",
+            "MAT-006",
+            "MAT-007",
+            "MAT-008",
+            "MAT-009",
+            "MAT-010",
+            "MAT-011",
+            "MAT-012",
+            "MAT-013",
+            "MAT-014",
+            "MAT-015",
+            "MAT-016",
+            "MAT-017",
+            "MAT-018",
+            "MAT-019",
+            "MAT-020"
+          ]
         },
         {
           "name": "material_name",
           "sql_type": "STRING",
           "comment": "Material descriptive name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Ti-6Al-4V Sheet",
+            "Ti-6Al-4V Bar Stock",
+            "Ti-6242 Forging Billet",
+            "Inconel 718 Bar",
+            "Inconel 625 Sheet",
+            "Waspaloy Forging",
+            "T800 Carbon Fiber Prepreg",
+            "IM7 Carbon Fiber Tape",
+            "AS4 Carbon Fabric",
+            "7075-T6 Aluminum Plate",
+            "2024-T3 Aluminum Sheet",
+            "7050 Aluminum Forging",
+            "300M Steel Bar",
+            "4340 Steel Forging",
+            "Maraging 250 Steel",
+            "SiC/SiC CMC Panel",
+            "Oxide-Oxide CMC Tube",
+            "Ti-6Al-4V Wire (AM)",
+            "Inconel 718 Powder (AM)",
+            "Al-Si10Mg Powder (AM)"
+          ]
         },
         {
           "name": "material_class",
           "sql_type": "STRING",
           "comment": "Material class: Titanium, Nickel Superalloy, Carbon Fiber, Aluminum, Specialty Steel, Ceramic Matrix",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Titanium",
+            "Nickel Superalloy",
+            "Carbon Fiber",
+            "Aluminum",
+            "Specialty Steel",
+            "Ceramic Matrix"
+          ]
         },
         {
           "name": "supplier_region",
           "sql_type": "STRING",
           "comment": "Supplier region: North America, Europe, Japan, China, South Korea, Australia",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'North America' WHEN {status_noise} < 0.55 THEN 'Europe' WHEN {status_noise} < 0.70 THEN 'Japan' WHEN {status_noise} < 0.82 THEN 'China' WHEN {status_noise} < 0.92 THEN 'South Korea' ELSE 'Australia' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'North America' WHEN {status_noise} < 0.55 THEN 'Europe' WHEN {status_noise} < 0.70 THEN 'Japan' WHEN {status_noise} < 0.82 THEN 'China' WHEN {status_noise} < 0.92 THEN 'South Korea' ELSE 'Australia' END",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Japan",
+            "China",
+            "South Korea",
+            "Australia"
+          ]
         },
         {
           "name": "order_quantity_kg",
@@ -64,7 +124,29 @@
           "sql_type": "DOUBLE",
           "comment": "Cost per kilogram in USD",
           "is_dimension": false,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "85.0",
+            "72.0",
+            "110.0",
+            "65.0",
+            "78.0",
+            "95.0",
+            "120.0",
+            "145.0",
+            "88.0",
+            "12.5",
+            "10.8",
+            "18.0",
+            "28.0",
+            "22.0",
+            "45.0",
+            "350.0",
+            "280.0",
+            "130.0",
+            "160.0",
+            "55.0"
+          ]
         },
         {
           "name": "lead_time_weeks",
@@ -78,14 +160,25 @@
           "sql_type": "STRING",
           "comment": "Delivery status: On Time, Late, Partial, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'On Time' WHEN {status_noise} < 0.82 THEN 'Late' WHEN {status_noise} < 0.95 THEN 'Partial' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'On Time' WHEN {status_noise} < 0.82 THEN 'Late' WHEN {status_noise} < 0.95 THEN 'Partial' ELSE 'Cancelled' END",
+          "entity_values": [
+            "On Time",
+            "Late",
+            "Partial",
+            "Cancelled"
+          ]
         },
         {
           "name": "quality_acceptance",
           "sql_type": "STRING",
           "comment": "Quality acceptance: Accepted, Conditional, Rejected",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Accepted' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Rejected' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Accepted' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Rejected' END",
+          "entity_values": [
+            "Accepted",
+            "Conditional",
+            "Rejected"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -251,14 +344,44 @@
           "sql_type": "STRING",
           "comment": "Material identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MAT-001",
+            "MAT-002",
+            "MAT-003",
+            "MAT-004",
+            "MAT-005",
+            "MAT-006",
+            "MAT-007",
+            "MAT-008",
+            "MAT-009",
+            "MAT-010",
+            "MAT-011",
+            "MAT-012",
+            "MAT-013",
+            "MAT-014",
+            "MAT-015",
+            "MAT-016",
+            "MAT-017",
+            "MAT-018",
+            "MAT-019",
+            "MAT-020"
+          ]
         },
         {
           "name": "material_class",
           "sql_type": "STRING",
           "comment": "Material class",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Titanium",
+            "Nickel Superalloy",
+            "Carbon Fiber",
+            "Aluminum",
+            "Specialty Steel",
+            "Ceramic Matrix"
+          ]
         },
         {
           "name": "on_hand_kg",
@@ -293,7 +416,13 @@
           "sql_type": "STRING",
           "comment": "Supply risk flag: OK, Watch, At Risk, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'OK' WHEN {status_noise} < 0.78 THEN 'Watch' WHEN {status_noise} < 0.93 THEN 'At Risk' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'OK' WHEN {status_noise} < 0.78 THEN 'Watch' WHEN {status_noise} < 0.93 THEN 'At Risk' ELSE 'Critical' END",
+          "entity_values": [
+            "OK",
+            "Watch",
+            "At Risk",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -432,14 +561,44 @@
           "sql_type": "STRING",
           "comment": "Material identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MAT-001",
+            "MAT-002",
+            "MAT-003",
+            "MAT-004",
+            "MAT-005",
+            "MAT-006",
+            "MAT-007",
+            "MAT-008",
+            "MAT-009",
+            "MAT-010",
+            "MAT-011",
+            "MAT-012",
+            "MAT-013",
+            "MAT-014",
+            "MAT-015",
+            "MAT-016",
+            "MAT-017",
+            "MAT-018",
+            "MAT-019",
+            "MAT-020"
+          ]
         },
         {
           "name": "material_class",
           "sql_type": "STRING",
           "comment": "Material class",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Titanium",
+            "Nickel Superalloy",
+            "Carbon Fiber",
+            "Aluminum",
+            "Specialty Steel",
+            "Ceramic Matrix"
+          ]
         },
         {
           "name": "on_time_delivery_pct",
@@ -474,7 +633,11 @@
           "sql_type": "STRING",
           "comment": "Single-source risk: Yes, No",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Yes' ELSE 'No' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Yes' ELSE 'No' END",
+          "entity_values": [
+            "Yes",
+            "No"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -707,7 +870,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The procurement_metrics view (source: procurement_orders) has dimensions: order_date, material_class, supplier_region, delivery_status. Measures: total_order_value, total_order_quantity_kg, avg_lead_time_weeks, total_po_count, late_delivery_count. The supply_position_metrics view (source: supply_snapshots) has dimensions: snapshot_date, material_class, at_risk_flag. Measures: total_on_hand_kg, avg_days_of_supply, critical_material_count, total_committed_kg, snapshot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. material_id, material_name).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroChain Logistics. Answer questions about aerospace supply chain and long-lead materials planning using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (material_id, material_name), query the base tables directly.\n- When joining tables, use the shared keys: material_id (shared across procurement_orders, supply_kpi_monthly, supply_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in late delivery count?",
     "How has unique total pos changed over time?",
@@ -746,7 +909,7 @@
       ]
     },
     {
-      "question": "How does total order quantity in kilograms break down by material identifier for 'On Time' records?",
+      "question": "How does total order quantity in kilograms break down by material for 'On Time' records?",
       "sql_lines": [
         "SELECT material_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.procurement_orders",
@@ -913,7 +1076,7 @@
       ]
     },
     {
-      "question": "What are the top material identifier by total order quantity in kilograms?",
+      "question": "What are the top material by total order quantity in kilograms?",
       "sql_lines": [
         "SELECT material_id, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.procurement_orders",

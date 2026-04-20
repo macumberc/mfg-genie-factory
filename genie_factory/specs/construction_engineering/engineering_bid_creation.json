@@ -29,28 +29,90 @@
           "sql_type": "STRING",
           "comment": "Project ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PJ-001",
+            "PJ-002",
+            "PJ-003",
+            "PJ-004",
+            "PJ-005",
+            "PJ-006",
+            "PJ-007",
+            "PJ-008",
+            "PJ-009",
+            "PJ-010",
+            "PJ-011",
+            "PJ-012",
+            "PJ-013",
+            "PJ-014",
+            "PJ-015",
+            "PJ-016",
+            "PJ-017",
+            "PJ-018",
+            "PJ-019",
+            "PJ-020"
+          ]
         },
         {
           "name": "project_name",
           "sql_type": "STRING",
           "comment": "Project name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "I-95 Bridge Replacement",
+            "Harbor Crossing Overpass",
+            "Mountain Pass Bridge",
+            "Highway 101 Expansion",
+            "Interstate 10 Widening",
+            "Ring Road Phase III",
+            "Metro Tower Office Complex",
+            "Lakeside Mixed-Use Dev",
+            "Airport Terminal Expansion",
+            "City Center Parking Garage",
+            "Convention Center Garage",
+            "Regional Water Treatment",
+            "Coastal Desalination Plant",
+            "Downtown Tunnel Project",
+            "Mountain Rail Tunnel",
+            "Industrial Park Phase II",
+            "Logistics Hub Construction",
+            "Riverfront Park Development",
+            "Solar Farm Infrastructure",
+            "Wind Farm Foundations"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bridge",
+            "Highway",
+            "Commercial Building",
+            "Parking Structure",
+            "Water/Wastewater",
+            "Tunnel",
+            "Industrial",
+            "Public Works",
+            "Energy"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "West",
+            "Southwest",
+            "Midwest"
+          ]
         },
         {
           "name": "estimated_cost_usd",
@@ -78,7 +140,13 @@
           "sql_type": "STRING",
           "comment": "Result: Won, Lost, Pending, Withdrawn",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Withdrawn' WHEN {status_noise} < 0.25 THEN 'Pending' WHEN {status_noise} < 0.55 THEN 'Lost' ELSE 'Won' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Withdrawn' WHEN {status_noise} < 0.25 THEN 'Pending' WHEN {status_noise} < 0.55 THEN 'Lost' ELSE 'Won' END",
+          "entity_values": [
+            "Withdrawn",
+            "Pending",
+            "Lost",
+            "Won"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -253,21 +321,61 @@
           "sql_type": "STRING",
           "comment": "Project ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PJ-001",
+            "PJ-002",
+            "PJ-003",
+            "PJ-004",
+            "PJ-005",
+            "PJ-006",
+            "PJ-007",
+            "PJ-008",
+            "PJ-009",
+            "PJ-010",
+            "PJ-011",
+            "PJ-012",
+            "PJ-013",
+            "PJ-014",
+            "PJ-015",
+            "PJ-016",
+            "PJ-017",
+            "PJ-018",
+            "PJ-019",
+            "PJ-020"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bridge",
+            "Highway",
+            "Commercial Building",
+            "Parking Structure",
+            "Water/Wastewater",
+            "Tunnel",
+            "Industrial",
+            "Public Works",
+            "Energy"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "West",
+            "Southwest",
+            "Midwest"
+          ]
         },
         {
           "name": "labor_cost_usd",
@@ -477,21 +585,61 @@
           "sql_type": "STRING",
           "comment": "Project ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PJ-001",
+            "PJ-002",
+            "PJ-003",
+            "PJ-004",
+            "PJ-005",
+            "PJ-006",
+            "PJ-007",
+            "PJ-008",
+            "PJ-009",
+            "PJ-010",
+            "PJ-011",
+            "PJ-012",
+            "PJ-013",
+            "PJ-014",
+            "PJ-015",
+            "PJ-016",
+            "PJ-017",
+            "PJ-018",
+            "PJ-019",
+            "PJ-020"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bridge",
+            "Highway",
+            "Commercial Building",
+            "Parking Structure",
+            "Water/Wastewater",
+            "Tunnel",
+            "Industrial",
+            "Public Works",
+            "Energy"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "West",
+            "Southwest",
+            "Midwest"
+          ]
         },
         {
           "name": "bids_submitted",
@@ -795,7 +943,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The bid_kpi_monthly view (source: projects) has dimensions: bid_date, project_type, region, bid_result. Measures: total_bid_amount, total_estimated_cost, avg_target_margin, bid_count, won_count. The pipeline_kpi_monthly view (source: cost_estimate_snapshots) has dimensions: perf_month, project_type, region. Measures: total_bids_submitted, total_bids_won, total_pipeline, avg_estimate_accuracy, avg_competitors. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. project_id, project_name).",
+  "genie_instructions": "You are a construction & engineering analytics assistant for BuildBid Engineering. Answer questions about engineering bid creation and cost estimation analytics using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (project_id, project_name), query the base tables directly.\n- When joining tables, use the shared keys: project_id (shared across bid_submissions, cost_estimate_snapshots, projects).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in won count?",
     "How has unique bids changed over time?",

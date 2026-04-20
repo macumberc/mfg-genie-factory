@@ -29,21 +29,55 @@
           "sql_type": "STRING",
           "comment": "SoC design identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CA-MOB-A17X",
+            "CA-MOB-A18",
+            "CA-MOB-A19P",
+            "CA-MOB-M3",
+            "CA-MOB-M4P",
+            "CA-SRV-X200",
+            "CA-SRV-X300",
+            "CA-SRV-X400E",
+            "CA-SRV-Z100",
+            "CA-SRV-Z200A",
+            "CA-IOT-EDGE-1",
+            "CA-IOT-EDGE-2",
+            "CA-IOT-SENS-1",
+            "CA-IOT-GATE-1",
+            "CA-IOT-WLSE-1",
+            "CA-AUT-ADAS-1",
+            "CA-AUT-ADAS-2",
+            "CA-AUT-CABIN-1",
+            "CA-AUT-ZONAL-1",
+            "CA-AUT-VCU-1"
+          ]
         },
         {
           "name": "design_family",
           "sql_type": "STRING",
           "comment": "Design family category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Mobile SoC",
+            "Server SoC",
+            "IoT SoC",
+            "Automotive SoC"
+          ]
         },
         {
           "name": "process_node",
           "sql_type": "STRING",
           "comment": "Fabrication process node: 3nm, 5nm, 7nm, 14nm",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN '3nm' WHEN {status_noise} < 0.60 THEN '5nm' WHEN {status_noise} < 0.85 THEN '7nm' ELSE '14nm' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN '3nm' WHEN {status_noise} < 0.60 THEN '5nm' WHEN {status_noise} < 0.85 THEN '7nm' ELSE '14nm' END",
+          "entity_values": [
+            "3nm",
+            "5nm",
+            "7nm",
+            "14nm"
+          ]
         },
         {
           "name": "clock_freq_ghz",
@@ -78,7 +112,12 @@
           "sql_type": "STRING",
           "comment": "Simulation convergence: Converged, Partial, Failed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Converged' WHEN {status_noise} < 0.90 THEN 'Partial' ELSE 'Failed' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Converged' WHEN {status_noise} < 0.90 THEN 'Partial' ELSE 'Failed' END",
+          "entity_values": [
+            "Converged",
+            "Partial",
+            "Failed"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -232,14 +271,42 @@
           "sql_type": "STRING",
           "comment": "SoC design identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CA-MOB-A17X",
+            "CA-MOB-A18",
+            "CA-MOB-A19P",
+            "CA-MOB-M3",
+            "CA-MOB-M4P",
+            "CA-SRV-X200",
+            "CA-SRV-X300",
+            "CA-SRV-X400E",
+            "CA-SRV-Z100",
+            "CA-SRV-Z200A",
+            "CA-IOT-EDGE-1",
+            "CA-IOT-EDGE-2",
+            "CA-IOT-SENS-1",
+            "CA-IOT-GATE-1",
+            "CA-IOT-WLSE-1",
+            "CA-AUT-ADAS-1",
+            "CA-AUT-ADAS-2",
+            "CA-AUT-CABIN-1",
+            "CA-AUT-ZONAL-1",
+            "CA-AUT-VCU-1"
+          ]
         },
         {
           "name": "design_family",
           "sql_type": "STRING",
           "comment": "Design family category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Mobile SoC",
+            "Server SoC",
+            "IoT SoC",
+            "Automotive SoC"
+          ]
         },
         {
           "name": "voltage_v",
@@ -288,7 +355,12 @@
           "sql_type": "STRING",
           "comment": "Sweep status: Complete, In Progress, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Complete' WHEN {status_noise} < 0.95 THEN 'In Progress' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Complete' WHEN {status_noise} < 0.95 THEN 'In Progress' ELSE 'Cancelled' END",
+          "entity_values": [
+            "Complete",
+            "In Progress",
+            "Cancelled"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -442,14 +514,42 @@
           "sql_type": "STRING",
           "comment": "SoC design identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CA-MOB-A17X",
+            "CA-MOB-A18",
+            "CA-MOB-A19P",
+            "CA-MOB-M3",
+            "CA-MOB-M4P",
+            "CA-SRV-X200",
+            "CA-SRV-X300",
+            "CA-SRV-X400E",
+            "CA-SRV-Z100",
+            "CA-SRV-Z200A",
+            "CA-IOT-EDGE-1",
+            "CA-IOT-EDGE-2",
+            "CA-IOT-SENS-1",
+            "CA-IOT-GATE-1",
+            "CA-IOT-WLSE-1",
+            "CA-AUT-ADAS-1",
+            "CA-AUT-ADAS-2",
+            "CA-AUT-CABIN-1",
+            "CA-AUT-ZONAL-1",
+            "CA-AUT-VCU-1"
+          ]
         },
         {
           "name": "design_family",
           "sql_type": "STRING",
           "comment": "Design family category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Mobile SoC",
+            "Server SoC",
+            "IoT SoC",
+            "Automotive SoC"
+          ]
         },
         {
           "name": "convergence_rate_pct",
@@ -742,7 +842,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, design_family, process_node, convergence_status. Measures: total_simulations, avg_clock_freq_ghz, avg_power_mw, converged_count. The optimization_metrics view (source: optimization_monthly) has dimensions: opt_month, design_family. Measures: avg_convergence_rate, total_pareto_points, total_sim_hours, avg_ppa_improvement. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. soc_design).",
+  "genie_instructions": "You are a computer & electronic analytics assistant for ChipArchitect Labs. Answer questions about system-on-chip design space simulation and optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (soc_design), query the base tables directly.\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in converged count?",
     "How has unique total simulationss changed over time?",
@@ -790,7 +890,7 @@
       ]
     },
     {
-      "question": "How does total simulated clock frequency in ghz break down by soc design identifier for 'Converged' records?",
+      "question": "How does total simulated clock frequency in ghz break down by soc design for 'Converged' records?",
       "sql_lines": [
         "SELECT soc_design, COUNT(*) AS record_count, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
         "FROM {fqn}.simulation_runs",
@@ -950,7 +1050,7 @@
       ]
     },
     {
-      "question": "What are the top soc design identifier by total simulated clock frequency in ghz?",
+      "question": "What are the top soc design by total simulated clock frequency in ghz?",
       "sql_lines": [
         "SELECT soc_design, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
         "FROM {fqn}.simulation_runs",

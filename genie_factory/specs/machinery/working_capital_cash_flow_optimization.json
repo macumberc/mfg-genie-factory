@@ -29,21 +29,57 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-BU-001",
+            "CF-BU-002",
+            "CF-BU-003",
+            "CF-BU-004",
+            "CF-BU-005",
+            "CF-BU-006",
+            "CF-BU-007",
+            "CF-BU-008",
+            "CF-BU-009",
+            "CF-BU-010",
+            "CF-BU-011",
+            "CF-BU-012",
+            "CF-BU-013",
+            "CF-BU-014",
+            "CF-BU-015",
+            "CF-BU-016",
+            "CF-BU-017",
+            "CF-BU-018",
+            "CF-BU-019",
+            "CF-BU-020"
+          ]
         },
         {
           "name": "business_unit_type",
           "sql_type": "STRING",
           "comment": "Business unit type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Operations",
+            "Sales",
+            "Engineering",
+            "Supply Chain",
+            "Corporate"
+          ]
         },
         {
           "name": "txn_type",
           "sql_type": "STRING",
           "comment": "Type: AR Collection, AP Payment, Capex, Operating Expense, Revenue",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'AR Collection' WHEN {status_noise} < 0.45 THEN 'AP Payment' WHEN {status_noise} < 0.55 THEN 'Capex' WHEN {status_noise} < 0.75 THEN 'Operating Expense' ELSE 'Revenue' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'AR Collection' WHEN {status_noise} < 0.45 THEN 'AP Payment' WHEN {status_noise} < 0.55 THEN 'Capex' WHEN {status_noise} < 0.75 THEN 'Operating Expense' ELSE 'Revenue' END",
+          "entity_values": [
+            "AR Collection",
+            "AP Payment",
+            "Capex",
+            "Operating Expense",
+            "Revenue"
+          ]
         },
         {
           "name": "amount_usd",
@@ -57,7 +93,11 @@
           "sql_type": "STRING",
           "comment": "Cash direction: Inflow or Outflow",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Inflow' ELSE 'Outflow' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Inflow' ELSE 'Outflow' END",
+          "entity_values": [
+            "Inflow",
+            "Outflow"
+          ]
         },
         {
           "name": "payment_terms_days",
@@ -78,7 +118,13 @@
           "sql_type": "STRING",
           "comment": "Transaction currency",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'USD' WHEN {status_noise} < 0.80 THEN 'EUR' WHEN {status_noise} < 0.92 THEN 'GBP' ELSE 'JPY' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'USD' WHEN {status_noise} < 0.80 THEN 'EUR' WHEN {status_noise} < 0.92 THEN 'GBP' ELSE 'JPY' END",
+          "entity_values": [
+            "USD",
+            "EUR",
+            "GBP",
+            "JPY"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -232,14 +278,43 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-BU-001",
+            "CF-BU-002",
+            "CF-BU-003",
+            "CF-BU-004",
+            "CF-BU-005",
+            "CF-BU-006",
+            "CF-BU-007",
+            "CF-BU-008",
+            "CF-BU-009",
+            "CF-BU-010",
+            "CF-BU-011",
+            "CF-BU-012",
+            "CF-BU-013",
+            "CF-BU-014",
+            "CF-BU-015",
+            "CF-BU-016",
+            "CF-BU-017",
+            "CF-BU-018",
+            "CF-BU-019",
+            "CF-BU-020"
+          ]
         },
         {
           "name": "business_unit_type",
           "sql_type": "STRING",
           "comment": "Business unit type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Operations",
+            "Sales",
+            "Engineering",
+            "Supply Chain",
+            "Corporate"
+          ]
         },
         {
           "name": "accounts_receivable_usd",
@@ -435,14 +510,43 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-BU-001",
+            "CF-BU-002",
+            "CF-BU-003",
+            "CF-BU-004",
+            "CF-BU-005",
+            "CF-BU-006",
+            "CF-BU-007",
+            "CF-BU-008",
+            "CF-BU-009",
+            "CF-BU-010",
+            "CF-BU-011",
+            "CF-BU-012",
+            "CF-BU-013",
+            "CF-BU-014",
+            "CF-BU-015",
+            "CF-BU-016",
+            "CF-BU-017",
+            "CF-BU-018",
+            "CF-BU-019",
+            "CF-BU-020"
+          ]
         },
         {
           "name": "business_unit_type",
           "sql_type": "STRING",
           "comment": "Business unit type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Operations",
+            "Sales",
+            "Engineering",
+            "Supply Chain",
+            "Corporate"
+          ]
         },
         {
           "name": "net_cash_flow_usd",
@@ -733,7 +837,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cash_flow_txn_metrics view (source: cash_flow_transactions) has dimensions: txn_date, business_unit_type, txn_type, direction. Measures: total_inflow, total_outflow, total_transactions, avg_days_outstanding. The cash_flow_kpi_metrics view (source: cash_flow_monthly) has dimensions: kpi_month, business_unit_type. Measures: total_net_cash_flow, total_operating_cf, avg_collection_rate, total_working_capital. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. business_unit_id).",
+  "genie_instructions": "You are a machinery analytics assistant for CapitalFlow Machinery. Answer questions about working capital and cash flow optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (business_unit_id), query the base tables directly.\n- When joining tables, use the shared keys: business_unit_id (shared across cash_flow_monthly, cash_flow_transactions, working_capital_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total inflow count?",
     "How has total outflow count changed over time?",
@@ -937,7 +1041,7 @@
       ]
     },
     {
-      "question": "What are the top business unit identifier by total transaction amount in usd?",
+      "question": "What are the top business unit by total transaction amount in usd?",
       "sql_lines": [
         "SELECT business_unit_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_flow_transactions",

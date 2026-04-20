@@ -29,28 +29,90 @@
           "sql_type": "STRING",
           "comment": "Turbine unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HT-FR-001",
+            "HT-FR-002",
+            "HT-FR-003",
+            "HT-FR-004",
+            "HT-FR-005",
+            "HT-FR-006",
+            "HT-KP-007",
+            "HT-KP-008",
+            "HT-KP-009",
+            "HT-KP-010",
+            "HT-KP-011",
+            "HT-KP-012",
+            "HT-PL-013",
+            "HT-PL-014",
+            "HT-PL-015",
+            "HT-PL-016",
+            "HT-BL-017",
+            "HT-BL-018",
+            "HT-BL-019",
+            "HT-BL-020"
+          ]
         },
         {
           "name": "turbine_name",
           "sql_type": "STRING",
           "comment": "Turbine unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Eagle Falls Francis 1",
+            "Eagle Falls Francis 2",
+            "Canyon Run Francis A",
+            "Canyon Run Francis B",
+            "Cascade Francis 1",
+            "Cascade Francis 2",
+            "Riverside Kaplan 1",
+            "Riverside Kaplan 2",
+            "Flatrock Kaplan A",
+            "Flatrock Kaplan B",
+            "Millpond Kaplan 1",
+            "Millpond Kaplan 2",
+            "Summit Pelton 1",
+            "Summit Pelton 2",
+            "Highland Pelton A",
+            "Highland Pelton B",
+            "Bayshore Bulb 1",
+            "Bayshore Bulb 2",
+            "Tidewater Bulb A",
+            "Tidewater Bulb B"
+          ]
         },
         {
           "name": "turbine_type",
           "sql_type": "STRING",
           "comment": "Turbine type: Francis, Kaplan, Pelton, Bulb",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Francis",
+            "Kaplan",
+            "Pelton",
+            "Bulb"
+          ]
         },
         {
           "name": "dam_name",
           "sql_type": "STRING",
           "comment": "Associated dam name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Eagle Falls Dam",
+            "Canyon Run Dam",
+            "Cascade Dam",
+            "Riverside Dam",
+            "Flatrock Dam",
+            "Millpond Dam",
+            "Summit Dam",
+            "Highland Dam",
+            "Bayshore Dam",
+            "Tidewater Dam"
+          ]
         },
         {
           "name": "generation_mwh",
@@ -78,7 +140,13 @@
           "sql_type": "STRING",
           "comment": "Status: Generating, Standby, Maintenance, Spillway",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Maintenance' WHEN {status_noise} < 0.12 THEN 'Spillway' WHEN {status_noise} < 0.20 THEN 'Standby' ELSE 'Generating' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Maintenance' WHEN {status_noise} < 0.12 THEN 'Spillway' WHEN {status_noise} < 0.20 THEN 'Standby' ELSE 'Generating' END",
+          "entity_values": [
+            "Maintenance",
+            "Spillway",
+            "Standby",
+            "Generating"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -250,14 +318,48 @@
           "sql_type": "STRING",
           "comment": "Turbine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HT-FR-001",
+            "HT-FR-002",
+            "HT-FR-003",
+            "HT-FR-004",
+            "HT-FR-005",
+            "HT-FR-006",
+            "HT-KP-007",
+            "HT-KP-008",
+            "HT-KP-009",
+            "HT-KP-010",
+            "HT-KP-011",
+            "HT-KP-012",
+            "HT-PL-013",
+            "HT-PL-014",
+            "HT-PL-015",
+            "HT-PL-016",
+            "HT-BL-017",
+            "HT-BL-018",
+            "HT-BL-019",
+            "HT-BL-020"
+          ]
         },
         {
           "name": "dam_name",
           "sql_type": "STRING",
           "comment": "Dam name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Eagle Falls Dam",
+            "Canyon Run Dam",
+            "Cascade Dam",
+            "Riverside Dam",
+            "Flatrock Dam",
+            "Millpond Dam",
+            "Summit Dam",
+            "Highland Dam",
+            "Bayshore Dam",
+            "Tidewater Dam"
+          ]
         },
         {
           "name": "inflow_m3s",
@@ -292,7 +394,12 @@
           "sql_type": "STRING",
           "comment": "Environmental flow compliance: Compliant, Marginal, Non-Compliant",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Non-Compliant' WHEN {status_noise} < 0.12 THEN 'Marginal' ELSE 'Compliant' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Non-Compliant' WHEN {status_noise} < 0.12 THEN 'Marginal' ELSE 'Compliant' END",
+          "entity_values": [
+            "Non-Compliant",
+            "Marginal",
+            "Compliant"
+          ]
         },
         {
           "name": "head_meters",
@@ -469,14 +576,48 @@
           "sql_type": "STRING",
           "comment": "Associated turbine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HT-FR-001",
+            "HT-FR-002",
+            "HT-FR-003",
+            "HT-FR-004",
+            "HT-FR-005",
+            "HT-FR-006",
+            "HT-KP-007",
+            "HT-KP-008",
+            "HT-KP-009",
+            "HT-KP-010",
+            "HT-KP-011",
+            "HT-KP-012",
+            "HT-PL-013",
+            "HT-PL-014",
+            "HT-PL-015",
+            "HT-PL-016",
+            "HT-BL-017",
+            "HT-BL-018",
+            "HT-BL-019",
+            "HT-BL-020"
+          ]
         },
         {
           "name": "dam_name",
           "sql_type": "STRING",
           "comment": "Dam name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Eagle Falls Dam",
+            "Canyon Run Dam",
+            "Cascade Dam",
+            "Riverside Dam",
+            "Flatrock Dam",
+            "Millpond Dam",
+            "Summit Dam",
+            "Highland Dam",
+            "Bayshore Dam",
+            "Tidewater Dam"
+          ]
         },
         {
           "name": "water_level_m",
@@ -518,7 +659,13 @@
           "sql_type": "STRING",
           "comment": "Drought risk: Low, Moderate, High, Severe",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Severe' WHEN {status_noise} < 0.15 THEN 'High' WHEN {status_noise} < 0.35 THEN 'Moderate' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Severe' WHEN {status_noise} < 0.15 THEN 'High' WHEN {status_noise} < 0.35 THEN 'Moderate' ELSE 'Low' END",
+          "entity_values": [
+            "Severe",
+            "High",
+            "Moderate",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -783,7 +930,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The generation_kpi_monthly view (source: turbine_units) has dimensions: record_date, turbine_type, dam_name, operating_status. Measures: total_generation_mwh, avg_efficiency_pct, avg_water_flow, generating_turbine_count, total_turbine_count. The reservoir_kpi_monthly view (source: reservoir_snapshots) has dimensions: snapshot_date, dam_name, drought_risk. Measures: avg_storage_pct, total_spill_volume, avg_generation_potential, avg_days_of_storage, high_drought_risk_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. turbine_id, turbine_name).",
+  "genie_instructions": "You are a power generation analytics assistant for HydroFlow Energy. Answer questions about hydroelectric turbine optimization and reservoir management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (turbine_id, turbine_name), query the base tables directly.\n- When joining tables, use the shared keys: turbine_id (shared across flow_readings, reservoir_snapshots, turbine_units).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in generating turbine count?",
     "How has unique total turbines changed over time?",
@@ -831,7 +978,7 @@
       ]
     },
     {
-      "question": "How does total water flow rate in cubic meters per second break down by turbine unit identifier for 'Maintenance' records?",
+      "question": "How does total water flow rate in cubic meters per second break down by turbine unit for 'Maintenance' records?",
       "sql_lines": [
         "SELECT turbine_id, COUNT(*) AS record_count, SUM(water_flow_m3s) AS total_water_flow_m3s",
         "FROM {fqn}.turbine_units",
@@ -989,7 +1136,7 @@
       ]
     },
     {
-      "question": "What are the top turbine unit identifier by total water flow rate in cubic meters per second?",
+      "question": "What are the top turbine unit by total water flow rate in cubic meters per second?",
       "sql_lines": [
         "SELECT turbine_id, SUM(water_flow_m3s) AS total_water_flow_m3s",
         "FROM {fqn}.turbine_units",

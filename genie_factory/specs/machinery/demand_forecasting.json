@@ -29,14 +29,43 @@
           "sql_type": "STRING",
           "comment": "Equipment model ordered",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-HEX-001",
+            "FP-CRN-002",
+            "FP-GEN-003",
+            "FP-PMP-004",
+            "FP-VLV-005",
+            "FP-HEX-006",
+            "FP-CRN-007",
+            "FP-GEN-008",
+            "FP-PMP-009",
+            "FP-VLV-010",
+            "FP-HEX-011",
+            "FP-CRN-012",
+            "FP-GEN-013",
+            "FP-PMP-014",
+            "FP-VLV-015",
+            "FP-HEX-016",
+            "FP-CRN-017",
+            "FP-GEN-018",
+            "FP-PMP-019",
+            "FP-VLV-020"
+          ]
         },
         {
           "name": "product_family",
           "sql_type": "STRING",
           "comment": "Product family",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Heavy Excavators",
+            "Mobile Cranes",
+            "Industrial Generators",
+            "Centrifugal Pumps",
+            "Control Valves"
+          ]
         },
         {
           "name": "order_quantity",
@@ -57,14 +86,26 @@
           "sql_type": "STRING",
           "comment": "Customer region",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Americas' WHEN {status_noise} < 0.50 THEN 'EMEA' WHEN {status_noise} < 0.75 THEN 'APAC' ELSE 'LATAM' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Americas' WHEN {status_noise} < 0.50 THEN 'EMEA' WHEN {status_noise} < 0.75 THEN 'APAC' ELSE 'LATAM' END",
+          "entity_values": [
+            "Americas",
+            "EMEA",
+            "APAC",
+            "LATAM"
+          ]
         },
         {
           "name": "order_status",
           "sql_type": "STRING",
           "comment": "Status: Confirmed, Shipped, Backlog, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Cancelled' WHEN {status_noise} < 0.20 THEN 'Backlog' WHEN {status_noise} < 0.35 THEN 'Confirmed' ELSE 'Shipped' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Cancelled' WHEN {status_noise} < 0.20 THEN 'Backlog' WHEN {status_noise} < 0.35 THEN 'Confirmed' ELSE 'Shipped' END",
+          "entity_values": [
+            "Cancelled",
+            "Backlog",
+            "Confirmed",
+            "Shipped"
+          ]
         },
         {
           "name": "lead_time_days",
@@ -233,14 +274,43 @@
           "sql_type": "STRING",
           "comment": "Equipment model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-HEX-001",
+            "FP-CRN-002",
+            "FP-GEN-003",
+            "FP-PMP-004",
+            "FP-VLV-005",
+            "FP-HEX-006",
+            "FP-CRN-007",
+            "FP-GEN-008",
+            "FP-PMP-009",
+            "FP-VLV-010",
+            "FP-HEX-011",
+            "FP-CRN-012",
+            "FP-GEN-013",
+            "FP-PMP-014",
+            "FP-VLV-015",
+            "FP-HEX-016",
+            "FP-CRN-017",
+            "FP-GEN-018",
+            "FP-PMP-019",
+            "FP-VLV-020"
+          ]
         },
         {
           "name": "product_family",
           "sql_type": "STRING",
           "comment": "Product family",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Heavy Excavators",
+            "Mobile Cranes",
+            "Industrial Generators",
+            "Centrifugal Pumps",
+            "Control Valves"
+          ]
         },
         {
           "name": "forecasted_units",
@@ -275,7 +345,12 @@
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v4.0' WHEN {status_noise} < 0.60 THEN 'v4.1' ELSE 'v4.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v4.0' WHEN {status_noise} < 0.60 THEN 'v4.1' ELSE 'v4.2' END",
+          "entity_values": [
+            "v4.0",
+            "v4.1",
+            "v4.2"
+          ]
         },
         {
           "name": "confidence_interval_pct",
@@ -437,14 +512,43 @@
           "sql_type": "STRING",
           "comment": "Equipment model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-HEX-001",
+            "FP-CRN-002",
+            "FP-GEN-003",
+            "FP-PMP-004",
+            "FP-VLV-005",
+            "FP-HEX-006",
+            "FP-CRN-007",
+            "FP-GEN-008",
+            "FP-PMP-009",
+            "FP-VLV-010",
+            "FP-HEX-011",
+            "FP-CRN-012",
+            "FP-GEN-013",
+            "FP-PMP-014",
+            "FP-VLV-015",
+            "FP-HEX-016",
+            "FP-CRN-017",
+            "FP-GEN-018",
+            "FP-PMP-019",
+            "FP-VLV-020"
+          ]
         },
         {
           "name": "product_family",
           "sql_type": "STRING",
           "comment": "Product family",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Heavy Excavators",
+            "Mobile Cranes",
+            "Industrial Generators",
+            "Centrifugal Pumps",
+            "Control Valves"
+          ]
         },
         {
           "name": "forecast_accuracy_pct",
@@ -726,7 +830,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The customer_orders_metrics view (source: customer_orders) has dimensions: order_date, product_family, customer_region, order_status. Measures: total_order_revenue, total_order_quantity, total_orders, avg_lead_time. The demand_kpi_metrics view (source: demand_kpi_monthly) has dimensions: kpi_month, product_family. Measures: avg_forecast_accuracy, avg_fill_rate, total_backlog, total_revenue. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_model).",
+  "genie_instructions": "You are a machinery analytics assistant for ForecastPro Machinery. Answer questions about demand forecasting and order backlog management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (equipment_model), query the base tables directly.\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total orderss?",
     "How has highest order quantity changed over time?",

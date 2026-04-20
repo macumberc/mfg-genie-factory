@@ -29,35 +29,105 @@
           "sql_type": "STRING",
           "comment": "Project identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CV-DW-001",
+            "CV-DW-002",
+            "CV-DW-003",
+            "CV-DW-004",
+            "CV-ON-005",
+            "CV-ON-006",
+            "CV-SH-007",
+            "CV-SH-008",
+            "CV-SH-009",
+            "CV-SH-010",
+            "CV-LNG-011",
+            "CV-LNG-012",
+            "CV-LNG-013",
+            "CV-INF-014",
+            "CV-INF-015",
+            "CV-INF-016",
+            "CV-DW-017",
+            "CV-SH-018",
+            "CV-INF-019",
+            "CV-LNG-020"
+          ]
         },
         {
           "name": "project_name",
           "sql_type": "STRING",
           "comment": "Project name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Anchor Phase 2",
+            "Whale Development",
+            "Kaskida Appraisal",
+            "Tiber Exploration",
+            "Eagle Ford Infill Program",
+            "San Juan Basin Recompletion",
+            "Permian Delaware Basin Pad",
+            "Permian Midland Expansion",
+            "Haynesville Gas Play",
+            "Marcellus Northeast PA",
+            "Freeport LNG Train 4",
+            "Plaquemines LNG Phase 2",
+            "Golden Pass Export",
+            "GOM Pipeline Expansion",
+            "Permian Gathering System",
+            "FPSO Conversion Project",
+            "Shenandoah Exploration",
+            "DJ Basin Wattenberg",
+            "Carbon Capture Hub Texas",
+            "Cameron LNG Debottleneck"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type: Deepwater, Onshore Conventional, Shale, LNG, Infrastructure",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Deepwater",
+            "Onshore Conventional",
+            "Shale",
+            "LNG",
+            "Infrastructure"
+          ]
         },
         {
           "name": "basin_region",
           "sql_type": "STRING",
           "comment": "Basin or geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf of Mexico",
+            "Texas",
+            "New Mexico",
+            "Permian Basin",
+            "Louisiana",
+            "Appalachia",
+            "Texas Gulf Coast",
+            "Louisiana Gulf Coast",
+            "Colorado"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Category: Drilling, Facilities, Subsea, Seismic, Engineering, Procurement",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Drilling' WHEN {status_noise} < 0.42 THEN 'Facilities' WHEN {status_noise} < 0.55 THEN 'Subsea' WHEN {status_noise} < 0.68 THEN 'Seismic' WHEN {status_noise} < 0.82 THEN 'Engineering' ELSE 'Procurement' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Drilling' WHEN {status_noise} < 0.42 THEN 'Facilities' WHEN {status_noise} < 0.55 THEN 'Subsea' WHEN {status_noise} < 0.68 THEN 'Seismic' WHEN {status_noise} < 0.82 THEN 'Engineering' ELSE 'Procurement' END",
+          "entity_values": [
+            "Drilling",
+            "Facilities",
+            "Subsea",
+            "Seismic",
+            "Engineering",
+            "Procurement"
+          ]
         },
         {
           "name": "amount_usd",
@@ -78,14 +148,27 @@
           "sql_type": "STRING",
           "comment": "Project phase: Exploration, Appraisal, Development, Production, Abandonment",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Exploration' WHEN {status_noise} < 0.30 THEN 'Appraisal' WHEN {status_noise} < 0.65 THEN 'Development' WHEN {status_noise} < 0.90 THEN 'Production' ELSE 'Abandonment' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Exploration' WHEN {status_noise} < 0.30 THEN 'Appraisal' WHEN {status_noise} < 0.65 THEN 'Development' WHEN {status_noise} < 0.90 THEN 'Production' ELSE 'Abandonment' END",
+          "entity_values": [
+            "Exploration",
+            "Appraisal",
+            "Development",
+            "Production",
+            "Abandonment"
+          ]
         },
         {
           "name": "approval_status",
           "sql_type": "STRING",
           "comment": "Status: Approved, Pending, On Hold, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Approved' WHEN {status_noise} < 0.80 THEN 'Pending' WHEN {status_noise} < 0.92 THEN 'On Hold' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Approved' WHEN {status_noise} < 0.80 THEN 'Pending' WHEN {status_noise} < 0.92 THEN 'On Hold' ELSE 'Cancelled' END",
+          "entity_values": [
+            "Approved",
+            "Pending",
+            "On Hold",
+            "Cancelled"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -250,28 +333,90 @@
           "sql_type": "STRING",
           "comment": "Project identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CV-DW-001",
+            "CV-DW-002",
+            "CV-DW-003",
+            "CV-DW-004",
+            "CV-ON-005",
+            "CV-ON-006",
+            "CV-SH-007",
+            "CV-SH-008",
+            "CV-SH-009",
+            "CV-SH-010",
+            "CV-LNG-011",
+            "CV-LNG-012",
+            "CV-LNG-013",
+            "CV-INF-014",
+            "CV-INF-015",
+            "CV-INF-016",
+            "CV-DW-017",
+            "CV-SH-018",
+            "CV-INF-019",
+            "CV-LNG-020"
+          ]
         },
         {
           "name": "project_name",
           "sql_type": "STRING",
           "comment": "Project name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Anchor Phase 2",
+            "Whale Development",
+            "Kaskida Appraisal",
+            "Tiber Exploration",
+            "Eagle Ford Infill Program",
+            "San Juan Basin Recompletion",
+            "Permian Delaware Basin Pad",
+            "Permian Midland Expansion",
+            "Haynesville Gas Play",
+            "Marcellus Northeast PA",
+            "Freeport LNG Train 4",
+            "Plaquemines LNG Phase 2",
+            "Golden Pass Export",
+            "GOM Pipeline Expansion",
+            "Permian Gathering System",
+            "FPSO Conversion Project",
+            "Shenandoah Exploration",
+            "DJ Basin Wattenberg",
+            "Carbon Capture Hub Texas",
+            "Cameron LNG Debottleneck"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Deepwater",
+            "Onshore Conventional",
+            "Shale",
+            "LNG",
+            "Infrastructure"
+          ]
         },
         {
           "name": "basin_region",
           "sql_type": "STRING",
           "comment": "Basin or geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf of Mexico",
+            "Texas",
+            "New Mexico",
+            "Permian Basin",
+            "Louisiana",
+            "Appalachia",
+            "Texas Gulf Coast",
+            "Louisiana Gulf Coast",
+            "Colorado"
+          ]
         },
         {
           "name": "npv_mm",
@@ -306,7 +451,13 @@
           "sql_type": "STRING",
           "comment": "Risk: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.88 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.88 THEN 'High' ELSE 'Critical' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -464,21 +615,61 @@
           "sql_type": "STRING",
           "comment": "Project identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CV-DW-001",
+            "CV-DW-002",
+            "CV-DW-003",
+            "CV-DW-004",
+            "CV-ON-005",
+            "CV-ON-006",
+            "CV-SH-007",
+            "CV-SH-008",
+            "CV-SH-009",
+            "CV-SH-010",
+            "CV-LNG-011",
+            "CV-LNG-012",
+            "CV-LNG-013",
+            "CV-INF-014",
+            "CV-INF-015",
+            "CV-INF-016",
+            "CV-DW-017",
+            "CV-SH-018",
+            "CV-INF-019",
+            "CV-LNG-020"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Deepwater",
+            "Onshore Conventional",
+            "Shale",
+            "LNG",
+            "Infrastructure"
+          ]
         },
         {
           "name": "basin_region",
           "sql_type": "STRING",
           "comment": "Basin or geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf of Mexico",
+            "Texas",
+            "New Mexico",
+            "Permian Basin",
+            "Louisiana",
+            "Appalachia",
+            "Texas Gulf Coast",
+            "Louisiana Gulf Coast",
+            "Colorado"
+          ]
         },
         {
           "name": "monthly_spend_usd",
@@ -738,7 +929,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The investment_transactions_metrics view (source: investment_transactions) has dimensions: transaction_date, project_id, project_type, basin_region, spend_category, phase, approval_status. Measures: total_spend_usd, total_budget_usd, total_transactions, avg_transaction_usd. The project_snapshots_metrics view (source: project_snapshots) has dimensions: snapshot_date, project_id, project_type, basin_region, risk_rating. Measures: avg_npv_mm, avg_irr_pct, avg_schedule_adherence, avg_cost_variance_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. project_name).",
+  "genie_instructions": "You are an oil & gas integrated analytics assistant for CapVenture Energy. Answer questions about capital investment simulation and portfolio optimization for exploration and development projects using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (project_name), query the base tables directly.\n- When joining tables, use the shared keys: project_id (shared across investment_kpi_monthly, investment_transactions, project_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total transactionss?",
     "How has highest amount changed over time?",
@@ -777,7 +968,7 @@
       ]
     },
     {
-      "question": "How does total transaction amount in usd break down by project identifier for 'Approved' records?",
+      "question": "How does total transaction amount in usd break down by project for 'Approved' records?",
       "sql_lines": [
         "SELECT project_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.investment_transactions",
@@ -946,7 +1137,7 @@
       ]
     },
     {
-      "question": "What are the top project identifier by total transaction amount in usd?",
+      "question": "What are the top project by total transaction amount in usd?",
       "sql_lines": [
         "SELECT project_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.investment_transactions",

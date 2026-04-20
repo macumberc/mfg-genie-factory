@@ -29,28 +29,73 @@
           "sql_type": "STRING",
           "comment": "Engine serial identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "ENG-001",
+            "ENG-002",
+            "ENG-003",
+            "ENG-004",
+            "ENG-005",
+            "ENG-006",
+            "ENG-007",
+            "ENG-008",
+            "ENG-009",
+            "ENG-010",
+            "ENG-011",
+            "ENG-012",
+            "ENG-013",
+            "ENG-014",
+            "ENG-015",
+            "ENG-016",
+            "ENG-017",
+            "ENG-018",
+            "ENG-019",
+            "ENG-020"
+          ]
         },
         {
           "name": "engine_model",
           "sql_type": "STRING",
           "comment": "Engine model designation",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF56-7B",
+            "LEAP-1A",
+            "GE90-115B",
+            "Trent-XWB",
+            "PW1100G",
+            "CF56-5B",
+            "GEnx-2B",
+            "LEAP-1B",
+            "Trent-700",
+            "PW4000"
+          ]
         },
         {
           "name": "aircraft_type",
           "sql_type": "STRING",
           "comment": "Aircraft type designation",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Narrowbody",
+            "Widebody"
+          ]
         },
         {
           "name": "airline",
           "sql_type": "STRING",
           "comment": "Operating airline",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SkyVista Air",
+            "Meridian Airlines",
+            "Horizon Pacific",
+            "Atlas Cargo",
+            "Pinnacle Express"
+          ]
         },
         {
           "name": "egt_celsius",
@@ -92,7 +137,13 @@
           "sql_type": "STRING",
           "comment": "Anomaly detection flag: Normal, Watch, Alert, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Normal' WHEN {status_noise} < 0.82 THEN 'Watch' WHEN {status_noise} < 0.94 THEN 'Alert' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Normal' WHEN {status_noise} < 0.82 THEN 'Watch' WHEN {status_noise} < 0.94 THEN 'Alert' ELSE 'Critical' END",
+          "entity_values": [
+            "Normal",
+            "Watch",
+            "Alert",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -294,42 +345,104 @@
           "sql_type": "STRING",
           "comment": "Engine serial identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "ENG-001",
+            "ENG-002",
+            "ENG-003",
+            "ENG-004",
+            "ENG-005",
+            "ENG-006",
+            "ENG-007",
+            "ENG-008",
+            "ENG-009",
+            "ENG-010",
+            "ENG-011",
+            "ENG-012",
+            "ENG-013",
+            "ENG-014",
+            "ENG-015",
+            "ENG-016",
+            "ENG-017",
+            "ENG-018",
+            "ENG-019",
+            "ENG-020"
+          ]
         },
         {
           "name": "engine_model",
           "sql_type": "STRING",
           "comment": "Engine model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF56-7B",
+            "LEAP-1A",
+            "GE90-115B",
+            "Trent-XWB",
+            "PW1100G",
+            "CF56-5B",
+            "GEnx-2B",
+            "LEAP-1B",
+            "Trent-700",
+            "PW4000"
+          ]
         },
         {
           "name": "aircraft_type",
           "sql_type": "STRING",
           "comment": "Aircraft type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Narrowbody",
+            "Widebody"
+          ]
         },
         {
           "name": "airline",
           "sql_type": "STRING",
           "comment": "Operating airline",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SkyVista Air",
+            "Meridian Airlines",
+            "Horizon Pacific",
+            "Atlas Cargo",
+            "Pinnacle Express"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Maintenance type: Unscheduled Removal, Shop Visit, On-Wing Repair, Borescope Inspection, Scheduled Overhaul",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Unscheduled Removal' WHEN {status_noise} < 0.30 THEN 'Shop Visit' WHEN {status_noise} < 0.50 THEN 'On-Wing Repair' WHEN {status_noise} < 0.75 THEN 'Borescope Inspection' ELSE 'Scheduled Overhaul' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Unscheduled Removal' WHEN {status_noise} < 0.30 THEN 'Shop Visit' WHEN {status_noise} < 0.50 THEN 'On-Wing Repair' WHEN {status_noise} < 0.75 THEN 'Borescope Inspection' ELSE 'Scheduled Overhaul' END",
+          "entity_values": [
+            "Unscheduled Removal",
+            "Shop Visit",
+            "On-Wing Repair",
+            "Borescope Inspection",
+            "Scheduled Overhaul"
+          ]
         },
         {
           "name": "finding",
           "sql_type": "STRING",
           "comment": "Primary finding: Blade Erosion, Oil Leak, Bearing Wear, Combustor Cracking, FOD Damage, Seal Degradation, Normal Wear, No Defect Found",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Blade Erosion' WHEN {status_noise} < 0.28 THEN 'Oil Leak' WHEN {status_noise} < 0.38 THEN 'Bearing Wear' WHEN {status_noise} < 0.48 THEN 'Combustor Cracking' WHEN {status_noise} < 0.55 THEN 'FOD Damage' WHEN {status_noise} < 0.65 THEN 'Seal Degradation' WHEN {status_noise} < 0.82 THEN 'Normal Wear' ELSE 'No Defect Found' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Blade Erosion' WHEN {status_noise} < 0.28 THEN 'Oil Leak' WHEN {status_noise} < 0.38 THEN 'Bearing Wear' WHEN {status_noise} < 0.48 THEN 'Combustor Cracking' WHEN {status_noise} < 0.55 THEN 'FOD Damage' WHEN {status_noise} < 0.65 THEN 'Seal Degradation' WHEN {status_noise} < 0.82 THEN 'Normal Wear' ELSE 'No Defect Found' END",
+          "entity_values": [
+            "Blade Erosion",
+            "Oil Leak",
+            "Bearing Wear",
+            "Combustor Cracking",
+            "FOD Damage",
+            "Seal Degradation",
+            "Normal Wear",
+            "No Defect Found"
+          ]
         },
         {
           "name": "downtime_hours",
@@ -505,21 +618,62 @@
           "sql_type": "STRING",
           "comment": "Engine serial identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "ENG-001",
+            "ENG-002",
+            "ENG-003",
+            "ENG-004",
+            "ENG-005",
+            "ENG-006",
+            "ENG-007",
+            "ENG-008",
+            "ENG-009",
+            "ENG-010",
+            "ENG-011",
+            "ENG-012",
+            "ENG-013",
+            "ENG-014",
+            "ENG-015",
+            "ENG-016",
+            "ENG-017",
+            "ENG-018",
+            "ENG-019",
+            "ENG-020"
+          ]
         },
         {
           "name": "engine_model",
           "sql_type": "STRING",
           "comment": "Engine model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF56-7B",
+            "LEAP-1A",
+            "GE90-115B",
+            "Trent-XWB",
+            "PW1100G",
+            "CF56-5B",
+            "GEnx-2B",
+            "LEAP-1B",
+            "Trent-700",
+            "PW4000"
+          ]
         },
         {
           "name": "airline",
           "sql_type": "STRING",
           "comment": "Operating airline",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SkyVista Air",
+            "Meridian Airlines",
+            "Horizon Pacific",
+            "Atlas Cargo",
+            "Pinnacle Express"
+          ]
         },
         {
           "name": "avg_health_score",
@@ -554,7 +708,13 @@
           "sql_type": "STRING",
           "comment": "Risk category: Low, Moderate, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Low' WHEN {status_noise} < 0.75 THEN 'Moderate' WHEN {status_noise} < 0.92 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Low' WHEN {status_noise} < 0.75 THEN 'Moderate' WHEN {status_noise} < 0.92 THEN 'High' ELSE 'Critical' END",
+          "entity_values": [
+            "Low",
+            "Moderate",
+            "High",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -801,7 +961,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_date, engine_model, airline, anomaly_flag. Measures: avg_health_score, avg_egt_celsius, avg_vibration_ips, critical_alert_count, reading_count. The maintenance_events_metrics view (source: maintenance_events) has dimensions: event_date, engine_model, airline, event_type, finding. Measures: total_maintenance_cost, avg_downtime_hours, total_events, unscheduled_removal_count, total_parts_replaced. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. aircraft_type, engine_id).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroGuard Systems. Answer questions about aircraft engine predictive maintenance and asset health monitoring using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (engine_id, aircraft_type), query the base tables directly.\n- When joining tables, use the shared keys: engine_id (shared across health_monthly, maintenance_events, sensor_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in critical alert count?",
     "How has unique readings changed over time?",
@@ -1009,7 +1169,7 @@
       ]
     },
     {
-      "question": "What are the top engine serial identifier by total exhaust gas temperature in celsius?",
+      "question": "What are the top engine serial by total exhaust gas temperature in celsius?",
       "sql_lines": [
         "SELECT engine_id, SUM(egt_celsius) AS total_egt_celsius",
         "FROM {fqn}.sensor_readings",

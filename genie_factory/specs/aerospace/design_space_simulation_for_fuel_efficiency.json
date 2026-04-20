@@ -29,28 +29,84 @@
           "sql_type": "STRING",
           "comment": "Design configuration identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CFG-001",
+            "CFG-002",
+            "CFG-003",
+            "CFG-004",
+            "CFG-005",
+            "CFG-006",
+            "CFG-007",
+            "CFG-008",
+            "CFG-009",
+            "CFG-010",
+            "CFG-011",
+            "CFG-012",
+            "CFG-013",
+            "CFG-014",
+            "CFG-015",
+            "CFG-016",
+            "CFG-017",
+            "CFG-018",
+            "CFG-019",
+            "CFG-020"
+          ]
         },
         {
           "name": "config_name",
           "sql_type": "STRING",
           "comment": "Configuration descriptive name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline Narrowbody",
+            "High-Aspect-Ratio Wing",
+            "Folding Wingtip A",
+            "Folding Wingtip B",
+            "Geared Turbofan NB",
+            "Open Rotor Test",
+            "Truss-Braced Alpha",
+            "Truss-Braced Beta",
+            "BWB Concept 1",
+            "BWB Concept 2",
+            "Hybrid Electric Short",
+            "Hybrid Electric Regional",
+            "Ultra-High Bypass NB",
+            "Laminar Flow Wing",
+            "Composite Intensive",
+            "BWB Hybrid",
+            "Truss-Braced Open Rotor",
+            "Next-Gen Narrowbody",
+            "Widebody Efficiency",
+            "Widebody Open Rotor"
+          ]
         },
         {
           "name": "wing_type",
           "sql_type": "STRING",
           "comment": "Wing type: Conventional, Blended Wing Body, Truss-Braced, Folding Wingtip",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Conventional",
+            "Folding Wingtip",
+            "Truss-Braced",
+            "Blended Wing Body"
+          ]
         },
         {
           "name": "engine_type",
           "sql_type": "STRING",
           "comment": "Engine type: Turbofan, Open Rotor, Hybrid Electric, Geared Turbofan",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Turbofan",
+            "Geared Turbofan",
+            "Open Rotor",
+            "Hybrid Electric"
+          ]
         },
         {
           "name": "drag_coefficient",
@@ -92,7 +148,11 @@
           "sql_type": "STRING",
           "comment": "Whether the run is on the Pareto front: Yes, No",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Yes' ELSE 'No' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Yes' ELSE 'No' END",
+          "entity_values": [
+            "Yes",
+            "No"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -249,21 +309,55 @@
           "sql_type": "STRING",
           "comment": "Design configuration identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CFG-001",
+            "CFG-002",
+            "CFG-003",
+            "CFG-004",
+            "CFG-005",
+            "CFG-006",
+            "CFG-007",
+            "CFG-008",
+            "CFG-009",
+            "CFG-010",
+            "CFG-011",
+            "CFG-012",
+            "CFG-013",
+            "CFG-014",
+            "CFG-015",
+            "CFG-016",
+            "CFG-017",
+            "CFG-018",
+            "CFG-019",
+            "CFG-020"
+          ]
         },
         {
           "name": "wing_type",
           "sql_type": "STRING",
           "comment": "Wing type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Conventional",
+            "Folding Wingtip",
+            "Truss-Braced",
+            "Blended Wing Body"
+          ]
         },
         {
           "name": "engine_type",
           "sql_type": "STRING",
           "comment": "Engine type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Turbofan",
+            "Geared Turbofan",
+            "Open Rotor",
+            "Hybrid Electric"
+          ]
         },
         {
           "name": "wing_span_m",
@@ -462,21 +556,55 @@
           "sql_type": "STRING",
           "comment": "Design configuration identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CFG-001",
+            "CFG-002",
+            "CFG-003",
+            "CFG-004",
+            "CFG-005",
+            "CFG-006",
+            "CFG-007",
+            "CFG-008",
+            "CFG-009",
+            "CFG-010",
+            "CFG-011",
+            "CFG-012",
+            "CFG-013",
+            "CFG-014",
+            "CFG-015",
+            "CFG-016",
+            "CFG-017",
+            "CFG-018",
+            "CFG-019",
+            "CFG-020"
+          ]
         },
         {
           "name": "wing_type",
           "sql_type": "STRING",
           "comment": "Wing type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Conventional",
+            "Folding Wingtip",
+            "Truss-Braced",
+            "Blended Wing Body"
+          ]
         },
         {
           "name": "engine_type",
           "sql_type": "STRING",
           "comment": "Engine type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Turbofan",
+            "Geared Turbofan",
+            "Open Rotor",
+            "Hybrid Electric"
+          ]
         },
         {
           "name": "best_fuel_burn_kg_nm",
@@ -782,7 +910,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_metrics view (source: simulation_runs) has dimensions: run_date, wing_type, engine_type, is_pareto_optimal. Measures: avg_fuel_burn, avg_lift_to_drag, min_drag_coefficient, simulation_count, pareto_run_count. The parameter_metrics view (source: parameter_snapshots) has dimensions: snapshot_date, wing_type, engine_type. Measures: avg_fuel_efficiency_improvement, avg_bypass_ratio, avg_wing_span, avg_trl, snapshot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. config_id, config_name).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroSim Dynamics. Answer questions about design space simulation and optimization for aircraft fuel efficiency using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (config_id, config_name), query the base tables directly.\n- When joining tables, use the shared keys: config_id (shared across optimization_monthly, parameter_snapshots, simulation_runs).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in pareto run count?",
     "How has unique simulations changed over time?",
@@ -846,7 +974,7 @@
       ]
     },
     {
-      "question": "How many distinct unique monthly record identifier are there per engine type?",
+      "question": "How many distinct unique monthly record are there per engine type?",
       "sql_lines": [
         "SELECT engine_type, COUNT(DISTINCT record_id) AS distinct_count",
         "FROM {fqn}.optimization_monthly",
@@ -989,7 +1117,7 @@
       ]
     },
     {
-      "question": "What are the top design configuration identifier by total total drag coefficient cd?",
+      "question": "What are the top design configuration by total total drag coefficient cd?",
       "sql_lines": [
         "SELECT config_id, SUM(drag_coefficient) AS total_drag_coefficient",
         "FROM {fqn}.simulation_runs",

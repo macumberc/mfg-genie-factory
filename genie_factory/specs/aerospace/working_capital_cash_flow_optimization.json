@@ -29,28 +29,86 @@
           "sql_type": "STRING",
           "comment": "Aerospace program identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PRG-001",
+            "PRG-002",
+            "PRG-003",
+            "PRG-004",
+            "PRG-005",
+            "PRG-006",
+            "PRG-007",
+            "PRG-008",
+            "PRG-009",
+            "PRG-010",
+            "PRG-011",
+            "PRG-012",
+            "PRG-013",
+            "PRG-014",
+            "PRG-015",
+            "PRG-016",
+            "PRG-017",
+            "PRG-018",
+            "PRG-019",
+            "PRG-020"
+          ]
         },
         {
           "name": "program_name",
           "sql_type": "STRING",
           "comment": "Program name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "A320neo Wing Set",
+            "737 MAX Fuselage",
+            "787 Composite Panel",
+            "A350 Landing Gear",
+            "Next-Gen Narrowbody Dev",
+            "eVTOL Propulsion R&D",
+            "Hypersonic Test Vehicle",
+            "CF56 Overhaul Program",
+            "LEAP MRO Services",
+            "Legacy Engine Spares",
+            "Landing Gear Exchange Pool",
+            "F-35 Sustainment",
+            "KC-46 Tanker Support",
+            "UAV Engine Program",
+            "Satellite Bus Assembly",
+            "Launch Vehicle Components",
+            "A220 Interior Modules",
+            "777X Hydraulics",
+            "Helicopter Transmission OVH",
+            "Space Station Module"
+          ]
         },
         {
           "name": "program_type",
           "sql_type": "STRING",
           "comment": "Program type: Production, Development, Aftermarket, Military, Space",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Production",
+            "Development",
+            "Aftermarket",
+            "Military",
+            "Space"
+          ]
         },
         {
           "name": "txn_type",
           "sql_type": "STRING",
           "comment": "Transaction type: Collection, Disbursement, Milestone Payment, Progress Payment, Advance",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Collection' WHEN {status_noise} < 0.55 THEN 'Disbursement' WHEN {status_noise} < 0.72 THEN 'Milestone Payment' WHEN {status_noise} < 0.88 THEN 'Progress Payment' ELSE 'Advance' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Collection' WHEN {status_noise} < 0.55 THEN 'Disbursement' WHEN {status_noise} < 0.72 THEN 'Milestone Payment' WHEN {status_noise} < 0.88 THEN 'Progress Payment' ELSE 'Advance' END",
+          "entity_values": [
+            "Collection",
+            "Disbursement",
+            "Milestone Payment",
+            "Progress Payment",
+            "Advance"
+          ]
         },
         {
           "name": "amount_usd",
@@ -64,14 +122,26 @@
           "sql_type": "STRING",
           "comment": "Counterparty: Customer, Supplier, Government, Internal",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Customer' WHEN {status_noise} < 0.65 THEN 'Supplier' WHEN {status_noise} < 0.82 THEN 'Government' ELSE 'Internal' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Customer' WHEN {status_noise} < 0.65 THEN 'Supplier' WHEN {status_noise} < 0.82 THEN 'Government' ELSE 'Internal' END",
+          "entity_values": [
+            "Customer",
+            "Supplier",
+            "Government",
+            "Internal"
+          ]
         },
         {
           "name": "currency",
           "sql_type": "STRING",
           "comment": "Transaction currency: USD, EUR, GBP, JPY",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'USD' WHEN {status_noise} < 0.80 THEN 'EUR' WHEN {status_noise} < 0.92 THEN 'GBP' ELSE 'JPY' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'USD' WHEN {status_noise} < 0.80 THEN 'EUR' WHEN {status_noise} < 0.92 THEN 'GBP' ELSE 'JPY' END",
+          "entity_values": [
+            "USD",
+            "EUR",
+            "GBP",
+            "JPY"
+          ]
         },
         {
           "name": "payment_terms_days",
@@ -223,14 +293,43 @@
           "sql_type": "STRING",
           "comment": "Aerospace program identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PRG-001",
+            "PRG-002",
+            "PRG-003",
+            "PRG-004",
+            "PRG-005",
+            "PRG-006",
+            "PRG-007",
+            "PRG-008",
+            "PRG-009",
+            "PRG-010",
+            "PRG-011",
+            "PRG-012",
+            "PRG-013",
+            "PRG-014",
+            "PRG-015",
+            "PRG-016",
+            "PRG-017",
+            "PRG-018",
+            "PRG-019",
+            "PRG-020"
+          ]
         },
         {
           "name": "program_type",
           "sql_type": "STRING",
           "comment": "Program type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Production",
+            "Development",
+            "Aftermarket",
+            "Military",
+            "Space"
+          ]
         },
         {
           "name": "accounts_receivable_usd",
@@ -410,14 +509,43 @@
           "sql_type": "STRING",
           "comment": "Aerospace program identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PRG-001",
+            "PRG-002",
+            "PRG-003",
+            "PRG-004",
+            "PRG-005",
+            "PRG-006",
+            "PRG-007",
+            "PRG-008",
+            "PRG-009",
+            "PRG-010",
+            "PRG-011",
+            "PRG-012",
+            "PRG-013",
+            "PRG-014",
+            "PRG-015",
+            "PRG-016",
+            "PRG-017",
+            "PRG-018",
+            "PRG-019",
+            "PRG-020"
+          ]
         },
         {
           "name": "program_type",
           "sql_type": "STRING",
           "comment": "Program type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Production",
+            "Development",
+            "Aftermarket",
+            "Military",
+            "Space"
+          ]
         },
         {
           "name": "operating_cash_flow_usd",
@@ -685,7 +813,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cash_txn_metrics view (source: cash_transactions) has dimensions: txn_date, program_type, txn_type, counterparty. Measures: total_inflows, total_outflows, net_cash_flow, txn_count, avg_payment_terms. The working_capital_metrics view (source: working_capital_snapshots) has dimensions: snapshot_date, program_type. Measures: total_receivables, total_payables, avg_dso, avg_ccc, total_wip_inventory. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. program_id, program_name).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroCapital Finance. Answer questions about aerospace working capital and cash flow optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (program_id, program_name), query the base tables directly.\n- When joining tables, use the shared keys: program_id (shared across cash_transactions, cashflow_monthly, working_capital_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total inflows count?",
     "How has total outflows count changed over time?",
@@ -890,7 +1018,7 @@
       ]
     },
     {
-      "question": "What are the top aerospace program identifier by total transaction amount in usd (positive = inflow, negative = outflow)?",
+      "question": "What are the top aerospace program by total transaction amount in usd (positive = inflow, negative = outflow)?",
       "sql_lines": [
         "SELECT program_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",

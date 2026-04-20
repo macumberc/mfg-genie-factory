@@ -29,28 +29,92 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "BU-NE-001",
+            "BU-NE-002",
+            "BU-SE-003",
+            "BU-SE-004",
+            "BU-MW-005",
+            "BU-MW-006",
+            "BU-SW-007",
+            "BU-SW-008",
+            "BU-WE-009",
+            "BU-WE-010",
+            "BU-GC-011",
+            "BU-GC-012",
+            "BU-PNW-013",
+            "BU-PNW-014",
+            "BU-MA-015",
+            "BU-MA-016",
+            "BU-CP-017",
+            "BU-CP-018",
+            "BU-CP-019",
+            "BU-CP-020"
+          ]
         },
         {
           "name": "bu_name",
           "sql_type": "STRING",
           "comment": "Business unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast Operations",
+            "Northeast Industrial Supply",
+            "Southeast Operations",
+            "Southeast Safety Supply",
+            "Midwest Operations",
+            "Midwest Electrical",
+            "Southwest Operations",
+            "Southwest Welding Supply",
+            "West Coast Operations",
+            "West Coast Power Tools",
+            "Gulf Coast Operations",
+            "Gulf Coast MRO",
+            "Pacific NW Operations",
+            "Pacific NW Safety",
+            "Mid-Atlantic Operations",
+            "Mid-Atlantic Cutting Tools",
+            "Corporate Procurement",
+            "Corporate Treasury",
+            "E-Commerce Division",
+            "National Accounts"
+          ]
         },
         {
           "name": "business_segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe & Valve",
+            "Industrial Supply",
+            "Safety",
+            "Electrical",
+            "Welding",
+            "Corporate",
+            "Digital"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Gulf Coast",
+            "Pacific NW",
+            "Mid-Atlantic",
+            "Corporate"
+          ]
         },
         {
           "name": "cash_inflow_usd",
@@ -78,7 +142,13 @@
           "sql_type": "STRING",
           "comment": "Type: Customer Payment, Vendor Payment, Payroll, Transfer",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Customer Payment' WHEN {status_noise} < 0.60 THEN 'Vendor Payment' WHEN {status_noise} < 0.80 THEN 'Payroll' ELSE 'Transfer' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Customer Payment' WHEN {status_noise} < 0.60 THEN 'Vendor Payment' WHEN {status_noise} < 0.80 THEN 'Payroll' ELSE 'Transfer' END",
+          "entity_values": [
+            "Customer Payment",
+            "Vendor Payment",
+            "Payroll",
+            "Transfer"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -251,21 +321,63 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "BU-NE-001",
+            "BU-NE-002",
+            "BU-SE-003",
+            "BU-SE-004",
+            "BU-MW-005",
+            "BU-MW-006",
+            "BU-SW-007",
+            "BU-SW-008",
+            "BU-WE-009",
+            "BU-WE-010",
+            "BU-GC-011",
+            "BU-GC-012",
+            "BU-PNW-013",
+            "BU-PNW-014",
+            "BU-MA-015",
+            "BU-MA-016",
+            "BU-CP-017",
+            "BU-CP-018",
+            "BU-CP-019",
+            "BU-CP-020"
+          ]
         },
         {
           "name": "business_segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe & Valve",
+            "Industrial Supply",
+            "Safety",
+            "Electrical",
+            "Welding",
+            "Corporate",
+            "Digital"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Gulf Coast",
+            "Pacific NW",
+            "Mid-Atlantic",
+            "Corporate"
+          ]
         },
         {
           "name": "ar_balance_usd",
@@ -473,21 +585,63 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "BU-NE-001",
+            "BU-NE-002",
+            "BU-SE-003",
+            "BU-SE-004",
+            "BU-MW-005",
+            "BU-MW-006",
+            "BU-SW-007",
+            "BU-SW-008",
+            "BU-WE-009",
+            "BU-WE-010",
+            "BU-GC-011",
+            "BU-GC-012",
+            "BU-PNW-013",
+            "BU-PNW-014",
+            "BU-MA-015",
+            "BU-MA-016",
+            "BU-CP-017",
+            "BU-CP-018",
+            "BU-CP-019",
+            "BU-CP-020"
+          ]
         },
         {
           "name": "business_segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe & Valve",
+            "Industrial Supply",
+            "Safety",
+            "Electrical",
+            "Welding",
+            "Corporate",
+            "Digital"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Gulf Coast",
+            "Pacific NW",
+            "Mid-Atlantic",
+            "Corporate"
+          ]
         },
         {
           "name": "forecasted_cash_flow_usd",
@@ -522,7 +676,13 @@
           "sql_type": "STRING",
           "comment": "Status: Strong, Adequate, Tight, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.15 THEN 'Tight' WHEN {status_noise} < 0.40 THEN 'Adequate' ELSE 'Strong' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.15 THEN 'Tight' WHEN {status_noise} < 0.40 THEN 'Adequate' ELSE 'Strong' END",
+          "entity_values": [
+            "Critical",
+            "Tight",
+            "Adequate",
+            "Strong"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -793,7 +953,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cashflow_monthly view (source: business_units) has dimensions: txn_date, business_segment, region, payment_type. Measures: total_cash_inflow, total_cash_outflow, total_ar_collected, net_cash_flow, transaction_count. The working_capital_monthly view (source: working_capital_snapshots) has dimensions: forecast_month, business_segment, region, liquidity_status. Measures: total_forecasted_cf, total_actual_cf, avg_ccc_days, avg_current_ratio, critical_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. bu_id, bu_name).",
+  "genie_instructions": "You are an industrial distribution analytics assistant for DistroCapital Finance. Answer questions about working capital and cash flow optimization for industrial distribution using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (bu_id, bu_name), query the base tables directly.\n- When joining tables, use the shared keys: bu_id (shared across business_units, cash_transactions, working_capital_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique transactions?",
     "How has unique bus changed over time?",
@@ -991,7 +1151,7 @@
       ]
     },
     {
-      "question": "What are the top business unit identifier by total cash inflow in usd?",
+      "question": "What are the top business unit by total cash inflow in usd?",
       "sql_lines": [
         "SELECT bu_id, SUM(cash_inflow_usd) AS total_cash_inflow_usd",
         "FROM {fqn}.business_units",

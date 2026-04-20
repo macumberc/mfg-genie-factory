@@ -29,28 +29,92 @@
           "sql_type": "STRING",
           "comment": "Generator unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GU-GT-001",
+            "GU-GT-002",
+            "GU-GT-003",
+            "GU-GT-004",
+            "GU-CC-005",
+            "GU-CC-006",
+            "GU-CC-007",
+            "GU-CC-008",
+            "GU-ST-009",
+            "GU-ST-010",
+            "GU-ST-011",
+            "GU-ST-012",
+            "GU-DS-013",
+            "GU-DS-014",
+            "GU-DS-015",
+            "GU-DS-016",
+            "GU-HY-017",
+            "GU-HY-018",
+            "GU-HY-019",
+            "GU-HY-020"
+          ]
         },
         {
           "name": "unit_name",
           "sql_type": "STRING",
           "comment": "Generator unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Riverside GT Unit 1",
+            "Riverside GT Unit 2",
+            "Bayshore GT Unit A",
+            "Prairie GT Unit 1",
+            "Riverside CC Block 1",
+            "Bayshore CC Block A",
+            "Lakeview CC Block 1",
+            "Lakeview CC Block 2",
+            "Iron Ridge Steam 1",
+            "Iron Ridge Steam 2",
+            "Appalachian Steam A",
+            "Appalachian Steam B",
+            "Harbor Diesel Backup 1",
+            "Harbor Diesel Backup 2",
+            "Hilltop Diesel Peaker",
+            "Crossroads Diesel Unit",
+            "Eagle Falls Hydro 1",
+            "Eagle Falls Hydro 2",
+            "Canyon Run Hydro A",
+            "Canyon Run Hydro B"
+          ]
         },
         {
           "name": "unit_type",
           "sql_type": "STRING",
           "comment": "Generator type: Gas Turbine, Steam, Combined Cycle, Diesel, Hydro",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gas Turbine",
+            "Combined Cycle",
+            "Steam",
+            "Diesel",
+            "Hydro"
+          ]
         },
         {
           "name": "station",
           "sql_type": "STRING",
           "comment": "Power station name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Riverside Station",
+            "Bayshore Station",
+            "Prairie Station",
+            "Lakeview Station",
+            "Iron Ridge Station",
+            "Appalachian Station",
+            "Harbor Station",
+            "Hilltop Station",
+            "Crossroads Station",
+            "Eagle Falls Station",
+            "Canyon Run Station"
+          ]
         },
         {
           "name": "runtime_hours",
@@ -78,7 +142,13 @@
           "sql_type": "STRING",
           "comment": "Status: Running, Standby, Forced Outage, Planned Outage",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Forced Outage' WHEN {status_noise} < 0.15 THEN 'Planned Outage' WHEN {status_noise} < 0.25 THEN 'Standby' ELSE 'Running' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Forced Outage' WHEN {status_noise} < 0.15 THEN 'Planned Outage' WHEN {status_noise} < 0.25 THEN 'Standby' ELSE 'Running' END",
+          "entity_values": [
+            "Forced Outage",
+            "Planned Outage",
+            "Standby",
+            "Running"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -251,35 +321,90 @@
           "sql_type": "STRING",
           "comment": "Generator unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GU-GT-001",
+            "GU-GT-002",
+            "GU-GT-003",
+            "GU-GT-004",
+            "GU-CC-005",
+            "GU-CC-006",
+            "GU-CC-007",
+            "GU-CC-008",
+            "GU-ST-009",
+            "GU-ST-010",
+            "GU-ST-011",
+            "GU-ST-012",
+            "GU-DS-013",
+            "GU-DS-014",
+            "GU-DS-015",
+            "GU-DS-016",
+            "GU-HY-017",
+            "GU-HY-018",
+            "GU-HY-019",
+            "GU-HY-020"
+          ]
         },
         {
           "name": "unit_type",
           "sql_type": "STRING",
           "comment": "Generator type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gas Turbine",
+            "Combined Cycle",
+            "Steam",
+            "Diesel",
+            "Hydro"
+          ]
         },
         {
           "name": "station",
           "sql_type": "STRING",
           "comment": "Power station name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Riverside Station",
+            "Bayshore Station",
+            "Prairie Station",
+            "Lakeview Station",
+            "Iron Ridge Station",
+            "Appalachian Station",
+            "Harbor Station",
+            "Hilltop Station",
+            "Crossroads Station",
+            "Eagle Falls Station",
+            "Canyon Run Station"
+          ]
         },
         {
           "name": "outage_type",
           "sql_type": "STRING",
           "comment": "Outage type: Forced, Planned, Maintenance, Emergency",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Forced' WHEN {status_noise} < 0.60 THEN 'Planned' WHEN {status_noise} < 0.85 THEN 'Maintenance' ELSE 'Emergency' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Forced' WHEN {status_noise} < 0.60 THEN 'Planned' WHEN {status_noise} < 0.85 THEN 'Maintenance' ELSE 'Emergency' END",
+          "entity_values": [
+            "Forced",
+            "Planned",
+            "Maintenance",
+            "Emergency"
+          ]
         },
         {
           "name": "cause_code",
           "sql_type": "STRING",
           "comment": "Root cause category: Mechanical, Electrical, Boiler, Controls, External",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Mechanical' WHEN {status_noise} < 0.55 THEN 'Electrical' WHEN {status_noise} < 0.72 THEN 'Boiler' WHEN {status_noise} < 0.88 THEN 'Controls' ELSE 'External' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Mechanical' WHEN {status_noise} < 0.55 THEN 'Electrical' WHEN {status_noise} < 0.72 THEN 'Boiler' WHEN {status_noise} < 0.88 THEN 'Controls' ELSE 'External' END",
+          "entity_values": [
+            "Mechanical",
+            "Electrical",
+            "Boiler",
+            "Controls",
+            "External"
+          ]
         },
         {
           "name": "duration_hours",
@@ -472,14 +597,43 @@
           "sql_type": "STRING",
           "comment": "Generator unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GU-GT-001",
+            "GU-GT-002",
+            "GU-GT-003",
+            "GU-GT-004",
+            "GU-CC-005",
+            "GU-CC-006",
+            "GU-CC-007",
+            "GU-CC-008",
+            "GU-ST-009",
+            "GU-ST-010",
+            "GU-ST-011",
+            "GU-ST-012",
+            "GU-DS-013",
+            "GU-DS-014",
+            "GU-DS-015",
+            "GU-DS-016",
+            "GU-HY-017",
+            "GU-HY-018",
+            "GU-HY-019",
+            "GU-HY-020"
+          ]
         },
         {
           "name": "unit_type",
           "sql_type": "STRING",
           "comment": "Generator type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gas Turbine",
+            "Combined Cycle",
+            "Steam",
+            "Diesel",
+            "Hydro"
+          ]
         },
         {
           "name": "crew_count",
@@ -514,7 +668,14 @@
           "sql_type": "STRING",
           "comment": "Repair status: Diagnosing, Parts Ordered, In Repair, Testing, Restored",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Diagnosing' WHEN {status_noise} < 0.30 THEN 'Parts Ordered' WHEN {status_noise} < 0.55 THEN 'In Repair' WHEN {status_noise} < 0.75 THEN 'Testing' ELSE 'Restored' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Diagnosing' WHEN {status_noise} < 0.30 THEN 'Parts Ordered' WHEN {status_noise} < 0.55 THEN 'In Repair' WHEN {status_noise} < 0.75 THEN 'Testing' ELSE 'Restored' END",
+          "entity_values": [
+            "Diagnosing",
+            "Parts Ordered",
+            "In Repair",
+            "Testing",
+            "Restored"
+          ]
         },
         {
           "name": "cost_to_date_usd",
@@ -785,7 +946,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The outage_kpi_monthly view (source: outage_events) has dimensions: outage_date, unit_type, outage_type, cause_code. Measures: total_outage_events, total_lost_generation_mwh, avg_outage_duration_hours, total_repair_cost, forced_outage_count. The unit_availability_monthly view (source: generating_units) has dimensions: record_date, unit_type, station, operational_status. Measures: avg_availability_pct, total_output_mwh, total_runtime_hours, running_unit_count, total_unit_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_id, unit_name).",
+  "genie_instructions": "You are a power generation analytics assistant for RestorePower Gen. Answer questions about generator outage response and restoration tracking using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (unit_id, unit_name), query the base tables directly.\n- When joining tables, use the shared keys: unit_id (shared across generating_units, outage_events, repair_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in forced outage count?",
     "How has unique total outage eventss changed over time?",
@@ -833,7 +994,7 @@
       ]
     },
     {
-      "question": "How does total hours of operation in the day break down by generator unit identifier for 'Forced Outage' records?",
+      "question": "How does total hours of operation in the day break down by generator unit for 'Forced Outage' records?",
       "sql_lines": [
         "SELECT unit_id, COUNT(*) AS record_count, SUM(runtime_hours) AS total_runtime_hours",
         "FROM {fqn}.generating_units",
@@ -991,7 +1152,7 @@
       ]
     },
     {
-      "question": "What are the top generator unit identifier by total hours of operation in the day?",
+      "question": "What are the top generator unit by total hours of operation in the day?",
       "sql_lines": [
         "SELECT unit_id, SUM(runtime_hours) AS total_runtime_hours",
         "FROM {fqn}.generating_units",

@@ -29,28 +29,96 @@
           "sql_type": "STRING",
           "comment": "Product ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-001",
+            "FP-002",
+            "FP-003",
+            "FP-004",
+            "FP-005",
+            "FP-006",
+            "FP-007",
+            "FP-008",
+            "FP-009",
+            "FP-010",
+            "FP-011",
+            "FP-012",
+            "FP-013",
+            "FP-014",
+            "FP-015",
+            "FP-016",
+            "FP-017",
+            "FP-018",
+            "FP-019",
+            "FP-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Whole Wheat Bread 24oz",
+            "Sourdough Loaf 20oz",
+            "Cinnamon Rolls 6pk",
+            "2% Milk Gallon",
+            "Greek Yogurt 32oz",
+            "Cheddar Cheese Block 16oz",
+            "Orange Juice 64oz",
+            "Apple Juice 48oz",
+            "Deli Turkey Breast 8oz",
+            "Roast Beef Sliced 6oz",
+            "Ham Off-the-Bone 10oz",
+            "Mixed Salad Greens 10oz",
+            "Baby Carrots 16oz",
+            "Fresh Strawberries 1lb",
+            "Ground Beef 80/20 1lb",
+            "Chicken Breast Boneless 1.5lb",
+            "Atlantic Salmon Fillet 8oz",
+            "Shrimp 21-25ct 1lb",
+            "Frozen Pizza Pepperoni 12in",
+            "Ice Cream Vanilla 48oz"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Line",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Line A",
+            "Line B",
+            "Line C",
+            "Line D",
+            "Line E",
+            "Line F",
+            "Line G",
+            "Line H",
+            "Line I",
+            "Line J",
+            "Line K",
+            "Line L"
+          ]
         },
         {
           "name": "lot_number",
@@ -64,7 +132,14 @@
           "sql_type": "STRING",
           "comment": "Supplier ID",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'SUP-001' WHEN {status_noise} < 0.40 THEN 'SUP-002' WHEN {status_noise} < 0.60 THEN 'SUP-003' WHEN {status_noise} < 0.80 THEN 'SUP-004' ELSE 'SUP-005' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'SUP-001' WHEN {status_noise} < 0.40 THEN 'SUP-002' WHEN {status_noise} < 0.60 THEN 'SUP-003' WHEN {status_noise} < 0.80 THEN 'SUP-004' ELSE 'SUP-005' END",
+          "entity_values": [
+            "SUP-001",
+            "SUP-002",
+            "SUP-003",
+            "SUP-004",
+            "SUP-005"
+          ]
         },
         {
           "name": "units_in_lot",
@@ -78,7 +153,13 @@
           "sql_type": "STRING",
           "comment": "Status: Full Trace, Partial, Gap, Pending",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Gap' WHEN {status_noise} < 0.10 THEN 'Pending' WHEN {status_noise} < 0.22 THEN 'Partial' ELSE 'Full Trace' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Gap' WHEN {status_noise} < 0.10 THEN 'Pending' WHEN {status_noise} < 0.22 THEN 'Partial' ELSE 'Full Trace' END",
+          "entity_values": [
+            "Gap",
+            "Pending",
+            "Partial",
+            "Full Trace"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -252,28 +333,82 @@
           "sql_type": "STRING",
           "comment": "Product ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-001",
+            "FP-002",
+            "FP-003",
+            "FP-004",
+            "FP-005",
+            "FP-006",
+            "FP-007",
+            "FP-008",
+            "FP-009",
+            "FP-010",
+            "FP-011",
+            "FP-012",
+            "FP-013",
+            "FP-014",
+            "FP-015",
+            "FP-016",
+            "FP-017",
+            "FP-018",
+            "FP-019",
+            "FP-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Line",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Line A",
+            "Line B",
+            "Line C",
+            "Line D",
+            "Line E",
+            "Line F",
+            "Line G",
+            "Line H",
+            "Line I",
+            "Line J",
+            "Line K",
+            "Line L"
+          ]
         },
         {
           "name": "location",
           "sql_type": "STRING",
           "comment": "Current location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Production Floor' WHEN {status_noise} < 0.40 THEN 'Cold Storage' WHEN {status_noise} < 0.55 THEN 'Shipping Dock' WHEN {status_noise} < 0.70 THEN 'Distribution Center' WHEN {status_noise} < 0.85 THEN 'Retail Store' ELSE 'In Transit' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Production Floor' WHEN {status_noise} < 0.40 THEN 'Cold Storage' WHEN {status_noise} < 0.55 THEN 'Shipping Dock' WHEN {status_noise} < 0.70 THEN 'Distribution Center' WHEN {status_noise} < 0.85 THEN 'Retail Store' ELSE 'In Transit' END",
+          "entity_values": [
+            "Production Floor",
+            "Cold Storage",
+            "Shipping Dock",
+            "Distribution Center",
+            "Retail Store",
+            "In Transit"
+          ]
         },
         {
           "name": "temp_recorded_f",
@@ -287,7 +422,11 @@
           "sql_type": "STRING",
           "comment": "Temp compliant: Yes, No",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'No' ELSE 'Yes' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'No' ELSE 'Yes' END",
+          "entity_values": [
+            "No",
+            "Yes"
+          ]
         },
         {
           "name": "custody_transfers",
@@ -475,21 +614,67 @@
           "sql_type": "STRING",
           "comment": "Product ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-001",
+            "FP-002",
+            "FP-003",
+            "FP-004",
+            "FP-005",
+            "FP-006",
+            "FP-007",
+            "FP-008",
+            "FP-009",
+            "FP-010",
+            "FP-011",
+            "FP-012",
+            "FP-013",
+            "FP-014",
+            "FP-015",
+            "FP-016",
+            "FP-017",
+            "FP-018",
+            "FP-019",
+            "FP-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Line",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Line A",
+            "Line B",
+            "Line C",
+            "Line D",
+            "Line E",
+            "Line F",
+            "Line G",
+            "Line H",
+            "Line I",
+            "Line J",
+            "Line K",
+            "Line L"
+          ]
         },
         {
           "name": "lots_traced",
@@ -517,7 +702,12 @@
           "sql_type": "STRING",
           "comment": "Recall sim: Pass, Conditional, Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional' ELSE 'Pass' END",
+          "entity_values": [
+            "Fail",
+            "Conditional",
+            "Pass"
+          ]
         },
         {
           "name": "fda_compliance_pct",
@@ -793,7 +983,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The traceability_monthly view (source: products) has dimensions: event_date, product_category, traceability_status. Measures: total_lots, total_units, full_trace_count, gap_count, event_count. The recall_readiness_monthly view (source: chain_of_custody_snapshots) has dimensions: perf_month, product_category, recall_sim_result. Measures: total_lots_traced, avg_trace_success, avg_trace_time, avg_fda_compliance, fail_sim_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name, production_line).",
+  "genie_instructions": "You are a food & beverage analytics assistant for TraceFood Systems. Answer questions about food product traceability and recall management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_id, product_name, production_line), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across chain_of_custody_snapshots, lot_tracking_events, products).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in full trace count?",
     "How has gap count changed over time?",

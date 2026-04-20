@@ -29,28 +29,84 @@
           "sql_type": "STRING",
           "comment": "Wind turbine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WF-V1-001",
+            "WF-V1-002",
+            "WF-V1-003",
+            "WF-V1-004",
+            "WF-V1-005",
+            "WF-SG-006",
+            "WF-SG-007",
+            "WF-SG-008",
+            "WF-SG-009",
+            "WF-SG-010",
+            "WF-GE-011",
+            "WF-GE-012",
+            "WF-GE-013",
+            "WF-GE-014",
+            "WF-GE-015",
+            "WF-GW-016",
+            "WF-GW-017",
+            "WF-GW-018",
+            "WF-GW-019",
+            "WF-GW-020"
+          ]
         },
         {
           "name": "turbine_name",
           "sql_type": "STRING",
           "comment": "Turbine name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Great Plains T01",
+            "Great Plains T02",
+            "Great Plains T03",
+            "Great Plains T04",
+            "Great Plains T05",
+            "Coastal Breeze T01",
+            "Coastal Breeze T02",
+            "Coastal Breeze T03",
+            "Coastal Breeze T04",
+            "Coastal Breeze T05",
+            "Mesa Ridge T01",
+            "Mesa Ridge T02",
+            "Mesa Ridge T03",
+            "Mesa Ridge T04",
+            "Mesa Ridge T05",
+            "Bluewater T01",
+            "Bluewater T02",
+            "Bluewater T03",
+            "Bluewater T04",
+            "Bluewater T05"
+          ]
         },
         {
           "name": "turbine_model",
           "sql_type": "STRING",
           "comment": "Turbine model: V150, SG-5.8, GE-3.6, Goldwind-6.7",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "V150",
+            "SG-5.8",
+            "GE-3.6",
+            "Goldwind-6.7"
+          ]
         },
         {
           "name": "wind_farm",
           "sql_type": "STRING",
           "comment": "Wind farm name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Great Plains Wind Farm",
+            "Coastal Breeze Wind",
+            "Mesa Ridge Wind Park",
+            "Bluewater Offshore"
+          ]
         },
         {
           "name": "generation_mwh",
@@ -78,7 +134,14 @@
           "sql_type": "STRING",
           "comment": "Status: Generating, Idling, Curtailed, Maintenance, Fault",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Fault' WHEN {status_noise} < 0.10 THEN 'Maintenance' WHEN {status_noise} < 0.18 THEN 'Curtailed' WHEN {status_noise} < 0.25 THEN 'Idling' ELSE 'Generating' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Fault' WHEN {status_noise} < 0.10 THEN 'Maintenance' WHEN {status_noise} < 0.18 THEN 'Curtailed' WHEN {status_noise} < 0.25 THEN 'Idling' ELSE 'Generating' END",
+          "entity_values": [
+            "Fault",
+            "Maintenance",
+            "Curtailed",
+            "Idling",
+            "Generating"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -249,21 +312,55 @@
           "sql_type": "STRING",
           "comment": "Turbine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WF-V1-001",
+            "WF-V1-002",
+            "WF-V1-003",
+            "WF-V1-004",
+            "WF-V1-005",
+            "WF-SG-006",
+            "WF-SG-007",
+            "WF-SG-008",
+            "WF-SG-009",
+            "WF-SG-010",
+            "WF-GE-011",
+            "WF-GE-012",
+            "WF-GE-013",
+            "WF-GE-014",
+            "WF-GE-015",
+            "WF-GW-016",
+            "WF-GW-017",
+            "WF-GW-018",
+            "WF-GW-019",
+            "WF-GW-020"
+          ]
         },
         {
           "name": "turbine_model",
           "sql_type": "STRING",
           "comment": "Turbine model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "V150",
+            "SG-5.8",
+            "GE-3.6",
+            "Goldwind-6.7"
+          ]
         },
         {
           "name": "wind_farm",
           "sql_type": "STRING",
           "comment": "Wind farm",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Great Plains Wind Farm",
+            "Coastal Breeze Wind",
+            "Mesa Ridge Wind Park",
+            "Bluewater Offshore"
+          ]
         },
         {
           "name": "power_curve_deviation_pct",
@@ -468,14 +565,42 @@
           "sql_type": "STRING",
           "comment": "Turbine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WF-V1-001",
+            "WF-V1-002",
+            "WF-V1-003",
+            "WF-V1-004",
+            "WF-V1-005",
+            "WF-SG-006",
+            "WF-SG-007",
+            "WF-SG-008",
+            "WF-SG-009",
+            "WF-SG-010",
+            "WF-GE-011",
+            "WF-GE-012",
+            "WF-GE-013",
+            "WF-GE-014",
+            "WF-GE-015",
+            "WF-GW-016",
+            "WF-GW-017",
+            "WF-GW-018",
+            "WF-GW-019",
+            "WF-GW-020"
+          ]
         },
         {
           "name": "wind_farm",
           "sql_type": "STRING",
           "comment": "Wind farm",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Great Plains Wind Farm",
+            "Coastal Breeze Wind",
+            "Mesa Ridge Wind Park",
+            "Bluewater Offshore"
+          ]
         },
         {
           "name": "forecasted_generation_mwh",
@@ -777,7 +902,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The turbine_kpi_monthly view (source: wind_turbines) has dimensions: record_date, turbine_model, wind_farm, turbine_status. Measures: total_generation_mwh, avg_capacity_factor, avg_wind_speed, generating_count, total_turbine_count. The wind_forecast_monthly view (source: wind_snapshots) has dimensions: snapshot_date, wind_farm. Measures: total_forecasted_mwh, total_actual_mwh, total_curtailment_mwh, total_revenue, avg_availability. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. turbine_id, turbine_name).",
+  "genie_instructions": "You are a power generation analytics assistant for WindPeak Energy. Answer questions about wind farm performance optimization and turbine health monitoring using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (turbine_id, turbine_name), query the base tables directly.\n- When joining tables, use the shared keys: turbine_id (shared across performance_readings, wind_snapshots, wind_turbines).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in generating count?",
     "How has unique total turbines changed over time?",
@@ -825,7 +950,7 @@
       ]
     },
     {
-      "question": "How does total average wind speed in meters per second break down by wind turbine identifier for 'Fault' records?",
+      "question": "How does total average wind speed in meters per second break down by wind turbine for 'Fault' records?",
       "sql_lines": [
         "SELECT turbine_id, COUNT(*) AS record_count, SUM(avg_wind_speed_ms) AS total_avg_wind_speed_ms",
         "FROM {fqn}.wind_turbines",
@@ -983,7 +1108,7 @@
       ]
     },
     {
-      "question": "What are the top wind turbine identifier by total average wind speed in meters per second?",
+      "question": "What are the top wind turbine by total average wind speed in meters per second?",
       "sql_lines": [
         "SELECT turbine_id, SUM(avg_wind_speed_ms) AS total_avg_wind_speed_ms",
         "FROM {fqn}.wind_turbines",

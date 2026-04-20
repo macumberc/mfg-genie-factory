@@ -29,35 +29,99 @@
           "sql_type": "STRING",
           "comment": "Contract ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "TF-CRD-001",
+            "TF-CRD-002",
+            "TF-CRD-003",
+            "TF-GAS-004",
+            "TF-GAS-005",
+            "TF-GAS-006",
+            "TF-NGL-007",
+            "TF-NGL-008",
+            "TF-NGL-009",
+            "TF-PWR-010",
+            "TF-PWR-011",
+            "TF-CRD-012",
+            "TF-GAS-013",
+            "TF-GAS-014",
+            "TF-NGL-015",
+            "TF-CRD-016",
+            "TF-GAS-017",
+            "TF-NGL-018",
+            "TF-PWR-019",
+            "TF-CRD-020"
+          ]
         },
         {
           "name": "contract_name",
           "sql_type": "STRING",
           "comment": "Contract name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WTI Physical Forward Q1",
+            "WTI Physical Forward Q2",
+            "Brent Swap H1",
+            "Henry Hub Baseload",
+            "Henry Hub Swing",
+            "Waha Basis Swap",
+            "Mont Belvieu Ethane",
+            "Mont Belvieu Propane",
+            "Conway Butane",
+            "ERCOT Power",
+            "PJM Power",
+            "Mars Crude Differential",
+            "Appalachian Basis",
+            "Permian Basin Gas",
+            "Enterprise Y-Grade",
+            "WTI Calendar Spread",
+            "Dominion South Basis",
+            "Isobutane Physical",
+            "MISO Power",
+            "LLS Physical"
+          ]
         },
         {
           "name": "commodity",
           "sql_type": "STRING",
           "comment": "Commodity",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Oil",
+            "Natural Gas",
+            "NGL",
+            "Power"
+          ]
         },
         {
           "name": "counterparty_type",
           "sql_type": "STRING",
           "comment": "Counterparty type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Producer",
+            "Trading House",
+            "Utility",
+            "Petrochemical",
+            "Refiner",
+            "Midstream"
+          ]
         },
         {
           "name": "trade_type",
           "sql_type": "STRING",
           "comment": "Type: Buy, Sell, Swap, Option",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Buy' WHEN {status_noise} < 0.65 THEN 'Sell' WHEN {status_noise} < 0.85 THEN 'Swap' ELSE 'Option' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Buy' WHEN {status_noise} < 0.65 THEN 'Sell' WHEN {status_noise} < 0.85 THEN 'Swap' ELSE 'Option' END",
+          "entity_values": [
+            "Buy",
+            "Sell",
+            "Swap",
+            "Option"
+          ]
         },
         {
           "name": "volume_bbl",
@@ -85,7 +149,12 @@
           "sql_type": "STRING",
           "comment": "Status: Settled, Pending, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Settled' WHEN {status_noise} < 0.90 THEN 'Pending' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Settled' WHEN {status_noise} < 0.90 THEN 'Pending' ELSE 'Cancelled' END",
+          "entity_values": [
+            "Settled",
+            "Pending",
+            "Cancelled"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -249,21 +318,57 @@
           "sql_type": "STRING",
           "comment": "Contract ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "TF-CRD-001",
+            "TF-CRD-002",
+            "TF-CRD-003",
+            "TF-GAS-004",
+            "TF-GAS-005",
+            "TF-GAS-006",
+            "TF-NGL-007",
+            "TF-NGL-008",
+            "TF-NGL-009",
+            "TF-PWR-010",
+            "TF-PWR-011",
+            "TF-CRD-012",
+            "TF-GAS-013",
+            "TF-GAS-014",
+            "TF-NGL-015",
+            "TF-CRD-016",
+            "TF-GAS-017",
+            "TF-NGL-018",
+            "TF-PWR-019",
+            "TF-CRD-020"
+          ]
         },
         {
           "name": "commodity",
           "sql_type": "STRING",
           "comment": "Commodity",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Oil",
+            "Natural Gas",
+            "NGL",
+            "Power"
+          ]
         },
         {
           "name": "counterparty_type",
           "sql_type": "STRING",
           "comment": "Counterparty type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Producer",
+            "Trading House",
+            "Utility",
+            "Petrochemical",
+            "Refiner",
+            "Midstream"
+          ]
         },
         {
           "name": "net_position_bbl",
@@ -428,14 +533,42 @@
           "sql_type": "STRING",
           "comment": "Contract ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "TF-CRD-001",
+            "TF-CRD-002",
+            "TF-CRD-003",
+            "TF-GAS-004",
+            "TF-GAS-005",
+            "TF-GAS-006",
+            "TF-NGL-007",
+            "TF-NGL-008",
+            "TF-NGL-009",
+            "TF-PWR-010",
+            "TF-PWR-011",
+            "TF-CRD-012",
+            "TF-GAS-013",
+            "TF-GAS-014",
+            "TF-NGL-015",
+            "TF-CRD-016",
+            "TF-GAS-017",
+            "TF-NGL-018",
+            "TF-PWR-019",
+            "TF-CRD-020"
+          ]
         },
         {
           "name": "commodity",
           "sql_type": "STRING",
           "comment": "Commodity",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Oil",
+            "Natural Gas",
+            "NGL",
+            "Power"
+          ]
         },
         {
           "name": "monthly_pnl_usd",
@@ -666,7 +799,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The trade_transactions_metrics view (source: trade_transactions) has dimensions: trade_date, contract_id, commodity, counterparty_type, trade_type, settlement_status. Measures: total_pnl_usd, total_volume_bbl, total_trades, avg_price_usd. The position_snapshots_metrics view (source: position_snapshots) has dimensions: snapshot_date, contract_id, commodity, counterparty_type. Measures: total_mtm_usd, total_var_usd, avg_net_position_bbl. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. contract_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for TradeFlow Energy. Answer questions about energy trading and position management for midstream commodities using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (contract_name), query the base tables directly.\n- When joining tables, use the shared keys: contract_id (shared across position_snapshots, trade_transactions, trading_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total tradess?",
     "How has highest volume bbl changed over time?",

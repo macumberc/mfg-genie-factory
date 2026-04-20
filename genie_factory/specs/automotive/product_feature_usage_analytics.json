@@ -29,49 +29,115 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AM-V001",
+            "AM-V002",
+            "AM-V003",
+            "AM-V004",
+            "AM-V005",
+            "AM-V006",
+            "AM-V007",
+            "AM-V008",
+            "AM-V009",
+            "AM-V010",
+            "AM-V011",
+            "AM-V012",
+            "AM-V013",
+            "AM-V014",
+            "AM-V015",
+            "AM-V016",
+            "AM-V017",
+            "AM-V018",
+            "AM-V019",
+            "AM-V020"
+          ]
         },
         {
           "name": "make",
           "sql_type": "STRING",
           "comment": "Vehicle manufacturer brand",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AutoMetrics"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Nexus Sedan",
+            "Trailblazer SUV",
+            "Hauler Truck",
+            "Volt EV",
+            "Metro Compact",
+            "Voyager Wagon",
+            "Sprint Coupe",
+            "Cargo Van",
+            "Trailblazer SUV Hybrid",
+            "Nexus Sedan Hybrid",
+            "Ridgeline Pickup"
+          ]
         },
         {
           "name": "model_year",
           "sql_type": "INT",
           "comment": "Vehicle model year",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "2024",
+            "2025"
+          ]
         },
         {
           "name": "feature_tier",
           "sql_type": "STRING",
           "comment": "Feature subscription tier (Basic, Premium, Elite)",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Premium",
+            "Elite",
+            "Basic"
+          ]
         },
         {
           "name": "feature_name",
           "sql_type": "STRING",
           "comment": "Name of the in-vehicle feature used",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Adaptive Cruise Control' WHEN {status_noise} < 0.22 THEN 'Lane Keep Assist' WHEN {status_noise} < 0.30 THEN 'Auto Park' WHEN {status_noise} < 0.40 THEN 'Voice Assistant' WHEN {status_noise} < 0.50 THEN 'Remote Start' WHEN {status_noise} < 0.58 THEN 'Heads-Up Display' WHEN {status_noise} < 0.66 THEN 'Surround View Camera' WHEN {status_noise} < 0.74 THEN 'Wireless CarPlay' WHEN {status_noise} < 0.82 THEN 'Over-the-Air Update' WHEN {status_noise} < 0.90 THEN 'Driver Drowsiness Alert' ELSE 'Traffic Sign Recognition' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Adaptive Cruise Control' WHEN {status_noise} < 0.22 THEN 'Lane Keep Assist' WHEN {status_noise} < 0.30 THEN 'Auto Park' WHEN {status_noise} < 0.40 THEN 'Voice Assistant' WHEN {status_noise} < 0.50 THEN 'Remote Start' WHEN {status_noise} < 0.58 THEN 'Heads-Up Display' WHEN {status_noise} < 0.66 THEN 'Surround View Camera' WHEN {status_noise} < 0.74 THEN 'Wireless CarPlay' WHEN {status_noise} < 0.82 THEN 'Over-the-Air Update' WHEN {status_noise} < 0.90 THEN 'Driver Drowsiness Alert' ELSE 'Traffic Sign Recognition' END",
+          "entity_values": [
+            "Adaptive Cruise Control",
+            "Lane Keep Assist",
+            "Auto Park",
+            "Voice Assistant",
+            "Remote Start",
+            "Heads-Up Display",
+            "Surround View Camera",
+            "Wireless CarPlay",
+            "Over-the-Air Update",
+            "Driver Drowsiness Alert",
+            "Traffic Sign Recognition"
+          ]
         },
         {
           "name": "feature_category",
           "sql_type": "STRING",
           "comment": "Category of the feature",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'ADAS' WHEN {status_noise} < 0.55 THEN 'Infotainment' WHEN {status_noise} < 0.75 THEN 'Convenience' ELSE 'Safety' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'ADAS' WHEN {status_noise} < 0.55 THEN 'Infotainment' WHEN {status_noise} < 0.75 THEN 'Convenience' ELSE 'Safety' END",
+          "entity_values": [
+            "ADAS",
+            "Infotainment",
+            "Convenience",
+            "Safety"
+          ]
         },
         {
           "name": "session_duration_sec",
@@ -92,7 +158,12 @@
           "sql_type": "STRING",
           "comment": "Whether the feature activated successfully",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Success' WHEN {status_noise} < 0.94 THEN 'Partial' ELSE 'Failed' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Success' WHEN {status_noise} < 0.94 THEN 'Partial' ELSE 'Failed' END",
+          "entity_values": [
+            "Success",
+            "Partial",
+            "Failed"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -282,21 +353,61 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AM-V001",
+            "AM-V002",
+            "AM-V003",
+            "AM-V004",
+            "AM-V005",
+            "AM-V006",
+            "AM-V007",
+            "AM-V008",
+            "AM-V009",
+            "AM-V010",
+            "AM-V011",
+            "AM-V012",
+            "AM-V013",
+            "AM-V014",
+            "AM-V015",
+            "AM-V016",
+            "AM-V017",
+            "AM-V018",
+            "AM-V019",
+            "AM-V020"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Nexus Sedan",
+            "Trailblazer SUV",
+            "Hauler Truck",
+            "Volt EV",
+            "Metro Compact",
+            "Voyager Wagon",
+            "Sprint Coupe",
+            "Cargo Van",
+            "Trailblazer SUV Hybrid",
+            "Nexus Sedan Hybrid",
+            "Ridgeline Pickup"
+          ]
         },
         {
           "name": "feature_tier",
           "sql_type": "STRING",
           "comment": "Feature subscription tier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Premium",
+            "Elite",
+            "Basic"
+          ]
         },
         {
           "name": "features_used_count",
@@ -331,14 +442,25 @@
           "sql_type": "STRING",
           "comment": "Engagement classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 80.0 THEN 'Power User' WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 50.0 THEN 'Active' WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 30.0 THEN 'Casual' ELSE 'Dormant' END"
+          "generation_expr": "CASE WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 80.0 THEN 'Power User' WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 50.0 THEN 'Active' WHEN (55.0 + ({qty_noise} - 0.5) * 60.0) >= 30.0 THEN 'Casual' ELSE 'Dormant' END",
+          "entity_values": [
+            "Power User",
+            "Active",
+            "Casual",
+            "Dormant"
+          ]
         },
         {
           "name": "churn_risk_flag",
           "sql_type": "STRING",
           "comment": "Whether the vehicle owner is at churn risk for subscription renewal",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'High' WHEN {status_noise} < 0.35 THEN 'Medium' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'High' WHEN {status_noise} < 0.35 THEN 'Medium' ELSE 'Low' END",
+          "entity_values": [
+            "High",
+            "Medium",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -526,21 +648,61 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AM-V001",
+            "AM-V002",
+            "AM-V003",
+            "AM-V004",
+            "AM-V005",
+            "AM-V006",
+            "AM-V007",
+            "AM-V008",
+            "AM-V009",
+            "AM-V010",
+            "AM-V011",
+            "AM-V012",
+            "AM-V013",
+            "AM-V014",
+            "AM-V015",
+            "AM-V016",
+            "AM-V017",
+            "AM-V018",
+            "AM-V019",
+            "AM-V020"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Nexus Sedan",
+            "Trailblazer SUV",
+            "Hauler Truck",
+            "Volt EV",
+            "Metro Compact",
+            "Voyager Wagon",
+            "Sprint Coupe",
+            "Cargo Van",
+            "Trailblazer SUV Hybrid",
+            "Nexus Sedan Hybrid",
+            "Ridgeline Pickup"
+          ]
         },
         {
           "name": "feature_tier",
           "sql_type": "STRING",
           "comment": "Feature subscription tier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Premium",
+            "Elite",
+            "Basic"
+          ]
         },
         {
           "name": "forecasted_adoption_pct",
@@ -568,14 +730,24 @@
           "sql_type": "STRING",
           "comment": "Adoption prediction model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v1.0' WHEN {status_noise} < 0.65 THEN 'v1.1' ELSE 'v1.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v1.0' WHEN {status_noise} < 0.65 THEN 'v1.1' ELSE 'v1.2' END",
+          "entity_values": [
+            "v1.0",
+            "v1.1",
+            "v1.2"
+          ]
         },
         {
           "name": "renewal_likelihood",
           "sql_type": "STRING",
           "comment": "Predicted subscription renewal likelihood",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Low' WHEN {status_noise} < 0.55 THEN 'Medium' ELSE 'High' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Low' WHEN {status_noise} < 0.55 THEN 'Medium' ELSE 'High' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -872,7 +1044,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The feature_events_metrics view (source: feature_events) has dimensions: event_date, model, feature_tier, feature_category, activation_status. Measures: total_feature_events, avg_session_duration_sec, total_interactions, failed_activation_count, avg_interaction_count. The user_engagement_metrics view (source: user_engagement_snapshots) has dimensions: snapshot_date, model, feature_tier, engagement_tier, churn_risk_flag. Measures: avg_engagement_score, total_sessions, avg_features_used, high_churn_risk_count, power_user_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. make, model_year, vehicle_id).",
+  "genie_instructions": "You are an automotive analytics assistant for AutoMetrics Corp. Answer questions about in-vehicle feature adoption tracking and customer usage pattern analytics using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (vehicle_id, make, model_year), query the base tables directly.\n- When joining tables, use the shared keys: vehicle_id (shared across feature_adoption_monthly, feature_events, user_engagement_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in failed activation count?",
     "How has unique total feature eventss changed over time?",
@@ -920,7 +1092,7 @@
       ]
     },
     {
-      "question": "How does total number of user interactions during the session break down by unique vehicle identifier for 'Success' records?",
+      "question": "How does total number of user interactions during the session break down by unique vehicle for 'Success' records?",
       "sql_lines": [
         "SELECT vehicle_id, COUNT(*) AS record_count, SUM(interaction_count) AS total_interaction_count",
         "FROM {fqn}.feature_events",
@@ -1087,7 +1259,7 @@
       ]
     },
     {
-      "question": "What are the top unique vehicle identifier by total number of user interactions during the session?",
+      "question": "What are the top unique vehicle by total number of user interactions during the session?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(interaction_count) AS total_interaction_count",
         "FROM {fqn}.feature_events",

@@ -29,42 +29,117 @@
           "sql_type": "STRING",
           "comment": "Process unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "QR-CDU-01",
+            "QR-CDU-02",
+            "QR-VDU-03",
+            "QR-FCC-04",
+            "QR-FCC-05",
+            "QR-HDS-06",
+            "QR-HDS-07",
+            "QR-REF-08",
+            "QR-REF-09",
+            "QR-ALK-10",
+            "QR-COK-11",
+            "QR-MRX-12",
+            "QR-BLD-13",
+            "QR-BLD-14",
+            "QR-BLD-15",
+            "QR-SRU-16",
+            "QR-UTL-17",
+            "QR-UTL-18",
+            "QR-STR-19",
+            "QR-LAB-20"
+          ]
         },
         {
           "name": "unit_name",
           "sql_type": "STRING",
           "comment": "Process unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation Unit 1",
+            "Crude Distillation Unit 2",
+            "Vacuum Distillation Unit",
+            "FCC Unit",
+            "FCC Gasoline Treater",
+            "Hydrodesulfurization Unit",
+            "Naphtha Hydrotreater",
+            "Catalytic Reformer",
+            "Isomerization Unit",
+            "Alkylation Unit",
+            "Coker Unit",
+            "Merox Treating Unit",
+            "Gasoline Blending",
+            "Diesel Blending",
+            "Jet Fuel Blending",
+            "Sulfur Recovery Unit",
+            "Hydrogen Plant",
+            "Amine Treating Unit",
+            "Storage & Loading",
+            "Quality Lab Operations"
+          ]
         },
         {
           "name": "product_grade",
           "sql_type": "STRING",
           "comment": "Product grade: Premium Gasoline, Regular Gasoline, Diesel, Jet Fuel, Fuel Oil, Naphtha",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Naphtha",
+            "Diesel",
+            "Fuel Oil",
+            "Regular Gasoline",
+            "Premium Gasoline",
+            "Jet Fuel"
+          ]
         },
         {
           "name": "deviation_type",
           "sql_type": "STRING",
           "comment": "Type: Off-Spec, Process Upset, Contamination, Yield Loss, Temperature Excursion",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Off-Spec' WHEN {status_noise} < 0.50 THEN 'Process Upset' WHEN {status_noise} < 0.65 THEN 'Contamination' WHEN {status_noise} < 0.82 THEN 'Yield Loss' ELSE 'Temperature Excursion' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Off-Spec' WHEN {status_noise} < 0.50 THEN 'Process Upset' WHEN {status_noise} < 0.65 THEN 'Contamination' WHEN {status_noise} < 0.82 THEN 'Yield Loss' ELSE 'Temperature Excursion' END",
+          "entity_values": [
+            "Off-Spec",
+            "Process Upset",
+            "Contamination",
+            "Yield Loss",
+            "Temperature Excursion"
+          ]
         },
         {
           "name": "root_cause",
           "sql_type": "STRING",
           "comment": "Root cause category",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Catalyst Degradation' WHEN {status_noise} < 0.28 THEN 'Feedstock Variation' WHEN {status_noise} < 0.42 THEN 'Equipment Malfunction' WHEN {status_noise} < 0.56 THEN 'Operator Error' WHEN {status_noise} < 0.68 THEN 'Process Control Drift' WHEN {status_noise} < 0.80 THEN 'Fouling Accumulation' WHEN {status_noise} < 0.90 THEN 'Corrosion Product' ELSE 'Unknown' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Catalyst Degradation' WHEN {status_noise} < 0.28 THEN 'Feedstock Variation' WHEN {status_noise} < 0.42 THEN 'Equipment Malfunction' WHEN {status_noise} < 0.56 THEN 'Operator Error' WHEN {status_noise} < 0.68 THEN 'Process Control Drift' WHEN {status_noise} < 0.80 THEN 'Fouling Accumulation' WHEN {status_noise} < 0.90 THEN 'Corrosion Product' ELSE 'Unknown' END",
+          "entity_values": [
+            "Catalyst Degradation",
+            "Feedstock Variation",
+            "Equipment Malfunction",
+            "Operator Error",
+            "Process Control Drift",
+            "Fouling Accumulation",
+            "Corrosion Product",
+            "Unknown"
+          ]
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Minor, Moderate, Major, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Minor' WHEN {status_noise} < 0.70 THEN 'Moderate' WHEN {status_noise} < 0.90 THEN 'Major' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Minor' WHEN {status_noise} < 0.70 THEN 'Moderate' WHEN {status_noise} < 0.90 THEN 'Major' ELSE 'Critical' END",
+          "entity_values": [
+            "Minor",
+            "Moderate",
+            "Major",
+            "Critical"
+          ]
         },
         {
           "name": "off_spec_volume_bbl",
@@ -228,21 +303,73 @@
           "sql_type": "STRING",
           "comment": "Process unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "QR-CDU-01",
+            "QR-CDU-02",
+            "QR-VDU-03",
+            "QR-FCC-04",
+            "QR-FCC-05",
+            "QR-HDS-06",
+            "QR-HDS-07",
+            "QR-REF-08",
+            "QR-REF-09",
+            "QR-ALK-10",
+            "QR-COK-11",
+            "QR-MRX-12",
+            "QR-BLD-13",
+            "QR-BLD-14",
+            "QR-BLD-15",
+            "QR-SRU-16",
+            "QR-UTL-17",
+            "QR-UTL-18",
+            "QR-STR-19",
+            "QR-LAB-20"
+          ]
         },
         {
           "name": "unit_name",
           "sql_type": "STRING",
           "comment": "Process unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation Unit 1",
+            "Crude Distillation Unit 2",
+            "Vacuum Distillation Unit",
+            "FCC Unit",
+            "FCC Gasoline Treater",
+            "Hydrodesulfurization Unit",
+            "Naphtha Hydrotreater",
+            "Catalytic Reformer",
+            "Isomerization Unit",
+            "Alkylation Unit",
+            "Coker Unit",
+            "Merox Treating Unit",
+            "Gasoline Blending",
+            "Diesel Blending",
+            "Jet Fuel Blending",
+            "Sulfur Recovery Unit",
+            "Hydrogen Plant",
+            "Amine Treating Unit",
+            "Storage & Loading",
+            "Quality Lab Operations"
+          ]
         },
         {
           "name": "product_grade",
           "sql_type": "STRING",
           "comment": "Product grade",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Naphtha",
+            "Diesel",
+            "Fuel Oil",
+            "Regular Gasoline",
+            "Premium Gasoline",
+            "Jet Fuel"
+          ]
         },
         {
           "name": "volume_bbl",
@@ -270,7 +397,12 @@
           "sql_type": "STRING",
           "comment": "Quality status: Pass, Fail, Marginal",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.78 THEN 'Pass' WHEN {status_noise} < 0.92 THEN 'Marginal' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.78 THEN 'Pass' WHEN {status_noise} < 0.92 THEN 'Marginal' ELSE 'Fail' END",
+          "entity_values": [
+            "Pass",
+            "Marginal",
+            "Fail"
+          ]
         },
         {
           "name": "yield_pct",
@@ -416,14 +548,44 @@
           "sql_type": "STRING",
           "comment": "Process unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "QR-CDU-01",
+            "QR-CDU-02",
+            "QR-VDU-03",
+            "QR-FCC-04",
+            "QR-FCC-05",
+            "QR-HDS-06",
+            "QR-HDS-07",
+            "QR-REF-08",
+            "QR-REF-09",
+            "QR-ALK-10",
+            "QR-COK-11",
+            "QR-MRX-12",
+            "QR-BLD-13",
+            "QR-BLD-14",
+            "QR-BLD-15",
+            "QR-SRU-16",
+            "QR-UTL-17",
+            "QR-UTL-18",
+            "QR-STR-19",
+            "QR-LAB-20"
+          ]
         },
         {
           "name": "product_grade",
           "sql_type": "STRING",
           "comment": "Product grade",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Naphtha",
+            "Diesel",
+            "Fuel Oil",
+            "Regular Gasoline",
+            "Premium Gasoline",
+            "Jet Fuel"
+          ]
         },
         {
           "name": "first_pass_yield_pct",
@@ -668,7 +830,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, unit_id, product_grade, deviation_type, root_cause, severity. Measures: total_events, total_off_spec_bbl, total_financial_impact_usd, avg_resolution_hours. The batch_records_metrics view (source: batch_records) has dimensions: batch_date, unit_id, product_grade, pass_fail. Measures: total_volume_bbl, avg_octane, avg_sulfur_ppm, avg_yield_pct, total_batches. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_name).",
+  "genie_instructions": "You are an oil & gas refining analytics assistant for QualityRefine Analytics. Answer questions about quality event root cause analysis for refinery product quality and process deviations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (unit_name), query the base tables directly.\n- When joining tables, use the shared keys: unit_id (shared across batch_records, quality_events, quality_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total eventss?",
     "How has highest off spec volume bbl changed over time?",
@@ -875,7 +1037,7 @@
       ]
     },
     {
-      "question": "What are the top process unit identifier by total off-spec product volume in barrels?",
+      "question": "What are the top process unit by total off-spec product volume in barrels?",
       "sql_lines": [
         "SELECT unit_id, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
         "FROM {fqn}.quality_events",

@@ -29,21 +29,57 @@
           "sql_type": "STRING",
           "comment": "CNC machine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PE-5AX-001",
+            "PE-5AX-002",
+            "PE-5AX-003",
+            "PE-5AX-004",
+            "PE-LTH-005",
+            "PE-LTH-006",
+            "PE-LTH-007",
+            "PE-LTH-008",
+            "PE-MIL-009",
+            "PE-MIL-010",
+            "PE-MIL-011",
+            "PE-MIL-012",
+            "PE-GRN-013",
+            "PE-GRN-014",
+            "PE-GRN-015",
+            "PE-GRN-016",
+            "PE-DRL-017",
+            "PE-DRL-018",
+            "PE-DRL-019",
+            "PE-DRL-020"
+          ]
         },
         {
           "name": "machine_model",
           "sql_type": "STRING",
           "comment": "CNC machine model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "5-Axis CNC",
+            "CNC Lathe",
+            "CNC Mill",
+            "Surface Grinder",
+            "CNC Drill"
+          ]
         },
         {
           "name": "operation_type",
           "sql_type": "STRING",
           "comment": "Machining operation: Milling, Turning, Drilling, Grinding, Boring",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Milling' WHEN {status_noise} < 0.45 THEN 'Turning' WHEN {status_noise} < 0.65 THEN 'Drilling' WHEN {status_noise} < 0.82 THEN 'Grinding' ELSE 'Boring' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Milling' WHEN {status_noise} < 0.45 THEN 'Turning' WHEN {status_noise} < 0.65 THEN 'Drilling' WHEN {status_noise} < 0.82 THEN 'Grinding' ELSE 'Boring' END",
+          "entity_values": [
+            "Milling",
+            "Turning",
+            "Drilling",
+            "Grinding",
+            "Boring"
+          ]
         },
         {
           "name": "surface_finish_um",
@@ -78,7 +114,15 @@
           "sql_type": "STRING",
           "comment": "Defect type: Surface Scratch, Burr, Chatter Mark, Dimensional OOT, Tool Mark, None",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.92 THEN 'None' WHEN {status_noise} < 0.935 THEN 'Surface Scratch' WHEN {status_noise} < 0.95 THEN 'Burr' WHEN {status_noise} < 0.965 THEN 'Chatter Mark' WHEN {status_noise} < 0.98 THEN 'Dimensional OOT' ELSE 'Tool Mark' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.92 THEN 'None' WHEN {status_noise} < 0.935 THEN 'Surface Scratch' WHEN {status_noise} < 0.95 THEN 'Burr' WHEN {status_noise} < 0.965 THEN 'Chatter Mark' WHEN {status_noise} < 0.98 THEN 'Dimensional OOT' ELSE 'Tool Mark' END",
+          "entity_values": [
+            "None",
+            "Surface Scratch",
+            "Burr",
+            "Chatter Mark",
+            "Dimensional OOT",
+            "Tool Mark"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -234,14 +278,43 @@
           "sql_type": "STRING",
           "comment": "CNC machine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PE-5AX-001",
+            "PE-5AX-002",
+            "PE-5AX-003",
+            "PE-5AX-004",
+            "PE-LTH-005",
+            "PE-LTH-006",
+            "PE-LTH-007",
+            "PE-LTH-008",
+            "PE-MIL-009",
+            "PE-MIL-010",
+            "PE-MIL-011",
+            "PE-MIL-012",
+            "PE-GRN-013",
+            "PE-GRN-014",
+            "PE-GRN-015",
+            "PE-GRN-016",
+            "PE-DRL-017",
+            "PE-DRL-018",
+            "PE-DRL-019",
+            "PE-DRL-020"
+          ]
         },
         {
           "name": "machine_model",
           "sql_type": "STRING",
           "comment": "CNC machine model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "5-Axis CNC",
+            "CNC Lathe",
+            "CNC Mill",
+            "Surface Grinder",
+            "CNC Drill"
+          ]
         },
         {
           "name": "tool_id",
@@ -283,7 +356,12 @@
           "sql_type": "STRING",
           "comment": "Tool condition: Good, Worn, Replace",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'Good' WHEN {status_noise} < 0.85 THEN 'Worn' ELSE 'Replace' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'Good' WHEN {status_noise} < 0.85 THEN 'Worn' ELSE 'Replace' END",
+          "entity_values": [
+            "Good",
+            "Worn",
+            "Replace"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -439,14 +517,43 @@
           "sql_type": "STRING",
           "comment": "CNC machine identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PE-5AX-001",
+            "PE-5AX-002",
+            "PE-5AX-003",
+            "PE-5AX-004",
+            "PE-LTH-005",
+            "PE-LTH-006",
+            "PE-LTH-007",
+            "PE-LTH-008",
+            "PE-MIL-009",
+            "PE-MIL-010",
+            "PE-MIL-011",
+            "PE-MIL-012",
+            "PE-GRN-013",
+            "PE-GRN-014",
+            "PE-GRN-015",
+            "PE-GRN-016",
+            "PE-DRL-017",
+            "PE-DRL-018",
+            "PE-DRL-019",
+            "PE-DRL-020"
+          ]
         },
         {
           "name": "machine_model",
           "sql_type": "STRING",
           "comment": "CNC machine model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "5-Axis CNC",
+            "CNC Lathe",
+            "CNC Mill",
+            "Surface Grinder",
+            "CNC Drill"
+          ]
         },
         {
           "name": "defect_rate_pct",
@@ -739,7 +846,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The machining_events_metrics view (source: machining_events) has dimensions: event_date, machine_model, operation_type, defect_type. Measures: total_events, defect_count, avg_surface_finish, avg_cycle_time. The defect_kpi_metrics view (source: defect_kpi_monthly) has dimensions: kpi_month, machine_model. Measures: avg_defect_rate, avg_first_pass_yield, total_scrap_cost, total_parts_produced. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. machine_id).",
+  "genie_instructions": "You are a machinery analytics assistant for PrecisionEdge Corp. Answer questions about machining process defect detection and tool wear monitoring using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (machine_id), query the base tables directly.\n- When joining tables, use the shared keys: machine_id (shared across defect_kpi_monthly, machining_events, tool_wear_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in defect count?",
     "How has unique total eventss changed over time?",
@@ -945,7 +1052,7 @@
       ]
     },
     {
-      "question": "What are the top cnc machine identifier by total surface roughness ra in micrometers?",
+      "question": "What are the top cnc machine by total surface roughness ra in micrometers?",
       "sql_lines": [
         "SELECT machine_id, SUM(surface_finish_um) AS total_surface_finish_um",
         "FROM {fqn}.machining_events",

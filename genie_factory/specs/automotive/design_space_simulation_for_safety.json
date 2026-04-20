@@ -29,28 +29,80 @@
           "sql_type": "STRING",
           "comment": "Vehicle configuration identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SD-CFG-001",
+            "SD-CFG-002",
+            "SD-CFG-003",
+            "SD-CFG-004",
+            "SD-CFG-005",
+            "SD-CFG-006",
+            "SD-CFG-007",
+            "SD-CFG-008",
+            "SD-CFG-009",
+            "SD-CFG-010",
+            "SD-CFG-011",
+            "SD-CFG-012",
+            "SD-CFG-013",
+            "SD-CFG-014",
+            "SD-CFG-015",
+            "SD-CFG-016",
+            "SD-CFG-017",
+            "SD-CFG-018",
+            "SD-CFG-019",
+            "SD-CFG-020"
+          ]
         },
         {
           "name": "model_name",
           "sql_type": "STRING",
           "comment": "Vehicle model being simulated",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Guardian Sedan",
+            "Fortress SUV",
+            "Ironclad Truck",
+            "Shield EV",
+            "Rampart Crossover",
+            "Aegis Wagon",
+            "Sentinel Coupe",
+            "Bulwark Van",
+            "Fortress SUV Hybrid",
+            "Guardian Sedan Hybrid",
+            "Titan Pickup"
+          ]
         },
         {
           "name": "body_type",
           "sql_type": "STRING",
           "comment": "Vehicle body type classification",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sedan",
+            "SUV",
+            "Truck",
+            "EV Sedan",
+            "Crossover",
+            "Wagon",
+            "Coupe",
+            "Van"
+          ]
         },
         {
           "name": "crash_test_type",
           "sql_type": "STRING",
           "comment": "Type of crash test simulated",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Frontal Offset",
+            "Full Frontal",
+            "Side Impact",
+            "Rollover",
+            "Rear Impact"
+          ]
         },
         {
           "name": "impact_speed_kmh",
@@ -85,14 +137,25 @@
           "sql_type": "STRING",
           "comment": "Overall safety rating outcome",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN '5-Star' WHEN {status_noise} < 0.65 THEN '4-Star' WHEN {status_noise} < 0.85 THEN '3-Star' ELSE '2-Star' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN '5-Star' WHEN {status_noise} < 0.65 THEN '4-Star' WHEN {status_noise} < 0.85 THEN '3-Star' ELSE '2-Star' END",
+          "entity_values": [
+            "5-Star",
+            "4-Star",
+            "3-Star",
+            "2-Star"
+          ]
         },
         {
           "name": "pass_fail",
           "sql_type": "STRING",
           "comment": "Whether the simulation passed regulatory thresholds",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Pass' WHEN {status_noise} < 0.90 THEN 'Marginal' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Pass' WHEN {status_noise} < 0.90 THEN 'Marginal' ELSE 'Fail' END",
+          "entity_values": [
+            "Pass",
+            "Marginal",
+            "Fail"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -286,35 +349,92 @@
           "sql_type": "STRING",
           "comment": "Vehicle configuration identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SD-CFG-001",
+            "SD-CFG-002",
+            "SD-CFG-003",
+            "SD-CFG-004",
+            "SD-CFG-005",
+            "SD-CFG-006",
+            "SD-CFG-007",
+            "SD-CFG-008",
+            "SD-CFG-009",
+            "SD-CFG-010",
+            "SD-CFG-011",
+            "SD-CFG-012",
+            "SD-CFG-013",
+            "SD-CFG-014",
+            "SD-CFG-015",
+            "SD-CFG-016",
+            "SD-CFG-017",
+            "SD-CFG-018",
+            "SD-CFG-019",
+            "SD-CFG-020"
+          ]
         },
         {
           "name": "model_name",
           "sql_type": "STRING",
           "comment": "Vehicle model being explored",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Guardian Sedan",
+            "Fortress SUV",
+            "Ironclad Truck",
+            "Shield EV",
+            "Rampart Crossover",
+            "Aegis Wagon",
+            "Sentinel Coupe",
+            "Bulwark Van",
+            "Fortress SUV Hybrid",
+            "Guardian Sedan Hybrid",
+            "Titan Pickup"
+          ]
         },
         {
           "name": "body_type",
           "sql_type": "STRING",
           "comment": "Vehicle body type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sedan",
+            "SUV",
+            "Truck",
+            "EV Sedan",
+            "Crossover",
+            "Wagon",
+            "Coupe",
+            "Van"
+          ]
         },
         {
           "name": "safety_package",
           "sql_type": "STRING",
           "comment": "Safety equipment package level",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Advanced",
+            "Standard",
+            "Premium"
+          ]
         },
         {
           "name": "material_type",
           "sql_type": "STRING",
           "comment": "Primary structural material used",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'High-Strength Steel' WHEN {status_noise} < 0.50 THEN 'Aluminum Alloy' WHEN {status_noise} < 0.70 THEN 'Carbon Fiber Composite' WHEN {status_noise} < 0.85 THEN 'Boron Steel' ELSE 'Magnesium Alloy' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'High-Strength Steel' WHEN {status_noise} < 0.50 THEN 'Aluminum Alloy' WHEN {status_noise} < 0.70 THEN 'Carbon Fiber Composite' WHEN {status_noise} < 0.85 THEN 'Boron Steel' ELSE 'Magnesium Alloy' END",
+          "entity_values": [
+            "High-Strength Steel",
+            "Aluminum Alloy",
+            "Carbon Fiber Composite",
+            "Boron Steel",
+            "Magnesium Alloy"
+          ]
         },
         {
           "name": "structural_thickness_mm",
@@ -349,7 +469,12 @@
           "sql_type": "STRING",
           "comment": "Design exploration convergence status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Converged' WHEN {status_noise} < 0.65 THEN 'Exploring' ELSE 'Divergent' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Converged' WHEN {status_noise} < 0.65 THEN 'Exploring' ELSE 'Divergent' END",
+          "entity_values": [
+            "Converged",
+            "Exploring",
+            "Divergent"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -539,21 +664,66 @@
           "sql_type": "STRING",
           "comment": "Vehicle configuration identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SD-CFG-001",
+            "SD-CFG-002",
+            "SD-CFG-003",
+            "SD-CFG-004",
+            "SD-CFG-005",
+            "SD-CFG-006",
+            "SD-CFG-007",
+            "SD-CFG-008",
+            "SD-CFG-009",
+            "SD-CFG-010",
+            "SD-CFG-011",
+            "SD-CFG-012",
+            "SD-CFG-013",
+            "SD-CFG-014",
+            "SD-CFG-015",
+            "SD-CFG-016",
+            "SD-CFG-017",
+            "SD-CFG-018",
+            "SD-CFG-019",
+            "SD-CFG-020"
+          ]
         },
         {
           "name": "model_name",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Guardian Sedan",
+            "Fortress SUV",
+            "Ironclad Truck",
+            "Shield EV",
+            "Rampart Crossover",
+            "Aegis Wagon",
+            "Sentinel Coupe",
+            "Bulwark Van",
+            "Fortress SUV Hybrid",
+            "Guardian Sedan Hybrid",
+            "Titan Pickup"
+          ]
         },
         {
           "name": "body_type",
           "sql_type": "STRING",
           "comment": "Vehicle body type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sedan",
+            "SUV",
+            "Truck",
+            "EV Sedan",
+            "Crossover",
+            "Wagon",
+            "Coupe",
+            "Van"
+          ]
         },
         {
           "name": "forecasted_safety_score",
@@ -581,14 +751,24 @@
           "sql_type": "STRING",
           "comment": "Safety simulation model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'FEA-v4.0' WHEN {status_noise} < 0.60 THEN 'FEA-v4.1' ELSE 'FEA-v4.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'FEA-v4.0' WHEN {status_noise} < 0.60 THEN 'FEA-v4.1' ELSE 'FEA-v4.2' END",
+          "entity_values": [
+            "FEA-v4.0",
+            "FEA-v4.1",
+            "FEA-v4.2"
+          ]
         },
         {
           "name": "regulatory_compliance",
           "sql_type": "STRING",
           "comment": "Regulatory compliance status for the month",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Compliant' WHEN {status_noise} < 0.88 THEN 'Under Review' ELSE 'Non-Compliant' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Compliant' WHEN {status_noise} < 0.88 THEN 'Under Review' ELSE 'Non-Compliant' END",
+          "entity_values": [
+            "Compliant",
+            "Under Review",
+            "Non-Compliant"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -900,7 +1080,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, model_name, body_type, crash_test_type, safety_rating. Measures: total_simulation_runs, avg_injury_risk_score, avg_peak_deceleration, fail_count, five_star_count. The parameter_snapshots_metrics view (source: parameter_snapshots) has dimensions: snapshot_date, model_name, body_type, material_type, exploration_status. Measures: avg_composite_safety_score, avg_structural_thickness, avg_vehicle_weight, converged_count, total_snapshots. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. config_id, safety_package).",
+  "genie_instructions": "You are an automotive analytics assistant for SafeDesign Automotive. Answer questions about design space exploration and simulation for vehicle safety optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (config_id, safety_package), query the base tables directly.\n- When joining tables, use the shared keys: config_id (shared across parameter_snapshots, simulation_runs, simulation_summary_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in fail count?",
     "How has five star count changed over time?",
@@ -1115,7 +1295,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle configuration identifier by total impact speed in km/h?",
+      "question": "What are the top vehicle configuration by total impact speed in km/h?",
       "sql_lines": [
         "SELECT config_id, SUM(impact_speed_kmh) AS total_impact_speed_kmh",
         "FROM {fqn}.simulation_runs",

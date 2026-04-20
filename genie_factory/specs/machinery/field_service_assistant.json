@@ -29,28 +29,70 @@
           "sql_type": "STRING",
           "comment": "Equipment model at customer site",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FF-EXC-100",
+            "FF-EXC-200",
+            "FF-EXC-300",
+            "FF-EXC-400",
+            "FF-CRN-100",
+            "FF-CRN-200",
+            "FF-CRN-300",
+            "FF-CRN-400",
+            "FF-GEN-100",
+            "FF-GEN-200",
+            "FF-GEN-300",
+            "FF-GEN-400",
+            "FF-CMP-100",
+            "FF-CMP-200",
+            "FF-CMP-300",
+            "FF-CMP-400",
+            "FF-PMP-100",
+            "FF-PMP-200",
+            "FF-PMP-300",
+            "FF-PMP-400"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Excavator",
+            "Crane",
+            "Generator",
+            "Compressor",
+            "Pump System"
+          ]
         },
         {
           "name": "priority",
           "sql_type": "STRING",
           "comment": "Ticket priority: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.88 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Low' WHEN {status_noise} < 0.65 THEN 'Medium' WHEN {status_noise} < 0.88 THEN 'High' ELSE 'Critical' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ]
         },
         {
           "name": "issue_category",
           "sql_type": "STRING",
           "comment": "Issue category: Mechanical, Electrical, Hydraulic, Software, Preventive",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Mechanical' WHEN {status_noise} < 0.50 THEN 'Electrical' WHEN {status_noise} < 0.68 THEN 'Hydraulic' WHEN {status_noise} < 0.82 THEN 'Software' ELSE 'Preventive' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Mechanical' WHEN {status_noise} < 0.50 THEN 'Electrical' WHEN {status_noise} < 0.68 THEN 'Hydraulic' WHEN {status_noise} < 0.82 THEN 'Software' ELSE 'Preventive' END",
+          "entity_values": [
+            "Mechanical",
+            "Electrical",
+            "Hydraulic",
+            "Software",
+            "Preventive"
+          ]
         },
         {
           "name": "resolution_hours",
@@ -233,14 +275,43 @@
           "sql_type": "STRING",
           "comment": "Primary equipment model serviced",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FF-EXC-100",
+            "FF-EXC-200",
+            "FF-EXC-300",
+            "FF-EXC-400",
+            "FF-CRN-100",
+            "FF-CRN-200",
+            "FF-CRN-300",
+            "FF-CRN-400",
+            "FF-GEN-100",
+            "FF-GEN-200",
+            "FF-GEN-300",
+            "FF-GEN-400",
+            "FF-CMP-100",
+            "FF-CMP-200",
+            "FF-CMP-300",
+            "FF-CMP-400",
+            "FF-PMP-100",
+            "FF-PMP-200",
+            "FF-PMP-300",
+            "FF-PMP-400"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Excavator",
+            "Crane",
+            "Generator",
+            "Compressor",
+            "Pump System"
+          ]
         },
         {
           "name": "technician_id",
@@ -437,14 +508,43 @@
           "sql_type": "STRING",
           "comment": "Equipment model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FF-EXC-100",
+            "FF-EXC-200",
+            "FF-EXC-300",
+            "FF-EXC-400",
+            "FF-CRN-100",
+            "FF-CRN-200",
+            "FF-CRN-300",
+            "FF-CRN-400",
+            "FF-GEN-100",
+            "FF-GEN-200",
+            "FF-GEN-300",
+            "FF-GEN-400",
+            "FF-CMP-100",
+            "FF-CMP-200",
+            "FF-CMP-300",
+            "FF-CMP-400",
+            "FF-PMP-100",
+            "FF-PMP-200",
+            "FF-PMP-300",
+            "FF-PMP-400"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Excavator",
+            "Crane",
+            "Generator",
+            "Compressor",
+            "Pump System"
+          ]
         },
         {
           "name": "first_time_fix_rate_pct",
@@ -721,7 +821,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The service_tickets_metrics view (source: service_tickets) has dimensions: ticket_date, equipment_type, priority, issue_category. Measures: total_tickets, avg_resolution_hours, total_service_cost, first_time_fix_count. The service_kpi_metrics view (source: service_kpi_monthly) has dimensions: kpi_month, equipment_type. Measures: avg_ftf_rate, avg_sla_compliance, avg_cost_per_ticket, total_tickets_monthly. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_model).",
+  "genie_instructions": "You are a machinery analytics assistant for FieldForce Machinery. Answer questions about field service management and technician dispatch optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (equipment_model), query the base tables directly.\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in first time fix count?",
     "How has unique total ticketss changed over time?",

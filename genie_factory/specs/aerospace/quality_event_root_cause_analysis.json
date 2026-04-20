@@ -29,49 +29,131 @@
           "sql_type": "STRING",
           "comment": "Component part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PN-4001",
+            "PN-4002",
+            "PN-4003",
+            "PN-4004",
+            "PN-4005",
+            "PN-4006",
+            "PN-4007",
+            "PN-4008",
+            "PN-4009",
+            "PN-4010",
+            "PN-4011",
+            "PN-4012",
+            "PN-4013",
+            "PN-4014",
+            "PN-4015",
+            "PN-4016",
+            "PN-4017",
+            "PN-4018",
+            "PN-4019",
+            "PN-4020"
+          ]
         },
         {
           "name": "component_name",
           "sql_type": "STRING",
           "comment": "Component descriptive name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wing Spar Cap",
+            "Fuselage Frame Section",
+            "Horizontal Stabilizer",
+            "Fan Blade Set",
+            "Turbine Disk",
+            "Combustor Liner",
+            "Flight Control Computer",
+            "Navigation Display Unit",
+            "TCAS Processor",
+            "Main Landing Gear Strut",
+            "Nose Gear Assembly",
+            "Brake Assembly",
+            "Overhead Bin Mechanism",
+            "Seat Track Assembly",
+            "Lavatory Module",
+            "Hydraulic Pump",
+            "Actuator Cylinder",
+            "Pressure Regulator Valve",
+            "Wing Skin Panel",
+            "Engine Nacelle Cowl"
+          ]
         },
         {
           "name": "component_class",
           "sql_type": "STRING",
           "comment": "Component class: Structural, Engine, Avionics, Landing Gear, Interior, Hydraulic",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Structural",
+            "Engine",
+            "Avionics",
+            "Landing Gear",
+            "Interior",
+            "Hydraulic"
+          ]
         },
         {
           "name": "process_area",
           "sql_type": "STRING",
           "comment": "Manufacturing process: Machining, Composites, Assembly, Heat Treatment, Surface Treatment, Testing",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Machining' WHEN {status_noise} < 0.40 THEN 'Composites' WHEN {status_noise} < 0.58 THEN 'Assembly' WHEN {status_noise} < 0.72 THEN 'Heat Treatment' WHEN {status_noise} < 0.86 THEN 'Surface Treatment' ELSE 'Testing' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Machining' WHEN {status_noise} < 0.40 THEN 'Composites' WHEN {status_noise} < 0.58 THEN 'Assembly' WHEN {status_noise} < 0.72 THEN 'Heat Treatment' WHEN {status_noise} < 0.86 THEN 'Surface Treatment' ELSE 'Testing' END",
+          "entity_values": [
+            "Machining",
+            "Composites",
+            "Assembly",
+            "Heat Treatment",
+            "Surface Treatment",
+            "Testing"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Event type: Non-Conformance, Escape, Customer Complaint, Audit Finding",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Non-Conformance' WHEN {status_noise} < 0.70 THEN 'Escape' WHEN {status_noise} < 0.88 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Non-Conformance' WHEN {status_noise} < 0.70 THEN 'Escape' WHEN {status_noise} < 0.88 THEN 'Customer Complaint' ELSE 'Audit Finding' END",
+          "entity_values": [
+            "Non-Conformance",
+            "Escape",
+            "Customer Complaint",
+            "Audit Finding"
+          ]
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Critical, Major, Minor, Observation",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.30 THEN 'Major' WHEN {status_noise} < 0.70 THEN 'Minor' ELSE 'Observation' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.30 THEN 'Major' WHEN {status_noise} < 0.70 THEN 'Minor' ELSE 'Observation' END",
+          "entity_values": [
+            "Critical",
+            "Major",
+            "Minor",
+            "Observation"
+          ]
         },
         {
           "name": "root_cause",
           "sql_type": "STRING",
           "comment": "Root cause: Tooling Wear, Operator Error, Material Defect, Process Drift, Design Gap, Supplier Quality, Environmental, Unknown",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Tooling Wear' WHEN {status_noise} < 0.28 THEN 'Operator Error' WHEN {status_noise} < 0.40 THEN 'Material Defect' WHEN {status_noise} < 0.52 THEN 'Process Drift' WHEN {status_noise} < 0.62 THEN 'Design Gap' WHEN {status_noise} < 0.75 THEN 'Supplier Quality' WHEN {status_noise} < 0.85 THEN 'Environmental' ELSE 'Unknown' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Tooling Wear' WHEN {status_noise} < 0.28 THEN 'Operator Error' WHEN {status_noise} < 0.40 THEN 'Material Defect' WHEN {status_noise} < 0.52 THEN 'Process Drift' WHEN {status_noise} < 0.62 THEN 'Design Gap' WHEN {status_noise} < 0.75 THEN 'Supplier Quality' WHEN {status_noise} < 0.85 THEN 'Environmental' ELSE 'Unknown' END",
+          "entity_values": [
+            "Tooling Wear",
+            "Operator Error",
+            "Material Defect",
+            "Process Drift",
+            "Design Gap",
+            "Supplier Quality",
+            "Environmental",
+            "Unknown"
+          ]
         },
         {
           "name": "cost_of_quality_usd",
@@ -231,28 +313,73 @@
           "sql_type": "STRING",
           "comment": "Component part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PN-4001",
+            "PN-4002",
+            "PN-4003",
+            "PN-4004",
+            "PN-4005",
+            "PN-4006",
+            "PN-4007",
+            "PN-4008",
+            "PN-4009",
+            "PN-4010",
+            "PN-4011",
+            "PN-4012",
+            "PN-4013",
+            "PN-4014",
+            "PN-4015",
+            "PN-4016",
+            "PN-4017",
+            "PN-4018",
+            "PN-4019",
+            "PN-4020"
+          ]
         },
         {
           "name": "component_class",
           "sql_type": "STRING",
           "comment": "Component class",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Structural",
+            "Engine",
+            "Avionics",
+            "Landing Gear",
+            "Interior",
+            "Hydraulic"
+          ]
         },
         {
           "name": "process_area",
           "sql_type": "STRING",
           "comment": "Process area inspected",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Machining' WHEN {status_noise} < 0.40 THEN 'Composites' WHEN {status_noise} < 0.58 THEN 'Assembly' WHEN {status_noise} < 0.72 THEN 'Heat Treatment' WHEN {status_noise} < 0.86 THEN 'Surface Treatment' ELSE 'Testing' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Machining' WHEN {status_noise} < 0.40 THEN 'Composites' WHEN {status_noise} < 0.58 THEN 'Assembly' WHEN {status_noise} < 0.72 THEN 'Heat Treatment' WHEN {status_noise} < 0.86 THEN 'Surface Treatment' ELSE 'Testing' END",
+          "entity_values": [
+            "Machining",
+            "Composites",
+            "Assembly",
+            "Heat Treatment",
+            "Surface Treatment",
+            "Testing"
+          ]
         },
         {
           "name": "inspection_type",
           "sql_type": "STRING",
           "comment": "Inspection type: First Article, In-Process, Final, Receiving, Audit",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'First Article' WHEN {status_noise} < 0.45 THEN 'In-Process' WHEN {status_noise} < 0.70 THEN 'Final' WHEN {status_noise} < 0.85 THEN 'Receiving' ELSE 'Audit' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'First Article' WHEN {status_noise} < 0.45 THEN 'In-Process' WHEN {status_noise} < 0.70 THEN 'Final' WHEN {status_noise} < 0.85 THEN 'Receiving' ELSE 'Audit' END",
+          "entity_values": [
+            "First Article",
+            "In-Process",
+            "Final",
+            "Receiving",
+            "Audit"
+          ]
         },
         {
           "name": "units_inspected",
@@ -273,7 +400,12 @@
           "sql_type": "STRING",
           "comment": "Overall result: Pass, Conditional, Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Pass' WHEN {status_noise} < 0.88 THEN 'Conditional' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Pass' WHEN {status_noise} < 0.88 THEN 'Conditional' ELSE 'Fail' END",
+          "entity_values": [
+            "Pass",
+            "Conditional",
+            "Fail"
+          ]
         },
         {
           "name": "cycle_time_hours",
@@ -419,14 +551,44 @@
           "sql_type": "STRING",
           "comment": "Component part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PN-4001",
+            "PN-4002",
+            "PN-4003",
+            "PN-4004",
+            "PN-4005",
+            "PN-4006",
+            "PN-4007",
+            "PN-4008",
+            "PN-4009",
+            "PN-4010",
+            "PN-4011",
+            "PN-4012",
+            "PN-4013",
+            "PN-4014",
+            "PN-4015",
+            "PN-4016",
+            "PN-4017",
+            "PN-4018",
+            "PN-4019",
+            "PN-4020"
+          ]
         },
         {
           "name": "component_class",
           "sql_type": "STRING",
           "comment": "Component class",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Structural",
+            "Engine",
+            "Avionics",
+            "Landing Gear",
+            "Interior",
+            "Hydraulic"
+          ]
         },
         {
           "name": "defect_rate_ppm",
@@ -702,7 +864,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, component_class, event_type, severity, root_cause. Measures: total_events, total_cost_of_quality, avg_days_to_closure, critical_event_count, escape_count. The inspection_metrics view (source: inspection_records) has dimensions: inspection_date, component_class, inspection_type, result. Measures: total_units_inspected, total_defects_found, fail_count, total_inspections, avg_cycle_time_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. component_id, component_name).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroQuality Corp. Answer questions about aerospace quality event tracking and root cause analysis using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (component_id, component_name), query the base tables directly.\n- When joining tables, use the shared keys: component_id (shared across inspection_records, quality_events, quality_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in critical event count?",
     "How has escape count changed over time?",

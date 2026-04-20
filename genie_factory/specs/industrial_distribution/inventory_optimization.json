@@ -29,28 +29,84 @@
           "sql_type": "STRING",
           "comment": "Warehouse-product combo identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WP-PF-001",
+            "WP-PF-002",
+            "WP-PF-003",
+            "WP-PF-004",
+            "WP-PT-005",
+            "WP-PT-006",
+            "WP-PT-007",
+            "WP-PT-008",
+            "WP-AB-009",
+            "WP-AB-010",
+            "WP-AB-011",
+            "WP-AB-012",
+            "WP-CT-013",
+            "WP-CT-014",
+            "WP-CT-015",
+            "WP-CT-016",
+            "WP-WD-017",
+            "WP-WD-018",
+            "WP-WD-019",
+            "WP-WD-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "90deg Elbow 2in SS316",
+            "Tee Fitting 1.5in Carbon",
+            "Flange 4in 150# RF",
+            "Coupling 3in Threaded",
+            "Impact Wrench 1/2in",
+            "Angle Grinder 4.5in",
+            "Reciprocating Saw 12A",
+            "Heat Gun 1500W",
+            "Grinding Wheel 7in A24R",
+            "Flap Disc 4.5in 60-Grit",
+            "Sanding Belt 4x24 80-Grit",
+            "Cut-Off Wheel 4.5in",
+            "Carbide End Mill 1/2in",
+            "HSS Drill Bit Set 29pc",
+            "Indexable Insert CNMG",
+            "Bandsaw Blade 1in Bi-Metal",
+            "MIG Wire 0.035 ER70S-6",
+            "Stick Electrode 6011 5/32",
+            "TIG Rod SS308L 1/16",
+            "Welding Gas 75/25 Cylinder"
+          ]
         },
         {
           "name": "warehouse",
           "sql_type": "STRING",
           "comment": "Warehouse location",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago DC",
+            "Houston DC",
+            "Atlanta DC"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category: Pipe Fittings, Power Tools, Abrasives, Cutting Tools, Welding",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe Fittings",
+            "Power Tools",
+            "Abrasives",
+            "Cutting Tools",
+            "Welding"
+          ]
         },
         {
           "name": "quantity_moved",
@@ -64,14 +120,42 @@
           "sql_type": "DOUBLE",
           "comment": "Unit cost in USD",
           "is_dimension": false,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "18.5",
+            "12.75",
+            "45.0",
+            "8.25",
+            "185.0",
+            "95.0",
+            "145.0",
+            "65.0",
+            "4.5",
+            "3.25",
+            "6.75",
+            "2.8",
+            "28.0",
+            "42.0",
+            "8.5",
+            "35.0",
+            "32.0",
+            "18.0",
+            "85.0"
+          ]
         },
         {
           "name": "movement_type",
           "sql_type": "STRING",
           "comment": "Type: Receipt, Issue, Return, Adjustment, Transfer",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Receipt' WHEN {status_noise} < 0.70 THEN 'Issue' WHEN {status_noise} < 0.82 THEN 'Return' WHEN {status_noise} < 0.92 THEN 'Transfer' ELSE 'Adjustment' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Receipt' WHEN {status_noise} < 0.70 THEN 'Issue' WHEN {status_noise} < 0.82 THEN 'Return' WHEN {status_noise} < 0.92 THEN 'Transfer' ELSE 'Adjustment' END",
+          "entity_values": [
+            "Receipt",
+            "Issue",
+            "Return",
+            "Transfer",
+            "Adjustment"
+          ]
         },
         {
           "name": "lot_number",
@@ -272,21 +356,55 @@
           "sql_type": "STRING",
           "comment": "Warehouse-product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WP-PF-001",
+            "WP-PF-002",
+            "WP-PF-003",
+            "WP-PF-004",
+            "WP-PT-005",
+            "WP-PT-006",
+            "WP-PT-007",
+            "WP-PT-008",
+            "WP-AB-009",
+            "WP-AB-010",
+            "WP-AB-011",
+            "WP-AB-012",
+            "WP-CT-013",
+            "WP-CT-014",
+            "WP-CT-015",
+            "WP-CT-016",
+            "WP-WD-017",
+            "WP-WD-018",
+            "WP-WD-019",
+            "WP-WD-020"
+          ]
         },
         {
           "name": "warehouse",
           "sql_type": "STRING",
           "comment": "Warehouse",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago DC",
+            "Houston DC",
+            "Atlanta DC"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe Fittings",
+            "Power Tools",
+            "Abrasives",
+            "Cutting Tools",
+            "Welding"
+          ]
         },
         {
           "name": "on_hand_qty",
@@ -321,7 +439,13 @@
           "sql_type": "STRING",
           "comment": "Status: Adequate, Low, Stockout, Overstock",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Stockout' WHEN {status_noise} < 0.18 THEN 'Low' WHEN {status_noise} < 0.30 THEN 'Overstock' ELSE 'Adequate' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Stockout' WHEN {status_noise} < 0.18 THEN 'Low' WHEN {status_noise} < 0.30 THEN 'Overstock' ELSE 'Adequate' END",
+          "entity_values": [
+            "Stockout",
+            "Low",
+            "Overstock",
+            "Adequate"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -515,21 +639,55 @@
           "sql_type": "STRING",
           "comment": "Warehouse-product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WP-PF-001",
+            "WP-PF-002",
+            "WP-PF-003",
+            "WP-PF-004",
+            "WP-PT-005",
+            "WP-PT-006",
+            "WP-PT-007",
+            "WP-PT-008",
+            "WP-AB-009",
+            "WP-AB-010",
+            "WP-AB-011",
+            "WP-AB-012",
+            "WP-CT-013",
+            "WP-CT-014",
+            "WP-CT-015",
+            "WP-CT-016",
+            "WP-WD-017",
+            "WP-WD-018",
+            "WP-WD-019",
+            "WP-WD-020"
+          ]
         },
         {
           "name": "warehouse",
           "sql_type": "STRING",
           "comment": "Warehouse",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago DC",
+            "Houston DC",
+            "Atlanta DC"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe Fittings",
+            "Power Tools",
+            "Abrasives",
+            "Cutting Tools",
+            "Welding"
+          ]
         },
         {
           "name": "turnover_ratio",
@@ -564,7 +722,13 @@
           "sql_type": "STRING",
           "comment": "Action: Rebalance, Increase Safety Stock, Reduce, No Action",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Increase Safety Stock' WHEN {status_noise} < 0.30 THEN 'Reduce' WHEN {status_noise} < 0.45 THEN 'Rebalance' ELSE 'No Action' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Increase Safety Stock' WHEN {status_noise} < 0.30 THEN 'Reduce' WHEN {status_noise} < 0.45 THEN 'Rebalance' ELSE 'No Action' END",
+          "entity_values": [
+            "Increase Safety Stock",
+            "Reduce",
+            "Rebalance",
+            "No Action"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -852,7 +1016,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_kpi_monthly view (source: inventory_transactions) has dimensions: snapshot_date, warehouse, product_category, stock_status. Measures: avg_on_hand_qty, total_carrying_cost, avg_days_of_supply, stockout_count, total_snapshot_count. The inventory_perf_monthly view (source: inventory_snapshots) has dimensions: perf_month, warehouse, product_category. Measures: avg_turnover_ratio, total_stockout_days, avg_fill_rate, total_monthly_carrying_cost, item_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name, wp_id).",
+  "genie_instructions": "You are an industrial distribution analytics assistant for StockSmart Distribution. Answer questions about warehouse inventory optimization and stock level management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (wp_id, product_name), query the base tables directly.\n- When joining tables, use the shared keys: wp_id (shared across inventory_snapshots, inventory_transactions, warehouse_products).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in stockout count?",
     "How has unique total snapshots changed over time?",
@@ -1051,7 +1215,7 @@
       ]
     },
     {
-      "question": "What are the top warehouse-product combo identifier by total units moved (positive=receipt, negative=issue)?",
+      "question": "What are the top warehouse-product combo by total units moved (positive=receipt, negative=issue)?",
       "sql_lines": [
         "SELECT wp_id, SUM(quantity_moved) AS total_quantity_moved",
         "FROM {fqn}.warehouse_products",

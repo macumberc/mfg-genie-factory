@@ -29,28 +29,85 @@
           "sql_type": "STRING",
           "comment": "Product SKU code",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DF-FST-001",
+            "DF-FST-002",
+            "DF-FST-003",
+            "DF-FST-004",
+            "DF-BRG-005",
+            "DF-BRG-006",
+            "DF-BRG-007",
+            "DF-BRG-008",
+            "DF-VLV-009",
+            "DF-VLV-010",
+            "DF-VLV-011",
+            "DF-VLV-012",
+            "DF-ELC-013",
+            "DF-ELC-014",
+            "DF-ELC-015",
+            "DF-ELC-016",
+            "DF-SAF-017",
+            "DF-SAF-018",
+            "DF-SAF-019",
+            "DF-SAF-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Hex Bolt Grade 8 1/2-13",
+            "Socket Head Cap Screw M10",
+            "Structural Rivet 3/16",
+            "Lock Washer Split Ring 5/8",
+            "Deep Groove Ball Bearing 6205",
+            "Tapered Roller Bearing 30208",
+            "Pillow Block Bearing UCP205",
+            "Thrust Bearing 51107",
+            "Gate Valve 2in 150# Flanged",
+            "Ball Valve 1in SS 316",
+            "Check Valve 3in Wafer",
+            "Butterfly Valve 4in Lug",
+            "Motor Starter 10HP NEMA 1",
+            "Contactor 3-Pole 40A",
+            "Circuit Breaker 30A 3P",
+            "VFD 5HP 480V 3-Phase",
+            "Safety Glasses ANSI Z87.1",
+            "Hard Hat Class E Vented",
+            "Nitrile Gloves Box/100",
+            "Fall Protection Harness"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category: Fasteners, Bearings, Valves, Electrical, Safety",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fasteners",
+            "Bearings",
+            "Valves",
+            "Electrical",
+            "Safety"
+          ]
         },
         {
           "name": "customer_segment",
           "sql_type": "STRING",
           "comment": "Customer segment: MRO, OEM, Contractor, Government",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'MRO' WHEN {status_noise} < 0.60 THEN 'OEM' WHEN {status_noise} < 0.85 THEN 'Contractor' ELSE 'Government' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'MRO' WHEN {status_noise} < 0.60 THEN 'OEM' WHEN {status_noise} < 0.85 THEN 'Contractor' ELSE 'Government' END",
+          "entity_values": [
+            "MRO",
+            "OEM",
+            "Contractor",
+            "Government"
+          ]
         },
         {
           "name": "order_quantity",
@@ -64,7 +121,29 @@
           "sql_type": "DOUBLE",
           "comment": "Unit price in USD",
           "is_dimension": false,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "0.45",
+            "0.82",
+            "0.28",
+            "0.15",
+            "12.5",
+            "28.75",
+            "18.9",
+            "9.6",
+            "145.0",
+            "78.5",
+            "210.0",
+            "165.0",
+            "320.0",
+            "85.0",
+            "125.0",
+            "650.0",
+            "8.5",
+            "22.0",
+            "14.5",
+            "185.0"
+          ]
         },
         {
           "name": "lead_time_days",
@@ -78,7 +157,13 @@
           "sql_type": "STRING",
           "comment": "Status: Shipped, Backordered, In Process, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.12 THEN 'Backordered' WHEN {status_noise} < 0.25 THEN 'In Process' ELSE 'Shipped' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.12 THEN 'Backordered' WHEN {status_noise} < 0.25 THEN 'In Process' ELSE 'Shipped' END",
+          "entity_values": [
+            "Cancelled",
+            "Backordered",
+            "In Process",
+            "Shipped"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -254,14 +339,43 @@
           "sql_type": "STRING",
           "comment": "Product SKU",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DF-FST-001",
+            "DF-FST-002",
+            "DF-FST-003",
+            "DF-FST-004",
+            "DF-BRG-005",
+            "DF-BRG-006",
+            "DF-BRG-007",
+            "DF-BRG-008",
+            "DF-VLV-009",
+            "DF-VLV-010",
+            "DF-VLV-011",
+            "DF-VLV-012",
+            "DF-ELC-013",
+            "DF-ELC-014",
+            "DF-ELC-015",
+            "DF-ELC-016",
+            "DF-SAF-017",
+            "DF-SAF-018",
+            "DF-SAF-019",
+            "DF-SAF-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fasteners",
+            "Bearings",
+            "Valves",
+            "Electrical",
+            "Safety"
+          ]
         },
         {
           "name": "open_order_value_usd",
@@ -303,7 +417,12 @@
           "sql_type": "STRING",
           "comment": "Pipeline: Healthy, Caution, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.25 THEN 'Caution' ELSE 'Healthy' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.25 THEN 'Caution' ELSE 'Healthy' END",
+          "entity_values": [
+            "Critical",
+            "Caution",
+            "Healthy"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -477,14 +596,43 @@
           "sql_type": "STRING",
           "comment": "Product SKU",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DF-FST-001",
+            "DF-FST-002",
+            "DF-FST-003",
+            "DF-FST-004",
+            "DF-BRG-005",
+            "DF-BRG-006",
+            "DF-BRG-007",
+            "DF-BRG-008",
+            "DF-VLV-009",
+            "DF-VLV-010",
+            "DF-VLV-011",
+            "DF-VLV-012",
+            "DF-ELC-013",
+            "DF-ELC-014",
+            "DF-ELC-015",
+            "DF-ELC-016",
+            "DF-SAF-017",
+            "DF-SAF-018",
+            "DF-SAF-019",
+            "DF-SAF-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fasteners",
+            "Bearings",
+            "Valves",
+            "Electrical",
+            "Safety"
+          ]
         },
         {
           "name": "forecasted_units",
@@ -526,7 +674,12 @@
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v2.0' WHEN {status_noise} < 0.65 THEN 'v2.1' ELSE 'v2.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v2.0' WHEN {status_noise} < 0.65 THEN 'v2.1' ELSE 'v2.2' END",
+          "entity_values": [
+            "v2.0",
+            "v2.1",
+            "v2.2"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -794,7 +947,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The demand_kpi_monthly view (source: product_skus) has dimensions: order_date, product_category, customer_segment, order_status. Measures: total_order_revenue, total_order_quantity, total_order_count, backordered_count, avg_lead_time. The forecast_accuracy_monthly view (source: demand_forecasts) has dimensions: forecast_month, product_category, model_version. Measures: total_forecasted_units, total_actual_units, avg_forecast_error, forecast_count, over_forecast_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name, sku).",
+  "genie_instructions": "You are an industrial distribution analytics assistant for DistroForecast Systems. Answer questions about industrial product demand forecasting and order backlog management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (sku, product_name), query the base tables directly.\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in backordered count?",
     "How has unique total orders changed over time?",

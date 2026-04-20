@@ -29,35 +29,98 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PL-UP-001",
+            "PL-UP-002",
+            "PL-UP-003",
+            "PL-UP-004",
+            "PL-UP-005",
+            "PL-DS-006",
+            "PL-DS-007",
+            "PL-DS-008",
+            "PL-DS-009",
+            "PL-DS-010",
+            "PL-MS-011",
+            "PL-MS-012",
+            "PL-MS-013",
+            "PL-MS-014",
+            "PL-CO-015",
+            "PL-CO-016",
+            "PL-CO-017",
+            "PL-CO-018",
+            "PL-UP-019",
+            "PL-DS-020"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GOM Deepwater Operations",
+            "Permian Basin Operations",
+            "Alaska North Slope",
+            "North Sea Operations",
+            "West Africa Exploration",
+            "Gulf Coast Refining Complex",
+            "Midwest Refinery Operations",
+            "Petrochemicals Division",
+            "Retail & Marketing",
+            "Lubricants & Specialty",
+            "Pipeline Operations Gulf",
+            "NGL Processing",
+            "Marine Transportation",
+            "Storage & Terminals",
+            "Corporate Finance",
+            "IT & Digital",
+            "HSE & Compliance",
+            "Human Resources",
+            "LNG Trading & Marketing",
+            "Renewable Fuels Division"
+          ]
         },
         {
           "name": "division",
           "sql_type": "STRING",
           "comment": "Division: Upstream, Downstream, Midstream, Corporate",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Upstream",
+            "Downstream",
+            "Midstream",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Africa",
+            "Global"
+          ]
         },
         {
           "name": "account_type",
           "sql_type": "STRING",
           "comment": "Account: Revenue, OPEX, CAPEX, Depreciation, G&A",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Revenue' WHEN {status_noise} < 0.55 THEN 'OPEX' WHEN {status_noise} < 0.72 THEN 'CAPEX' WHEN {status_noise} < 0.85 THEN 'Depreciation' ELSE 'G&A' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Revenue' WHEN {status_noise} < 0.55 THEN 'OPEX' WHEN {status_noise} < 0.72 THEN 'CAPEX' WHEN {status_noise} < 0.85 THEN 'Depreciation' ELSE 'G&A' END",
+          "entity_values": [
+            "Revenue",
+            "OPEX",
+            "CAPEX",
+            "Depreciation",
+            "G&A"
+          ]
         },
         {
           "name": "amount_usd",
@@ -78,7 +141,15 @@
           "sql_type": "STRING",
           "comment": "GL category: Production, Exploration, Refining, Marketing, Transportation, Admin",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Production' WHEN {status_noise} < 0.38 THEN 'Exploration' WHEN {status_noise} < 0.55 THEN 'Refining' WHEN {status_noise} < 0.70 THEN 'Marketing' WHEN {status_noise} < 0.85 THEN 'Transportation' ELSE 'Admin' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Production' WHEN {status_noise} < 0.38 THEN 'Exploration' WHEN {status_noise} < 0.55 THEN 'Refining' WHEN {status_noise} < 0.70 THEN 'Marketing' WHEN {status_noise} < 0.85 THEN 'Transportation' ELSE 'Admin' END",
+          "entity_values": [
+            "Production",
+            "Exploration",
+            "Refining",
+            "Marketing",
+            "Transportation",
+            "Admin"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -242,28 +313,84 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PL-UP-001",
+            "PL-UP-002",
+            "PL-UP-003",
+            "PL-UP-004",
+            "PL-UP-005",
+            "PL-DS-006",
+            "PL-DS-007",
+            "PL-DS-008",
+            "PL-DS-009",
+            "PL-DS-010",
+            "PL-MS-011",
+            "PL-MS-012",
+            "PL-MS-013",
+            "PL-MS-014",
+            "PL-CO-015",
+            "PL-CO-016",
+            "PL-CO-017",
+            "PL-CO-018",
+            "PL-UP-019",
+            "PL-DS-020"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GOM Deepwater Operations",
+            "Permian Basin Operations",
+            "Alaska North Slope",
+            "North Sea Operations",
+            "West Africa Exploration",
+            "Gulf Coast Refining Complex",
+            "Midwest Refinery Operations",
+            "Petrochemicals Division",
+            "Retail & Marketing",
+            "Lubricants & Specialty",
+            "Pipeline Operations Gulf",
+            "NGL Processing",
+            "Marine Transportation",
+            "Storage & Terminals",
+            "Corporate Finance",
+            "IT & Digital",
+            "HSE & Compliance",
+            "Human Resources",
+            "LNG Trading & Marketing",
+            "Renewable Fuels Division"
+          ]
         },
         {
           "name": "division",
           "sql_type": "STRING",
           "comment": "Division",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Upstream",
+            "Downstream",
+            "Midstream",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Africa",
+            "Global"
+          ]
         },
         {
           "name": "planned_revenue_usd",
@@ -455,21 +582,55 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PL-UP-001",
+            "PL-UP-002",
+            "PL-UP-003",
+            "PL-UP-004",
+            "PL-UP-005",
+            "PL-DS-006",
+            "PL-DS-007",
+            "PL-DS-008",
+            "PL-DS-009",
+            "PL-DS-010",
+            "PL-MS-011",
+            "PL-MS-012",
+            "PL-MS-013",
+            "PL-MS-014",
+            "PL-CO-015",
+            "PL-CO-016",
+            "PL-CO-017",
+            "PL-CO-018",
+            "PL-UP-019",
+            "PL-DS-020"
+          ]
         },
         {
           "name": "division",
           "sql_type": "STRING",
           "comment": "Division",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Upstream",
+            "Downstream",
+            "Midstream",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Africa",
+            "Global"
+          ]
         },
         {
           "name": "operating_margin_pct",
@@ -725,7 +886,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_transactions_metrics view (source: financial_transactions) has dimensions: transaction_date, cost_center_id, division, region, account_type, gl_category. Measures: total_amount_usd, total_budget_usd, total_transactions, avg_transaction_usd. The budget_snapshots_metrics view (source: budget_snapshots) has dimensions: snapshot_month, cost_center_id, division, region. Measures: total_actual_revenue, total_planned_revenue, total_actual_opex, total_ebitda. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_name).",
+  "genie_instructions": "You are an oil & gas integrated analytics assistant for PetroLedger Corp. Answer questions about financial analytics and reporting for integrated oil and gas operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (cost_center_name), query the base tables directly.\n- When joining tables, use the shared keys: cost_center_id (shared across budget_snapshots, financial_kpi_monthly, financial_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total transactionss?",
     "How has highest amount changed over time?",
@@ -935,7 +1096,7 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "question": "What are the top cost center by total transaction amount in usd?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

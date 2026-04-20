@@ -29,21 +29,62 @@
           "sql_type": "STRING",
           "comment": "Spare part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PV-001",
+            "PV-002",
+            "PV-003",
+            "PV-004",
+            "PV-005",
+            "PV-006",
+            "PV-007",
+            "PV-008",
+            "PV-009",
+            "PV-010",
+            "PV-011",
+            "PV-012",
+            "PV-013",
+            "PV-014",
+            "PV-015",
+            "PV-016",
+            "PV-017",
+            "PV-018",
+            "PV-019",
+            "PV-020"
+          ]
         },
         {
           "name": "part_category",
           "sql_type": "STRING",
           "comment": "Part category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bearings",
+            "Seals",
+            "Filters",
+            "Belts",
+            "Couplings",
+            "Valves",
+            "Pump Parts",
+            "Motor Parts",
+            "Gears",
+            "Cylinder Parts",
+            "Sensors"
+          ]
         },
         {
           "name": "txn_type",
           "sql_type": "STRING",
           "comment": "Transaction type: Issue, Receipt, Return, Scrap",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Issue' WHEN {status_noise} < 0.85 THEN 'Receipt' WHEN {status_noise} < 0.95 THEN 'Return' ELSE 'Scrap' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Issue' WHEN {status_noise} < 0.85 THEN 'Receipt' WHEN {status_noise} < 0.95 THEN 'Return' ELSE 'Scrap' END",
+          "entity_values": [
+            "Issue",
+            "Receipt",
+            "Return",
+            "Scrap"
+          ]
         },
         {
           "name": "quantity",
@@ -57,14 +98,41 @@
           "sql_type": "DOUBLE",
           "comment": "Unit cost in USD",
           "is_dimension": false,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "12.5",
+            "28.9",
+            "45.0",
+            "32.0",
+            "8.5",
+            "6.2",
+            "22.0",
+            "35.5",
+            "85.0",
+            "62.0",
+            "120.0",
+            "95.0",
+            "250.0",
+            "18.5",
+            "180.0",
+            "210.0",
+            "320.0",
+            "75.0",
+            "68.0"
+          ]
         },
         {
           "name": "warehouse",
           "sql_type": "STRING",
           "comment": "Warehouse location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'WH-Central' WHEN {status_noise} < 0.55 THEN 'WH-East' WHEN {status_noise} < 0.80 THEN 'WH-West' ELSE 'WH-South' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'WH-Central' WHEN {status_noise} < 0.55 THEN 'WH-East' WHEN {status_noise} < 0.80 THEN 'WH-West' ELSE 'WH-South' END",
+          "entity_values": [
+            "WH-Central",
+            "WH-East",
+            "WH-West",
+            "WH-South"
+          ]
         },
         {
           "name": "work_order_ref",
@@ -78,7 +146,12 @@
           "sql_type": "STRING",
           "comment": "Urgency: Normal, Urgent, Emergency",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Normal' WHEN {status_noise} < 0.90 THEN 'Urgent' ELSE 'Emergency' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Normal' WHEN {status_noise} < 0.90 THEN 'Urgent' ELSE 'Emergency' END",
+          "entity_values": [
+            "Normal",
+            "Urgent",
+            "Emergency"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -278,14 +351,49 @@
           "sql_type": "STRING",
           "comment": "Spare part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PV-001",
+            "PV-002",
+            "PV-003",
+            "PV-004",
+            "PV-005",
+            "PV-006",
+            "PV-007",
+            "PV-008",
+            "PV-009",
+            "PV-010",
+            "PV-011",
+            "PV-012",
+            "PV-013",
+            "PV-014",
+            "PV-015",
+            "PV-016",
+            "PV-017",
+            "PV-018",
+            "PV-019",
+            "PV-020"
+          ]
         },
         {
           "name": "part_category",
           "sql_type": "STRING",
           "comment": "Part category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bearings",
+            "Seals",
+            "Filters",
+            "Belts",
+            "Couplings",
+            "Valves",
+            "Pump Parts",
+            "Motor Parts",
+            "Gears",
+            "Cylinder Parts",
+            "Sensors"
+          ]
         },
         {
           "name": "on_hand_qty",
@@ -320,7 +428,12 @@
           "sql_type": "STRING",
           "comment": "Stockout risk: Low, Medium, High",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Low' WHEN {status_noise} < 0.82 THEN 'Medium' ELSE 'High' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Low' WHEN {status_noise} < 0.82 THEN 'Medium' ELSE 'High' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High"
+          ]
         },
         {
           "name": "inventory_value_usd",
@@ -527,14 +640,49 @@
           "sql_type": "STRING",
           "comment": "Spare part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PV-001",
+            "PV-002",
+            "PV-003",
+            "PV-004",
+            "PV-005",
+            "PV-006",
+            "PV-007",
+            "PV-008",
+            "PV-009",
+            "PV-010",
+            "PV-011",
+            "PV-012",
+            "PV-013",
+            "PV-014",
+            "PV-015",
+            "PV-016",
+            "PV-017",
+            "PV-018",
+            "PV-019",
+            "PV-020"
+          ]
         },
         {
           "name": "part_category",
           "sql_type": "STRING",
           "comment": "Part category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bearings",
+            "Seals",
+            "Filters",
+            "Belts",
+            "Couplings",
+            "Valves",
+            "Pump Parts",
+            "Motor Parts",
+            "Gears",
+            "Cylinder Parts",
+            "Sensors"
+          ]
         },
         {
           "name": "turnover_ratio",
@@ -861,7 +1009,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The parts_transactions_metrics view (source: parts_transactions) has dimensions: txn_date, part_category, txn_type, warehouse. Measures: total_issued_qty, total_received_qty, total_transactions, emergency_issues. The inventory_kpi_metrics view (source: inventory_kpi_monthly) has dimensions: kpi_month, part_category. Measures: avg_turnover, avg_fill_rate, total_stockouts, total_carrying_cost. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. part_number).",
+  "genie_instructions": "You are a machinery analytics assistant for PartsVault Industrial. Answer questions about spare parts inventory optimization and demand planning using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (part_number), query the base tables directly.\n- When joining tables, use the shared keys: part_number (shared across inventory_kpi_monthly, inventory_snapshots, parts_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total issued qty count?",
     "How has total received qty count changed over time?",

@@ -29,28 +29,93 @@
           "sql_type": "STRING",
           "comment": "Heat exchanger identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HT-ST-001",
+            "HT-ST-002",
+            "HT-ST-003",
+            "HT-ST-004",
+            "HT-PL-005",
+            "HT-PL-006",
+            "HT-AC-007",
+            "HT-AC-008",
+            "HT-FH-009",
+            "HT-FH-010",
+            "HT-FH-011",
+            "HT-FH-012",
+            "HT-WH-013",
+            "HT-WH-014",
+            "HT-ST-015",
+            "HT-ST-016",
+            "HT-AC-017",
+            "HT-PL-018",
+            "HT-WH-019",
+            "HT-ST-020"
+          ]
         },
         {
           "name": "exchanger_name",
           "sql_type": "STRING",
           "comment": "Heat exchanger name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Preheat E-101A",
+            "Crude Preheat E-101B",
+            "Crude Preheat E-102",
+            "Diesel Product Cooler E-201",
+            "Naphtha Cooler E-301",
+            "Reformate Cooler E-302",
+            "Overhead Air Cooler A-101",
+            "FCC Product Air Cooler A-301",
+            "Crude Heater H-101",
+            "Vacuum Heater H-102",
+            "Reformer Heater H-301",
+            "Coker Heater H-401",
+            "FCC Waste Heat Boiler WHB-301",
+            "Sulfur Plant WHB-501",
+            "HDS Feed Exchanger E-401",
+            "HDS Effluent Cooler E-402",
+            "Alkylation Air Cooler A-501",
+            "Lean Amine Cooler E-601",
+            "H2 Plant WHB-701",
+            "Debutanizer Reboiler E-801"
+          ]
         },
         {
           "name": "equipment_category",
           "sql_type": "STRING",
           "comment": "Category: Shell-Tube, Plate, Air Cooler, Fired Heater, Waste Heat Recovery",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Shell-Tube",
+            "Plate",
+            "Air Cooler",
+            "Fired Heater",
+            "Waste Heat Recovery"
+          ]
         },
         {
           "name": "process_unit",
           "sql_type": "STRING",
           "comment": "Refinery process unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Preheat Train",
+            "Distillation",
+            "Catalytic Reforming",
+            "FCC Heat Recovery",
+            "Vacuum Unit",
+            "Coker",
+            "Sulfur Recovery",
+            "Hydrotreating",
+            "Alkylation",
+            "Gas Treating",
+            "Hydrogen Plant",
+            "NGL Recovery"
+          ]
         },
         {
           "name": "energy_consumption_mmbtu",
@@ -257,21 +322,64 @@
           "sql_type": "STRING",
           "comment": "Heat exchanger identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HT-ST-001",
+            "HT-ST-002",
+            "HT-ST-003",
+            "HT-ST-004",
+            "HT-PL-005",
+            "HT-PL-006",
+            "HT-AC-007",
+            "HT-AC-008",
+            "HT-FH-009",
+            "HT-FH-010",
+            "HT-FH-011",
+            "HT-FH-012",
+            "HT-WH-013",
+            "HT-WH-014",
+            "HT-ST-015",
+            "HT-ST-016",
+            "HT-AC-017",
+            "HT-PL-018",
+            "HT-WH-019",
+            "HT-ST-020"
+          ]
         },
         {
           "name": "equipment_category",
           "sql_type": "STRING",
           "comment": "Equipment category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Shell-Tube",
+            "Plate",
+            "Air Cooler",
+            "Fired Heater",
+            "Waste Heat Recovery"
+          ]
         },
         {
           "name": "process_unit",
           "sql_type": "STRING",
           "comment": "Process unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Preheat Train",
+            "Distillation",
+            "Catalytic Reforming",
+            "FCC Heat Recovery",
+            "Vacuum Unit",
+            "Coker",
+            "Sulfur Recovery",
+            "Hydrotreating",
+            "Alkylation",
+            "Gas Treating",
+            "Hydrogen Plant",
+            "NGL Recovery"
+          ]
         },
         {
           "name": "clean_ua_btu_hr_f",
@@ -444,21 +552,64 @@
           "sql_type": "STRING",
           "comment": "Heat exchanger identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HT-ST-001",
+            "HT-ST-002",
+            "HT-ST-003",
+            "HT-ST-004",
+            "HT-PL-005",
+            "HT-PL-006",
+            "HT-AC-007",
+            "HT-AC-008",
+            "HT-FH-009",
+            "HT-FH-010",
+            "HT-FH-011",
+            "HT-FH-012",
+            "HT-WH-013",
+            "HT-WH-014",
+            "HT-ST-015",
+            "HT-ST-016",
+            "HT-AC-017",
+            "HT-PL-018",
+            "HT-WH-019",
+            "HT-ST-020"
+          ]
         },
         {
           "name": "equipment_category",
           "sql_type": "STRING",
           "comment": "Equipment category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Shell-Tube",
+            "Plate",
+            "Air Cooler",
+            "Fired Heater",
+            "Waste Heat Recovery"
+          ]
         },
         {
           "name": "process_unit",
           "sql_type": "STRING",
           "comment": "Process unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Preheat Train",
+            "Distillation",
+            "Catalytic Reforming",
+            "FCC Heat Recovery",
+            "Vacuum Unit",
+            "Coker",
+            "Sulfur Recovery",
+            "Hydrotreating",
+            "Alkylation",
+            "Gas Treating",
+            "Hydrogen Plant",
+            "NGL Recovery"
+          ]
         },
         {
           "name": "energy_efficiency_index",
@@ -712,7 +863,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The energy_readings_metrics view (source: energy_readings) has dimensions: reading_date, exchanger_id, equipment_category, process_unit. Measures: total_energy_mmbtu, avg_thermal_efficiency, avg_fouling_factor, avg_heat_duty. The thermal_snapshots_metrics view (source: thermal_snapshots) has dimensions: snapshot_date, exchanger_id, equipment_category, process_unit. Measures: avg_effectiveness_pct, avg_energy_intensity, total_co2_tons, avg_ua_ratio. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. exchanger_name).",
+  "genie_instructions": "You are an oil & gas refining analytics assistant for HeatTrack Refining. Answer questions about energy use monitoring and heat exchange optimization for refinery operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (exchanger_name), query the base tables directly.\n- When joining tables, use the shared keys: exchanger_id (shared across energy_kpi_monthly, energy_readings, thermal_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in highest energy consumption mmbtu?",
     "How has total energy consumption mmbtu changed over time?",
@@ -918,7 +1069,7 @@
       ]
     },
     {
-      "question": "What are the top heat exchanger identifier by total energy consumption in mmbtu?",
+      "question": "What are the top heat exchanger by total energy consumption in mmbtu?",
       "sql_lines": [
         "SELECT exchanger_id, SUM(energy_consumption_mmbtu) AS total_energy_consumption_mmbtu",
         "FROM {fqn}.energy_readings",

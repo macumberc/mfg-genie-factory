@@ -29,21 +29,64 @@
           "sql_type": "STRING",
           "comment": "Industrial asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "IP-CMP-001",
+            "IP-CMP-002",
+            "IP-CMP-003",
+            "IP-CMP-004",
+            "IP-PMP-005",
+            "IP-PMP-006",
+            "IP-PMP-007",
+            "IP-PMP-008",
+            "IP-TRB-009",
+            "IP-TRB-010",
+            "IP-TRB-011",
+            "IP-TRB-012",
+            "IP-GBX-013",
+            "IP-GBX-014",
+            "IP-GBX-015",
+            "IP-GBX-016",
+            "IP-MTR-017",
+            "IP-MTR-018",
+            "IP-MTR-019",
+            "IP-MTR-020"
+          ]
         },
         {
           "name": "asset_type",
           "sql_type": "STRING",
           "comment": "Type of industrial asset",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Compressor",
+            "Pump",
+            "Turbine",
+            "Gearbox",
+            "Motor"
+          ]
         },
         {
           "name": "manufacturer",
           "sql_type": "STRING",
           "comment": "Asset manufacturer",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Atlas Copco",
+            "Ingersoll Rand",
+            "Sulzer",
+            "KSB",
+            "Flowserve",
+            "Siemens Energy",
+            "GE Vernova",
+            "Flender",
+            "SEW-Eurodrive",
+            "ABB",
+            "Siemens",
+            "WEG"
+          ]
         },
         {
           "name": "vibration_velocity_mm_s",
@@ -257,42 +300,110 @@
           "sql_type": "STRING",
           "comment": "Industrial asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "IP-CMP-001",
+            "IP-CMP-002",
+            "IP-CMP-003",
+            "IP-CMP-004",
+            "IP-PMP-005",
+            "IP-PMP-006",
+            "IP-PMP-007",
+            "IP-PMP-008",
+            "IP-TRB-009",
+            "IP-TRB-010",
+            "IP-TRB-011",
+            "IP-TRB-012",
+            "IP-GBX-013",
+            "IP-GBX-014",
+            "IP-GBX-015",
+            "IP-GBX-016",
+            "IP-MTR-017",
+            "IP-MTR-018",
+            "IP-MTR-019",
+            "IP-MTR-020"
+          ]
         },
         {
           "name": "asset_type",
           "sql_type": "STRING",
           "comment": "Type of industrial asset",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Compressor",
+            "Pump",
+            "Turbine",
+            "Gearbox",
+            "Motor"
+          ]
         },
         {
           "name": "manufacturer",
           "sql_type": "STRING",
           "comment": "Asset manufacturer",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Atlas Copco",
+            "Ingersoll Rand",
+            "Sulzer",
+            "KSB",
+            "Flowserve",
+            "Siemens Energy",
+            "GE Vernova",
+            "Flender",
+            "SEW-Eurodrive",
+            "ABB",
+            "Siemens",
+            "WEG"
+          ]
         },
         {
           "name": "failure_mode",
           "sql_type": "STRING",
           "comment": "Root cause failure mode",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Bearing Failure' WHEN {status_noise} < 0.16 THEN 'Seal Leak' WHEN {status_noise} < 0.24 THEN 'Impeller Erosion' WHEN {status_noise} < 0.32 THEN 'Shaft Misalignment' WHEN {status_noise} < 0.40 THEN 'Blade Fatigue' WHEN {status_noise} < 0.48 THEN 'Gear Tooth Wear' WHEN {status_noise} < 0.54 THEN 'Lubrication Failure' WHEN {status_noise} < 0.60 THEN 'Overheating' WHEN {status_noise} < 0.66 THEN 'Cavitation Damage' WHEN {status_noise} < 0.72 THEN 'Electrical Fault' WHEN {status_noise} < 0.78 THEN 'Corrosion' WHEN {status_noise} < 0.84 THEN 'Vibration Fatigue' ELSE 'Fouling' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Bearing Failure' WHEN {status_noise} < 0.16 THEN 'Seal Leak' WHEN {status_noise} < 0.24 THEN 'Impeller Erosion' WHEN {status_noise} < 0.32 THEN 'Shaft Misalignment' WHEN {status_noise} < 0.40 THEN 'Blade Fatigue' WHEN {status_noise} < 0.48 THEN 'Gear Tooth Wear' WHEN {status_noise} < 0.54 THEN 'Lubrication Failure' WHEN {status_noise} < 0.60 THEN 'Overheating' WHEN {status_noise} < 0.66 THEN 'Cavitation Damage' WHEN {status_noise} < 0.72 THEN 'Electrical Fault' WHEN {status_noise} < 0.78 THEN 'Corrosion' WHEN {status_noise} < 0.84 THEN 'Vibration Fatigue' ELSE 'Fouling' END",
+          "entity_values": [
+            "Bearing Failure",
+            "Seal Leak",
+            "Impeller Erosion",
+            "Shaft Misalignment",
+            "Blade Fatigue",
+            "Gear Tooth Wear",
+            "Lubrication Failure",
+            "Overheating",
+            "Cavitation Damage",
+            "Electrical Fault",
+            "Corrosion",
+            "Vibration Fatigue",
+            "Fouling"
+          ]
         },
         {
           "name": "detection_method",
           "sql_type": "STRING",
           "comment": "How the failure was detected: Sensor, Inspection, Breakdown",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Sensor' WHEN {status_noise} < 0.75 THEN 'Inspection' ELSE 'Breakdown' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Sensor' WHEN {status_noise} < 0.75 THEN 'Inspection' ELSE 'Breakdown' END",
+          "entity_values": [
+            "Sensor",
+            "Inspection",
+            "Breakdown"
+          ]
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Failure severity: Minor, Major, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Minor' WHEN {status_noise} < 0.80 THEN 'Major' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Minor' WHEN {status_noise} < 0.80 THEN 'Major' ELSE 'Critical' END",
+          "entity_values": [
+            "Minor",
+            "Major",
+            "Critical"
+          ]
         },
         {
           "name": "downtime_hours",
@@ -492,21 +603,64 @@
           "sql_type": "STRING",
           "comment": "Industrial asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "IP-CMP-001",
+            "IP-CMP-002",
+            "IP-CMP-003",
+            "IP-CMP-004",
+            "IP-PMP-005",
+            "IP-PMP-006",
+            "IP-PMP-007",
+            "IP-PMP-008",
+            "IP-TRB-009",
+            "IP-TRB-010",
+            "IP-TRB-011",
+            "IP-TRB-012",
+            "IP-GBX-013",
+            "IP-GBX-014",
+            "IP-GBX-015",
+            "IP-GBX-016",
+            "IP-MTR-017",
+            "IP-MTR-018",
+            "IP-MTR-019",
+            "IP-MTR-020"
+          ]
         },
         {
           "name": "asset_type",
           "sql_type": "STRING",
           "comment": "Type of industrial asset",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Compressor",
+            "Pump",
+            "Turbine",
+            "Gearbox",
+            "Motor"
+          ]
         },
         {
           "name": "manufacturer",
           "sql_type": "STRING",
           "comment": "Asset manufacturer",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Atlas Copco",
+            "Ingersoll Rand",
+            "Sulzer",
+            "KSB",
+            "Flowserve",
+            "Siemens Energy",
+            "GE Vernova",
+            "Flender",
+            "SEW-Eurodrive",
+            "ABB",
+            "Siemens",
+            "WEG"
+          ]
         },
         {
           "name": "avg_health_index",
@@ -810,7 +964,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The condition_readings_metrics view (source: condition_readings) has dimensions: reading_date, asset_type, manufacturer. Measures: avg_vibration_velocity, avg_bearing_temp, avg_health_index, avg_rul_days. The asset_health_monthly_metrics view (source: asset_health_monthly) has dimensions: summary_month, asset_type, manufacturer. Measures: avg_availability, total_maintenance_cost, total_predicted_caught, total_unplanned_downtime. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. asset_id).",
+  "genie_instructions": "You are a machinery analytics assistant for IronPulse Manufacturing. Answer questions about industrial asset health monitoring and predictive maintenance using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (asset_id), query the base tables directly.\n- When joining tables, use the shared keys: asset_id (shared across asset_health_monthly, condition_readings, failure_events).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique assets?",
     "How has highest vibration velocity mm s changed over time?",
@@ -1018,7 +1172,7 @@
       ]
     },
     {
-      "question": "What are the top industrial asset identifier by total bearing temperature in celsius?",
+      "question": "What are the top industrial asset by total bearing temperature in celsius?",
       "sql_lines": [
         "SELECT asset_id, SUM(bearing_temperature_c) AS total_bearing_temperature_c",
         "FROM {fqn}.condition_readings",

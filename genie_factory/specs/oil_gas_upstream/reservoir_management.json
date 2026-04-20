@@ -29,28 +29,99 @@
           "sql_type": "STRING",
           "comment": "Reservoir ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RS-001",
+            "RS-002",
+            "RS-003",
+            "RS-004",
+            "RS-005",
+            "RS-006",
+            "RS-007",
+            "RS-008",
+            "RS-009",
+            "RS-010",
+            "RS-011",
+            "RS-012",
+            "RS-013",
+            "RS-014",
+            "RS-015",
+            "RS-016",
+            "RS-017",
+            "RS-018",
+            "RS-019",
+            "RS-020"
+          ]
         },
         {
           "name": "reservoir_name",
           "sql_type": "STRING",
           "comment": "Reservoir name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp A-1",
+            "Wolfcamp B-2",
+            "Bone Spring 1",
+            "Bone Spring 2",
+            "Spraberry Trend A",
+            "Eagle Ford Shale 1",
+            "Eagle Ford Shale 2",
+            "Eagle Ford Austin Chalk",
+            "Bakken Middle 1",
+            "Bakken Three Forks",
+            "Marcellus Dry Gas 1",
+            "Marcellus Wet Gas 2",
+            "Haynesville Shale 1",
+            "Haynesville Bossier",
+            "Utica Point Pleasant",
+            "DJ Basin Niobrara A",
+            "DJ Basin Niobrara B",
+            "Permian San Andres",
+            "Anadarko Woodford",
+            "SCOOP Springer"
+          ]
         },
         {
           "name": "formation",
           "sql_type": "STRING",
           "comment": "Formation",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp A",
+            "Wolfcamp B",
+            "Bone Spring",
+            "Spraberry",
+            "Eagle Ford",
+            "Austin Chalk",
+            "Bakken",
+            "Three Forks",
+            "Marcellus",
+            "Haynesville",
+            "Bossier",
+            "Utica",
+            "Niobrara",
+            "San Andres",
+            "Woodford",
+            "Springer"
+          ]
         },
         {
           "name": "basin",
           "sql_type": "STRING",
           "comment": "Basin",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Williston Basin",
+            "Appalachian Basin",
+            "Haynesville",
+            "DJ Basin",
+            "Anadarko Basin"
+          ]
         },
         {
           "name": "oil_bpd",
@@ -92,7 +163,14 @@
           "sql_type": "STRING",
           "comment": "Lift: Natural Flow, ESP, Rod Pump, Gas Lift, Plunger",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Natural Flow' WHEN {status_noise} < 0.45 THEN 'ESP' WHEN {status_noise} < 0.65 THEN 'Rod Pump' WHEN {status_noise} < 0.85 THEN 'Gas Lift' ELSE 'Plunger' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Natural Flow' WHEN {status_noise} < 0.45 THEN 'ESP' WHEN {status_noise} < 0.65 THEN 'Rod Pump' WHEN {status_noise} < 0.85 THEN 'Gas Lift' ELSE 'Plunger' END",
+          "entity_values": [
+            "Natural Flow",
+            "ESP",
+            "Rod Pump",
+            "Gas Lift",
+            "Plunger"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -256,28 +334,99 @@
           "sql_type": "STRING",
           "comment": "Reservoir ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RS-001",
+            "RS-002",
+            "RS-003",
+            "RS-004",
+            "RS-005",
+            "RS-006",
+            "RS-007",
+            "RS-008",
+            "RS-009",
+            "RS-010",
+            "RS-011",
+            "RS-012",
+            "RS-013",
+            "RS-014",
+            "RS-015",
+            "RS-016",
+            "RS-017",
+            "RS-018",
+            "RS-019",
+            "RS-020"
+          ]
         },
         {
           "name": "reservoir_name",
           "sql_type": "STRING",
           "comment": "Reservoir name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp A-1",
+            "Wolfcamp B-2",
+            "Bone Spring 1",
+            "Bone Spring 2",
+            "Spraberry Trend A",
+            "Eagle Ford Shale 1",
+            "Eagle Ford Shale 2",
+            "Eagle Ford Austin Chalk",
+            "Bakken Middle 1",
+            "Bakken Three Forks",
+            "Marcellus Dry Gas 1",
+            "Marcellus Wet Gas 2",
+            "Haynesville Shale 1",
+            "Haynesville Bossier",
+            "Utica Point Pleasant",
+            "DJ Basin Niobrara A",
+            "DJ Basin Niobrara B",
+            "Permian San Andres",
+            "Anadarko Woodford",
+            "SCOOP Springer"
+          ]
         },
         {
           "name": "formation",
           "sql_type": "STRING",
           "comment": "Formation",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp A",
+            "Wolfcamp B",
+            "Bone Spring",
+            "Spraberry",
+            "Eagle Ford",
+            "Austin Chalk",
+            "Bakken",
+            "Three Forks",
+            "Marcellus",
+            "Haynesville",
+            "Bossier",
+            "Utica",
+            "Niobrara",
+            "San Andres",
+            "Woodford",
+            "Springer"
+          ]
         },
         {
           "name": "basin",
           "sql_type": "STRING",
           "comment": "Basin",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Williston Basin",
+            "Appalachian Basin",
+            "Haynesville",
+            "DJ Basin",
+            "Anadarko Basin"
+          ]
         },
         {
           "name": "cumulative_oil_bbl",
@@ -472,21 +621,70 @@
           "sql_type": "STRING",
           "comment": "Reservoir ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RS-001",
+            "RS-002",
+            "RS-003",
+            "RS-004",
+            "RS-005",
+            "RS-006",
+            "RS-007",
+            "RS-008",
+            "RS-009",
+            "RS-010",
+            "RS-011",
+            "RS-012",
+            "RS-013",
+            "RS-014",
+            "RS-015",
+            "RS-016",
+            "RS-017",
+            "RS-018",
+            "RS-019",
+            "RS-020"
+          ]
         },
         {
           "name": "formation",
           "sql_type": "STRING",
           "comment": "Formation",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp A",
+            "Wolfcamp B",
+            "Bone Spring",
+            "Spraberry",
+            "Eagle Ford",
+            "Austin Chalk",
+            "Bakken",
+            "Three Forks",
+            "Marcellus",
+            "Haynesville",
+            "Bossier",
+            "Utica",
+            "Niobrara",
+            "San Andres",
+            "Woodford",
+            "Springer"
+          ]
         },
         {
           "name": "basin",
           "sql_type": "STRING",
           "comment": "Basin",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Williston Basin",
+            "Appalachian Basin",
+            "Haynesville",
+            "DJ Basin",
+            "Anadarko Basin"
+          ]
         },
         {
           "name": "monthly_oil_bbl",
@@ -742,7 +940,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_readings_metrics view (source: production_readings) has dimensions: reading_date, reservoir_id, formation, basin, lift_method. Measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_reservoir_pressure. The reservoir_snapshots_metrics view (source: reservoir_snapshots) has dimensions: snapshot_date, reservoir_id, formation, basin. Measures: avg_recovery_factor, avg_decline_rate, avg_water_cut, total_cumulative_oil. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. reservoir_name).",
+  "genie_instructions": "You are an oil & gas upstream analytics assistant for ReservoirSight Analytics. Answer questions about reservoir management and production optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (reservoir_name), query the base tables directly.\n- When joining tables, use the shared keys: reservoir_id (shared across production_readings, reservoir_kpi_monthly, reservoir_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in highest oil bpd?",
     "How has total bottomhole temp f changed over time?",

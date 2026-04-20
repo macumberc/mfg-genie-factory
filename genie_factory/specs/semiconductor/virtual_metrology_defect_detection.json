@@ -29,28 +29,87 @@
           "sql_type": "STRING",
           "comment": "Process recipe identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FS-LIT-001",
+            "FS-LIT-002",
+            "FS-LIT-003",
+            "FS-LIT-004",
+            "FS-ETH-001",
+            "FS-ETH-002",
+            "FS-ETH-003",
+            "FS-ETH-004",
+            "FS-DEP-001",
+            "FS-DEP-002",
+            "FS-DEP-003",
+            "FS-DEP-004",
+            "FS-CMP-001",
+            "FS-CMP-002",
+            "FS-CMP-003",
+            "FS-CMP-004",
+            "FS-IMP-001",
+            "FS-IMP-002",
+            "FS-IMP-003",
+            "FS-IMP-004"
+          ]
         },
         {
           "name": "recipe_name",
           "sql_type": "STRING",
           "comment": "Human-readable recipe name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "EUV Litho 3nm Gate",
+            "DUV Litho 7nm Metal",
+            "EUV Litho 5nm Via",
+            "DUV Litho 14nm Contact",
+            "HAR Etch Poly Gate",
+            "RIE Etch Oxide",
+            "DRIE Etch TSV",
+            "Wet Etch Clean",
+            "ALD HfO2 Gate Dielectric",
+            "CVD SiN Spacer",
+            "PVD Cu Seed Layer",
+            "ECD Cu Fill",
+            "CMP Cu Polish Step 1",
+            "CMP Cu Polish Step 2",
+            "CMP STI Oxide",
+            "CMP ILD Planarization",
+            "Ion Implant N-Well",
+            "Ion Implant S/D Extension",
+            "Ion Implant Halo",
+            "Ion Implant Threshold Adjust"
+          ]
         },
         {
           "name": "process_step",
           "sql_type": "STRING",
           "comment": "Process step category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Lithography",
+            "Etch",
+            "Deposition",
+            "CMP",
+            "Implant"
+          ]
         },
         {
           "name": "tool_id",
           "sql_type": "STRING",
           "comment": "Metrology tool identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'MET-ASML-01' WHEN {status_noise} < 0.40 THEN 'MET-KLA-02' WHEN {status_noise} < 0.55 THEN 'MET-AMAT-03' WHEN {status_noise} < 0.70 THEN 'MET-HITC-04' WHEN {status_noise} < 0.85 THEN 'MET-NOVA-05' ELSE 'MET-ONTO-06' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'MET-ASML-01' WHEN {status_noise} < 0.40 THEN 'MET-KLA-02' WHEN {status_noise} < 0.55 THEN 'MET-AMAT-03' WHEN {status_noise} < 0.70 THEN 'MET-HITC-04' WHEN {status_noise} < 0.85 THEN 'MET-NOVA-05' ELSE 'MET-ONTO-06' END",
+          "entity_values": [
+            "MET-ASML-01",
+            "MET-KLA-02",
+            "MET-AMAT-03",
+            "MET-HITC-04",
+            "MET-NOVA-05",
+            "MET-ONTO-06"
+          ]
         },
         {
           "name": "thickness_nm",
@@ -78,7 +137,12 @@
           "sql_type": "STRING",
           "comment": "Measurement result status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'In Spec' WHEN {status_noise} < 0.88 THEN 'Warning' ELSE 'Out of Spec' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'In Spec' WHEN {status_noise} < 0.88 THEN 'Warning' ELSE 'Out of Spec' END",
+          "entity_values": [
+            "In Spec",
+            "Warning",
+            "Out of Spec"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -227,21 +291,72 @@
           "sql_type": "STRING",
           "comment": "Process recipe identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FS-LIT-001",
+            "FS-LIT-002",
+            "FS-LIT-003",
+            "FS-LIT-004",
+            "FS-ETH-001",
+            "FS-ETH-002",
+            "FS-ETH-003",
+            "FS-ETH-004",
+            "FS-DEP-001",
+            "FS-DEP-002",
+            "FS-DEP-003",
+            "FS-DEP-004",
+            "FS-CMP-001",
+            "FS-CMP-002",
+            "FS-CMP-003",
+            "FS-CMP-004",
+            "FS-IMP-001",
+            "FS-IMP-002",
+            "FS-IMP-003",
+            "FS-IMP-004"
+          ]
         },
         {
           "name": "recipe_name",
           "sql_type": "STRING",
           "comment": "Human-readable recipe name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "EUV Litho 3nm Gate",
+            "DUV Litho 7nm Metal",
+            "EUV Litho 5nm Via",
+            "DUV Litho 14nm Contact",
+            "HAR Etch Poly Gate",
+            "RIE Etch Oxide",
+            "DRIE Etch TSV",
+            "Wet Etch Clean",
+            "ALD HfO2 Gate Dielectric",
+            "CVD SiN Spacer",
+            "PVD Cu Seed Layer",
+            "ECD Cu Fill",
+            "CMP Cu Polish Step 1",
+            "CMP Cu Polish Step 2",
+            "CMP STI Oxide",
+            "CMP ILD Planarization",
+            "Ion Implant N-Well",
+            "Ion Implant S/D Extension",
+            "Ion Implant Halo",
+            "Ion Implant Threshold Adjust"
+          ]
         },
         {
           "name": "process_step",
           "sql_type": "STRING",
           "comment": "Process step category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Lithography",
+            "Etch",
+            "Deposition",
+            "CMP",
+            "Implant"
+          ]
         },
         {
           "name": "predicted_thickness_nm",
@@ -269,7 +384,12 @@
           "sql_type": "STRING",
           "comment": "Virtual metrology model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'vm-2.0' WHEN {status_noise} < 0.65 THEN 'vm-2.1' ELSE 'vm-2.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'vm-2.0' WHEN {status_noise} < 0.65 THEN 'vm-2.1' ELSE 'vm-2.2' END",
+          "entity_values": [
+            "vm-2.0",
+            "vm-2.1",
+            "vm-2.2"
+          ]
         },
         {
           "name": "confidence_score",
@@ -432,28 +552,88 @@
           "sql_type": "STRING",
           "comment": "Process recipe identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FS-LIT-001",
+            "FS-LIT-002",
+            "FS-LIT-003",
+            "FS-LIT-004",
+            "FS-ETH-001",
+            "FS-ETH-002",
+            "FS-ETH-003",
+            "FS-ETH-004",
+            "FS-DEP-001",
+            "FS-DEP-002",
+            "FS-DEP-003",
+            "FS-DEP-004",
+            "FS-CMP-001",
+            "FS-CMP-002",
+            "FS-CMP-003",
+            "FS-CMP-004",
+            "FS-IMP-001",
+            "FS-IMP-002",
+            "FS-IMP-003",
+            "FS-IMP-004"
+          ]
         },
         {
           "name": "recipe_name",
           "sql_type": "STRING",
           "comment": "Human-readable recipe name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "EUV Litho 3nm Gate",
+            "DUV Litho 7nm Metal",
+            "EUV Litho 5nm Via",
+            "DUV Litho 14nm Contact",
+            "HAR Etch Poly Gate",
+            "RIE Etch Oxide",
+            "DRIE Etch TSV",
+            "Wet Etch Clean",
+            "ALD HfO2 Gate Dielectric",
+            "CVD SiN Spacer",
+            "PVD Cu Seed Layer",
+            "ECD Cu Fill",
+            "CMP Cu Polish Step 1",
+            "CMP Cu Polish Step 2",
+            "CMP STI Oxide",
+            "CMP ILD Planarization",
+            "Ion Implant N-Well",
+            "Ion Implant S/D Extension",
+            "Ion Implant Halo",
+            "Ion Implant Threshold Adjust"
+          ]
         },
         {
           "name": "process_step",
           "sql_type": "STRING",
           "comment": "Process step category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Lithography",
+            "Etch",
+            "Deposition",
+            "CMP",
+            "Implant"
+          ]
         },
         {
           "name": "defect_type",
           "sql_type": "STRING",
           "comment": "Classification of defect type",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Particle' WHEN {status_noise} < 0.38 THEN 'Scratch' WHEN {status_noise} < 0.52 THEN 'Pattern Defect' WHEN {status_noise} < 0.65 THEN 'Residue' WHEN {status_noise} < 0.78 THEN 'Void' WHEN {status_noise} < 0.90 THEN 'Bridge' ELSE 'Crack' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Particle' WHEN {status_noise} < 0.38 THEN 'Scratch' WHEN {status_noise} < 0.52 THEN 'Pattern Defect' WHEN {status_noise} < 0.65 THEN 'Residue' WHEN {status_noise} < 0.78 THEN 'Void' WHEN {status_noise} < 0.90 THEN 'Bridge' ELSE 'Crack' END",
+          "entity_values": [
+            "Particle",
+            "Scratch",
+            "Pattern Defect",
+            "Residue",
+            "Void",
+            "Bridge",
+            "Crack"
+          ]
         },
         {
           "name": "defect_density_per_cm2",
@@ -718,7 +898,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The wafer_measurement_metrics view (source: wafer_measurements) has dimensions: measurement_date, process_step, tool_id, measurement_status. Measures: total_measurements, avg_thickness_nm, avg_cd_nm, avg_overlay_nm, out_of_spec_count. The defect_detection_metrics view (source: defect_detections) has dimensions: detection_month, process_step, defect_type. Measures: avg_defect_density, avg_kill_ratio_pct, total_wafers_inspected, total_defects_found. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. recipe_id, recipe_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for FabSight Analytics. Answer questions about virtual metrology and inline defect detection for wafer fabrication using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (recipe_id, recipe_name), query the base tables directly.\n- When joining tables, use the shared keys: recipe_id (shared across defect_detections, metrology_predictions, wafer_measurements).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in out of spec count?",
     "How has unique total measurementss changed over time?",
@@ -757,7 +937,7 @@
       ]
     },
     {
-      "question": "How does total film thickness measurement in nanometers break down by process recipe identifier for 'In Spec' records?",
+      "question": "How does total film thickness measurement in nanometers break down by process recipe for 'In Spec' records?",
       "sql_lines": [
         "SELECT recipe_id, COUNT(*) AS record_count, SUM(thickness_nm) AS total_thickness_nm",
         "FROM {fqn}.wafer_measurements",
@@ -927,7 +1107,7 @@
       ]
     },
     {
-      "question": "What are the top process recipe identifier by total film thickness measurement in nanometers?",
+      "question": "What are the top process recipe by total film thickness measurement in nanometers?",
       "sql_lines": [
         "SELECT recipe_id, SUM(thickness_nm) AS total_thickness_nm",
         "FROM {fqn}.wafer_measurements",

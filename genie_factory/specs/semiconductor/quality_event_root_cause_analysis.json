@@ -29,63 +29,170 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "NV-PL-001",
+            "NV-PL-002",
+            "NV-PL-003",
+            "NV-PL-004",
+            "NV-PL-005",
+            "NV-DM-001",
+            "NV-DM-002",
+            "NV-DM-003",
+            "NV-DM-004",
+            "NV-DM-005",
+            "NV-CR-001",
+            "NV-CR-002",
+            "NV-CR-003",
+            "NV-CR-004",
+            "NV-CR-005",
+            "NV-MV-001",
+            "NV-MV-002",
+            "NV-MV-003",
+            "NV-SE-001",
+            "NV-SE-002"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Human-readable product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PowerLogic PL-7200 SoC",
+            "PowerLogic PL-5100 MCU",
+            "PowerLogic PL-9400 AI Accelerator",
+            "PowerLogic PL-3300 Edge Processor",
+            "PowerLogic PL-6600 DSP",
+            "DriveMax DM-800 Motor Controller",
+            "DriveMax DM-1200 GaN Driver",
+            "DriveMax DM-450 Buck Regulator",
+            "DriveMax DM-600 SiC Module",
+            "DriveMax DM-950 Inverter IC",
+            "ConnectRF CR-5G Front-End",
+            "ConnectRF CR-WiFi7 Combo",
+            "ConnectRF CR-BLE Transceiver",
+            "ConnectRF CR-UWB Ranging",
+            "ConnectRF CR-mmWave 60GHz",
+            "MemVault MV-DDR5 16Gb",
+            "MemVault MV-DDR5 32Gb",
+            "MemVault MV-NAND 512Gb",
+            "SenseEdge SE-IMU 9-Axis",
+            "SenseEdge SE-LiDAR ToF"
+          ]
         },
         {
           "name": "product_family",
           "sql_type": "STRING",
           "comment": "Product family grouping (PowerLogic, DriveMax, ConnectRF, MemVault, SenseEdge)",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PowerLogic",
+            "DriveMax",
+            "ConnectRF",
+            "MemVault",
+            "SenseEdge"
+          ]
         },
         {
           "name": "fab_location",
           "sql_type": "STRING",
           "comment": "Fabrication facility location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END",
+          "entity_values": [
+            "FAB-Taiwan",
+            "FAB-Arizona",
+            "FAB-Dresden",
+            "FAB-Singapore"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Type of quality event",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.18 THEN 'Defect Excursion' WHEN {status_noise} < 0.34 THEN 'Process Deviation' WHEN {status_noise} < 0.48 THEN 'Equipment Alarm' WHEN {status_noise} < 0.60 THEN 'Yield Drop' WHEN {status_noise} < 0.72 THEN 'Customer Return' WHEN {status_noise} < 0.86 THEN 'Incoming Material Fail' ELSE 'Environmental Event' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.18 THEN 'Defect Excursion' WHEN {status_noise} < 0.34 THEN 'Process Deviation' WHEN {status_noise} < 0.48 THEN 'Equipment Alarm' WHEN {status_noise} < 0.60 THEN 'Yield Drop' WHEN {status_noise} < 0.72 THEN 'Customer Return' WHEN {status_noise} < 0.86 THEN 'Incoming Material Fail' ELSE 'Environmental Event' END",
+          "entity_values": [
+            "Defect Excursion",
+            "Process Deviation",
+            "Equipment Alarm",
+            "Yield Drop",
+            "Customer Return",
+            "Incoming Material Fail",
+            "Environmental Event"
+          ]
         },
         {
           "name": "failure_mode",
           "sql_type": "STRING",
           "comment": "Specific failure mode observed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Open Circuit' WHEN {status_noise} < 0.14 THEN 'Short Circuit' WHEN {status_noise} < 0.20 THEN 'Gate Oxide Breakdown' WHEN {status_noise} < 0.26 THEN 'Electromigration' WHEN {status_noise} < 0.32 THEN 'Hot Carrier Injection' WHEN {status_noise} < 0.38 THEN 'Latch-Up' WHEN {status_noise} < 0.44 THEN 'Metal Bridging' WHEN {status_noise} < 0.50 THEN 'Via Void' WHEN {status_noise} < 0.56 THEN 'Particle Contamination' WHEN {status_noise} < 0.62 THEN 'Pattern Collapse' WHEN {status_noise} < 0.68 THEN 'Delamination' WHEN {status_noise} < 0.74 THEN 'Crack Propagation' WHEN {status_noise} < 0.80 THEN 'Solder Joint Fatigue' WHEN {status_noise} < 0.86 THEN 'Wire Bond Lift' WHEN {status_noise} < 0.93 THEN 'ESD Damage' ELSE 'Corrosion' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Open Circuit' WHEN {status_noise} < 0.14 THEN 'Short Circuit' WHEN {status_noise} < 0.20 THEN 'Gate Oxide Breakdown' WHEN {status_noise} < 0.26 THEN 'Electromigration' WHEN {status_noise} < 0.32 THEN 'Hot Carrier Injection' WHEN {status_noise} < 0.38 THEN 'Latch-Up' WHEN {status_noise} < 0.44 THEN 'Metal Bridging' WHEN {status_noise} < 0.50 THEN 'Via Void' WHEN {status_noise} < 0.56 THEN 'Particle Contamination' WHEN {status_noise} < 0.62 THEN 'Pattern Collapse' WHEN {status_noise} < 0.68 THEN 'Delamination' WHEN {status_noise} < 0.74 THEN 'Crack Propagation' WHEN {status_noise} < 0.80 THEN 'Solder Joint Fatigue' WHEN {status_noise} < 0.86 THEN 'Wire Bond Lift' WHEN {status_noise} < 0.93 THEN 'ESD Damage' ELSE 'Corrosion' END",
+          "entity_values": [
+            "Open Circuit",
+            "Short Circuit",
+            "Gate Oxide Breakdown",
+            "Electromigration",
+            "Hot Carrier Injection",
+            "Latch-Up",
+            "Metal Bridging",
+            "Via Void",
+            "Particle Contamination",
+            "Pattern Collapse",
+            "Delamination",
+            "Crack Propagation",
+            "Solder Joint Fatigue",
+            "Wire Bond Lift",
+            "ESD Damage",
+            "Corrosion"
+          ]
         },
         {
           "name": "severity_level",
           "sql_type": "STRING",
           "comment": "Event severity classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.95 THEN 'Observation' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.95 THEN 'Observation' ELSE 'Critical' END",
+          "entity_values": [
+            "Minor",
+            "Major",
+            "Observation",
+            "Critical"
+          ]
         },
         {
           "name": "root_cause_category",
           "sql_type": "STRING",
           "comment": "Root cause classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Contamination' WHEN {status_noise} < 0.26 THEN 'Lithography' WHEN {status_noise} < 0.38 THEN 'Etch Variation' WHEN {status_noise} < 0.48 THEN 'CMP Defect' WHEN {status_noise} < 0.58 THEN 'Implant Drift' WHEN {status_noise} < 0.68 THEN 'Equipment Fault' WHEN {status_noise} < 0.78 THEN 'Material Defect' WHEN {status_noise} < 0.88 THEN 'Operator Error' ELSE 'Environmental' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Contamination' WHEN {status_noise} < 0.26 THEN 'Lithography' WHEN {status_noise} < 0.38 THEN 'Etch Variation' WHEN {status_noise} < 0.48 THEN 'CMP Defect' WHEN {status_noise} < 0.58 THEN 'Implant Drift' WHEN {status_noise} < 0.68 THEN 'Equipment Fault' WHEN {status_noise} < 0.78 THEN 'Material Defect' WHEN {status_noise} < 0.88 THEN 'Operator Error' ELSE 'Environmental' END",
+          "entity_values": [
+            "Contamination",
+            "Lithography",
+            "Etch Variation",
+            "CMP Defect",
+            "Implant Drift",
+            "Equipment Fault",
+            "Material Defect",
+            "Operator Error",
+            "Environmental"
+          ]
         },
         {
           "name": "status",
           "sql_type": "STRING",
           "comment": "Current event status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.51 THEN 'Closed' WHEN {status_noise} < 0.68 THEN 'Pending' WHEN {status_noise} < 0.85 THEN 'Open' ELSE 'In Progress' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.51 THEN 'Closed' WHEN {status_noise} < 0.68 THEN 'Pending' WHEN {status_noise} < 0.85 THEN 'Open' ELSE 'In Progress' END",
+          "entity_values": [
+            "Closed",
+            "Pending",
+            "Open",
+            "In Progress"
+          ]
         },
         {
           "name": "affected_wafer_count",
@@ -242,28 +349,85 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "NV-PL-001",
+            "NV-PL-002",
+            "NV-PL-003",
+            "NV-PL-004",
+            "NV-PL-005",
+            "NV-DM-001",
+            "NV-DM-002",
+            "NV-DM-003",
+            "NV-DM-004",
+            "NV-DM-005",
+            "NV-CR-001",
+            "NV-CR-002",
+            "NV-CR-003",
+            "NV-CR-004",
+            "NV-CR-005",
+            "NV-MV-001",
+            "NV-MV-002",
+            "NV-MV-003",
+            "NV-SE-001",
+            "NV-SE-002"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Human-readable product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PowerLogic PL-7200 SoC",
+            "PowerLogic PL-5100 MCU",
+            "PowerLogic PL-9400 AI Accelerator",
+            "PowerLogic PL-3300 Edge Processor",
+            "PowerLogic PL-6600 DSP",
+            "DriveMax DM-800 Motor Controller",
+            "DriveMax DM-1200 GaN Driver",
+            "DriveMax DM-450 Buck Regulator",
+            "DriveMax DM-600 SiC Module",
+            "DriveMax DM-950 Inverter IC",
+            "ConnectRF CR-5G Front-End",
+            "ConnectRF CR-WiFi7 Combo",
+            "ConnectRF CR-BLE Transceiver",
+            "ConnectRF CR-UWB Ranging",
+            "ConnectRF CR-mmWave 60GHz",
+            "MemVault MV-DDR5 16Gb",
+            "MemVault MV-DDR5 32Gb",
+            "MemVault MV-NAND 512Gb",
+            "SenseEdge SE-IMU 9-Axis",
+            "SenseEdge SE-LiDAR ToF"
+          ]
         },
         {
           "name": "product_family",
           "sql_type": "STRING",
           "comment": "Product family grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PowerLogic",
+            "DriveMax",
+            "ConnectRF",
+            "MemVault",
+            "SenseEdge"
+          ]
         },
         {
           "name": "fab_location",
           "sql_type": "STRING",
           "comment": "Fabrication facility location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END",
+          "entity_values": [
+            "FAB-Taiwan",
+            "FAB-Arizona",
+            "FAB-Dresden",
+            "FAB-Singapore"
+          ]
         },
         {
           "name": "yield_pct",
@@ -277,7 +441,12 @@
           "sql_type": "STRING",
           "comment": "Lot quality grade (A/B/C)",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN (82.0 + ({qty_noise} - 0.5) * 30.0) >= 90.0 THEN 'A' WHEN (82.0 + ({qty_noise} - 0.5) * 30.0) >= 75.0 THEN 'B' ELSE 'C' END"
+          "generation_expr": "CASE WHEN (82.0 + ({qty_noise} - 0.5) * 30.0) >= 90.0 THEN 'A' WHEN (82.0 + ({qty_noise} - 0.5) * 30.0) >= 75.0 THEN 'B' ELSE 'C' END",
+          "entity_values": [
+            "A",
+            "B",
+            "C"
+          ]
         },
         {
           "name": "wafers_in_lot",
@@ -454,28 +623,85 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "NV-PL-001",
+            "NV-PL-002",
+            "NV-PL-003",
+            "NV-PL-004",
+            "NV-PL-005",
+            "NV-DM-001",
+            "NV-DM-002",
+            "NV-DM-003",
+            "NV-DM-004",
+            "NV-DM-005",
+            "NV-CR-001",
+            "NV-CR-002",
+            "NV-CR-003",
+            "NV-CR-004",
+            "NV-CR-005",
+            "NV-MV-001",
+            "NV-MV-002",
+            "NV-MV-003",
+            "NV-SE-001",
+            "NV-SE-002"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Human-readable product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PowerLogic PL-7200 SoC",
+            "PowerLogic PL-5100 MCU",
+            "PowerLogic PL-9400 AI Accelerator",
+            "PowerLogic PL-3300 Edge Processor",
+            "PowerLogic PL-6600 DSP",
+            "DriveMax DM-800 Motor Controller",
+            "DriveMax DM-1200 GaN Driver",
+            "DriveMax DM-450 Buck Regulator",
+            "DriveMax DM-600 SiC Module",
+            "DriveMax DM-950 Inverter IC",
+            "ConnectRF CR-5G Front-End",
+            "ConnectRF CR-WiFi7 Combo",
+            "ConnectRF CR-BLE Transceiver",
+            "ConnectRF CR-UWB Ranging",
+            "ConnectRF CR-mmWave 60GHz",
+            "MemVault MV-DDR5 16Gb",
+            "MemVault MV-DDR5 32Gb",
+            "MemVault MV-NAND 512Gb",
+            "SenseEdge SE-IMU 9-Axis",
+            "SenseEdge SE-LiDAR ToF"
+          ]
         },
         {
           "name": "product_family",
           "sql_type": "STRING",
           "comment": "Product family grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PowerLogic",
+            "DriveMax",
+            "ConnectRF",
+            "MemVault",
+            "SenseEdge"
+          ]
         },
         {
           "name": "fab_location",
           "sql_type": "STRING",
           "comment": "Fabrication facility location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'FAB-Taiwan' WHEN {status_noise} < 0.55 THEN 'FAB-Arizona' WHEN {status_noise} < 0.80 THEN 'FAB-Dresden' ELSE 'FAB-Singapore' END",
+          "entity_values": [
+            "FAB-Taiwan",
+            "FAB-Arizona",
+            "FAB-Dresden",
+            "FAB-Singapore"
+          ]
         },
         {
           "name": "dppm",
@@ -770,7 +996,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, product_family, fab_location, root_cause_category, severity_level. Measures: total_quality_events, critical_event_count, closed_event_count, total_wafers_affected, open_event_count. The lot_yield_metrics view (source: manufacturing_lots) has dimensions: snapshot_date, product_family, fab_location, lot_grade. Measures: avg_yield_pct, total_good_die, avg_defect_density, total_lots, grade_c_lot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for NanoVista Semiconductor. Answer questions about semiconductor quality event root cause analysis and yield improvement using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_id, product_name), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across manufacturing_lots, quality_events, quality_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the monthly trend in critical event count?",
     "How has closed event count changed over time?",
@@ -809,7 +1035,7 @@
       ]
     },
     {
-      "question": "How does total number of wafers affected by the event break down by product identifier for 'Closed' records?",
+      "question": "How does total number of wafers affected by the event break down by product for 'Closed' records?",
       "sql_lines": [
         "SELECT product_id, COUNT(*) AS record_count, SUM(affected_wafer_count) AS total_affected_wafer_count",
         "FROM {fqn}.quality_events",
@@ -983,7 +1209,7 @@
       ]
     },
     {
-      "question": "What are the top product identifier by total number of wafers affected by the event?",
+      "question": "What are the top product by total number of wafers affected by the event?",
       "sql_lines": [
         "SELECT product_id, SUM(affected_wafer_count) AS total_affected_wafer_count",
         "FROM {fqn}.quality_events",

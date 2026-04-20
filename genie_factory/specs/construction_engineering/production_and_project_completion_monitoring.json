@@ -29,28 +29,96 @@
           "sql_type": "STRING",
           "comment": "Project ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AP-001",
+            "AP-002",
+            "AP-003",
+            "AP-004",
+            "AP-005",
+            "AP-006",
+            "AP-007",
+            "AP-008",
+            "AP-009",
+            "AP-010",
+            "AP-011",
+            "AP-012",
+            "AP-013",
+            "AP-014",
+            "AP-015",
+            "AP-016",
+            "AP-017",
+            "AP-018",
+            "AP-019",
+            "AP-020"
+          ]
         },
         {
           "name": "project_name",
           "sql_type": "STRING",
           "comment": "Project name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Riverdale Bridge Rehab",
+            "Coastal Highway Extension",
+            "Downtown Office Tower",
+            "Airport Terminal B",
+            "Metro Rail Extension",
+            "Water Treatment Upgrade",
+            "Solar Farm Phase II",
+            "Hospital Wing Addition",
+            "University Science Center",
+            "Warehouse Distribution Hub",
+            "Parking Garage Downtown",
+            "Convention Center Expansion",
+            "Residential Tower Complex",
+            "Wind Farm Foundation Work",
+            "Interstate Interchange",
+            "Dam Safety Renovation",
+            "Data Center Campus",
+            "Port Facility Expansion",
+            "Mountain Highway Tunnel",
+            "Mixed-Use Development"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bridge Rehabilitation",
+            "Highway Construction",
+            "Commercial Construction",
+            "Public Infrastructure",
+            "Rail Infrastructure",
+            "Utility Infrastructure",
+            "Renewable Energy",
+            "Healthcare",
+            "Educational",
+            "Industrial",
+            "Parking Structure",
+            "Residential",
+            "Water Infrastructure",
+            "Marine Infrastructure",
+            "Tunnel Construction"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "West",
+            "Midwest",
+            "Southwest"
+          ]
         },
         {
           "name": "work_hours",
@@ -260,21 +328,67 @@
           "sql_type": "STRING",
           "comment": "Project ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AP-001",
+            "AP-002",
+            "AP-003",
+            "AP-004",
+            "AP-005",
+            "AP-006",
+            "AP-007",
+            "AP-008",
+            "AP-009",
+            "AP-010",
+            "AP-011",
+            "AP-012",
+            "AP-013",
+            "AP-014",
+            "AP-015",
+            "AP-016",
+            "AP-017",
+            "AP-018",
+            "AP-019",
+            "AP-020"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bridge Rehabilitation",
+            "Highway Construction",
+            "Commercial Construction",
+            "Public Infrastructure",
+            "Rail Infrastructure",
+            "Utility Infrastructure",
+            "Renewable Energy",
+            "Healthcare",
+            "Educational",
+            "Industrial",
+            "Parking Structure",
+            "Residential",
+            "Water Infrastructure",
+            "Marine Infrastructure",
+            "Tunnel Construction"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "West",
+            "Midwest",
+            "Southwest"
+          ]
         },
         {
           "name": "completion_pct",
@@ -309,7 +423,12 @@
           "sql_type": "STRING",
           "comment": "Health: Green, Yellow, Red",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Red' WHEN {status_noise} < 0.30 THEN 'Yellow' ELSE 'Green' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Red' WHEN {status_noise} < 0.30 THEN 'Yellow' ELSE 'Green' END",
+          "entity_values": [
+            "Red",
+            "Yellow",
+            "Green"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -491,21 +610,67 @@
           "sql_type": "STRING",
           "comment": "Project ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "AP-001",
+            "AP-002",
+            "AP-003",
+            "AP-004",
+            "AP-005",
+            "AP-006",
+            "AP-007",
+            "AP-008",
+            "AP-009",
+            "AP-010",
+            "AP-011",
+            "AP-012",
+            "AP-013",
+            "AP-014",
+            "AP-015",
+            "AP-016",
+            "AP-017",
+            "AP-018",
+            "AP-019",
+            "AP-020"
+          ]
         },
         {
           "name": "project_type",
           "sql_type": "STRING",
           "comment": "Project type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bridge Rehabilitation",
+            "Highway Construction",
+            "Commercial Construction",
+            "Public Infrastructure",
+            "Rail Infrastructure",
+            "Utility Infrastructure",
+            "Renewable Energy",
+            "Healthcare",
+            "Educational",
+            "Industrial",
+            "Parking Structure",
+            "Residential",
+            "Water Infrastructure",
+            "Marine Infrastructure",
+            "Tunnel Construction"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "West",
+            "Midwest",
+            "Southwest"
+          ]
         },
         {
           "name": "budget_at_completion_usd",
@@ -540,7 +705,13 @@
           "sql_type": "STRING",
           "comment": "Risk: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.22 THEN 'High' WHEN {status_noise} < 0.48 THEN 'Medium' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.22 THEN 'High' WHEN {status_noise} < 0.48 THEN 'Medium' ELSE 'Low' END",
+          "entity_values": [
+            "Critical",
+            "High",
+            "Medium",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -811,7 +982,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The project_kpi_monthly view (source: projects) has dimensions: event_date, project_type, region. Measures: total_work_hours, total_daily_cost, avg_crew_count, total_safety_incidents, project_count. The completion_kpi_monthly view (source: milestone_snapshots) has dimensions: forecast_month, project_type, region, risk_level. Measures: total_budget_at_completion, total_actual_cost, total_earned_value, avg_schedule_variance, high_risk_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. project_id, project_name).",
+  "genie_instructions": "You are a construction & engineering analytics assistant for SiteTrack Construction. Answer questions about construction project monitoring and completion tracking using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (project_id, project_name), query the base tables directly.\n- When joining tables, use the shared keys: project_id (shared across milestone_snapshots, progress_events, projects).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique projects?",
     "How has highest work hours changed over time?",

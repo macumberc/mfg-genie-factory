@@ -29,28 +29,88 @@
           "sql_type": "STRING",
           "comment": "Material or component identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CA-SUB-001",
+            "CA-SUB-002",
+            "CA-SUB-003",
+            "CA-SUB-004",
+            "CA-CHM-001",
+            "CA-CHM-002",
+            "CA-CHM-003",
+            "CA-CHM-004",
+            "CA-GAS-001",
+            "CA-GAS-002",
+            "CA-GAS-003",
+            "CA-GAS-004",
+            "CA-TGT-001",
+            "CA-TGT-002",
+            "CA-TGT-003",
+            "CA-TGT-004",
+            "CA-PKG-001",
+            "CA-PKG-002",
+            "CA-PKG-003",
+            "CA-PKG-004"
+          ]
         },
         {
           "name": "material_name",
           "sql_type": "STRING",
           "comment": "Human-readable material name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "300mm Silicon Wafer Prime",
+            "300mm SOI Wafer",
+            "200mm Silicon Wafer Epi",
+            "SiC 150mm Substrate",
+            "CMP Slurry Copper",
+            "Photoresist EUV CAR",
+            "Developer TMAH 2.38%",
+            "Etchant Buffered HF",
+            "Nitrogen 6N UHP",
+            "Argon 5N Research",
+            "Silane SiH4 Electronic",
+            "WF6 Tungsten Hexafluoride",
+            "Copper Sputtering Target 5N",
+            "Tantalum Target 4N5",
+            "TEOS Precursor",
+            "TiCl4 Precursor ALD",
+            "Leadframe QFN 48-pin",
+            "BGA Substrate FC-CSP",
+            "Epoxy Mold Compound",
+            "Gold Bonding Wire 25um"
+          ]
         },
         {
           "name": "material_category",
           "sql_type": "STRING",
           "comment": "Material category grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Substrates",
+            "Process Chemicals",
+            "Specialty Gases",
+            "Targets & Precursors",
+            "Packaging Materials"
+          ]
         },
         {
           "name": "supplier_name",
           "sql_type": "STRING",
           "comment": "Supplier name",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'GlobalWafer Corp' WHEN {status_noise} < 0.35 THEN 'ShinEtsu Materials' WHEN {status_noise} < 0.50 THEN 'Entegris Inc' WHEN {status_noise} < 0.65 THEN 'Versum Materials' WHEN {status_noise} < 0.78 THEN 'Linde PLC' WHEN {status_noise} < 0.90 THEN 'Air Liquide Semi' ELSE 'DuPont Electronics' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'GlobalWafer Corp' WHEN {status_noise} < 0.35 THEN 'ShinEtsu Materials' WHEN {status_noise} < 0.50 THEN 'Entegris Inc' WHEN {status_noise} < 0.65 THEN 'Versum Materials' WHEN {status_noise} < 0.78 THEN 'Linde PLC' WHEN {status_noise} < 0.90 THEN 'Air Liquide Semi' ELSE 'DuPont Electronics' END",
+          "entity_values": [
+            "GlobalWafer Corp",
+            "ShinEtsu Materials",
+            "Entegris Inc",
+            "Versum Materials",
+            "Linde PLC",
+            "Air Liquide Semi",
+            "DuPont Electronics"
+          ]
         },
         {
           "name": "order_quantity",
@@ -78,14 +138,26 @@
           "sql_type": "STRING",
           "comment": "Order delivery status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Delivered' WHEN {status_noise} < 0.72 THEN 'In Transit' WHEN {status_noise} < 0.85 THEN 'Confirmed' WHEN {status_noise} < 0.93 THEN 'Delayed' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Delivered' WHEN {status_noise} < 0.72 THEN 'In Transit' WHEN {status_noise} < 0.85 THEN 'Confirmed' WHEN {status_noise} < 0.93 THEN 'Delayed' ELSE 'Cancelled' END",
+          "entity_values": [
+            "Delivered",
+            "In Transit",
+            "Confirmed",
+            "Delayed",
+            "Cancelled"
+          ]
         },
         {
           "name": "quality_result",
           "sql_type": "STRING",
           "comment": "Incoming quality inspection result",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Pass' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Reject' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Pass' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Reject' END",
+          "entity_values": [
+            "Pass",
+            "Conditional",
+            "Reject"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -235,28 +307,87 @@
           "sql_type": "STRING",
           "comment": "Material or component identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CA-SUB-001",
+            "CA-SUB-002",
+            "CA-SUB-003",
+            "CA-SUB-004",
+            "CA-CHM-001",
+            "CA-CHM-002",
+            "CA-CHM-003",
+            "CA-CHM-004",
+            "CA-GAS-001",
+            "CA-GAS-002",
+            "CA-GAS-003",
+            "CA-GAS-004",
+            "CA-TGT-001",
+            "CA-TGT-002",
+            "CA-TGT-003",
+            "CA-TGT-004",
+            "CA-PKG-001",
+            "CA-PKG-002",
+            "CA-PKG-003",
+            "CA-PKG-004"
+          ]
         },
         {
           "name": "material_name",
           "sql_type": "STRING",
           "comment": "Human-readable material name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "300mm Silicon Wafer Prime",
+            "300mm SOI Wafer",
+            "200mm Silicon Wafer Epi",
+            "SiC 150mm Substrate",
+            "CMP Slurry Copper",
+            "Photoresist EUV CAR",
+            "Developer TMAH 2.38%",
+            "Etchant Buffered HF",
+            "Nitrogen 6N UHP",
+            "Argon 5N Research",
+            "Silane SiH4 Electronic",
+            "WF6 Tungsten Hexafluoride",
+            "Copper Sputtering Target 5N",
+            "Tantalum Target 4N5",
+            "TEOS Precursor",
+            "TiCl4 Precursor ALD",
+            "Leadframe QFN 48-pin",
+            "BGA Substrate FC-CSP",
+            "Epoxy Mold Compound",
+            "Gold Bonding Wire 25um"
+          ]
         },
         {
           "name": "material_category",
           "sql_type": "STRING",
           "comment": "Material category grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Substrates",
+            "Process Chemicals",
+            "Specialty Gases",
+            "Targets & Precursors",
+            "Packaging Materials"
+          ]
         },
         {
           "name": "fab_line",
           "sql_type": "STRING",
           "comment": "Fabrication line identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'FAB-A 3nm' WHEN {status_noise} < 0.42 THEN 'FAB-B 5nm' WHEN {status_noise} < 0.58 THEN 'FAB-C 7nm' WHEN {status_noise} < 0.72 THEN 'FAB-D 14nm' WHEN {status_noise} < 0.85 THEN 'FAB-E 28nm' ELSE 'FAB-F Packaging' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'FAB-A 3nm' WHEN {status_noise} < 0.42 THEN 'FAB-B 5nm' WHEN {status_noise} < 0.58 THEN 'FAB-C 7nm' WHEN {status_noise} < 0.72 THEN 'FAB-D 14nm' WHEN {status_noise} < 0.85 THEN 'FAB-E 28nm' ELSE 'FAB-F Packaging' END",
+          "entity_values": [
+            "FAB-A 3nm",
+            "FAB-B 5nm",
+            "FAB-C 7nm",
+            "FAB-D 14nm",
+            "FAB-E 28nm",
+            "FAB-F Packaging"
+          ]
         },
         {
           "name": "utilization_pct",
@@ -284,7 +415,13 @@
           "sql_type": "STRING",
           "comment": "Capacity bottleneck classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN (78.0 + ({qty_noise} - 0.5) * 40.0) >= 92.0 THEN 'Critical' WHEN (78.0 + ({qty_noise} - 0.5) * 40.0) >= 85.0 THEN 'Tight' WHEN (78.0 + ({qty_noise} - 0.5) * 40.0) >= 70.0 THEN 'Normal' ELSE 'Underutilized' END"
+          "generation_expr": "CASE WHEN (78.0 + ({qty_noise} - 0.5) * 40.0) >= 92.0 THEN 'Critical' WHEN (78.0 + ({qty_noise} - 0.5) * 40.0) >= 85.0 THEN 'Tight' WHEN (78.0 + ({qty_noise} - 0.5) * 40.0) >= 70.0 THEN 'Normal' ELSE 'Underutilized' END",
+          "entity_values": [
+            "Critical",
+            "Tight",
+            "Normal",
+            "Underutilized"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -433,28 +570,87 @@
           "sql_type": "STRING",
           "comment": "Material or component identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CA-SUB-001",
+            "CA-SUB-002",
+            "CA-SUB-003",
+            "CA-SUB-004",
+            "CA-CHM-001",
+            "CA-CHM-002",
+            "CA-CHM-003",
+            "CA-CHM-004",
+            "CA-GAS-001",
+            "CA-GAS-002",
+            "CA-GAS-003",
+            "CA-GAS-004",
+            "CA-TGT-001",
+            "CA-TGT-002",
+            "CA-TGT-003",
+            "CA-TGT-004",
+            "CA-PKG-001",
+            "CA-PKG-002",
+            "CA-PKG-003",
+            "CA-PKG-004"
+          ]
         },
         {
           "name": "material_name",
           "sql_type": "STRING",
           "comment": "Human-readable material name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "300mm Silicon Wafer Prime",
+            "300mm SOI Wafer",
+            "200mm Silicon Wafer Epi",
+            "SiC 150mm Substrate",
+            "CMP Slurry Copper",
+            "Photoresist EUV CAR",
+            "Developer TMAH 2.38%",
+            "Etchant Buffered HF",
+            "Nitrogen 6N UHP",
+            "Argon 5N Research",
+            "Silane SiH4 Electronic",
+            "WF6 Tungsten Hexafluoride",
+            "Copper Sputtering Target 5N",
+            "Tantalum Target 4N5",
+            "TEOS Precursor",
+            "TiCl4 Precursor ALD",
+            "Leadframe QFN 48-pin",
+            "BGA Substrate FC-CSP",
+            "Epoxy Mold Compound",
+            "Gold Bonding Wire 25um"
+          ]
         },
         {
           "name": "material_category",
           "sql_type": "STRING",
           "comment": "Material category grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Substrates",
+            "Process Chemicals",
+            "Specialty Gases",
+            "Targets & Precursors",
+            "Packaging Materials"
+          ]
         },
         {
           "name": "fab_line",
           "sql_type": "STRING",
           "comment": "Fabrication line identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'FAB-A 3nm' WHEN {status_noise} < 0.42 THEN 'FAB-B 5nm' WHEN {status_noise} < 0.58 THEN 'FAB-C 7nm' WHEN {status_noise} < 0.72 THEN 'FAB-D 14nm' WHEN {status_noise} < 0.85 THEN 'FAB-E 28nm' ELSE 'FAB-F Packaging' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'FAB-A 3nm' WHEN {status_noise} < 0.42 THEN 'FAB-B 5nm' WHEN {status_noise} < 0.58 THEN 'FAB-C 7nm' WHEN {status_noise} < 0.72 THEN 'FAB-D 14nm' WHEN {status_noise} < 0.85 THEN 'FAB-E 28nm' ELSE 'FAB-F Packaging' END",
+          "entity_values": [
+            "FAB-A 3nm",
+            "FAB-B 5nm",
+            "FAB-C 7nm",
+            "FAB-D 14nm",
+            "FAB-E 28nm",
+            "FAB-F Packaging"
+          ]
         },
         {
           "name": "allocated_capacity_units",
@@ -489,7 +685,13 @@
           "sql_type": "STRING",
           "comment": "Allocation priority level",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Critical' WHEN {status_noise} < 0.60 THEN 'High' WHEN {status_noise} < 0.85 THEN 'Standard' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Critical' WHEN {status_noise} < 0.60 THEN 'High' WHEN {status_noise} < 0.85 THEN 'Standard' ELSE 'Low' END",
+          "entity_values": [
+            "Critical",
+            "High",
+            "Standard",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -739,7 +941,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The material_order_metrics view (source: material_orders) has dimensions: order_date, material_category, supplier_name, delivery_status, quality_result. Measures: total_material_orders, total_order_value_usd, avg_lead_time_days, delayed_order_count, rejected_order_count. The capacity_utilization_metrics view (source: capacity_snapshots) has dimensions: snapshot_date, material_category, fab_line, bottleneck_status. Measures: avg_utilization_pct, total_available_starts, total_consumed_starts, critical_bottleneck_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. material_id, material_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for CapAlloc Semi. Answer questions about supply chain materials management and fab capacity allocation using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (material_id, material_name), query the base tables directly.\n- When joining tables, use the shared keys: material_id (shared across allocation_monthly, capacity_snapshots, material_orders).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in delayed order count?",
     "How has rejected order count changed over time?",
@@ -787,7 +989,7 @@
       ]
     },
     {
-      "question": "How does total quantity ordered (units vary by material) break down by material or component identifier for 'Delivered' records?",
+      "question": "How does total quantity ordered (units vary by material) break down by material or component for 'Delivered' records?",
       "sql_lines": [
         "SELECT material_id, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.material_orders",
@@ -950,7 +1152,7 @@
       ]
     },
     {
-      "question": "What are the top material or component identifier by total quantity ordered (units vary by material)?",
+      "question": "What are the top material or component by total quantity ordered (units vary by material)?",
       "sql_lines": [
         "SELECT material_id, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.material_orders",

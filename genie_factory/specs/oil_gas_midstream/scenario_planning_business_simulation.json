@@ -29,21 +29,75 @@
           "sql_type": "STRING",
           "comment": "Scenario ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MS-SC-001",
+            "MS-SC-002",
+            "MS-SC-003",
+            "MS-SC-004",
+            "MS-SC-005",
+            "MS-SC-006",
+            "MS-SC-007",
+            "MS-SC-008",
+            "MS-SC-009",
+            "MS-SC-010",
+            "MS-SC-011",
+            "MS-SC-012",
+            "MS-SC-013",
+            "MS-SC-014",
+            "MS-SC-015",
+            "MS-SC-016",
+            "MS-SC-017",
+            "MS-SC-018",
+            "MS-SC-019",
+            "MS-SC-020"
+          ]
         },
         {
           "name": "scenario_name",
           "sql_type": "STRING",
           "comment": "Scenario name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline Operations",
+            "Gas Price Surge",
+            "Crude Volume Increase 20%",
+            "Pipeline Capacity Expansion",
+            "NGL Price Collapse",
+            "Permian Growth Scenario",
+            "Regulatory Cost Increase",
+            "Carbon Tax Impact",
+            "New Pipeline Route",
+            "Competitor Pipeline Entry",
+            "Demand Destruction Scenario",
+            "Hurricane Disruption",
+            "Cyber Attack Recovery",
+            "Rate Case Outcome A",
+            "Rate Case Outcome B",
+            "M&A Target Integration",
+            "Divestiture Scenario",
+            "LNG Export Ramp",
+            "Hydrogen Blending Pilot",
+            "Baseline Conservative"
+          ]
         },
         {
           "name": "scenario_type",
           "sql_type": "STRING",
           "comment": "Type: Baseline, Price, Volume, Infrastructure, Regulatory, Market, Risk, Strategic",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline",
+            "Price",
+            "Volume",
+            "Infrastructure",
+            "Regulatory",
+            "Market",
+            "Risk",
+            "Strategic"
+          ]
         },
         {
           "name": "throughput_change_pct",
@@ -219,21 +273,75 @@
           "sql_type": "STRING",
           "comment": "Scenario ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MS-SC-001",
+            "MS-SC-002",
+            "MS-SC-003",
+            "MS-SC-004",
+            "MS-SC-005",
+            "MS-SC-006",
+            "MS-SC-007",
+            "MS-SC-008",
+            "MS-SC-009",
+            "MS-SC-010",
+            "MS-SC-011",
+            "MS-SC-012",
+            "MS-SC-013",
+            "MS-SC-014",
+            "MS-SC-015",
+            "MS-SC-016",
+            "MS-SC-017",
+            "MS-SC-018",
+            "MS-SC-019",
+            "MS-SC-020"
+          ]
         },
         {
           "name": "scenario_name",
           "sql_type": "STRING",
           "comment": "Scenario name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline Operations",
+            "Gas Price Surge",
+            "Crude Volume Increase 20%",
+            "Pipeline Capacity Expansion",
+            "NGL Price Collapse",
+            "Permian Growth Scenario",
+            "Regulatory Cost Increase",
+            "Carbon Tax Impact",
+            "New Pipeline Route",
+            "Competitor Pipeline Entry",
+            "Demand Destruction Scenario",
+            "Hurricane Disruption",
+            "Cyber Attack Recovery",
+            "Rate Case Outcome A",
+            "Rate Case Outcome B",
+            "M&A Target Integration",
+            "Divestiture Scenario",
+            "LNG Export Ramp",
+            "Hydrogen Blending Pilot",
+            "Baseline Conservative"
+          ]
         },
         {
           "name": "scenario_type",
           "sql_type": "STRING",
           "comment": "Scenario type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline",
+            "Price",
+            "Volume",
+            "Infrastructure",
+            "Regulatory",
+            "Market",
+            "Risk",
+            "Strategic"
+          ]
         },
         {
           "name": "projected_ebitda_mm",
@@ -261,7 +369,12 @@
           "sql_type": "STRING",
           "comment": "Confidence: High, Medium, Low",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'High' WHEN {status_noise} < 0.70 THEN 'Medium' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'High' WHEN {status_noise} < 0.70 THEN 'Medium' ELSE 'Low' END",
+          "entity_values": [
+            "High",
+            "Medium",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -402,14 +515,46 @@
           "sql_type": "STRING",
           "comment": "Scenario ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MS-SC-001",
+            "MS-SC-002",
+            "MS-SC-003",
+            "MS-SC-004",
+            "MS-SC-005",
+            "MS-SC-006",
+            "MS-SC-007",
+            "MS-SC-008",
+            "MS-SC-009",
+            "MS-SC-010",
+            "MS-SC-011",
+            "MS-SC-012",
+            "MS-SC-013",
+            "MS-SC-014",
+            "MS-SC-015",
+            "MS-SC-016",
+            "MS-SC-017",
+            "MS-SC-018",
+            "MS-SC-019",
+            "MS-SC-020"
+          ]
         },
         {
           "name": "scenario_type",
           "sql_type": "STRING",
           "comment": "Scenario type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline",
+            "Price",
+            "Volume",
+            "Infrastructure",
+            "Regulatory",
+            "Market",
+            "Risk",
+            "Strategic"
+          ]
         },
         {
           "name": "weighted_npv_mm",
@@ -627,7 +772,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, scenario_id, scenario_type. Measures: avg_npv_mm, avg_revenue_impact_mm, total_runs, total_capex_mm. The outcome_snapshots_metrics view (source: outcome_snapshots) has dimensions: snapshot_date, scenario_id, scenario_type, confidence_level. Measures: avg_ebitda_mm, avg_throughput_mbpd, avg_regulatory_risk. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. scenario_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for MidStream Dynamics. Answer questions about scenario planning and business simulation for midstream pipeline operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (scenario_name), query the base tables directly.\n- When joining tables, use the shared keys: scenario_id (shared across outcome_snapshots, scenario_kpi_monthly, simulation_runs).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total runss?",
     "How has highest throughput change percent changed over time?",

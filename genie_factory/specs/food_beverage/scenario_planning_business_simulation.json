@@ -29,35 +29,102 @@
           "sql_type": "STRING",
           "comment": "Category ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PC-001",
+            "PC-002",
+            "PC-003",
+            "PC-004",
+            "PC-005",
+            "PC-006",
+            "PC-007",
+            "PC-008",
+            "PC-009",
+            "PC-010",
+            "PC-011",
+            "PC-012",
+            "PC-013",
+            "PC-014",
+            "PC-015",
+            "PC-016",
+            "PC-017",
+            "PC-018",
+            "PC-019",
+            "PC-020"
+          ]
         },
         {
           "name": "category_name",
           "sql_type": "STRING",
           "comment": "Category name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Premium Artisan Bread",
+            "Value White Bread",
+            "Organic Sourdough",
+            "Whole Milk Family",
+            "Plant-Based Yogurt",
+            "Aged Cheese Selection",
+            "Fresh Squeezed Juice",
+            "Sparkling Water Line",
+            "Natural Deli Meats",
+            "Budget Lunch Packs",
+            "Organic Salad Kits",
+            "Seasonal Fruit Box",
+            "Grass-Fed Beef",
+            "Free-Range Chicken",
+            "Wild-Caught Seafood",
+            "Frozen Shrimp Value",
+            "Gourmet Frozen Meals",
+            "Family Frozen Pizza",
+            "Kids Snack Packs",
+            "Trail Mix Variety"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen",
+            "Snacks"
+          ]
         },
         {
           "name": "channel",
           "sql_type": "STRING",
           "comment": "Channel",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Retail",
+            "Specialty",
+            "Premium",
+            "Value"
+          ]
         },
         {
           "name": "scenario_type",
           "sql_type": "STRING",
           "comment": "Scenario: Base, Optimistic, Pessimistic, Disruption",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Disruption' WHEN {status_noise} < 0.30 THEN 'Pessimistic' WHEN {status_noise} < 0.55 THEN 'Optimistic' ELSE 'Base' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Disruption' WHEN {status_noise} < 0.30 THEN 'Pessimistic' WHEN {status_noise} < 0.55 THEN 'Optimistic' ELSE 'Base' END",
+          "entity_values": [
+            "Disruption",
+            "Pessimistic",
+            "Optimistic",
+            "Base"
+          ]
         },
         {
           "name": "simulated_revenue_usd",
@@ -253,21 +320,60 @@
           "sql_type": "STRING",
           "comment": "Category ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PC-001",
+            "PC-002",
+            "PC-003",
+            "PC-004",
+            "PC-005",
+            "PC-006",
+            "PC-007",
+            "PC-008",
+            "PC-009",
+            "PC-010",
+            "PC-011",
+            "PC-012",
+            "PC-013",
+            "PC-014",
+            "PC-015",
+            "PC-016",
+            "PC-017",
+            "PC-018",
+            "PC-019",
+            "PC-020"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen",
+            "Snacks"
+          ]
         },
         {
           "name": "channel",
           "sql_type": "STRING",
           "comment": "Channel",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Retail",
+            "Specialty",
+            "Premium",
+            "Value"
+          ]
         },
         {
           "name": "input_cost_index",
@@ -288,7 +394,13 @@
           "sql_type": "STRING",
           "comment": "Pressure: Low, Moderate, High, Intense",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Intense' WHEN {status_noise} < 0.30 THEN 'High' WHEN {status_noise} < 0.60 THEN 'Moderate' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Intense' WHEN {status_noise} < 0.30 THEN 'High' WHEN {status_noise} < 0.60 THEN 'Moderate' ELSE 'Low' END",
+          "entity_values": [
+            "Intense",
+            "High",
+            "Moderate",
+            "Low"
+          ]
         },
         {
           "name": "market_share_pct",
@@ -477,21 +589,60 @@
           "sql_type": "STRING",
           "comment": "Category ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PC-001",
+            "PC-002",
+            "PC-003",
+            "PC-004",
+            "PC-005",
+            "PC-006",
+            "PC-007",
+            "PC-008",
+            "PC-009",
+            "PC-010",
+            "PC-011",
+            "PC-012",
+            "PC-013",
+            "PC-014",
+            "PC-015",
+            "PC-016",
+            "PC-017",
+            "PC-018",
+            "PC-019",
+            "PC-020"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen",
+            "Snacks"
+          ]
         },
         {
           "name": "channel",
           "sql_type": "STRING",
           "comment": "Channel",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Retail",
+            "Specialty",
+            "Premium",
+            "Value"
+          ]
         },
         {
           "name": "expected_revenue_usd",
@@ -519,7 +670,13 @@
           "sql_type": "STRING",
           "comment": "Priority: Invest, Maintain, Harvest, Divest",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Divest' WHEN {status_noise} < 0.25 THEN 'Harvest' WHEN {status_noise} < 0.55 THEN 'Maintain' ELSE 'Invest' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Divest' WHEN {status_noise} < 0.25 THEN 'Harvest' WHEN {status_noise} < 0.55 THEN 'Maintain' ELSE 'Invest' END",
+          "entity_values": [
+            "Divest",
+            "Harvest",
+            "Maintain",
+            "Invest"
+          ]
         },
         {
           "name": "confidence_level_pct",
@@ -804,7 +961,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The scenario_kpi_monthly view (source: product_categories) has dimensions: run_date, segment, channel, scenario_type. Measures: avg_simulated_revenue, avg_simulated_margin, total_simulated_revenue, run_count, disruption_count. The portfolio_kpi_monthly view (source: market_snapshots) has dimensions: outcome_month, segment, channel, investment_priority. Measures: total_expected_revenue, total_revenue_at_risk, avg_optimal_price_change, avg_confidence, invest_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. category_id, category_name).",
+  "genie_instructions": "You are a food & beverage analytics assistant for FoodPlan Analytics. Answer questions about scenario planning and business simulation for food product portfolios using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (category_id, category_name), query the base tables directly.\n- When joining tables, use the shared keys: category_id (shared across market_snapshots, product_categories, scenario_runs).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in disruption count?",
     "How has unique runs changed over time?",

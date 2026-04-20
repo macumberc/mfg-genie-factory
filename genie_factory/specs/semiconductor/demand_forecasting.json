@@ -29,28 +29,86 @@
           "sql_type": "STRING",
           "comment": "Product SKU identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-MCU-001",
+            "CF-MCU-002",
+            "CF-MCU-003",
+            "CF-MCU-004",
+            "CF-MEM-001",
+            "CF-MEM-002",
+            "CF-MEM-003",
+            "CF-MEM-004",
+            "CF-ANA-001",
+            "CF-ANA-002",
+            "CF-ANA-003",
+            "CF-ANA-004",
+            "CF-PWR-001",
+            "CF-PWR-002",
+            "CF-PWR-003",
+            "CF-PWR-004",
+            "CF-COM-001",
+            "CF-COM-002",
+            "CF-COM-003",
+            "CF-COM-004"
+          ]
         },
         {
           "name": "sku_name",
           "sql_type": "STRING",
           "comment": "Human-readable product SKU name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FlowCtrl MCU-32 Automotive",
+            "FlowCtrl MCU-16 Industrial",
+            "FlowCtrl MCU-8 Consumer",
+            "FlowCtrl MCU-64 Secure Boot",
+            "FlowRAM DDR5 8GB Module",
+            "FlowRAM DDR5 16GB Module",
+            "FlowRAM LPDDR5 6GB",
+            "FlowNAND 256GB eMMC",
+            "FlowSense ADC 16-bit",
+            "FlowSense DAC 12-bit",
+            "FlowSense Op-Amp Rail-to-Rail",
+            "FlowSense Temp Sensor Digital",
+            "FlowVolt LDO 3.3V 500mA",
+            "FlowVolt Buck 5V-1.2V 3A",
+            "FlowVolt PMIC 6-Rail Automotive",
+            "FlowVolt GaN FET 100V",
+            "FlowLink USB 3.2 Hub IC",
+            "FlowLink Ethernet PHY 1G",
+            "FlowLink CAN-FD Transceiver",
+            "FlowLink BLE 5.3 SoC"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Microcontroller",
+            "Memory Module",
+            "Analog IC",
+            "Power IC",
+            "Connectivity"
+          ]
         },
         {
           "name": "customer_segment",
           "sql_type": "STRING",
           "comment": "Customer segment classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'OEM Tier 1' WHEN {status_noise} < 0.45 THEN 'OEM Tier 2' WHEN {status_noise} < 0.65 THEN 'Distributor' WHEN {status_noise} < 0.82 THEN 'Contract Manufacturer' ELSE 'Direct Enterprise' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'OEM Tier 1' WHEN {status_noise} < 0.45 THEN 'OEM Tier 2' WHEN {status_noise} < 0.65 THEN 'Distributor' WHEN {status_noise} < 0.82 THEN 'Contract Manufacturer' ELSE 'Direct Enterprise' END",
+          "entity_values": [
+            "OEM Tier 1",
+            "OEM Tier 2",
+            "Distributor",
+            "Contract Manufacturer",
+            "Direct Enterprise"
+          ]
         },
         {
           "name": "order_quantity",
@@ -85,14 +143,28 @@
           "sql_type": "STRING",
           "comment": "Order fulfillment status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Shipped' WHEN {status_noise} < 0.72 THEN 'In Production' WHEN {status_noise} < 0.85 THEN 'Backlogged' WHEN {status_noise} < 0.93 THEN 'Partial Ship' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Shipped' WHEN {status_noise} < 0.72 THEN 'In Production' WHEN {status_noise} < 0.85 THEN 'Backlogged' WHEN {status_noise} < 0.93 THEN 'Partial Ship' ELSE 'Cancelled' END",
+          "entity_values": [
+            "Shipped",
+            "In Production",
+            "Backlogged",
+            "Partial Ship",
+            "Cancelled"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Customer geographic region",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Asia Pacific' WHEN {status_noise} < 0.55 THEN 'North America' WHEN {status_noise} < 0.75 THEN 'Europe' WHEN {status_noise} < 0.90 THEN 'Greater China' ELSE 'Rest of World' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Asia Pacific' WHEN {status_noise} < 0.55 THEN 'North America' WHEN {status_noise} < 0.75 THEN 'Europe' WHEN {status_noise} < 0.90 THEN 'Greater China' ELSE 'Rest of World' END",
+          "entity_values": [
+            "Asia Pacific",
+            "North America",
+            "Europe",
+            "Greater China",
+            "Rest of World"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -242,21 +314,72 @@
           "sql_type": "STRING",
           "comment": "Product SKU identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-MCU-001",
+            "CF-MCU-002",
+            "CF-MCU-003",
+            "CF-MCU-004",
+            "CF-MEM-001",
+            "CF-MEM-002",
+            "CF-MEM-003",
+            "CF-MEM-004",
+            "CF-ANA-001",
+            "CF-ANA-002",
+            "CF-ANA-003",
+            "CF-ANA-004",
+            "CF-PWR-001",
+            "CF-PWR-002",
+            "CF-PWR-003",
+            "CF-PWR-004",
+            "CF-COM-001",
+            "CF-COM-002",
+            "CF-COM-003",
+            "CF-COM-004"
+          ]
         },
         {
           "name": "sku_name",
           "sql_type": "STRING",
           "comment": "Human-readable product SKU name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FlowCtrl MCU-32 Automotive",
+            "FlowCtrl MCU-16 Industrial",
+            "FlowCtrl MCU-8 Consumer",
+            "FlowCtrl MCU-64 Secure Boot",
+            "FlowRAM DDR5 8GB Module",
+            "FlowRAM DDR5 16GB Module",
+            "FlowRAM LPDDR5 6GB",
+            "FlowNAND 256GB eMMC",
+            "FlowSense ADC 16-bit",
+            "FlowSense DAC 12-bit",
+            "FlowSense Op-Amp Rail-to-Rail",
+            "FlowSense Temp Sensor Digital",
+            "FlowVolt LDO 3.3V 500mA",
+            "FlowVolt Buck 5V-1.2V 3A",
+            "FlowVolt PMIC 6-Rail Automotive",
+            "FlowVolt GaN FET 100V",
+            "FlowLink USB 3.2 Hub IC",
+            "FlowLink Ethernet PHY 1G",
+            "FlowLink CAN-FD Transceiver",
+            "FlowLink BLE 5.3 SoC"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Microcontroller",
+            "Memory Module",
+            "Analog IC",
+            "Power IC",
+            "Connectivity"
+          ]
         },
         {
           "name": "forecasted_units",
@@ -284,14 +407,24 @@
           "sql_type": "STRING",
           "comment": "Whether forecast was over or under",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Over-forecast' WHEN {status_noise} < 0.55 THEN 'On Target' ELSE 'Under-forecast' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Over-forecast' WHEN {status_noise} < 0.55 THEN 'On Target' ELSE 'Under-forecast' END",
+          "entity_values": [
+            "Over-forecast",
+            "On Target",
+            "Under-forecast"
+          ]
         },
         {
           "name": "model_type",
           "sql_type": "STRING",
           "comment": "Forecasting model used",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'ML Ensemble' WHEN {status_noise} < 0.65 THEN 'ARIMA' ELSE 'Prophet' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'ML Ensemble' WHEN {status_noise} < 0.65 THEN 'ARIMA' ELSE 'Prophet' END",
+          "entity_values": [
+            "ML Ensemble",
+            "ARIMA",
+            "Prophet"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -440,21 +573,72 @@
           "sql_type": "STRING",
           "comment": "Product SKU identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-MCU-001",
+            "CF-MCU-002",
+            "CF-MCU-003",
+            "CF-MCU-004",
+            "CF-MEM-001",
+            "CF-MEM-002",
+            "CF-MEM-003",
+            "CF-MEM-004",
+            "CF-ANA-001",
+            "CF-ANA-002",
+            "CF-ANA-003",
+            "CF-ANA-004",
+            "CF-PWR-001",
+            "CF-PWR-002",
+            "CF-PWR-003",
+            "CF-PWR-004",
+            "CF-COM-001",
+            "CF-COM-002",
+            "CF-COM-003",
+            "CF-COM-004"
+          ]
         },
         {
           "name": "sku_name",
           "sql_type": "STRING",
           "comment": "Human-readable product SKU name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FlowCtrl MCU-32 Automotive",
+            "FlowCtrl MCU-16 Industrial",
+            "FlowCtrl MCU-8 Consumer",
+            "FlowCtrl MCU-64 Secure Boot",
+            "FlowRAM DDR5 8GB Module",
+            "FlowRAM DDR5 16GB Module",
+            "FlowRAM LPDDR5 6GB",
+            "FlowNAND 256GB eMMC",
+            "FlowSense ADC 16-bit",
+            "FlowSense DAC 12-bit",
+            "FlowSense Op-Amp Rail-to-Rail",
+            "FlowSense Temp Sensor Digital",
+            "FlowVolt LDO 3.3V 500mA",
+            "FlowVolt Buck 5V-1.2V 3A",
+            "FlowVolt PMIC 6-Rail Automotive",
+            "FlowVolt GaN FET 100V",
+            "FlowLink USB 3.2 Hub IC",
+            "FlowLink Ethernet PHY 1G",
+            "FlowLink CAN-FD Transceiver",
+            "FlowLink BLE 5.3 SoC"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Microcontroller",
+            "Memory Module",
+            "Analog IC",
+            "Power IC",
+            "Connectivity"
+          ]
         },
         {
           "name": "on_hand_units",
@@ -489,7 +673,13 @@
           "sql_type": "STRING",
           "comment": "Inventory health status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN (2.0 + {qty_noise} * 18.0) >= 8.0 THEN 'Excess' WHEN (2.0 + {qty_noise} * 18.0) >= 4.0 THEN 'Healthy' WHEN (2.0 + {qty_noise} * 18.0) >= 2.0 THEN 'Low' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN (2.0 + {qty_noise} * 18.0) >= 8.0 THEN 'Excess' WHEN (2.0 + {qty_noise} * 18.0) >= 4.0 THEN 'Healthy' WHEN (2.0 + {qty_noise} * 18.0) >= 2.0 THEN 'Low' ELSE 'Critical' END",
+          "entity_values": [
+            "Excess",
+            "Healthy",
+            "Low",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -739,7 +929,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The customer_order_metrics view (source: customer_orders) has dimensions: order_date, product_category, customer_segment, fulfillment_status, region. Measures: total_orders, total_order_revenue_usd, total_units_ordered, avg_lead_time_days, backlogged_order_count. The forecast_accuracy_metrics view (source: demand_forecasts) has dimensions: forecast_date, product_category, forecast_bias, model_type. Measures: avg_forecast_accuracy_pct, total_forecasted_units, total_actual_units, total_forecast_records. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. sku_id, sku_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for ChipFlow Supply. Answer questions about semiconductor demand forecasting and order backlog management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (sku_id, sku_name), query the base tables directly.\n- When joining tables, use the shared keys: sku_id (shared across customer_orders, demand_forecasts, inventory_positions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in backlogged order count?",
     "How has unique total orderss changed over time?",
@@ -778,7 +968,7 @@
       ]
     },
     {
-      "question": "How does total number of units ordered break down by product sku identifier for 'Shipped' records?",
+      "question": "How does total number of units ordered break down by product sku for 'Shipped' records?",
       "sql_lines": [
         "SELECT sku_id, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.customer_orders",
@@ -794,7 +984,7 @@
       ]
     },
     {
-      "question": "How many distinct unique inventory position record identifier are there per product category grouping?",
+      "question": "How many distinct unique inventory position record are there per product category grouping?",
       "sql_lines": [
         "SELECT product_category, COUNT(DISTINCT position_id) AS distinct_count",
         "FROM {fqn}.inventory_positions",
@@ -951,7 +1141,7 @@
       ]
     },
     {
-      "question": "What are the top product sku identifier by total number of units ordered?",
+      "question": "What are the top product sku by total number of units ordered?",
       "sql_lines": [
         "SELECT sku_id, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.customer_orders",

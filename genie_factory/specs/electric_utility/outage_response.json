@@ -29,35 +29,101 @@
           "sql_type": "STRING",
           "comment": "Distribution feeder identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FD-M01",
+            "FD-M02",
+            "FD-M03",
+            "FD-M04",
+            "FD-N01",
+            "FD-N02",
+            "FD-N03",
+            "FD-N04",
+            "FD-S01",
+            "FD-S02",
+            "FD-S03",
+            "FD-S04",
+            "FD-E01",
+            "FD-E02",
+            "FD-E03",
+            "FD-E04",
+            "FD-W01",
+            "FD-W02",
+            "FD-W03",
+            "FD-W04"
+          ]
         },
         {
           "name": "feeder_name",
           "sql_type": "STRING",
           "comment": "Distribution feeder name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Metro Central 1",
+            "Metro Central 2",
+            "Metro Commercial",
+            "Metro Hospital District",
+            "North Residential 1",
+            "North Residential 2",
+            "North Industrial",
+            "North Rural",
+            "South Coastal 1",
+            "South Coastal 2",
+            "South Suburban",
+            "South Marina",
+            "East Shopping District",
+            "East Tech Park",
+            "East Hillside",
+            "East Farmland",
+            "West Valley 1",
+            "West Valley 2",
+            "West University",
+            "West Airport"
+          ]
         },
         {
           "name": "district",
           "sql_type": "STRING",
           "comment": "Service district: Metro, North, South, East, West",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Metro",
+            "North",
+            "South",
+            "East",
+            "West"
+          ]
         },
         {
           "name": "feeder_type",
           "sql_type": "STRING",
           "comment": "Feeder type: Overhead, Underground, Mixed",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Underground",
+            "Mixed",
+            "Overhead"
+          ]
         },
         {
           "name": "cause",
           "sql_type": "STRING",
           "comment": "Outage cause: Storm, Equipment Failure, Tree Contact, Animal Contact, Vehicle Accident, Overload, Planned, Unknown",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Storm' WHEN {status_noise} < 0.42 THEN 'Equipment Failure' WHEN {status_noise} < 0.55 THEN 'Tree Contact' WHEN {status_noise} < 0.65 THEN 'Animal Contact' WHEN {status_noise} < 0.73 THEN 'Vehicle Accident' WHEN {status_noise} < 0.82 THEN 'Overload' WHEN {status_noise} < 0.92 THEN 'Planned' ELSE 'Unknown' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Storm' WHEN {status_noise} < 0.42 THEN 'Equipment Failure' WHEN {status_noise} < 0.55 THEN 'Tree Contact' WHEN {status_noise} < 0.65 THEN 'Animal Contact' WHEN {status_noise} < 0.73 THEN 'Vehicle Accident' WHEN {status_noise} < 0.82 THEN 'Overload' WHEN {status_noise} < 0.92 THEN 'Planned' ELSE 'Unknown' END",
+          "entity_values": [
+            "Storm",
+            "Equipment Failure",
+            "Tree Contact",
+            "Animal Contact",
+            "Vehicle Accident",
+            "Overload",
+            "Planned",
+            "Unknown"
+          ]
         },
         {
           "name": "customers_affected",
@@ -78,7 +144,13 @@
           "sql_type": "STRING",
           "comment": "Priority: P1-Critical, P2-High, P3-Medium, P4-Low",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'P1-Critical' WHEN {status_noise} < 0.35 THEN 'P2-High' WHEN {status_noise} < 0.70 THEN 'P3-Medium' ELSE 'P4-Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'P1-Critical' WHEN {status_noise} < 0.35 THEN 'P2-High' WHEN {status_noise} < 0.70 THEN 'P3-Medium' ELSE 'P4-Low' END",
+          "entity_values": [
+            "P1-Critical",
+            "P2-High",
+            "P3-Medium",
+            "P4-Low"
+          ]
         },
         {
           "name": "customer_minutes_interrupted",
@@ -252,28 +324,69 @@
           "sql_type": "STRING",
           "comment": "Distribution feeder identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FD-M01",
+            "FD-M02",
+            "FD-M03",
+            "FD-M04",
+            "FD-N01",
+            "FD-N02",
+            "FD-N03",
+            "FD-N04",
+            "FD-S01",
+            "FD-S02",
+            "FD-S03",
+            "FD-S04",
+            "FD-E01",
+            "FD-E02",
+            "FD-E03",
+            "FD-E04",
+            "FD-W01",
+            "FD-W02",
+            "FD-W03",
+            "FD-W04"
+          ]
         },
         {
           "name": "district",
           "sql_type": "STRING",
           "comment": "Service district",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Metro",
+            "North",
+            "South",
+            "East",
+            "West"
+          ]
         },
         {
           "name": "feeder_type",
           "sql_type": "STRING",
           "comment": "Feeder type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Underground",
+            "Mixed",
+            "Overhead"
+          ]
         },
         {
           "name": "crew_type",
           "sql_type": "STRING",
           "comment": "Crew type: Line, Underground, Tree, Substation, Contractor",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Line' WHEN {status_noise} < 0.50 THEN 'Underground' WHEN {status_noise} < 0.65 THEN 'Tree' WHEN {status_noise} < 0.80 THEN 'Substation' ELSE 'Contractor' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Line' WHEN {status_noise} < 0.50 THEN 'Underground' WHEN {status_noise} < 0.65 THEN 'Tree' WHEN {status_noise} < 0.80 THEN 'Substation' ELSE 'Contractor' END",
+          "entity_values": [
+            "Line",
+            "Underground",
+            "Tree",
+            "Substation",
+            "Contractor"
+          ]
         },
         {
           "name": "response_time_minutes",
@@ -469,21 +582,55 @@
           "sql_type": "STRING",
           "comment": "Distribution feeder identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FD-M01",
+            "FD-M02",
+            "FD-M03",
+            "FD-M04",
+            "FD-N01",
+            "FD-N02",
+            "FD-N03",
+            "FD-N04",
+            "FD-S01",
+            "FD-S02",
+            "FD-S03",
+            "FD-S04",
+            "FD-E01",
+            "FD-E02",
+            "FD-E03",
+            "FD-E04",
+            "FD-W01",
+            "FD-W02",
+            "FD-W03",
+            "FD-W04"
+          ]
         },
         {
           "name": "district",
           "sql_type": "STRING",
           "comment": "Service district",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Metro",
+            "North",
+            "South",
+            "East",
+            "West"
+          ]
         },
         {
           "name": "feeder_type",
           "sql_type": "STRING",
           "comment": "Feeder type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Underground",
+            "Mixed",
+            "Overhead"
+          ]
         },
         {
           "name": "saidi_minutes",
@@ -772,7 +919,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The outage_events_metrics view (source: outage_events) has dimensions: outage_date, district, feeder_type, cause, priority. Measures: total_outage_count, total_customers_affected, avg_outage_duration_min, total_customer_minutes, storm_outage_count. The crew_dispatch_metrics view (source: crew_dispatch_snapshots) has dimensions: dispatch_date, district, crew_type. Measures: avg_response_time_min, avg_travel_time_min, avg_repair_time_min, avg_crew_utilization, total_jobs_completed. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. feeder_id, feeder_name).",
+  "genie_instructions": "You are an electric utility analytics assistant for RestorePower Systems. Answer questions about outage response management and crew dispatch optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (feeder_id, feeder_name), query the base tables directly.\n- When joining tables, use the shared keys: feeder_id (shared across crew_dispatch_snapshots, outage_events, outage_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in storm outage count?",
     "How has unique total outages changed over time?",
@@ -980,7 +1127,7 @@
       ]
     },
     {
-      "question": "What are the top distribution feeder identifier by total number of customers without power?",
+      "question": "What are the top distribution feeder by total number of customers without power?",
       "sql_lines": [
         "SELECT feeder_id, SUM(customers_affected) AS total_customers_affected",
         "FROM {fqn}.outage_events",

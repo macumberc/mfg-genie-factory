@@ -29,28 +29,96 @@
           "sql_type": "STRING",
           "comment": "Product ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-001",
+            "FP-002",
+            "FP-003",
+            "FP-004",
+            "FP-005",
+            "FP-006",
+            "FP-007",
+            "FP-008",
+            "FP-009",
+            "FP-010",
+            "FP-011",
+            "FP-012",
+            "FP-013",
+            "FP-014",
+            "FP-015",
+            "FP-016",
+            "FP-017",
+            "FP-018",
+            "FP-019",
+            "FP-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Whole Wheat Bread 24oz",
+            "Sourdough Loaf 20oz",
+            "Cinnamon Rolls 6pk",
+            "2% Milk Gallon",
+            "Greek Yogurt 32oz",
+            "Cheddar Cheese Block 16oz",
+            "Orange Juice 64oz",
+            "Apple Juice 48oz",
+            "Deli Turkey Breast 8oz",
+            "Roast Beef Sliced 6oz",
+            "Ham Off-the-Bone 10oz",
+            "Mixed Salad Greens 10oz",
+            "Baby Carrots 16oz",
+            "Fresh Strawberries 1lb",
+            "Ground Beef 80/20 1lb",
+            "Chicken Breast Boneless 1.5lb",
+            "Atlantic Salmon Fillet 8oz",
+            "Shrimp 21-25ct 1lb",
+            "Frozen Pizza Pepperoni 12in",
+            "Ice Cream Vanilla 48oz"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Line",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Line A",
+            "Line B",
+            "Line C",
+            "Line D",
+            "Line E",
+            "Line F",
+            "Line G",
+            "Line H",
+            "Line I",
+            "Line J",
+            "Line K",
+            "Line L"
+          ]
         },
         {
           "name": "quantity_units",
@@ -71,14 +139,26 @@
           "sql_type": "STRING",
           "comment": "Type: Received, Shipped, Spoiled, Donated, Transferred",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Received' WHEN {status_noise} < 0.70 THEN 'Shipped' WHEN {status_noise} < 0.82 THEN 'Spoiled' WHEN {status_noise} < 0.92 THEN 'Donated' ELSE 'Transferred' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Received' WHEN {status_noise} < 0.70 THEN 'Shipped' WHEN {status_noise} < 0.82 THEN 'Spoiled' WHEN {status_noise} < 0.92 THEN 'Donated' ELSE 'Transferred' END",
+          "entity_values": [
+            "Received",
+            "Shipped",
+            "Spoiled",
+            "Donated",
+            "Transferred"
+          ]
         },
         {
           "name": "temperature_zone",
           "sql_type": "STRING",
           "comment": "Zone: Frozen, Refrigerated, Ambient",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Frozen' WHEN {status_noise} < 0.75 THEN 'Refrigerated' ELSE 'Ambient' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Frozen' WHEN {status_noise} < 0.75 THEN 'Refrigerated' ELSE 'Ambient' END",
+          "entity_values": [
+            "Frozen",
+            "Refrigerated",
+            "Ambient"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -252,21 +332,67 @@
           "sql_type": "STRING",
           "comment": "Product ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-001",
+            "FP-002",
+            "FP-003",
+            "FP-004",
+            "FP-005",
+            "FP-006",
+            "FP-007",
+            "FP-008",
+            "FP-009",
+            "FP-010",
+            "FP-011",
+            "FP-012",
+            "FP-013",
+            "FP-014",
+            "FP-015",
+            "FP-016",
+            "FP-017",
+            "FP-018",
+            "FP-019",
+            "FP-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Line",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Line A",
+            "Line B",
+            "Line C",
+            "Line D",
+            "Line E",
+            "Line F",
+            "Line G",
+            "Line H",
+            "Line I",
+            "Line J",
+            "Line K",
+            "Line L"
+          ]
         },
         {
           "name": "on_hand_units",
@@ -475,21 +601,67 @@
           "sql_type": "STRING",
           "comment": "Product ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-001",
+            "FP-002",
+            "FP-003",
+            "FP-004",
+            "FP-005",
+            "FP-006",
+            "FP-007",
+            "FP-008",
+            "FP-009",
+            "FP-010",
+            "FP-011",
+            "FP-012",
+            "FP-013",
+            "FP-014",
+            "FP-015",
+            "FP-016",
+            "FP-017",
+            "FP-018",
+            "FP-019",
+            "FP-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bakery",
+            "Dairy",
+            "Beverages",
+            "Deli",
+            "Produce",
+            "Protein",
+            "Seafood",
+            "Frozen"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Line",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Line A",
+            "Line B",
+            "Line C",
+            "Line D",
+            "Line E",
+            "Line F",
+            "Line G",
+            "Line H",
+            "Line I",
+            "Line J",
+            "Line K",
+            "Line L"
+          ]
         },
         {
           "name": "total_spoiled_units",
@@ -524,7 +696,13 @@
           "sql_type": "STRING",
           "comment": "Action: Markdown, Donate, Reorder, No Action",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Markdown' WHEN {status_noise} < 0.22 THEN 'Donate' WHEN {status_noise} < 0.38 THEN 'Reorder' ELSE 'No Action' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Markdown' WHEN {status_noise} < 0.22 THEN 'Donate' WHEN {status_noise} < 0.38 THEN 'Reorder' ELSE 'No Action' END",
+          "entity_values": [
+            "Markdown",
+            "Donate",
+            "Reorder",
+            "No Action"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -783,7 +961,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_kpi_monthly view (source: inventory_transactions) has dimensions: snapshot_date, product_category, production_line. Measures: avg_on_hand, avg_spoilage_rate, avg_fill_rate, avg_freshness, total_near_expiry. The waste_kpi_monthly view (source: shelf_life_snapshots) has dimensions: perf_month, product_category, optimization_action. Measures: total_spoiled, total_spoilage_cost, avg_turnover, avg_shelf_remaining, item_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "genie_instructions": "You are a food & beverage analytics assistant for FreshStock Solutions. Answer questions about perishable food inventory optimization and shelf life management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_id, product_name), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across inventory_transactions, perishable_products, shelf_life_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique products?",
     "How has highest on hand units changed over time?",

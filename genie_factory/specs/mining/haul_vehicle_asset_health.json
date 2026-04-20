@@ -29,28 +29,86 @@
           "sql_type": "STRING",
           "comment": "Vehicle ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HV-001",
+            "HV-002",
+            "HV-003",
+            "HV-004",
+            "HV-005",
+            "HV-006",
+            "HV-007",
+            "HV-008",
+            "HV-009",
+            "HV-010",
+            "HV-011",
+            "HV-012",
+            "HV-013",
+            "HV-014",
+            "HV-015",
+            "HV-016",
+            "HV-017",
+            "HV-018",
+            "HV-019",
+            "HV-020"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CAT 797F Unit 101",
+            "CAT 797F Unit 102",
+            "CAT 797F Unit 103",
+            "CAT 797F Unit 104",
+            "CAT 797F Unit 105",
+            "Komatsu 930E Unit 201",
+            "Komatsu 930E Unit 202",
+            "Komatsu 930E Unit 203",
+            "Komatsu 930E Unit 204",
+            "Komatsu 930E Unit 205",
+            "Liebherr T284 Unit 301",
+            "Liebherr T284 Unit 302",
+            "Liebherr T284 Unit 303",
+            "Hitachi EH5000 Unit 401",
+            "Hitachi EH5000 Unit 402",
+            "BelAZ 75710 Unit 501",
+            "BelAZ 75710 Unit 502",
+            "CAT 794AC Unit 601",
+            "CAT 794AC Unit 602",
+            "CAT 794AC Unit 603"
+          ]
         },
         {
           "name": "vehicle_model",
           "sql_type": "STRING",
           "comment": "Vehicle model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CAT 797F",
+            "Komatsu 930E",
+            "Liebherr T284",
+            "Hitachi EH5000",
+            "BelAZ 75710",
+            "CAT 794AC"
+          ]
         },
         {
           "name": "pit",
           "sql_type": "STRING",
           "comment": "Mining pit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North Pit",
+            "South Pit",
+            "East Pit",
+            "West Pit"
+          ]
         },
         {
           "name": "loads_completed",
@@ -247,21 +305,57 @@
           "sql_type": "STRING",
           "comment": "Vehicle ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HV-001",
+            "HV-002",
+            "HV-003",
+            "HV-004",
+            "HV-005",
+            "HV-006",
+            "HV-007",
+            "HV-008",
+            "HV-009",
+            "HV-010",
+            "HV-011",
+            "HV-012",
+            "HV-013",
+            "HV-014",
+            "HV-015",
+            "HV-016",
+            "HV-017",
+            "HV-018",
+            "HV-019",
+            "HV-020"
+          ]
         },
         {
           "name": "vehicle_model",
           "sql_type": "STRING",
           "comment": "Model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CAT 797F",
+            "Komatsu 930E",
+            "Liebherr T284",
+            "Hitachi EH5000",
+            "BelAZ 75710",
+            "CAT 794AC"
+          ]
         },
         {
           "name": "pit",
           "sql_type": "STRING",
           "comment": "Pit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North Pit",
+            "South Pit",
+            "East Pit",
+            "West Pit"
+          ]
         },
         {
           "name": "engine_temp_celsius",
@@ -296,7 +390,13 @@
           "sql_type": "STRING",
           "comment": "Alert: Normal, Caution, Warning, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Critical' WHEN {status_noise} < 0.10 THEN 'Warning' WHEN {status_noise} < 0.22 THEN 'Caution' ELSE 'Normal' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Critical' WHEN {status_noise} < 0.10 THEN 'Warning' WHEN {status_noise} < 0.22 THEN 'Caution' ELSE 'Normal' END",
+          "entity_values": [
+            "Critical",
+            "Warning",
+            "Caution",
+            "Normal"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -465,28 +565,72 @@
           "sql_type": "STRING",
           "comment": "Vehicle ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "HV-001",
+            "HV-002",
+            "HV-003",
+            "HV-004",
+            "HV-005",
+            "HV-006",
+            "HV-007",
+            "HV-008",
+            "HV-009",
+            "HV-010",
+            "HV-011",
+            "HV-012",
+            "HV-013",
+            "HV-014",
+            "HV-015",
+            "HV-016",
+            "HV-017",
+            "HV-018",
+            "HV-019",
+            "HV-020"
+          ]
         },
         {
           "name": "vehicle_model",
           "sql_type": "STRING",
           "comment": "Model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CAT 797F",
+            "Komatsu 930E",
+            "Liebherr T284",
+            "Hitachi EH5000",
+            "BelAZ 75710",
+            "CAT 794AC"
+          ]
         },
         {
           "name": "pit",
           "sql_type": "STRING",
           "comment": "Pit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North Pit",
+            "South Pit",
+            "East Pit",
+            "West Pit"
+          ]
         },
         {
           "name": "failure_type",
           "sql_type": "STRING",
           "comment": "Type: Engine, Transmission, Tires, Hydraulic, Electrical, Structural",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Engine' WHEN {status_noise} < 0.40 THEN 'Tires' WHEN {status_noise} < 0.55 THEN 'Transmission' WHEN {status_noise} < 0.70 THEN 'Hydraulic' WHEN {status_noise} < 0.85 THEN 'Electrical' ELSE 'Structural' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Engine' WHEN {status_noise} < 0.40 THEN 'Tires' WHEN {status_noise} < 0.55 THEN 'Transmission' WHEN {status_noise} < 0.70 THEN 'Hydraulic' WHEN {status_noise} < 0.85 THEN 'Electrical' ELSE 'Structural' END",
+          "entity_values": [
+            "Engine",
+            "Tires",
+            "Transmission",
+            "Hydraulic",
+            "Electrical",
+            "Structural"
+          ]
         },
         {
           "name": "downtime_hours",
@@ -786,7 +930,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The health_monthly view (source: sensor_readings) has dimensions: reading_date, vehicle_model, pit, alert_level. Measures: avg_health_score, avg_engine_temp, vehicle_count, critical_count, reading_count. The failure_monthly view (source: failure_events) has dimensions: event_month, vehicle_model, pit, failure_type. Measures: total_downtime, total_repair_cost, avg_rul, failure_count, high_risk_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. vehicle_id, vehicle_name).",
+  "genie_instructions": "You are a mining analytics assistant for MineTruck Analytics. Answer questions about haul vehicle asset health monitoring and predictive maintenance using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (vehicle_id, vehicle_name), query the base tables directly.\n- When joining tables, use the shared keys: vehicle_id (shared across failure_events, haul_vehicles, sensor_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in critical count?",
     "How has unique vehicles changed over time?",

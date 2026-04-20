@@ -29,28 +29,90 @@
           "sql_type": "STRING",
           "comment": "Well identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PP-W-001",
+            "PP-W-002",
+            "PP-W-003",
+            "PP-W-004",
+            "PP-W-005",
+            "PP-W-006",
+            "PP-W-007",
+            "PP-W-008",
+            "PP-W-009",
+            "PP-W-010",
+            "PP-W-011",
+            "PP-W-012",
+            "PP-W-013",
+            "PP-W-014",
+            "PP-W-015",
+            "PP-W-016",
+            "PP-W-017",
+            "PP-W-018",
+            "PP-W-019",
+            "PP-W-020"
+          ]
         },
         {
           "name": "well_name",
           "sql_type": "STRING",
           "comment": "Well name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse A-1",
+            "Thunder Horse A-2",
+            "Thunder Horse B-1",
+            "Mars A-5",
+            "Mars A-8",
+            "Mars B-3",
+            "Atlantis N-1",
+            "Atlantis N-4",
+            "Atlantis S-2",
+            "Na Kika E-1",
+            "Na Kika E-6",
+            "Shenzi A-1",
+            "Shenzi A-3",
+            "Shenzi B-2",
+            "Mad Dog A-1",
+            "Mad Dog A-5",
+            "Mad Dog B-2",
+            "Tiber D-1",
+            "Kaskida K-1",
+            "Kaskida K-3"
+          ]
         },
         {
           "name": "platform_name",
           "sql_type": "STRING",
           "comment": "Host platform name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse PDQ",
+            "Mars TLP",
+            "Atlantis Semi",
+            "Na Kika Semi",
+            "Shenzi TLP",
+            "Mad Dog Spar"
+          ]
         },
         {
           "name": "field_name",
           "sql_type": "STRING",
           "comment": "Production field name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse",
+            "Mars Basin",
+            "Atlantis",
+            "Na Kika",
+            "Shenzi",
+            "Mad Dog",
+            "Tiber",
+            "Kaskida"
+          ]
         },
         {
           "name": "oil_bbl",
@@ -92,7 +154,13 @@
           "sql_type": "STRING",
           "comment": "Well status: Flowing, Shut-In, Maintenance, Ramping",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Flowing' WHEN {status_noise} < 0.85 THEN 'Shut-In' WHEN {status_noise} < 0.93 THEN 'Maintenance' ELSE 'Ramping' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Flowing' WHEN {status_noise} < 0.85 THEN 'Shut-In' WHEN {status_noise} < 0.93 THEN 'Maintenance' ELSE 'Ramping' END",
+          "entity_values": [
+            "Flowing",
+            "Shut-In",
+            "Maintenance",
+            "Ramping"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -260,35 +328,105 @@
           "sql_type": "STRING",
           "comment": "Well identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PP-W-001",
+            "PP-W-002",
+            "PP-W-003",
+            "PP-W-004",
+            "PP-W-005",
+            "PP-W-006",
+            "PP-W-007",
+            "PP-W-008",
+            "PP-W-009",
+            "PP-W-010",
+            "PP-W-011",
+            "PP-W-012",
+            "PP-W-013",
+            "PP-W-014",
+            "PP-W-015",
+            "PP-W-016",
+            "PP-W-017",
+            "PP-W-018",
+            "PP-W-019",
+            "PP-W-020"
+          ]
         },
         {
           "name": "well_name",
           "sql_type": "STRING",
           "comment": "Well name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse A-1",
+            "Thunder Horse A-2",
+            "Thunder Horse B-1",
+            "Mars A-5",
+            "Mars A-8",
+            "Mars B-3",
+            "Atlantis N-1",
+            "Atlantis N-4",
+            "Atlantis S-2",
+            "Na Kika E-1",
+            "Na Kika E-6",
+            "Shenzi A-1",
+            "Shenzi A-3",
+            "Shenzi B-2",
+            "Mad Dog A-1",
+            "Mad Dog A-5",
+            "Mad Dog B-2",
+            "Tiber D-1",
+            "Kaskida K-1",
+            "Kaskida K-3"
+          ]
         },
         {
           "name": "platform_name",
           "sql_type": "STRING",
           "comment": "Host platform name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse PDQ",
+            "Mars TLP",
+            "Atlantis Semi",
+            "Na Kika Semi",
+            "Shenzi TLP",
+            "Mad Dog Spar"
+          ]
         },
         {
           "name": "field_name",
           "sql_type": "STRING",
           "comment": "Production field name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse",
+            "Mars Basin",
+            "Atlantis",
+            "Na Kika",
+            "Shenzi",
+            "Mad Dog",
+            "Tiber",
+            "Kaskida"
+          ]
         },
         {
           "name": "event_category",
           "sql_type": "STRING",
           "comment": "Event type: Shut-In, Startup, Rate Change, Hurricane Evac, Equipment Trip, Planned Maintenance",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Shut-In' WHEN {status_noise} < 0.40 THEN 'Startup' WHEN {status_noise} < 0.55 THEN 'Rate Change' WHEN {status_noise} < 0.68 THEN 'Planned Maintenance' WHEN {status_noise} < 0.82 THEN 'Equipment Trip' ELSE 'Hurricane Evac' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Shut-In' WHEN {status_noise} < 0.40 THEN 'Startup' WHEN {status_noise} < 0.55 THEN 'Rate Change' WHEN {status_noise} < 0.68 THEN 'Planned Maintenance' WHEN {status_noise} < 0.82 THEN 'Equipment Trip' ELSE 'Hurricane Evac' END",
+          "entity_values": [
+            "Shut-In",
+            "Startup",
+            "Rate Change",
+            "Planned Maintenance",
+            "Equipment Trip",
+            "Hurricane Evac"
+          ]
         },
         {
           "name": "duration_hours",
@@ -316,7 +454,13 @@
           "sql_type": "STRING",
           "comment": "Severity: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -484,21 +628,61 @@
           "sql_type": "STRING",
           "comment": "Well identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PP-W-001",
+            "PP-W-002",
+            "PP-W-003",
+            "PP-W-004",
+            "PP-W-005",
+            "PP-W-006",
+            "PP-W-007",
+            "PP-W-008",
+            "PP-W-009",
+            "PP-W-010",
+            "PP-W-011",
+            "PP-W-012",
+            "PP-W-013",
+            "PP-W-014",
+            "PP-W-015",
+            "PP-W-016",
+            "PP-W-017",
+            "PP-W-018",
+            "PP-W-019",
+            "PP-W-020"
+          ]
         },
         {
           "name": "platform_name",
           "sql_type": "STRING",
           "comment": "Host platform name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse PDQ",
+            "Mars TLP",
+            "Atlantis Semi",
+            "Na Kika Semi",
+            "Shenzi TLP",
+            "Mad Dog Spar"
+          ]
         },
         {
           "name": "field_name",
           "sql_type": "STRING",
           "comment": "Production field name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Thunder Horse",
+            "Mars Basin",
+            "Atlantis",
+            "Na Kika",
+            "Shenzi",
+            "Mad Dog",
+            "Tiber",
+            "Kaskida"
+          ]
         },
         {
           "name": "total_oil_bbl",
@@ -781,7 +965,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_readings_metrics view (source: production_readings) has dimensions: reading_date, well_id, platform_name, field_name, status. Measures: total_oil_bbl, total_gas_mcf, total_water_bbl, avg_wellhead_pressure_psi, avg_choke_pct. The production_events_metrics view (source: production_events) has dimensions: event_date, well_id, platform_name, field_name, event_category, severity. Measures: total_events, total_deferred_oil_bbl, total_deferred_gas_mcf, total_duration_hours, avg_duration_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. well_name).",
+  "genie_instructions": "You are an oil & gas integrated analytics assistant for PetroPulse Integrated. Answer questions about real-time production monitoring and control center for wells and platforms using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (well_name), query the base tables directly.\n- When joining tables, use the shared keys: well_id (shared across production_events, production_kpi_monthly, production_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the monthly trend in highest oil bbl?",
     "How has total oil production in barrels changed over time?",
@@ -820,7 +1004,7 @@
       ]
     },
     {
-      "question": "How does total daily oil production in barrels break down by well identifier for 'Flowing' records?",
+      "question": "How does total daily oil production in barrels break down by well for 'Flowing' records?",
       "sql_lines": [
         "SELECT well_id, COUNT(*) AS record_count, SUM(oil_bbl) AS total_oil_bbl",
         "FROM {fqn}.production_readings",
@@ -990,7 +1174,7 @@
       ]
     },
     {
-      "question": "What are the top well identifier by total daily oil production in barrels?",
+      "question": "What are the top well by total daily oil production in barrels?",
       "sql_lines": [
         "SELECT well_id, SUM(oil_bbl) AS total_oil_bbl",
         "FROM {fqn}.production_readings",

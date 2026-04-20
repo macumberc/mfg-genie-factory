@@ -29,35 +29,115 @@
           "sql_type": "STRING",
           "comment": "Equipment asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DH-CP-001",
+            "DH-CP-002",
+            "DH-CP-003",
+            "DH-SM-004",
+            "DH-SM-005",
+            "DH-TG-006",
+            "DH-TG-007",
+            "DH-FB-008",
+            "DH-FB-009",
+            "DH-GC-010",
+            "DH-GC-011",
+            "DH-HX-012",
+            "DH-HX-013",
+            "DH-ES-014",
+            "DH-ES-015",
+            "DH-BOP-016",
+            "DH-BOP-017",
+            "DH-PR-018",
+            "DH-SV-019",
+            "DH-SV-020"
+          ]
         },
         {
           "name": "asset_name",
           "sql_type": "STRING",
           "comment": "Equipment asset name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Main Export Pump A",
+            "Main Export Pump B",
+            "Seawater Injection Pump",
+            "Subsea Manifold North",
+            "Subsea Manifold South",
+            "Power Turbine Gen 1",
+            "Power Turbine Gen 2",
+            "FPSO Turret Bearing Main",
+            "FPSO Turret Bearing Aux",
+            "Gas Compressor Stage 1",
+            "Gas Compressor Stage 2",
+            "Crude-Crude Heat Exchanger",
+            "Gas Cooler Heat Exchanger",
+            "ESP Well A-12",
+            "ESP Well B-07",
+            "Subsea BOP Stack Alpha",
+            "Subsea BOP Stack Bravo",
+            "Steel Catenary Riser 1",
+            "3-Phase Separator V-101",
+            "Test Separator V-102"
+          ]
         },
         {
           "name": "asset_type",
           "sql_type": "STRING",
           "comment": "Equipment type category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Centrifugal Pump",
+            "Subsea Manifold",
+            "Turbine Generator",
+            "FPSO Turret Bearing",
+            "Gas Compressor",
+            "Heat Exchanger",
+            "ESP",
+            "Subsea BOP",
+            "Pipeline Riser",
+            "Separator Vessel"
+          ]
         },
         {
           "name": "platform_name",
           "sql_type": "STRING",
           "comment": "Production platform or facility name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Appomattox Semi",
+            "Perdido Spar",
+            "Mars TLP",
+            "Holstein TLP",
+            "Olympus TLP"
+          ]
         },
         {
           "name": "sensor_type",
           "sql_type": "STRING",
           "comment": "Type of sensor measurement",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Vibration X-Axis' WHEN {status_noise} < 0.14 THEN 'Vibration Y-Axis' WHEN {status_noise} < 0.21 THEN 'Bearing Temperature' WHEN {status_noise} < 0.28 THEN 'Inlet Pressure' WHEN {status_noise} < 0.35 THEN 'Outlet Pressure' WHEN {status_noise} < 0.42 THEN 'Flow Rate' WHEN {status_noise} < 0.49 THEN 'Oil Temperature' WHEN {status_noise} < 0.56 THEN 'Acoustic Emission' WHEN {status_noise} < 0.63 THEN 'Corrosion Rate' WHEN {status_noise} < 0.70 THEN 'RPM' WHEN {status_noise} < 0.77 THEN 'Torque' WHEN {status_noise} < 0.84 THEN 'Discharge Pressure' WHEN {status_noise} < 0.90 THEN 'Seal Leakage' WHEN {status_noise} < 0.95 THEN 'Motor Current' ELSE 'Humidity' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Vibration X-Axis' WHEN {status_noise} < 0.14 THEN 'Vibration Y-Axis' WHEN {status_noise} < 0.21 THEN 'Bearing Temperature' WHEN {status_noise} < 0.28 THEN 'Inlet Pressure' WHEN {status_noise} < 0.35 THEN 'Outlet Pressure' WHEN {status_noise} < 0.42 THEN 'Flow Rate' WHEN {status_noise} < 0.49 THEN 'Oil Temperature' WHEN {status_noise} < 0.56 THEN 'Acoustic Emission' WHEN {status_noise} < 0.63 THEN 'Corrosion Rate' WHEN {status_noise} < 0.70 THEN 'RPM' WHEN {status_noise} < 0.77 THEN 'Torque' WHEN {status_noise} < 0.84 THEN 'Discharge Pressure' WHEN {status_noise} < 0.90 THEN 'Seal Leakage' WHEN {status_noise} < 0.95 THEN 'Motor Current' ELSE 'Humidity' END",
+          "entity_values": [
+            "Vibration X-Axis",
+            "Vibration Y-Axis",
+            "Bearing Temperature",
+            "Inlet Pressure",
+            "Outlet Pressure",
+            "Flow Rate",
+            "Oil Temperature",
+            "Acoustic Emission",
+            "Corrosion Rate",
+            "RPM",
+            "Torque",
+            "Discharge Pressure",
+            "Seal Leakage",
+            "Motor Current",
+            "Humidity"
+          ]
         },
         {
           "name": "sensor_value",
@@ -78,7 +158,14 @@
           "sql_type": "STRING",
           "comment": "Alert level: Normal, Advisory, Warning, Alarm, Trip",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END",
+          "entity_values": [
+            "Normal",
+            "Advisory",
+            "Warning",
+            "Alarm",
+            "Trip"
+          ]
         },
         {
           "name": "predicted_rul_days",
@@ -261,42 +348,130 @@
           "sql_type": "STRING",
           "comment": "Equipment asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DH-CP-001",
+            "DH-CP-002",
+            "DH-CP-003",
+            "DH-SM-004",
+            "DH-SM-005",
+            "DH-TG-006",
+            "DH-TG-007",
+            "DH-FB-008",
+            "DH-FB-009",
+            "DH-GC-010",
+            "DH-GC-011",
+            "DH-HX-012",
+            "DH-HX-013",
+            "DH-ES-014",
+            "DH-ES-015",
+            "DH-BOP-016",
+            "DH-BOP-017",
+            "DH-PR-018",
+            "DH-SV-019",
+            "DH-SV-020"
+          ]
         },
         {
           "name": "asset_name",
           "sql_type": "STRING",
           "comment": "Equipment asset name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Main Export Pump A",
+            "Main Export Pump B",
+            "Seawater Injection Pump",
+            "Subsea Manifold North",
+            "Subsea Manifold South",
+            "Power Turbine Gen 1",
+            "Power Turbine Gen 2",
+            "FPSO Turret Bearing Main",
+            "FPSO Turret Bearing Aux",
+            "Gas Compressor Stage 1",
+            "Gas Compressor Stage 2",
+            "Crude-Crude Heat Exchanger",
+            "Gas Cooler Heat Exchanger",
+            "ESP Well A-12",
+            "ESP Well B-07",
+            "Subsea BOP Stack Alpha",
+            "Subsea BOP Stack Bravo",
+            "Steel Catenary Riser 1",
+            "3-Phase Separator V-101",
+            "Test Separator V-102"
+          ]
         },
         {
           "name": "asset_type",
           "sql_type": "STRING",
           "comment": "Equipment type category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Centrifugal Pump",
+            "Subsea Manifold",
+            "Turbine Generator",
+            "FPSO Turret Bearing",
+            "Gas Compressor",
+            "Heat Exchanger",
+            "ESP",
+            "Subsea BOP",
+            "Pipeline Riser",
+            "Separator Vessel"
+          ]
         },
         {
           "name": "platform_name",
           "sql_type": "STRING",
           "comment": "Production platform or facility name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Appomattox Semi",
+            "Perdido Spar",
+            "Mars TLP",
+            "Holstein TLP",
+            "Olympus TLP"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Maintenance type: Planned PM, Predictive, Corrective, Emergency, Inspection, Overhaul",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Planned PM' WHEN {status_noise} < 0.52 THEN 'Predictive' WHEN {status_noise} < 0.70 THEN 'Corrective' WHEN {status_noise} < 0.82 THEN 'Emergency' WHEN {status_noise} < 0.92 THEN 'Inspection' ELSE 'Overhaul' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Planned PM' WHEN {status_noise} < 0.52 THEN 'Predictive' WHEN {status_noise} < 0.70 THEN 'Corrective' WHEN {status_noise} < 0.82 THEN 'Emergency' WHEN {status_noise} < 0.92 THEN 'Inspection' ELSE 'Overhaul' END",
+          "entity_values": [
+            "Planned PM",
+            "Predictive",
+            "Corrective",
+            "Emergency",
+            "Inspection",
+            "Overhaul"
+          ]
         },
         {
           "name": "failure_mode",
           "sql_type": "STRING",
           "comment": "Root cause failure mode",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Bearing Failure' WHEN {status_noise} < 0.14 THEN 'Seal Degradation' WHEN {status_noise} < 0.21 THEN 'Corrosion' WHEN {status_noise} < 0.28 THEN 'Vibration Fatigue' WHEN {status_noise} < 0.35 THEN 'Fouling' WHEN {status_noise} < 0.42 THEN 'Electrical Fault' WHEN {status_noise} < 0.49 THEN 'Impeller Erosion' WHEN {status_noise} < 0.56 THEN 'Valve Leak' WHEN {status_noise} < 0.63 THEN 'Thermal Stress' WHEN {status_noise} < 0.70 THEN 'Cavitation' WHEN {status_noise} < 0.77 THEN 'Alignment Drift' WHEN {status_noise} < 0.84 THEN 'Lubrication Failure' WHEN {status_noise} < 0.90 THEN 'Control System Fault' WHEN {status_noise} < 0.95 THEN 'Weld Crack' ELSE 'External Damage' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Bearing Failure' WHEN {status_noise} < 0.14 THEN 'Seal Degradation' WHEN {status_noise} < 0.21 THEN 'Corrosion' WHEN {status_noise} < 0.28 THEN 'Vibration Fatigue' WHEN {status_noise} < 0.35 THEN 'Fouling' WHEN {status_noise} < 0.42 THEN 'Electrical Fault' WHEN {status_noise} < 0.49 THEN 'Impeller Erosion' WHEN {status_noise} < 0.56 THEN 'Valve Leak' WHEN {status_noise} < 0.63 THEN 'Thermal Stress' WHEN {status_noise} < 0.70 THEN 'Cavitation' WHEN {status_noise} < 0.77 THEN 'Alignment Drift' WHEN {status_noise} < 0.84 THEN 'Lubrication Failure' WHEN {status_noise} < 0.90 THEN 'Control System Fault' WHEN {status_noise} < 0.95 THEN 'Weld Crack' ELSE 'External Damage' END",
+          "entity_values": [
+            "Bearing Failure",
+            "Seal Degradation",
+            "Corrosion",
+            "Vibration Fatigue",
+            "Fouling",
+            "Electrical Fault",
+            "Impeller Erosion",
+            "Valve Leak",
+            "Thermal Stress",
+            "Cavitation",
+            "Alignment Drift",
+            "Lubrication Failure",
+            "Control System Fault",
+            "Weld Crack",
+            "External Damage"
+          ]
         },
         {
           "name": "was_predicted",
@@ -494,21 +669,62 @@
           "sql_type": "STRING",
           "comment": "Equipment asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DH-CP-001",
+            "DH-CP-002",
+            "DH-CP-003",
+            "DH-SM-004",
+            "DH-SM-005",
+            "DH-TG-006",
+            "DH-TG-007",
+            "DH-FB-008",
+            "DH-FB-009",
+            "DH-GC-010",
+            "DH-GC-011",
+            "DH-HX-012",
+            "DH-HX-013",
+            "DH-ES-014",
+            "DH-ES-015",
+            "DH-BOP-016",
+            "DH-BOP-017",
+            "DH-PR-018",
+            "DH-SV-019",
+            "DH-SV-020"
+          ]
         },
         {
           "name": "asset_type",
           "sql_type": "STRING",
           "comment": "Equipment type category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Centrifugal Pump",
+            "Subsea Manifold",
+            "Turbine Generator",
+            "FPSO Turret Bearing",
+            "Gas Compressor",
+            "Heat Exchanger",
+            "ESP",
+            "Subsea BOP",
+            "Pipeline Riser",
+            "Separator Vessel"
+          ]
         },
         {
           "name": "platform_name",
           "sql_type": "STRING",
           "comment": "Production platform or facility name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Appomattox Semi",
+            "Perdido Spar",
+            "Mars TLP",
+            "Holstein TLP",
+            "Olympus TLP"
+          ]
         },
         {
           "name": "avg_health_score",
@@ -806,7 +1022,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_timestamp, asset_id, asset_type, platform_name, sensor_type, alert_level. Measures: avg_health_score, avg_sensor_value, min_predicted_rul_days, total_reading_count, alarm_trip_count. The maintenance_events_metrics view (source: maintenance_events) has dimensions: event_date, asset_id, asset_type, platform_name, event_type, failure_mode, was_predicted. Measures: total_events, total_downtime_hours, total_production_loss_bbl, total_repair_cost_usd, avg_downtime_hours, predicted_event_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. asset_name).",
+  "genie_instructions": "You are an oil & gas integrated analytics assistant for DeepHorizon Energy. Answer questions about predictive maintenance and asset health monitoring for offshore and onshore production equipment using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (asset_name), query the base tables directly.\n- When joining tables, use the shared keys: asset_id (shared across health_metrics_monthly, maintenance_events, sensor_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the alarm trip count by reading timestamp?",
     "Which reading timestamps have the most unique total readings?",
@@ -1017,7 +1233,7 @@
       ]
     },
     {
-      "question": "What are the top equipment asset identifier by total raw sensor measurement value?",
+      "question": "What are the top equipment asset by total raw sensor measurement value?",
       "sql_lines": [
         "SELECT asset_id, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",

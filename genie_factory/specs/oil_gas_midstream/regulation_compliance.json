@@ -29,42 +29,120 @@
           "sql_type": "STRING",
           "comment": "Regulation ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-REG-001",
+            "CF-REG-002",
+            "CF-REG-003",
+            "CF-REG-004",
+            "CF-REG-005",
+            "CF-REG-006",
+            "CF-REG-007",
+            "CF-REG-008",
+            "CF-REG-009",
+            "CF-REG-010",
+            "CF-REG-011",
+            "CF-REG-012",
+            "CF-REG-013",
+            "CF-REG-014",
+            "CF-REG-015",
+            "CF-REG-016",
+            "CF-REG-017",
+            "CF-REG-018",
+            "CF-REG-019",
+            "CF-REG-020"
+          ]
         },
         {
           "name": "regulation_name",
           "sql_type": "STRING",
           "comment": "Regulation name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PHMSA Pipeline Safety",
+            "EPA Air Emissions",
+            "OSHA Process Safety",
+            "FERC Tariff Filing",
+            "State Pipeline Permits",
+            "DOT Hazmat Transport",
+            "EPA Water Discharge",
+            "PHMSA Integrity Mgmt",
+            "OSHA PSM Audit",
+            "FERC Open Access",
+            "State Air Quality",
+            "EPA Spill Prevention",
+            "DOT Operator Qualification",
+            "PHMSA Control Room",
+            "FERC Rate Case",
+            "State Right-of-Way",
+            "EPA GHG Reporting",
+            "OSHA Emergency Plan",
+            "State Tax Compliance",
+            "PHMSA Leak Detection"
+          ]
         },
         {
           "name": "regulatory_body",
           "sql_type": "STRING",
           "comment": "Regulatory body",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PHMSA",
+            "EPA",
+            "OSHA",
+            "FERC",
+            "State Commission",
+            "DOT",
+            "State DEQ",
+            "State Revenue"
+          ]
         },
         {
           "name": "compliance_area",
           "sql_type": "STRING",
           "comment": "Area: Pipeline Integrity, Environmental, Safety, Commercial, Permitting, Transportation, Operations, Financial",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipeline Integrity",
+            "Environmental",
+            "Safety",
+            "Commercial",
+            "Permitting",
+            "Transportation",
+            "Operations",
+            "Financial"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Type: Violation, Inspection, Audit, Corrective Action, Self-Report, Near Miss",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Violation' WHEN {status_noise} < 0.35 THEN 'Inspection' WHEN {status_noise} < 0.50 THEN 'Audit' WHEN {status_noise} < 0.70 THEN 'Corrective Action' WHEN {status_noise} < 0.85 THEN 'Self-Report' ELSE 'Near Miss' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Violation' WHEN {status_noise} < 0.35 THEN 'Inspection' WHEN {status_noise} < 0.50 THEN 'Audit' WHEN {status_noise} < 0.70 THEN 'Corrective Action' WHEN {status_noise} < 0.85 THEN 'Self-Report' ELSE 'Near Miss' END",
+          "entity_values": [
+            "Violation",
+            "Inspection",
+            "Audit",
+            "Corrective Action",
+            "Self-Report",
+            "Near Miss"
+          ]
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ]
         },
         {
           "name": "fine_amount_usd",
@@ -85,7 +163,13 @@
           "sql_type": "STRING",
           "comment": "Status: Open, In Progress, Closed, Overdue",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Open' WHEN {status_noise} < 0.45 THEN 'In Progress' WHEN {status_noise} < 0.85 THEN 'Closed' ELSE 'Overdue' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Open' WHEN {status_noise} < 0.45 THEN 'In Progress' WHEN {status_noise} < 0.85 THEN 'Closed' ELSE 'Overdue' END",
+          "entity_values": [
+            "Open",
+            "In Progress",
+            "Closed",
+            "Overdue"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -246,21 +330,63 @@
           "sql_type": "STRING",
           "comment": "Regulation ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-REG-001",
+            "CF-REG-002",
+            "CF-REG-003",
+            "CF-REG-004",
+            "CF-REG-005",
+            "CF-REG-006",
+            "CF-REG-007",
+            "CF-REG-008",
+            "CF-REG-009",
+            "CF-REG-010",
+            "CF-REG-011",
+            "CF-REG-012",
+            "CF-REG-013",
+            "CF-REG-014",
+            "CF-REG-015",
+            "CF-REG-016",
+            "CF-REG-017",
+            "CF-REG-018",
+            "CF-REG-019",
+            "CF-REG-020"
+          ]
         },
         {
           "name": "regulatory_body",
           "sql_type": "STRING",
           "comment": "Regulatory body",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PHMSA",
+            "EPA",
+            "OSHA",
+            "FERC",
+            "State Commission",
+            "DOT",
+            "State DEQ",
+            "State Revenue"
+          ]
         },
         {
           "name": "compliance_area",
           "sql_type": "STRING",
           "comment": "Compliance area",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipeline Integrity",
+            "Environmental",
+            "Safety",
+            "Commercial",
+            "Permitting",
+            "Transportation",
+            "Operations",
+            "Financial"
+          ]
         },
         {
           "name": "compliance_score",
@@ -425,14 +551,46 @@
           "sql_type": "STRING",
           "comment": "Regulation ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-REG-001",
+            "CF-REG-002",
+            "CF-REG-003",
+            "CF-REG-004",
+            "CF-REG-005",
+            "CF-REG-006",
+            "CF-REG-007",
+            "CF-REG-008",
+            "CF-REG-009",
+            "CF-REG-010",
+            "CF-REG-011",
+            "CF-REG-012",
+            "CF-REG-013",
+            "CF-REG-014",
+            "CF-REG-015",
+            "CF-REG-016",
+            "CF-REG-017",
+            "CF-REG-018",
+            "CF-REG-019",
+            "CF-REG-020"
+          ]
         },
         {
           "name": "compliance_area",
           "sql_type": "STRING",
           "comment": "Compliance area",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipeline Integrity",
+            "Environmental",
+            "Safety",
+            "Commercial",
+            "Permitting",
+            "Transportation",
+            "Operations",
+            "Financial"
+          ]
         },
         {
           "name": "violation_count",
@@ -667,7 +825,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The compliance_events_metrics view (source: compliance_events) has dimensions: event_date, reg_id, regulatory_body, compliance_area, event_type, severity, status. Measures: total_events, total_fines_usd, avg_resolution_days, violation_count. The audit_snapshots_metrics view (source: audit_snapshots) has dimensions: snapshot_date, reg_id, regulatory_body, compliance_area. Measures: avg_compliance_score, total_open_findings, total_overdue_actions, avg_days_since_audit. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. regulation_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for CompliFlow Systems. Answer questions about regulatory compliance monitoring and audit management for midstream operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (regulation_name), query the base tables directly.\n- When joining tables, use the shared keys: reg_id (shared across audit_snapshots, compliance_events, compliance_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the monthly trend in violation count?",
     "How has unique total eventss changed over time?",

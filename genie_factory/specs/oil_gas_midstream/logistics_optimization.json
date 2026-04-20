@@ -29,28 +29,92 @@
           "sql_type": "STRING",
           "comment": "Pipeline segment ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PR-CRD-001",
+            "PR-CRD-002",
+            "PR-CRD-003",
+            "PR-CRD-004",
+            "PR-NGL-005",
+            "PR-NGL-006",
+            "PR-NGL-007",
+            "PR-GAS-008",
+            "PR-GAS-009",
+            "PR-GAS-010",
+            "PR-GAS-011",
+            "PR-REF-012",
+            "PR-REF-013",
+            "PR-REF-014",
+            "PR-CRD-015",
+            "PR-NGL-016",
+            "PR-GAS-017",
+            "PR-REF-018",
+            "PR-CRD-019",
+            "PR-GAS-020"
+          ]
         },
         {
           "name": "segment_name",
           "sql_type": "STRING",
           "comment": "Segment name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Crude Main",
+            "Eagle Ford Crude",
+            "GOM Offshore Crude",
+            "Cushing Hub Link",
+            "Mont Belvieu NGL",
+            "Conway NGL System",
+            "Permian NGL Gathering",
+            "Haynesville Gas Header",
+            "Marcellus Gas Trunk",
+            "Permian Gas Gathering",
+            "Gulf Coast Gas Main",
+            "Houston Refined Products",
+            "Colonial Pipeline Seg",
+            "Midwest Products Line",
+            "Bakken Crude Takeaway",
+            "DJ Basin NGL Line",
+            "Delaware Basin Gas",
+            "Northeast Products",
+            "Midland-to-Gulf Crude",
+            "Utica Shale Gas"
+          ]
         },
         {
           "name": "pipeline_type",
           "sql_type": "STRING",
           "comment": "Type: Crude Oil, NGL, Natural Gas, Refined Products",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Oil",
+            "NGL",
+            "Natural Gas",
+            "Refined Products"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Gulf of Mexico",
+            "Midcontinent",
+            "Gulf Coast",
+            "Louisiana",
+            "Appalachia",
+            "Southeast",
+            "Midwest",
+            "Williston Basin",
+            "DJ Basin",
+            "Northeast"
+          ]
         },
         {
           "name": "throughput_bpd",
@@ -85,7 +149,13 @@
           "sql_type": "STRING",
           "comment": "Status: Operating, Restricted, Maintenance, Idle",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Operating' WHEN {status_noise} < 0.85 THEN 'Restricted' WHEN {status_noise} < 0.94 THEN 'Maintenance' ELSE 'Idle' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Operating' WHEN {status_noise} < 0.85 THEN 'Restricted' WHEN {status_noise} < 0.94 THEN 'Maintenance' ELSE 'Idle' END",
+          "entity_values": [
+            "Operating",
+            "Restricted",
+            "Maintenance",
+            "Idle"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -249,35 +319,107 @@
           "sql_type": "STRING",
           "comment": "Segment ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PR-CRD-001",
+            "PR-CRD-002",
+            "PR-CRD-003",
+            "PR-CRD-004",
+            "PR-NGL-005",
+            "PR-NGL-006",
+            "PR-NGL-007",
+            "PR-GAS-008",
+            "PR-GAS-009",
+            "PR-GAS-010",
+            "PR-GAS-011",
+            "PR-REF-012",
+            "PR-REF-013",
+            "PR-REF-014",
+            "PR-CRD-015",
+            "PR-NGL-016",
+            "PR-GAS-017",
+            "PR-REF-018",
+            "PR-CRD-019",
+            "PR-GAS-020"
+          ]
         },
         {
           "name": "segment_name",
           "sql_type": "STRING",
           "comment": "Segment name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Crude Main",
+            "Eagle Ford Crude",
+            "GOM Offshore Crude",
+            "Cushing Hub Link",
+            "Mont Belvieu NGL",
+            "Conway NGL System",
+            "Permian NGL Gathering",
+            "Haynesville Gas Header",
+            "Marcellus Gas Trunk",
+            "Permian Gas Gathering",
+            "Gulf Coast Gas Main",
+            "Houston Refined Products",
+            "Colonial Pipeline Seg",
+            "Midwest Products Line",
+            "Bakken Crude Takeaway",
+            "DJ Basin NGL Line",
+            "Delaware Basin Gas",
+            "Northeast Products",
+            "Midland-to-Gulf Crude",
+            "Utica Shale Gas"
+          ]
         },
         {
           "name": "pipeline_type",
           "sql_type": "STRING",
           "comment": "Pipeline type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Oil",
+            "NGL",
+            "Natural Gas",
+            "Refined Products"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Gulf of Mexico",
+            "Midcontinent",
+            "Gulf Coast",
+            "Louisiana",
+            "Appalachia",
+            "Southeast",
+            "Midwest",
+            "Williston Basin",
+            "DJ Basin",
+            "Northeast"
+          ]
         },
         {
           "name": "event_category",
           "sql_type": "STRING",
           "comment": "Category: Apportionment, Maintenance, Force Majeure, Inspection, Rate Change, Leak Detection",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Apportionment' WHEN {status_noise} < 0.45 THEN 'Maintenance' WHEN {status_noise} < 0.58 THEN 'Force Majeure' WHEN {status_noise} < 0.72 THEN 'Inspection' WHEN {status_noise} < 0.86 THEN 'Rate Change' ELSE 'Leak Detection' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Apportionment' WHEN {status_noise} < 0.45 THEN 'Maintenance' WHEN {status_noise} < 0.58 THEN 'Force Majeure' WHEN {status_noise} < 0.72 THEN 'Inspection' WHEN {status_noise} < 0.86 THEN 'Rate Change' ELSE 'Leak Detection' END",
+          "entity_values": [
+            "Apportionment",
+            "Maintenance",
+            "Force Majeure",
+            "Inspection",
+            "Rate Change",
+            "Leak Detection"
+          ]
         },
         {
           "name": "volume_impact_bbl",
@@ -305,7 +447,13 @@
           "sql_type": "STRING",
           "comment": "Severity: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -462,21 +610,63 @@
           "sql_type": "STRING",
           "comment": "Segment ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PR-CRD-001",
+            "PR-CRD-002",
+            "PR-CRD-003",
+            "PR-CRD-004",
+            "PR-NGL-005",
+            "PR-NGL-006",
+            "PR-NGL-007",
+            "PR-GAS-008",
+            "PR-GAS-009",
+            "PR-GAS-010",
+            "PR-GAS-011",
+            "PR-REF-012",
+            "PR-REF-013",
+            "PR-REF-014",
+            "PR-CRD-015",
+            "PR-NGL-016",
+            "PR-GAS-017",
+            "PR-REF-018",
+            "PR-CRD-019",
+            "PR-GAS-020"
+          ]
         },
         {
           "name": "pipeline_type",
           "sql_type": "STRING",
           "comment": "Pipeline type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Oil",
+            "NGL",
+            "Natural Gas",
+            "Refined Products"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Gulf of Mexico",
+            "Midcontinent",
+            "Gulf Coast",
+            "Louisiana",
+            "Appalachia",
+            "Southeast",
+            "Midwest",
+            "Williston Basin",
+            "DJ Basin",
+            "Northeast"
+          ]
         },
         {
           "name": "monthly_throughput_bbl",
@@ -736,7 +926,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The flow_readings_metrics view (source: flow_readings) has dimensions: reading_date, segment_id, pipeline_type, region, status. Measures: avg_throughput_bpd, avg_utilization_pct, total_readings, avg_tariff. The logistics_events_metrics view (source: logistics_events) has dimensions: event_date, segment_id, pipeline_type, region, event_category, severity. Measures: total_events, total_volume_impact_bbl, total_revenue_impact_usd, avg_duration_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. segment_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for PipeRoute Midstream. Answer questions about pipeline logistics optimization and throughput management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (segment_name), query the base tables directly.\n- When joining tables, use the shared keys: segment_id (shared across flow_readings, logistics_events, throughput_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the monthly trend in unique total readingss?",
     "How has highest throughput bpd changed over time?",

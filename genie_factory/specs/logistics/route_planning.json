@@ -15,56 +15,191 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VH-001",
+            "VH-002",
+            "VH-003",
+            "VH-004",
+            "VH-005",
+            "VH-006",
+            "VH-007",
+            "VH-008",
+            "VH-009",
+            "VH-010",
+            "VH-011",
+            "VH-012",
+            "VH-013",
+            "VH-014",
+            "VH-015",
+            "VH-016",
+            "VH-017",
+            "VH-018",
+            "VH-019",
+            "VH-020",
+            "VH-021",
+            "VH-022",
+            "VH-023",
+            "VH-024",
+            "VH-025",
+            "VH-026",
+            "VH-027",
+            "VH-028"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Human-readable vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Alpha Hauler",
+            "Beta Cruiser",
+            "Gamma Express",
+            "Delta Runner",
+            "Epsilon Mover",
+            "Zeta Carrier",
+            "Eta Freighter",
+            "Theta Prime",
+            "Iota Transit",
+            "Kappa Liner",
+            "Lambda Swift",
+            "Mu Ranger",
+            "Nu Dash",
+            "Xi Bolt",
+            "Omicron Flex",
+            "Pi Shuttle",
+            "Rho Blazer",
+            "Sigma Courier",
+            "Tau Glider",
+            "Upsilon Metro",
+            "Phi Sprinter",
+            "Chi Zippy",
+            "Psi Nimble",
+            "Omega Dash",
+            "Nova Titan",
+            "Apex Hauler",
+            "Zenith Cargo",
+            "Pinnacle Van"
+          ]
         },
         {
           "name": "vehicle_type",
           "sql_type": "STRING",
           "comment": "Vehicle class: Semi, Truck, or Van",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Semi",
+            "Truck",
+            "Van"
+          ]
         },
         {
           "name": "capacity_kg",
           "sql_type": "DOUBLE",
           "comment": "Maximum load capacity in kilograms",
           "is_dimension": false,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "22000.0",
+            "24000.0",
+            "21000.0",
+            "23000.0",
+            "25000.0",
+            "22500.0",
+            "24500.0",
+            "23500.0",
+            "26000.0",
+            "12000.0",
+            "10000.0",
+            "11000.0",
+            "13000.0",
+            "10500.0",
+            "11500.0",
+            "12500.0",
+            "9500.0",
+            "3500.0",
+            "3000.0",
+            "4000.0",
+            "3200.0",
+            "3800.0",
+            "2800.0",
+            "27000.0",
+            "14000.0"
+          ]
         },
         {
           "name": "fuel_type",
           "sql_type": "STRING",
           "comment": "Fuel type: Diesel, CNG, Gasoline, or Electric",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Diesel",
+            "CNG",
+            "Gasoline",
+            "Electric"
+          ]
         },
         {
           "name": "fuel_efficiency_km_per_l",
           "sql_type": "DOUBLE",
           "comment": "Fuel efficiency in km per liter (null for Electric)",
           "is_dimension": false,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "3.2",
+            "3.0",
+            "2.8",
+            "3.1",
+            "2.9",
+            "2.7",
+            "3.3",
+            "2.6",
+            "5.5",
+            "4.8",
+            "5.2",
+            "4.5",
+            "5.0",
+            "4.3",
+            "5.1",
+            "8.5",
+            "7.8",
+            "8.0",
+            "4.9",
+            "8.2"
+          ]
         },
         {
           "name": "home_depot",
           "sql_type": "STRING",
           "comment": "Home depot location for the vehicle",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago",
+            "Dallas",
+            "Atlanta",
+            "Los Angeles",
+            "Seattle",
+            "Denver",
+            "Miami",
+            "New York"
+          ]
         },
         {
           "name": "status",
           "sql_type": "STRING",
           "comment": "Operational status: Active, Maintenance, or Retired",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Active",
+            "Maintenance",
+            "Retired"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -380,21 +515,70 @@
           "sql_type": "STRING",
           "comment": "Vehicle that drove the segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VH-001",
+            "VH-002",
+            "VH-003",
+            "VH-004",
+            "VH-005",
+            "VH-006",
+            "VH-007",
+            "VH-008",
+            "VH-009",
+            "VH-010",
+            "VH-011",
+            "VH-012",
+            "VH-013",
+            "VH-014",
+            "VH-015",
+            "VH-016",
+            "VH-017",
+            "VH-018",
+            "VH-019",
+            "VH-020"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Human-readable vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Alpha Hauler",
+            "Beta Cruiser",
+            "Gamma Express",
+            "Delta Runner",
+            "Epsilon Mover",
+            "Zeta Carrier",
+            "Eta Freighter",
+            "Theta Prime",
+            "Iota Transit",
+            "Kappa Liner",
+            "Lambda Swift",
+            "Mu Ranger",
+            "Nu Dash",
+            "Xi Bolt",
+            "Omicron Flex",
+            "Pi Shuttle",
+            "Rho Blazer",
+            "Sigma Courier",
+            "Tau Glider",
+            "Upsilon Metro"
+          ]
         },
         {
           "name": "vehicle_type",
           "sql_type": "STRING",
           "comment": "Vehicle class: Semi, Truck, or Van",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Semi",
+            "Truck",
+            "Van"
+          ]
         },
         {
           "name": "route_id",
@@ -408,14 +592,38 @@
           "sql_type": "STRING",
           "comment": "Segment origin city",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Chicago' WHEN {status_noise} < 0.2 THEN 'Dallas' WHEN {status_noise} < 0.3 THEN 'Atlanta' WHEN {status_noise} < 0.4 THEN 'Los Angeles' WHEN {status_noise} < 0.5 THEN 'New York' WHEN {status_noise} < 0.6 THEN 'Seattle' WHEN {status_noise} < 0.7 THEN 'Denver' WHEN {status_noise} < 0.8 THEN 'Miami' WHEN {status_noise} < 0.9 THEN 'Houston' ELSE 'Phoenix' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Chicago' WHEN {status_noise} < 0.2 THEN 'Dallas' WHEN {status_noise} < 0.3 THEN 'Atlanta' WHEN {status_noise} < 0.4 THEN 'Los Angeles' WHEN {status_noise} < 0.5 THEN 'New York' WHEN {status_noise} < 0.6 THEN 'Seattle' WHEN {status_noise} < 0.7 THEN 'Denver' WHEN {status_noise} < 0.8 THEN 'Miami' WHEN {status_noise} < 0.9 THEN 'Houston' ELSE 'Phoenix' END",
+          "entity_values": [
+            "Chicago",
+            "Dallas",
+            "Atlanta",
+            "Los Angeles",
+            "New York",
+            "Seattle",
+            "Denver",
+            "Miami",
+            "Houston",
+            "Phoenix"
+          ]
         },
         {
           "name": "destination_location",
           "sql_type": "STRING",
           "comment": "Segment destination city",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Denver' WHEN {status_noise} < 0.2 THEN 'Miami' WHEN {status_noise} < 0.3 THEN 'Chicago' WHEN {status_noise} < 0.4 THEN 'New York' WHEN {status_noise} < 0.5 THEN 'Dallas' WHEN {status_noise} < 0.6 THEN 'Atlanta' WHEN {status_noise} < 0.7 THEN 'Los Angeles' WHEN {status_noise} < 0.8 THEN 'Phoenix' WHEN {status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Denver' WHEN {status_noise} < 0.2 THEN 'Miami' WHEN {status_noise} < 0.3 THEN 'Chicago' WHEN {status_noise} < 0.4 THEN 'New York' WHEN {status_noise} < 0.5 THEN 'Dallas' WHEN {status_noise} < 0.6 THEN 'Atlanta' WHEN {status_noise} < 0.7 THEN 'Los Angeles' WHEN {status_noise} < 0.8 THEN 'Phoenix' WHEN {status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END",
+          "entity_values": [
+            "Denver",
+            "Miami",
+            "Chicago",
+            "New York",
+            "Dallas",
+            "Atlanta",
+            "Los Angeles",
+            "Phoenix",
+            "Seattle",
+            "Houston"
+          ]
         },
         {
           "name": "distance_km",
@@ -464,7 +672,13 @@
           "sql_type": "STRING",
           "comment": "Weather during segment: Clear, Rain, Snow, Fog",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Clear' WHEN {status_noise} < 0.80 THEN 'Rain' WHEN {status_noise} < 0.93 THEN 'Snow' ELSE 'Fog' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Clear' WHEN {status_noise} < 0.80 THEN 'Rain' WHEN {status_noise} < 0.93 THEN 'Snow' ELSE 'Fog' END",
+          "entity_values": [
+            "Clear",
+            "Rain",
+            "Snow",
+            "Fog"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -612,21 +826,70 @@
           "sql_type": "STRING",
           "comment": "Vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VH-001",
+            "VH-002",
+            "VH-003",
+            "VH-004",
+            "VH-005",
+            "VH-006",
+            "VH-007",
+            "VH-008",
+            "VH-009",
+            "VH-010",
+            "VH-011",
+            "VH-012",
+            "VH-013",
+            "VH-014",
+            "VH-015",
+            "VH-016",
+            "VH-017",
+            "VH-018",
+            "VH-019",
+            "VH-020"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Human-readable vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Alpha Hauler",
+            "Beta Cruiser",
+            "Gamma Express",
+            "Delta Runner",
+            "Epsilon Mover",
+            "Zeta Carrier",
+            "Eta Freighter",
+            "Theta Prime",
+            "Iota Transit",
+            "Kappa Liner",
+            "Lambda Swift",
+            "Mu Ranger",
+            "Nu Dash",
+            "Xi Bolt",
+            "Omicron Flex",
+            "Pi Shuttle",
+            "Rho Blazer",
+            "Sigma Courier",
+            "Tau Glider",
+            "Upsilon Metro"
+          ]
         },
         {
           "name": "vehicle_type",
           "sql_type": "STRING",
           "comment": "Vehicle class: Semi, Truck, or Van",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Semi",
+            "Truck",
+            "Van"
+          ]
         },
         {
           "name": "total_distance_km",
@@ -917,7 +1180,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The route_segments_metrics view (source: route_segments) has dimensions: segment_date, vehicle_type, origin_location, destination_location, weather_condition. Measures: total_distance_km, total_fuel_consumed_liters, total_fuel_cost_usd, avg_load_utilization_pct, avg_traffic_delay_minutes, segment_count. The route_efficiency_metrics_mv view (source: route_efficiency_metrics) has dimensions: week_start, vehicle_type, vehicle_id. Measures: total_weekly_distance_km, total_weekly_fuel_liters, avg_on_time_delivery_pct, total_deliveries_completed, avg_cost_per_delivery_usd, total_co2_emissions_kg. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. fuel_type, home_depot, status, vehicle_name).",
+  "genie_instructions": "You are a logistics analytics assistant for TransRoute Logistics. Answer questions about route planning, fuel optimization, and delivery efficiency using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (vehicle_name, fuel_type, home_depot, status), query the base tables directly.\n- When joining tables, use the shared keys: vehicle_id (shared across route_efficiency_metrics, route_segments, vehicles).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the monthly trend in unique segments?",
     "How has unique vehicles changed over time?",
@@ -956,7 +1219,7 @@
       ]
     },
     {
-      "question": "Show the distribution of records by unique vehicle identifier",
+      "question": "Show the distribution of records by unique vehicle",
       "sql_lines": [
         "SELECT vehicle_id, COUNT(*) AS record_count",
         "FROM {fqn}.vehicles",
@@ -1133,7 +1396,7 @@
       ]
     },
     {
-      "question": "What are the top unique vehicle identifier by total maximum load capacity in kilograms?",
+      "question": "What are the top unique vehicle by total maximum load capacity in kilograms?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(capacity_kg) AS total_capacity_kg",
         "FROM {fqn}.vehicles",

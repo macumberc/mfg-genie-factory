@@ -29,35 +29,85 @@
           "sql_type": "STRING",
           "comment": "PCB or component model inspected",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VT-PCB-4L-100",
+            "VT-PCB-6L-200",
+            "VT-PCB-8L-300",
+            "VT-PCB-HDI-400",
+            "VT-PCB-FLEX-500",
+            "VT-PWR-DCDC-10",
+            "VT-PWR-ACDC-20",
+            "VT-PWR-INV-30",
+            "VT-PWR-REG-40",
+            "VT-PWR-GAN-50",
+            "VT-SNS-ACCEL-10",
+            "VT-SNS-GYRO-20",
+            "VT-SNS-TEMP-30",
+            "VT-SNS-PROX-40",
+            "VT-SNS-LIDAR-50",
+            "VT-DSP-OLED-10",
+            "VT-DSP-LCD-20",
+            "VT-DSP-EINK-30",
+            "VT-DSP-MICRO-40",
+            "VT-DSP-TFT-50"
+          ]
         },
         {
           "name": "product_line",
           "sql_type": "STRING",
           "comment": "Product line category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PCB Assembly",
+            "Power Module",
+            "Sensor Module",
+            "Display Panel"
+          ]
         },
         {
           "name": "inspection_station",
           "sql_type": "STRING",
           "comment": "Inspection station identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'AOI-01' WHEN {status_noise} < 0.40 THEN 'AOI-02' WHEN {status_noise} < 0.60 THEN 'AOI-03' WHEN {status_noise} < 0.80 THEN 'XRAY-01' ELSE 'XRAY-02' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'AOI-01' WHEN {status_noise} < 0.40 THEN 'AOI-02' WHEN {status_noise} < 0.60 THEN 'AOI-03' WHEN {status_noise} < 0.80 THEN 'XRAY-01' ELSE 'XRAY-02' END",
+          "entity_values": [
+            "AOI-01",
+            "AOI-02",
+            "AOI-03",
+            "XRAY-01",
+            "XRAY-02"
+          ]
         },
         {
           "name": "defect_type",
           "sql_type": "STRING",
           "comment": "Detected defect classification: Solder Bridge, Missing Component, Misalignment, Tombstone, Scratch, Crack, None",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.65 THEN 'Solder Bridge' WHEN {status_noise} < 0.74 THEN 'Missing Component' WHEN {status_noise} < 0.82 THEN 'Misalignment' WHEN {status_noise} < 0.88 THEN 'Tombstone' WHEN {status_noise} < 0.94 THEN 'Scratch' ELSE 'Crack' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.65 THEN 'Solder Bridge' WHEN {status_noise} < 0.74 THEN 'Missing Component' WHEN {status_noise} < 0.82 THEN 'Misalignment' WHEN {status_noise} < 0.88 THEN 'Tombstone' WHEN {status_noise} < 0.94 THEN 'Scratch' ELSE 'Crack' END",
+          "entity_values": [
+            "None",
+            "Solder Bridge",
+            "Missing Component",
+            "Misalignment",
+            "Tombstone",
+            "Scratch",
+            "Crack"
+          ]
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Defect severity: Critical, Major, Minor, None",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.70 THEN 'Minor' WHEN {status_noise} < 0.88 THEN 'Major' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.70 THEN 'Minor' WHEN {status_noise} < 0.88 THEN 'Major' ELSE 'Critical' END",
+          "entity_values": [
+            "None",
+            "Minor",
+            "Major",
+            "Critical"
+          ]
         },
         {
           "name": "confidence_score",
@@ -78,7 +128,11 @@
           "sql_type": "STRING",
           "comment": "Inspection result: Pass or Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Pass' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Pass' ELSE 'Fail' END",
+          "entity_values": [
+            "Pass",
+            "Fail"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -231,21 +285,54 @@
           "sql_type": "STRING",
           "comment": "PCB or component model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VT-PCB-4L-100",
+            "VT-PCB-6L-200",
+            "VT-PCB-8L-300",
+            "VT-PCB-HDI-400",
+            "VT-PCB-FLEX-500",
+            "VT-PWR-DCDC-10",
+            "VT-PWR-ACDC-20",
+            "VT-PWR-INV-30",
+            "VT-PWR-REG-40",
+            "VT-PWR-GAN-50",
+            "VT-SNS-ACCEL-10",
+            "VT-SNS-GYRO-20",
+            "VT-SNS-TEMP-30",
+            "VT-SNS-PROX-40",
+            "VT-SNS-LIDAR-50",
+            "VT-DSP-OLED-10",
+            "VT-DSP-LCD-20",
+            "VT-DSP-EINK-30",
+            "VT-DSP-MICRO-40",
+            "VT-DSP-TFT-50"
+          ]
         },
         {
           "name": "product_line",
           "sql_type": "STRING",
           "comment": "Product line category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PCB Assembly",
+            "Power Module",
+            "Sensor Module",
+            "Display Panel"
+          ]
         },
         {
           "name": "model_version",
           "sql_type": "STRING",
           "comment": "Detection model version: v2.1, v2.2, v2.3",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v2.1' WHEN {status_noise} < 0.65 THEN 'v2.2' ELSE 'v2.3' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v2.1' WHEN {status_noise} < 0.65 THEN 'v2.2' ELSE 'v2.3' END",
+          "entity_values": [
+            "v2.1",
+            "v2.2",
+            "v2.3"
+          ]
         },
         {
           "name": "total_inspections",
@@ -440,14 +527,42 @@
           "sql_type": "STRING",
           "comment": "PCB or component model",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VT-PCB-4L-100",
+            "VT-PCB-6L-200",
+            "VT-PCB-8L-300",
+            "VT-PCB-HDI-400",
+            "VT-PCB-FLEX-500",
+            "VT-PWR-DCDC-10",
+            "VT-PWR-ACDC-20",
+            "VT-PWR-INV-30",
+            "VT-PWR-REG-40",
+            "VT-PWR-GAN-50",
+            "VT-SNS-ACCEL-10",
+            "VT-SNS-GYRO-20",
+            "VT-SNS-TEMP-30",
+            "VT-SNS-PROX-40",
+            "VT-SNS-LIDAR-50",
+            "VT-DSP-OLED-10",
+            "VT-DSP-LCD-20",
+            "VT-DSP-EINK-30",
+            "VT-DSP-MICRO-40",
+            "VT-DSP-TFT-50"
+          ]
         },
         {
           "name": "product_line",
           "sql_type": "STRING",
           "comment": "Product line category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PCB Assembly",
+            "Power Module",
+            "Sensor Module",
+            "Display Panel"
+          ]
         },
         {
           "name": "target_pass_rate_pct",
@@ -742,7 +857,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inspection_events_metrics view (source: inspection_events) has dimensions: inspection_date, product_line, inspection_station, defect_type, severity, result. Measures: total_inspections, total_defects_found, avg_confidence_score, avg_inspection_time_sec. The detection_kpi_metrics view (source: detection_kpi_monthly) has dimensions: kpi_month, product_line. Measures: avg_actual_pass_rate, avg_defect_rate_ppm, total_scrap_cost, total_rework_cost. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. component_model).",
+  "genie_instructions": "You are a computer & electronic analytics assistant for VisionTech Electronics. Answer questions about visual defect detection and classification in electronics manufacturing using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (component_model), query the base tables directly.\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total defects found count?",
     "How has unique total inspectionss changed over time?",

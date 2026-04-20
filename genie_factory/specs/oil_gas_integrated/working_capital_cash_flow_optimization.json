@@ -29,35 +29,97 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-UP-001",
+            "CF-UP-002",
+            "CF-UP-003",
+            "CF-UP-004",
+            "CF-UP-005",
+            "CF-DS-006",
+            "CF-DS-007",
+            "CF-DS-008",
+            "CF-DS-009",
+            "CF-DS-010",
+            "CF-MS-011",
+            "CF-MS-012",
+            "CF-MS-013",
+            "CF-MS-014",
+            "CF-CO-015",
+            "CF-CO-016",
+            "CF-CO-017",
+            "CF-UP-018",
+            "CF-DS-019",
+            "CF-MS-020"
+          ]
         },
         {
           "name": "business_unit_name",
           "sql_type": "STRING",
           "comment": "Business unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf Production",
+            "Permian Shale",
+            "Deepwater Exploration",
+            "North Sea Assets",
+            "LNG Operations",
+            "Texas City Refinery",
+            "Baytown Complex",
+            "Petrochemicals East",
+            "Retail Fuels Network",
+            "Specialty Products",
+            "Gulf Pipeline System",
+            "NGL Fractionation",
+            "Crude Storage Hub",
+            "Marine Shipping",
+            "Treasury Operations",
+            "Risk Management",
+            "Shared Services",
+            "Alaska Operations",
+            "Biofuels Division",
+            "Permian Gathering"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Business segment: Upstream, Downstream, Midstream, Corporate",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Upstream",
+            "Downstream",
+            "Midstream",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Global"
+          ]
         },
         {
           "name": "flow_type",
           "sql_type": "STRING",
           "comment": "Flow type: Collection, Disbursement, Intercompany, Tax Payment, Dividend",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Collection' WHEN {status_noise} < 0.65 THEN 'Disbursement' WHEN {status_noise} < 0.80 THEN 'Intercompany' WHEN {status_noise} < 0.92 THEN 'Tax Payment' ELSE 'Dividend' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Collection' WHEN {status_noise} < 0.65 THEN 'Disbursement' WHEN {status_noise} < 0.80 THEN 'Intercompany' WHEN {status_noise} < 0.92 THEN 'Tax Payment' ELSE 'Dividend' END",
+          "entity_values": [
+            "Collection",
+            "Disbursement",
+            "Intercompany",
+            "Tax Payment",
+            "Dividend"
+          ]
         },
         {
           "name": "amount_usd",
@@ -71,7 +133,14 @@
           "sql_type": "STRING",
           "comment": "Counterparty: Customer, Supplier, Government, Internal, Shareholder",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Customer' WHEN {status_noise} < 0.55 THEN 'Supplier' WHEN {status_noise} < 0.72 THEN 'Government' WHEN {status_noise} < 0.88 THEN 'Internal' ELSE 'Shareholder' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Customer' WHEN {status_noise} < 0.55 THEN 'Supplier' WHEN {status_noise} < 0.72 THEN 'Government' WHEN {status_noise} < 0.88 THEN 'Internal' ELSE 'Shareholder' END",
+          "entity_values": [
+            "Customer",
+            "Supplier",
+            "Government",
+            "Internal",
+            "Shareholder"
+          ]
         },
         {
           "name": "days_outstanding",
@@ -242,28 +311,83 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-UP-001",
+            "CF-UP-002",
+            "CF-UP-003",
+            "CF-UP-004",
+            "CF-UP-005",
+            "CF-DS-006",
+            "CF-DS-007",
+            "CF-DS-008",
+            "CF-DS-009",
+            "CF-DS-010",
+            "CF-MS-011",
+            "CF-MS-012",
+            "CF-MS-013",
+            "CF-MS-014",
+            "CF-CO-015",
+            "CF-CO-016",
+            "CF-CO-017",
+            "CF-UP-018",
+            "CF-DS-019",
+            "CF-MS-020"
+          ]
         },
         {
           "name": "business_unit_name",
           "sql_type": "STRING",
           "comment": "Business unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf Production",
+            "Permian Shale",
+            "Deepwater Exploration",
+            "North Sea Assets",
+            "LNG Operations",
+            "Texas City Refinery",
+            "Baytown Complex",
+            "Petrochemicals East",
+            "Retail Fuels Network",
+            "Specialty Products",
+            "Gulf Pipeline System",
+            "NGL Fractionation",
+            "Crude Storage Hub",
+            "Marine Shipping",
+            "Treasury Operations",
+            "Risk Management",
+            "Shared Services",
+            "Alaska Operations",
+            "Biofuels Division",
+            "Permian Gathering"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Upstream",
+            "Downstream",
+            "Midstream",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Global"
+          ]
         },
         {
           "name": "accounts_receivable_usd",
@@ -462,21 +586,54 @@
           "sql_type": "STRING",
           "comment": "Business unit identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-UP-001",
+            "CF-UP-002",
+            "CF-UP-003",
+            "CF-UP-004",
+            "CF-UP-005",
+            "CF-DS-006",
+            "CF-DS-007",
+            "CF-DS-008",
+            "CF-DS-009",
+            "CF-DS-010",
+            "CF-MS-011",
+            "CF-MS-012",
+            "CF-MS-013",
+            "CF-MS-014",
+            "CF-CO-015",
+            "CF-CO-016",
+            "CF-CO-017",
+            "CF-UP-018",
+            "CF-DS-019",
+            "CF-MS-020"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Upstream",
+            "Downstream",
+            "Midstream",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North America",
+            "Europe",
+            "Global"
+          ]
         },
         {
           "name": "free_cash_flow_usd",
@@ -742,7 +899,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cash_transactions_metrics view (source: cash_transactions) has dimensions: transaction_date, business_unit_id, segment, region, flow_type, counterparty. Measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions, avg_days_outstanding. The working_capital_snapshots_metrics view (source: working_capital_snapshots) has dimensions: snapshot_date, business_unit_id, segment, region. Measures: total_receivables_usd, total_payables_usd, total_inventory_usd, total_cash_balance_usd, avg_dso_days. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. business_unit_name).",
+  "genie_instructions": "You are an oil & gas integrated analytics assistant for CashFlow Energy. Answer questions about working capital and cash flow optimization for integrated oil and gas operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (business_unit_name), query the base tables directly.\n- When joining tables, use the shared keys: business_unit_id (shared across cash_transactions, cashflow_kpi_monthly, working_capital_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total inflows usd count?",
     "How has total outflows usd count changed over time?",
@@ -950,7 +1107,7 @@
       ]
     },
     {
-      "question": "What are the top business unit identifier by total cash flow amount in usd (positive = inflow)?",
+      "question": "What are the top business unit by total cash flow amount in usd (positive = inflow)?",
       "sql_lines": [
         "SELECT business_unit_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",

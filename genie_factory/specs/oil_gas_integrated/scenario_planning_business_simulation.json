@@ -29,21 +29,72 @@
           "sql_type": "STRING",
           "comment": "Scenario identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SC-BASE-01",
+            "SC-BASE-02",
+            "SC-PRICE-01",
+            "SC-PRICE-02",
+            "SC-PRICE-03",
+            "SC-PRICE-04",
+            "SC-PROD-01",
+            "SC-PROD-02",
+            "SC-PROD-03",
+            "SC-PROD-04",
+            "SC-CAP-01",
+            "SC-CAP-02",
+            "SC-CAP-03",
+            "SC-CAP-04",
+            "SC-TRANS-01",
+            "SC-TRANS-02",
+            "SC-TRANS-03",
+            "SC-TRANS-04",
+            "SC-TRANS-05",
+            "SC-BASE-03"
+          ]
         },
         {
           "name": "scenario_name",
           "sql_type": "STRING",
           "comment": "Scenario descriptive name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline - Current Trajectory",
+            "Baseline - Conservative Growth",
+            "Oil at $40 Sustained",
+            "Oil at $100 Spike",
+            "Oil Price Volatility +/-30%",
+            "Gas Price Surge 2x",
+            "GOM Production Ramp +15%",
+            "Permian Basin Expansion",
+            "Deepwater Tie-Back Program",
+            "Enhanced Oil Recovery Pilots",
+            "Aggressive Exploration Budget",
+            "Infrastructure Maintenance Focus",
+            "Divest Non-Core Assets",
+            "Shareholder Return Priority",
+            "LNG Pivot Strategy",
+            "Carbon Capture Integration",
+            "Renewable Energy Diversification",
+            "Hydrogen Production Launch",
+            "Net Zero 2050 Pathway",
+            "Baseline - Optimistic Outlook"
+          ]
         },
         {
           "name": "scenario_category",
           "sql_type": "STRING",
           "comment": "Category: Price Stress, Production Upside, Capital Realloc, Transition, Baseline",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline",
+            "Price Stress",
+            "Production Upside",
+            "Capital Realloc",
+            "Transition"
+          ]
         },
         {
           "name": "oil_price_assumption",
@@ -223,21 +274,72 @@
           "sql_type": "STRING",
           "comment": "Scenario identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SC-BASE-01",
+            "SC-BASE-02",
+            "SC-PRICE-01",
+            "SC-PRICE-02",
+            "SC-PRICE-03",
+            "SC-PRICE-04",
+            "SC-PROD-01",
+            "SC-PROD-02",
+            "SC-PROD-03",
+            "SC-PROD-04",
+            "SC-CAP-01",
+            "SC-CAP-02",
+            "SC-CAP-03",
+            "SC-CAP-04",
+            "SC-TRANS-01",
+            "SC-TRANS-02",
+            "SC-TRANS-03",
+            "SC-TRANS-04",
+            "SC-TRANS-05",
+            "SC-BASE-03"
+          ]
         },
         {
           "name": "scenario_name",
           "sql_type": "STRING",
           "comment": "Scenario descriptive name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline - Current Trajectory",
+            "Baseline - Conservative Growth",
+            "Oil at $40 Sustained",
+            "Oil at $100 Spike",
+            "Oil Price Volatility +/-30%",
+            "Gas Price Surge 2x",
+            "GOM Production Ramp +15%",
+            "Permian Basin Expansion",
+            "Deepwater Tie-Back Program",
+            "Enhanced Oil Recovery Pilots",
+            "Aggressive Exploration Budget",
+            "Infrastructure Maintenance Focus",
+            "Divest Non-Core Assets",
+            "Shareholder Return Priority",
+            "LNG Pivot Strategy",
+            "Carbon Capture Integration",
+            "Renewable Energy Diversification",
+            "Hydrogen Production Launch",
+            "Net Zero 2050 Pathway",
+            "Baseline - Optimistic Outlook"
+          ]
         },
         {
           "name": "scenario_category",
           "sql_type": "STRING",
           "comment": "Scenario category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline",
+            "Price Stress",
+            "Production Upside",
+            "Capital Realloc",
+            "Transition"
+          ]
         },
         {
           "name": "projected_revenue_mm",
@@ -279,7 +381,12 @@
           "sql_type": "STRING",
           "comment": "Confidence: High, Medium, Low",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'High' WHEN {status_noise} < 0.70 THEN 'Medium' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'High' WHEN {status_noise} < 0.70 THEN 'Medium' ELSE 'Low' END",
+          "entity_values": [
+            "High",
+            "Medium",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -417,14 +524,43 @@
           "sql_type": "STRING",
           "comment": "Scenario identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SC-BASE-01",
+            "SC-BASE-02",
+            "SC-PRICE-01",
+            "SC-PRICE-02",
+            "SC-PRICE-03",
+            "SC-PRICE-04",
+            "SC-PROD-01",
+            "SC-PROD-02",
+            "SC-PROD-03",
+            "SC-PROD-04",
+            "SC-CAP-01",
+            "SC-CAP-02",
+            "SC-CAP-03",
+            "SC-CAP-04",
+            "SC-TRANS-01",
+            "SC-TRANS-02",
+            "SC-TRANS-03",
+            "SC-TRANS-04",
+            "SC-TRANS-05",
+            "SC-BASE-03"
+          ]
         },
         {
           "name": "scenario_category",
           "sql_type": "STRING",
           "comment": "Scenario category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Baseline",
+            "Price Stress",
+            "Production Upside",
+            "Capital Realloc",
+            "Transition"
+          ]
         },
         {
           "name": "weighted_npv_mm",
@@ -671,7 +807,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, scenario_id, scenario_category. Measures: avg_npv_mm, avg_irr_pct, total_capex_mm, total_runs, avg_oil_price. The outcome_snapshots_metrics view (source: outcome_snapshots) has dimensions: snapshot_date, scenario_id, scenario_category, confidence_level. Measures: avg_projected_revenue_mm, avg_projected_ebitda_mm, avg_breakeven_price, avg_co2_intensity, avg_production_mboed. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. scenario_name).",
+  "genie_instructions": "You are an oil & gas integrated analytics assistant for StratOil Dynamics. Answer questions about scenario planning and business simulation for strategic decision-making using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (scenario_name), query the base tables directly.\n- When joining tables, use the shared keys: scenario_id (shared across outcome_snapshots, scenario_kpi_monthly, simulation_runs).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total runss?",
     "How has highest oil price assumption changed over time?",
@@ -880,7 +1016,7 @@
       ]
     },
     {
-      "question": "What are the top scenario identifier by total assumed wti oil price usd per barrel?",
+      "question": "What are the top scenario by total assumed wti oil price usd per barrel?",
       "sql_lines": [
         "SELECT scenario_id, SUM(oil_price_assumption) AS total_oil_price_assumption",
         "FROM {fqn}.simulation_runs",

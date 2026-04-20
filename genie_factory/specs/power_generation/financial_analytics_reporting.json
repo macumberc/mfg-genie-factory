@@ -29,28 +29,86 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CC-OPS-001",
+            "CC-OPS-002",
+            "CC-OPS-003",
+            "CC-OPS-004",
+            "CC-MNT-005",
+            "CC-MNT-006",
+            "CC-MNT-007",
+            "CC-MNT-008",
+            "CC-FUL-009",
+            "CC-FUL-010",
+            "CC-FUL-011",
+            "CC-FUL-012",
+            "CC-ADM-013",
+            "CC-ADM-014",
+            "CC-ADM-015",
+            "CC-ADM-016",
+            "CC-CAP-017",
+            "CC-CAP-018",
+            "CC-CAP-019",
+            "CC-CAP-020"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast Generation Ops",
+            "Southeast Generation Ops",
+            "Midwest Generation Ops",
+            "West Generation Ops",
+            "Northeast Maintenance",
+            "Southeast Maintenance",
+            "Midwest Maintenance",
+            "West Maintenance",
+            "Gas Procurement",
+            "Coal Procurement",
+            "Nuclear Fuel Services",
+            "Fuel Logistics",
+            "Corporate Finance",
+            "Human Resources",
+            "IT & Technology",
+            "Regulatory & Compliance",
+            "Renewable Expansion",
+            "Grid Modernization",
+            "Plant Upgrades",
+            "Battery Storage Projects"
+          ]
         },
         {
           "name": "department",
           "sql_type": "STRING",
           "comment": "Department: Operations, Maintenance, Fuel, Admin, Capital Projects",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Operations",
+            "Maintenance",
+            "Fuel",
+            "Admin",
+            "Capital Projects"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Operating region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "West",
+            "Corporate"
+          ]
         },
         {
           "name": "amount_usd",
@@ -64,7 +122,15 @@
           "sql_type": "STRING",
           "comment": "Category: Labor, Materials, Fuel, Utilities, Services, CapEx",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Labor' WHEN {status_noise} < 0.40 THEN 'Materials' WHEN {status_noise} < 0.55 THEN 'Fuel' WHEN {status_noise} < 0.68 THEN 'Utilities' WHEN {status_noise} < 0.82 THEN 'Services' ELSE 'CapEx' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Labor' WHEN {status_noise} < 0.40 THEN 'Materials' WHEN {status_noise} < 0.55 THEN 'Fuel' WHEN {status_noise} < 0.68 THEN 'Utilities' WHEN {status_noise} < 0.82 THEN 'Services' ELSE 'CapEx' END",
+          "entity_values": [
+            "Labor",
+            "Materials",
+            "Fuel",
+            "Utilities",
+            "Services",
+            "CapEx"
+          ]
         },
         {
           "name": "budget_line_item",
@@ -78,7 +144,12 @@
           "sql_type": "STRING",
           "comment": "Approval status: Approved, Pending, Rejected",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Rejected' WHEN {status_noise} < 0.12 THEN 'Pending' ELSE 'Approved' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Rejected' WHEN {status_noise} < 0.12 THEN 'Pending' ELSE 'Approved' END",
+          "entity_values": [
+            "Rejected",
+            "Pending",
+            "Approved"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -252,14 +323,43 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CC-OPS-001",
+            "CC-OPS-002",
+            "CC-OPS-003",
+            "CC-OPS-004",
+            "CC-MNT-005",
+            "CC-MNT-006",
+            "CC-MNT-007",
+            "CC-MNT-008",
+            "CC-FUL-009",
+            "CC-FUL-010",
+            "CC-FUL-011",
+            "CC-FUL-012",
+            "CC-ADM-013",
+            "CC-ADM-014",
+            "CC-ADM-015",
+            "CC-ADM-016",
+            "CC-CAP-017",
+            "CC-CAP-018",
+            "CC-CAP-019",
+            "CC-CAP-020"
+          ]
         },
         {
           "name": "department",
           "sql_type": "STRING",
           "comment": "Department",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Operations",
+            "Maintenance",
+            "Fuel",
+            "Admin",
+            "Capital Projects"
+          ]
         },
         {
           "name": "revenue_usd",
@@ -301,7 +401,13 @@
           "sql_type": "STRING",
           "comment": "Fiscal quarter: Q1, Q2, Q3, Q4",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN MONTH(d.dt) IN (1,2,3) THEN 'Q1' WHEN MONTH(d.dt) IN (4,5,6) THEN 'Q2' WHEN MONTH(d.dt) IN (7,8,9) THEN 'Q3' ELSE 'Q4' END"
+          "generation_expr": "CASE WHEN MONTH(d.dt) IN (1,2,3) THEN 'Q1' WHEN MONTH(d.dt) IN (4,5,6) THEN 'Q2' WHEN MONTH(d.dt) IN (7,8,9) THEN 'Q3' ELSE 'Q4' END",
+          "entity_values": [
+            "Q1",
+            "Q2",
+            "Q3",
+            "Q4"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -472,14 +578,43 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CC-OPS-001",
+            "CC-OPS-002",
+            "CC-OPS-003",
+            "CC-OPS-004",
+            "CC-MNT-005",
+            "CC-MNT-006",
+            "CC-MNT-007",
+            "CC-MNT-008",
+            "CC-FUL-009",
+            "CC-FUL-010",
+            "CC-FUL-011",
+            "CC-FUL-012",
+            "CC-ADM-013",
+            "CC-ADM-014",
+            "CC-ADM-015",
+            "CC-ADM-016",
+            "CC-CAP-017",
+            "CC-CAP-018",
+            "CC-CAP-019",
+            "CC-CAP-020"
+          ]
         },
         {
           "name": "department",
           "sql_type": "STRING",
           "comment": "Department",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Operations",
+            "Maintenance",
+            "Fuel",
+            "Admin",
+            "Capital Projects"
+          ]
         },
         {
           "name": "annual_budget_usd",
@@ -521,7 +656,13 @@
           "sql_type": "STRING",
           "comment": "Budget status: On Track, At Risk, Over Budget, Under Budget",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Over Budget' WHEN {status_noise} < 0.25 THEN 'At Risk' WHEN {status_noise} < 0.40 THEN 'Under Budget' ELSE 'On Track' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Over Budget' WHEN {status_noise} < 0.25 THEN 'At Risk' WHEN {status_noise} < 0.40 THEN 'Under Budget' ELSE 'On Track' END",
+          "entity_values": [
+            "Over Budget",
+            "At Risk",
+            "Under Budget",
+            "On Track"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -782,7 +923,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_kpi_monthly view (source: financial_transactions) has dimensions: record_date, department, fiscal_quarter. Measures: total_revenue, total_actual_cost, total_budget_cost, avg_variance_pct, total_variance_usd. The budget_status_monthly view (source: budget_snapshots) has dimensions: snapshot_date, department, budget_status. Measures: total_annual_budget, total_ytd_spend, total_remaining_budget, total_capex_committed, avg_operating_margin. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id, cost_center_name, region).",
+  "genie_instructions": "You are a power generation analytics assistant for PowerLedger Corp. Answer questions about power generation financial analytics and budget reporting using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (cost_center_id, cost_center_name, region), query the base tables directly.\n- When joining tables, use the shared keys: cost_center_id (shared across budget_snapshots, cost_centers, financial_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique cost centers?",
     "How has highest revenue changed over time?",
@@ -830,7 +971,7 @@
       ]
     },
     {
-      "question": "How does total transaction amount in usd break down by cost center identifier for 'Pending' records?",
+      "question": "How does total transaction amount in usd break down by cost center for 'Pending' records?",
       "sql_lines": [
         "SELECT cost_center_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cost_centers",
@@ -989,7 +1130,7 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "question": "What are the top cost center by total transaction amount in usd?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cost_centers",

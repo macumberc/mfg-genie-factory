@@ -29,28 +29,86 @@
           "sql_type": "STRING",
           "comment": "Service territory identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "ST-001",
+            "ST-002",
+            "ST-003",
+            "ST-004",
+            "ST-005",
+            "ST-006",
+            "ST-007",
+            "ST-008",
+            "ST-009",
+            "ST-010",
+            "ST-011",
+            "ST-012",
+            "ST-013",
+            "ST-014",
+            "ST-015",
+            "ST-016",
+            "ST-017",
+            "ST-018",
+            "ST-019",
+            "ST-020"
+          ]
         },
         {
           "name": "territory_name",
           "sql_type": "STRING",
           "comment": "Service territory name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Metro Downtown",
+            "Metro Midtown",
+            "Northside Residential",
+            "Southside Residential",
+            "Eastgate Industrial Park",
+            "Westview Mall District",
+            "Lakeside Estates",
+            "River Valley Rural",
+            "Desert Springs",
+            "Mountain View",
+            "Harbor Commercial",
+            "Airport Industrial",
+            "College Town",
+            "Tech Campus North",
+            "Coastal Villas",
+            "Prairie Farms",
+            "Sunbelt Towers",
+            "Forest Hills",
+            "Refinery Row",
+            "Data Center Corridor"
+          ]
         },
         {
           "name": "territory_type",
           "sql_type": "STRING",
           "comment": "Territory type: Urban, Suburban, Rural, Industrial, Commercial",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Urban",
+            "Suburban",
+            "Industrial",
+            "Commercial",
+            "Rural"
+          ]
         },
         {
           "name": "climate_zone",
           "sql_type": "STRING",
           "comment": "Climate zone: Hot-Humid, Hot-Dry, Temperate, Cold, Mixed",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Temperate",
+            "Cold",
+            "Hot-Humid",
+            "Mixed",
+            "Hot-Dry"
+          ]
         },
         {
           "name": "peak_demand_mw",
@@ -78,7 +136,12 @@
           "sql_type": "STRING",
           "comment": "Day type: Weekday, Weekend, Holiday",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Holiday' WHEN {status_noise} < 0.33 THEN 'Weekend' ELSE 'Weekday' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Holiday' WHEN {status_noise} < 0.33 THEN 'Weekend' ELSE 'Weekday' END",
+          "entity_values": [
+            "Holiday",
+            "Weekend",
+            "Weekday"
+          ]
         },
         {
           "name": "customer_count",
@@ -256,21 +319,72 @@
           "sql_type": "STRING",
           "comment": "Service territory identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "ST-001",
+            "ST-002",
+            "ST-003",
+            "ST-004",
+            "ST-005",
+            "ST-006",
+            "ST-007",
+            "ST-008",
+            "ST-009",
+            "ST-010",
+            "ST-011",
+            "ST-012",
+            "ST-013",
+            "ST-014",
+            "ST-015",
+            "ST-016",
+            "ST-017",
+            "ST-018",
+            "ST-019",
+            "ST-020"
+          ]
         },
         {
           "name": "territory_name",
           "sql_type": "STRING",
           "comment": "Service territory name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Metro Downtown",
+            "Metro Midtown",
+            "Northside Residential",
+            "Southside Residential",
+            "Eastgate Industrial Park",
+            "Westview Mall District",
+            "Lakeside Estates",
+            "River Valley Rural",
+            "Desert Springs",
+            "Mountain View",
+            "Harbor Commercial",
+            "Airport Industrial",
+            "College Town",
+            "Tech Campus North",
+            "Coastal Villas",
+            "Prairie Farms",
+            "Sunbelt Towers",
+            "Forest Hills",
+            "Refinery Row",
+            "Data Center Corridor"
+          ]
         },
         {
           "name": "territory_type",
           "sql_type": "STRING",
           "comment": "Territory type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Urban",
+            "Suburban",
+            "Industrial",
+            "Commercial",
+            "Rural"
+          ]
         },
         {
           "name": "forecasted_peak_mw",
@@ -305,7 +419,12 @@
           "sql_type": "STRING",
           "comment": "Forecast model version: v2.0, v2.1, v2.2",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v2.0' WHEN {status_noise} < 0.55 THEN 'v2.1' ELSE 'v2.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v2.0' WHEN {status_noise} < 0.55 THEN 'v2.1' ELSE 'v2.2' END",
+          "entity_values": [
+            "v2.0",
+            "v2.1",
+            "v2.2"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -470,21 +589,57 @@
           "sql_type": "STRING",
           "comment": "Service territory identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "ST-001",
+            "ST-002",
+            "ST-003",
+            "ST-004",
+            "ST-005",
+            "ST-006",
+            "ST-007",
+            "ST-008",
+            "ST-009",
+            "ST-010",
+            "ST-011",
+            "ST-012",
+            "ST-013",
+            "ST-014",
+            "ST-015",
+            "ST-016",
+            "ST-017",
+            "ST-018",
+            "ST-019",
+            "ST-020"
+          ]
         },
         {
           "name": "territory_type",
           "sql_type": "STRING",
           "comment": "Territory type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Urban",
+            "Suburban",
+            "Industrial",
+            "Commercial",
+            "Rural"
+          ]
         },
         {
           "name": "climate_zone",
           "sql_type": "STRING",
           "comment": "Climate zone",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Temperate",
+            "Cold",
+            "Hot-Humid",
+            "Mixed",
+            "Hot-Dry"
+          ]
         },
         {
           "name": "load_factor_pct",
@@ -776,7 +931,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The demand_readings_metrics view (source: demand_readings) has dimensions: reading_date, territory_type, climate_zone, day_type. Measures: avg_peak_demand_mw, max_peak_demand_mw, avg_demand_mw, total_customer_count, reading_count. The demand_forecast_metrics view (source: demand_forecasts) has dimensions: forecast_month, territory_type, model_version. Measures: avg_forecasted_peak_mw, avg_actual_peak_mw, avg_forecast_error_pct, avg_capacity_margin_pct, forecast_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. territory_id, territory_name).",
+  "genie_instructions": "You are an electric utility analytics assistant for LoadCast Energy. Answer questions about electric load demand forecasting and capacity planning using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (territory_id, territory_name), query the base tables directly.\n- When joining tables, use the shared keys: territory_id (shared across demand_forecasts, demand_kpi_monthly, demand_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique readings?",
     "How has unique territorys changed over time?",
@@ -984,7 +1139,7 @@
       ]
     },
     {
-      "question": "What are the top service territory identifier by total daily peak demand in mw?",
+      "question": "What are the top service territory by total daily peak demand in mw?",
       "sql_lines": [
         "SELECT territory_id, SUM(peak_demand_mw) AS total_peak_demand_mw",
         "FROM {fqn}.demand_readings",

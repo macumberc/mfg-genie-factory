@@ -29,35 +29,102 @@
           "sql_type": "STRING",
           "comment": "Supplier ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MS-PIP-001",
+            "MS-PIP-002",
+            "MS-CMP-003",
+            "MS-CMP-004",
+            "MS-VLV-005",
+            "MS-VLV-006",
+            "MS-INS-007",
+            "MS-INS-008",
+            "MS-CHM-009",
+            "MS-CHM-010",
+            "MS-ELC-011",
+            "MS-ELC-012",
+            "MS-CTG-013",
+            "MS-CTG-014",
+            "MS-LOG-015",
+            "MS-LOG-016",
+            "MS-SAF-017",
+            "MS-SAF-018",
+            "MS-IT-019",
+            "MS-IT-020"
+          ]
         },
         {
           "name": "supplier_name",
           "sql_type": "STRING",
           "comment": "Supplier name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SteelPipe International",
+            "AmeriPipe Manufacturing",
+            "Atlas Copco Compressors",
+            "Solar Turbines",
+            "Cameron Valves",
+            "Emerson Automation",
+            "AECOM Services",
+            "Wood Group PLC",
+            "BASF Pipeline Chemicals",
+            "Nalco Water",
+            "Schneider Electric",
+            "ABB Power Systems",
+            "Welspun Coatings",
+            "Shawflex Coatings",
+            "TransForce Logistics",
+            "USIC Locating Services",
+            "MSA Safety Products",
+            "Honeywell Safety",
+            "Aveva SCADA Software",
+            "OSIsoft PI Systems"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Spend category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe & Fittings",
+            "Rotating Equipment",
+            "Valves & Actuators",
+            "Engineering & Inspection",
+            "Chemicals & Corrosion",
+            "Electrical & SCADA",
+            "Coatings & Cathodic",
+            "Logistics & Fleet",
+            "Safety Equipment",
+            "IT & Software"
+          ]
         },
         {
           "name": "risk_tier",
           "sql_type": "STRING",
           "comment": "Risk: Low, Medium, High",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High"
+          ]
         },
         {
           "name": "document_type",
           "sql_type": "STRING",
           "comment": "Type: PO, Invoice, Change Order, Credit Memo",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'PO' WHEN {status_noise} < 0.70 THEN 'Invoice' WHEN {status_noise} < 0.88 THEN 'Change Order' ELSE 'Credit Memo' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'PO' WHEN {status_noise} < 0.70 THEN 'Invoice' WHEN {status_noise} < 0.88 THEN 'Change Order' ELSE 'Credit Memo' END",
+          "entity_values": [
+            "PO",
+            "Invoice",
+            "Change Order",
+            "Credit Memo"
+          ]
         },
         {
           "name": "amount_usd",
@@ -241,28 +308,89 @@
           "sql_type": "STRING",
           "comment": "Supplier ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MS-PIP-001",
+            "MS-PIP-002",
+            "MS-CMP-003",
+            "MS-CMP-004",
+            "MS-VLV-005",
+            "MS-VLV-006",
+            "MS-INS-007",
+            "MS-INS-008",
+            "MS-CHM-009",
+            "MS-CHM-010",
+            "MS-ELC-011",
+            "MS-ELC-012",
+            "MS-CTG-013",
+            "MS-CTG-014",
+            "MS-LOG-015",
+            "MS-LOG-016",
+            "MS-SAF-017",
+            "MS-SAF-018",
+            "MS-IT-019",
+            "MS-IT-020"
+          ]
         },
         {
           "name": "supplier_name",
           "sql_type": "STRING",
           "comment": "Supplier name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SteelPipe International",
+            "AmeriPipe Manufacturing",
+            "Atlas Copco Compressors",
+            "Solar Turbines",
+            "Cameron Valves",
+            "Emerson Automation",
+            "AECOM Services",
+            "Wood Group PLC",
+            "BASF Pipeline Chemicals",
+            "Nalco Water",
+            "Schneider Electric",
+            "ABB Power Systems",
+            "Welspun Coatings",
+            "Shawflex Coatings",
+            "TransForce Logistics",
+            "USIC Locating Services",
+            "MSA Safety Products",
+            "Honeywell Safety",
+            "Aveva SCADA Software",
+            "OSIsoft PI Systems"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Spend category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe & Fittings",
+            "Rotating Equipment",
+            "Valves & Actuators",
+            "Engineering & Inspection",
+            "Chemicals & Corrosion",
+            "Electrical & SCADA",
+            "Coatings & Cathodic",
+            "Logistics & Fleet",
+            "Safety Equipment",
+            "IT & Software"
+          ]
         },
         {
           "name": "risk_tier",
           "sql_type": "STRING",
           "comment": "Risk tier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Low",
+            "Medium",
+            "High"
+          ]
         },
         {
           "name": "quality_score",
@@ -446,14 +574,48 @@
           "sql_type": "STRING",
           "comment": "Supplier ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MS-PIP-001",
+            "MS-PIP-002",
+            "MS-CMP-003",
+            "MS-CMP-004",
+            "MS-VLV-005",
+            "MS-VLV-006",
+            "MS-INS-007",
+            "MS-INS-008",
+            "MS-CHM-009",
+            "MS-CHM-010",
+            "MS-ELC-011",
+            "MS-ELC-012",
+            "MS-CTG-013",
+            "MS-CTG-014",
+            "MS-LOG-015",
+            "MS-LOG-016",
+            "MS-SAF-017",
+            "MS-SAF-018",
+            "MS-IT-019",
+            "MS-IT-020"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Spend category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pipe & Fittings",
+            "Rotating Equipment",
+            "Valves & Actuators",
+            "Engineering & Inspection",
+            "Chemicals & Corrosion",
+            "Electrical & SCADA",
+            "Coatings & Cathodic",
+            "Logistics & Fleet",
+            "Safety Equipment",
+            "IT & Software"
+          ]
         },
         {
           "name": "monthly_spend_usd",
@@ -678,7 +840,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The procurement_transactions_metrics view (source: procurement_transactions) has dimensions: transaction_date, supplier_id, spend_category, risk_tier, document_type. Measures: total_spend_usd, total_transactions, avg_compliance_pct, avg_delivery_days. The supplier_snapshots_metrics view (source: supplier_snapshots) has dimensions: snapshot_date, supplier_id, spend_category, risk_tier. Measures: avg_quality_score, avg_on_time_pct, avg_defect_rate, avg_lead_time. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. supplier_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for MidSpend Analytics. Answer questions about procurement spend intelligence and supplier management using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (supplier_name), query the base tables directly.\n- When joining tables, use the shared keys: supplier_id (shared across procurement_transactions, spend_kpi_monthly, supplier_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique total transactionss?",
     "How has highest amount changed over time?",

@@ -29,28 +29,88 @@
           "sql_type": "STRING",
           "comment": "Power plant identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PLT-GAS-001",
+            "PLT-GAS-002",
+            "PLT-GAS-003",
+            "PLT-GAS-004",
+            "PLT-COL-005",
+            "PLT-COL-006",
+            "PLT-COL-007",
+            "PLT-NUC-008",
+            "PLT-NUC-009",
+            "PLT-NUC-010",
+            "PLT-SOL-011",
+            "PLT-SOL-012",
+            "PLT-SOL-013",
+            "PLT-WND-014",
+            "PLT-WND-015",
+            "PLT-WND-016",
+            "PLT-WND-017",
+            "PLT-HYD-018",
+            "PLT-HYD-019",
+            "PLT-HYD-020"
+          ]
         },
         {
           "name": "plant_name",
           "sql_type": "STRING",
           "comment": "Power plant name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Riverside Gas Station Alpha",
+            "Bayshore Combined Cycle",
+            "Prairie Peaker Unit",
+            "Desert Sun Gas Turbine",
+            "Iron Ridge Coal Station",
+            "Appalachian Steam Plant",
+            "Lakeview Coal Unit",
+            "Clearwater Nuclear Station",
+            "Granite Peak Nuclear",
+            "Shoreline Nuclear Facility",
+            "Sunbelt Solar Farm I",
+            "Mojave Solar Array",
+            "Palmetto Solar Park",
+            "Great Plains Wind Farm",
+            "Coastal Breeze Wind",
+            "Mesa Ridge Wind Park",
+            "Bluewater Offshore Wind",
+            "Eagle Falls Hydro Dam",
+            "Canyon Run Hydro Station",
+            "Cascade River Hydro"
+          ]
         },
         {
           "name": "fuel_type",
           "sql_type": "STRING",
           "comment": "Generation fuel type: Gas, Coal, Nuclear, Solar, Wind, Hydro",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gas",
+            "Coal",
+            "Nuclear",
+            "Solar",
+            "Wind",
+            "Hydro"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Operating region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Northwest"
+          ]
         },
         {
           "name": "generation_mwh",
@@ -78,7 +138,13 @@
           "sql_type": "STRING",
           "comment": "Dispatch status: Dispatched, Standby, Curtailed, Offline",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Offline' WHEN {status_noise} < 0.12 THEN 'Curtailed' WHEN {status_noise} < 0.22 THEN 'Standby' ELSE 'Dispatched' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Offline' WHEN {status_noise} < 0.12 THEN 'Curtailed' WHEN {status_noise} < 0.22 THEN 'Standby' ELSE 'Dispatched' END",
+          "entity_values": [
+            "Offline",
+            "Curtailed",
+            "Standby",
+            "Dispatched"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -252,14 +318,44 @@
           "sql_type": "STRING",
           "comment": "Power plant identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PLT-GAS-001",
+            "PLT-GAS-002",
+            "PLT-GAS-003",
+            "PLT-GAS-004",
+            "PLT-COL-005",
+            "PLT-COL-006",
+            "PLT-COL-007",
+            "PLT-NUC-008",
+            "PLT-NUC-009",
+            "PLT-NUC-010",
+            "PLT-SOL-011",
+            "PLT-SOL-012",
+            "PLT-SOL-013",
+            "PLT-WND-014",
+            "PLT-WND-015",
+            "PLT-WND-016",
+            "PLT-WND-017",
+            "PLT-HYD-018",
+            "PLT-HYD-019",
+            "PLT-HYD-020"
+          ]
         },
         {
           "name": "fuel_type",
           "sql_type": "STRING",
           "comment": "Generation fuel type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gas",
+            "Coal",
+            "Nuclear",
+            "Solar",
+            "Wind",
+            "Hydro"
+          ]
         },
         {
           "name": "output_mw",
@@ -301,7 +397,12 @@
           "sql_type": "STRING",
           "comment": "Reading quality: Valid, Estimated, Missing",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Missing' WHEN {status_noise} < 0.08 THEN 'Estimated' ELSE 'Valid' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Missing' WHEN {status_noise} < 0.08 THEN 'Estimated' ELSE 'Valid' END",
+          "entity_values": [
+            "Missing",
+            "Estimated",
+            "Valid"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -475,14 +576,44 @@
           "sql_type": "STRING",
           "comment": "Power plant identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PLT-GAS-001",
+            "PLT-GAS-002",
+            "PLT-GAS-003",
+            "PLT-GAS-004",
+            "PLT-COL-005",
+            "PLT-COL-006",
+            "PLT-COL-007",
+            "PLT-NUC-008",
+            "PLT-NUC-009",
+            "PLT-NUC-010",
+            "PLT-SOL-011",
+            "PLT-SOL-012",
+            "PLT-SOL-013",
+            "PLT-WND-014",
+            "PLT-WND-015",
+            "PLT-WND-016",
+            "PLT-WND-017",
+            "PLT-HYD-018",
+            "PLT-HYD-019",
+            "PLT-HYD-020"
+          ]
         },
         {
           "name": "fuel_type",
           "sql_type": "STRING",
           "comment": "Generation fuel type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gas",
+            "Coal",
+            "Nuclear",
+            "Solar",
+            "Wind",
+            "Hydro"
+          ]
         },
         {
           "name": "planned_mwh",
@@ -788,7 +919,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The generation_kpi_monthly view (source: generation_units) has dimensions: record_date, fuel_type, region, dispatch_status. Measures: total_generation_mwh, avg_capacity_factor, dispatched_plant_count, total_plant_count, avg_heat_rate. The dispatch_kpi_monthly view (source: dispatch_snapshots) has dimensions: snapshot_date, fuel_type. Measures: total_planned_mwh, total_actual_mwh, total_curtailment_mwh, avg_reserve_margin, total_dispatch_cost. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. plant_id, plant_name).",
+  "genie_instructions": "You are a power generation analytics assistant for PowerMix Dynamics. Answer questions about grid management and energy mix optimization across diverse generation sources using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (plant_id, plant_name), query the base tables directly.\n- When joining tables, use the shared keys: plant_id (shared across dispatch_snapshots, generation_readings, generation_units).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in dispatched plant count?",
     "How has unique total plants changed over time?",
@@ -997,7 +1128,7 @@
       ]
     },
     {
-      "question": "What is the average energy generated in megawatt-hours by power plant identifier?",
+      "question": "What is the average energy generated in megawatt-hours by power plant?",
       "sql_lines": [
         "SELECT plant_id, AVG(generation_mwh) AS avg_generation_mwh",
         "FROM {fqn}.generation_units",

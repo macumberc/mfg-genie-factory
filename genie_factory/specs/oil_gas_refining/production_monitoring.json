@@ -29,28 +29,97 @@
           "sql_type": "STRING",
           "comment": "Process unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RO-CDU-01",
+            "RO-CDU-02",
+            "RO-VDU-03",
+            "RO-FCC-04",
+            "RO-HCK-05",
+            "RO-HDT-06",
+            "RO-HDT-07",
+            "RO-REF-08",
+            "RO-ISO-09",
+            "RO-ALK-10",
+            "RO-COK-11",
+            "RO-SRU-12",
+            "RO-H2-13",
+            "RO-BLD-14",
+            "RO-BLD-15",
+            "RO-BLD-16",
+            "RO-SAT-17",
+            "RO-UNS-18",
+            "RO-MRX-19",
+            "RO-WWT-20"
+          ]
         },
         {
           "name": "unit_name",
           "sql_type": "STRING",
           "comment": "Process unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation Unit 1",
+            "Crude Distillation Unit 2",
+            "Vacuum Distillation Unit",
+            "Fluid Catalytic Cracker",
+            "Hydrocracker",
+            "Diesel Hydrotreater",
+            "Naphtha Hydrotreater",
+            "Catalytic Reformer",
+            "Isomerization Unit",
+            "Alkylation Unit",
+            "Delayed Coker",
+            "Sulfur Recovery Unit",
+            "Hydrogen Plant",
+            "Gasoline Blending",
+            "Diesel Blending",
+            "Jet Fuel Blending",
+            "Saturated Gas Plant",
+            "Unsaturated Gas Plant",
+            "Merox Unit",
+            "Wastewater Treatment"
+          ]
         },
         {
           "name": "product_stream",
           "sql_type": "STRING",
           "comment": "Product stream",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Naphtha",
+            "Diesel",
+            "VGO",
+            "Gasoline",
+            "ULSD",
+            "Reformate",
+            "Isomerate",
+            "Alkylate",
+            "Coke",
+            "Sulfur",
+            "Hydrogen",
+            "Jet Fuel",
+            "LPG",
+            "Propylene"
+          ]
         },
         {
           "name": "refinery_section",
           "sql_type": "STRING",
           "comment": "Section: Primary, Conversion, Treating, Blending, Utilities, Gas Processing, Residue",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary",
+            "Conversion",
+            "Treating",
+            "Residue",
+            "Utilities",
+            "Blending",
+            "Gas Processing"
+          ]
         },
         {
           "name": "throughput_bpd",
@@ -85,7 +154,13 @@
           "sql_type": "STRING",
           "comment": "Status: Running, Reduced Rate, Shutdown, Startup",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Running' WHEN {status_noise} < 0.85 THEN 'Reduced Rate' WHEN {status_noise} < 0.94 THEN 'Shutdown' ELSE 'Startup' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Running' WHEN {status_noise} < 0.85 THEN 'Reduced Rate' WHEN {status_noise} < 0.94 THEN 'Shutdown' ELSE 'Startup' END",
+          "entity_values": [
+            "Running",
+            "Reduced Rate",
+            "Shutdown",
+            "Startup"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -249,21 +324,74 @@
           "sql_type": "STRING",
           "comment": "Process unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RO-CDU-01",
+            "RO-CDU-02",
+            "RO-VDU-03",
+            "RO-FCC-04",
+            "RO-HCK-05",
+            "RO-HDT-06",
+            "RO-HDT-07",
+            "RO-REF-08",
+            "RO-ISO-09",
+            "RO-ALK-10",
+            "RO-COK-11",
+            "RO-SRU-12",
+            "RO-H2-13",
+            "RO-BLD-14",
+            "RO-BLD-15",
+            "RO-BLD-16",
+            "RO-SAT-17",
+            "RO-UNS-18",
+            "RO-MRX-19",
+            "RO-WWT-20"
+          ]
         },
         {
           "name": "unit_name",
           "sql_type": "STRING",
           "comment": "Process unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation Unit 1",
+            "Crude Distillation Unit 2",
+            "Vacuum Distillation Unit",
+            "Fluid Catalytic Cracker",
+            "Hydrocracker",
+            "Diesel Hydrotreater",
+            "Naphtha Hydrotreater",
+            "Catalytic Reformer",
+            "Isomerization Unit",
+            "Alkylation Unit",
+            "Delayed Coker",
+            "Sulfur Recovery Unit",
+            "Hydrogen Plant",
+            "Gasoline Blending",
+            "Diesel Blending",
+            "Jet Fuel Blending",
+            "Saturated Gas Plant",
+            "Unsaturated Gas Plant",
+            "Merox Unit",
+            "Wastewater Treatment"
+          ]
         },
         {
           "name": "refinery_section",
           "sql_type": "STRING",
           "comment": "Section",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary",
+            "Conversion",
+            "Treating",
+            "Residue",
+            "Utilities",
+            "Blending",
+            "Gas Processing"
+          ]
         },
         {
           "name": "avg_throughput_bpd",
@@ -438,14 +566,45 @@
           "sql_type": "STRING",
           "comment": "Process unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RO-CDU-01",
+            "RO-CDU-02",
+            "RO-VDU-03",
+            "RO-FCC-04",
+            "RO-HCK-05",
+            "RO-HDT-06",
+            "RO-HDT-07",
+            "RO-REF-08",
+            "RO-ISO-09",
+            "RO-ALK-10",
+            "RO-COK-11",
+            "RO-SRU-12",
+            "RO-H2-13",
+            "RO-BLD-14",
+            "RO-BLD-15",
+            "RO-BLD-16",
+            "RO-SAT-17",
+            "RO-UNS-18",
+            "RO-MRX-19",
+            "RO-WWT-20"
+          ]
         },
         {
           "name": "refinery_section",
           "sql_type": "STRING",
           "comment": "Section",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary",
+            "Conversion",
+            "Treating",
+            "Residue",
+            "Utilities",
+            "Blending",
+            "Gas Processing"
+          ]
         },
         {
           "name": "monthly_throughput_bbl",
@@ -681,7 +840,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The throughput_readings_metrics view (source: throughput_readings) has dimensions: reading_date, unit_id, refinery_section, product_stream, status. Measures: avg_throughput_bpd, avg_utilization_pct, avg_yield_pct, total_readings. The production_snapshots_metrics view (source: production_snapshots) has dimensions: snapshot_date, unit_id, refinery_section. Measures: total_product_bbl, total_downtime_hours, avg_energy_intensity, avg_throughput. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_name).",
+  "genie_instructions": "You are an oil & gas refining analytics assistant for RefineOps Central. Answer questions about production monitoring and throughput optimization for refinery operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (unit_name), query the base tables directly.\n- When joining tables, use the shared keys: unit_id (shared across production_snapshots, throughput_kpi_monthly, throughput_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the monthly trend in unique total readingss?",
     "How has highest throughput bpd changed over time?",

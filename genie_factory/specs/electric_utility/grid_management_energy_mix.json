@@ -29,28 +29,87 @@
           "sql_type": "STRING",
           "comment": "Grid zone identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GZ-N01",
+            "GZ-N02",
+            "GZ-N03",
+            "GZ-N04",
+            "GZ-S01",
+            "GZ-S02",
+            "GZ-S03",
+            "GZ-S04",
+            "GZ-E01",
+            "GZ-E02",
+            "GZ-E03",
+            "GZ-E04",
+            "GZ-W01",
+            "GZ-W02",
+            "GZ-W03",
+            "GZ-W04",
+            "GZ-C01",
+            "GZ-C02",
+            "GZ-C03",
+            "GZ-C04"
+          ]
         },
         {
           "name": "zone_name",
           "sql_type": "STRING",
           "comment": "Grid zone descriptive name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northern Metro",
+            "Northern Industrial",
+            "Northern Rural",
+            "Northern Wind Corridor",
+            "Southern Metro",
+            "Southern Coast",
+            "Southern Solar Belt",
+            "Southern Industrial",
+            "Eastern Metro",
+            "Eastern Suburban",
+            "Eastern Port District",
+            "Eastern Nuclear Zone",
+            "Western Metro",
+            "Western Valley",
+            "Western Hydro Basin",
+            "Western Desert Solar",
+            "Central Metro",
+            "Central Data Center Hub",
+            "Central Agricultural",
+            "Central Gas Corridor"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region: North, South, East, West, Central",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North",
+            "South",
+            "East",
+            "West",
+            "Central"
+          ]
         },
         {
           "name": "fuel_type",
           "sql_type": "STRING",
           "comment": "Generation fuel: Solar, Wind, Natural Gas, Nuclear, Hydro, Coal",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Solar' WHEN {status_noise} < 0.42 THEN 'Wind' WHEN {status_noise} < 0.62 THEN 'Natural Gas' WHEN {status_noise} < 0.75 THEN 'Nuclear' WHEN {status_noise} < 0.88 THEN 'Hydro' ELSE 'Coal' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Solar' WHEN {status_noise} < 0.42 THEN 'Wind' WHEN {status_noise} < 0.62 THEN 'Natural Gas' WHEN {status_noise} < 0.75 THEN 'Nuclear' WHEN {status_noise} < 0.88 THEN 'Hydro' ELSE 'Coal' END",
+          "entity_values": [
+            "Solar",
+            "Wind",
+            "Natural Gas",
+            "Nuclear",
+            "Hydro",
+            "Coal"
+          ]
         },
         {
           "name": "generation_mw",
@@ -226,21 +285,72 @@
           "sql_type": "STRING",
           "comment": "Grid zone identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GZ-N01",
+            "GZ-N02",
+            "GZ-N03",
+            "GZ-N04",
+            "GZ-S01",
+            "GZ-S02",
+            "GZ-S03",
+            "GZ-S04",
+            "GZ-E01",
+            "GZ-E02",
+            "GZ-E03",
+            "GZ-E04",
+            "GZ-W01",
+            "GZ-W02",
+            "GZ-W03",
+            "GZ-W04",
+            "GZ-C01",
+            "GZ-C02",
+            "GZ-C03",
+            "GZ-C04"
+          ]
         },
         {
           "name": "zone_name",
           "sql_type": "STRING",
           "comment": "Grid zone name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northern Metro",
+            "Northern Industrial",
+            "Northern Rural",
+            "Northern Wind Corridor",
+            "Southern Metro",
+            "Southern Coast",
+            "Southern Solar Belt",
+            "Southern Industrial",
+            "Eastern Metro",
+            "Eastern Suburban",
+            "Eastern Port District",
+            "Eastern Nuclear Zone",
+            "Western Metro",
+            "Western Valley",
+            "Western Hydro Basin",
+            "Western Desert Solar",
+            "Central Metro",
+            "Central Data Center Hub",
+            "Central Agricultural",
+            "Central Gas Corridor"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North",
+            "South",
+            "East",
+            "West",
+            "Central"
+          ]
         },
         {
           "name": "peak_demand_mw",
@@ -427,14 +537,43 @@
           "sql_type": "STRING",
           "comment": "Grid zone identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "GZ-N01",
+            "GZ-N02",
+            "GZ-N03",
+            "GZ-N04",
+            "GZ-S01",
+            "GZ-S02",
+            "GZ-S03",
+            "GZ-S04",
+            "GZ-E01",
+            "GZ-E02",
+            "GZ-E03",
+            "GZ-E04",
+            "GZ-W01",
+            "GZ-W02",
+            "GZ-W03",
+            "GZ-W04",
+            "GZ-C01",
+            "GZ-C02",
+            "GZ-C03",
+            "GZ-C04"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "North",
+            "South",
+            "East",
+            "West",
+            "Central"
+          ]
         },
         {
           "name": "renewable_share_pct",
@@ -704,7 +843,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The generation_metrics view (source: generation_readings) has dimensions: reading_date, region, fuel_type. Measures: total_generation_mw, avg_capacity_factor, total_curtailment_mw, avg_carbon_intensity, reading_count. The load_metrics view (source: load_snapshots) has dimensions: snapshot_date, region, zone_id. Measures: avg_peak_demand_mw, avg_congestion_index, total_import_mw, total_export_mw, avg_renewable_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. zone_name).",
+  "genie_instructions": "You are an electric utility analytics assistant for PowerGrid Analytics. Answer questions about grid management, energy mix optimization, and renewable integration using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (zone_name), query the base tables directly.\n- When joining tables, use the shared keys: zone_id (shared across generation_readings, grid_kpi_monthly, load_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique readings?",
     "How has unique zones changed over time?",
@@ -912,7 +1051,7 @@
       ]
     },
     {
-      "question": "What are the top grid zone identifier by total curtailed generation in mw (renewable only)?",
+      "question": "What are the top grid zone by total curtailed generation in mw (renewable only)?",
       "sql_lines": [
         "SELECT zone_id, SUM(curtailment_mw) AS total_curtailment_mw",
         "FROM {fqn}.generation_readings",

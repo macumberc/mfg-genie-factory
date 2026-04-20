@@ -29,28 +29,88 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CC-101",
+            "CC-102",
+            "CC-103",
+            "CC-104",
+            "CC-201",
+            "CC-202",
+            "CC-203",
+            "CC-204",
+            "CC-301",
+            "CC-302",
+            "CC-303",
+            "CC-401",
+            "CC-402",
+            "CC-403",
+            "CC-501",
+            "CC-502",
+            "CC-503",
+            "CC-504",
+            "CC-105",
+            "CC-205"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Narrowbody Production",
+            "Widebody Production",
+            "Wing Assembly",
+            "Fuselage Assembly",
+            "Fighter Programs",
+            "Rotorcraft Division",
+            "Unmanned Systems",
+            "Defense Sustainment",
+            "Satellite Systems",
+            "Launch Services",
+            "Space Exploration R&D",
+            "Business Jet Production",
+            "Cabin Interiors",
+            "Completions Center",
+            "Engine MRO Services",
+            "Component Repair",
+            "Fleet Management",
+            "Training & Simulation",
+            "Composites Center",
+            "Missile Systems"
+          ]
         },
         {
           "name": "business_segment",
           "sql_type": "STRING",
           "comment": "Business segment: Commercial Aviation, Defense, Space, Business Jets, Services",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Commercial Aviation",
+            "Defense",
+            "Space",
+            "Business Jets",
+            "Services"
+          ]
         },
         {
           "name": "gl_category",
           "sql_type": "STRING",
           "comment": "GL category: Revenue, COGS, Labor, Materials, Overhead, R&D, SGA",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Revenue' WHEN {status_noise} < 0.38 THEN 'COGS' WHEN {status_noise} < 0.52 THEN 'Labor' WHEN {status_noise} < 0.65 THEN 'Materials' WHEN {status_noise} < 0.78 THEN 'Overhead' WHEN {status_noise} < 0.90 THEN 'R&D' ELSE 'SGA' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Revenue' WHEN {status_noise} < 0.38 THEN 'COGS' WHEN {status_noise} < 0.52 THEN 'Labor' WHEN {status_noise} < 0.65 THEN 'Materials' WHEN {status_noise} < 0.78 THEN 'Overhead' WHEN {status_noise} < 0.90 THEN 'R&D' ELSE 'SGA' END",
+          "entity_values": [
+            "Revenue",
+            "COGS",
+            "Labor",
+            "Materials",
+            "Overhead",
+            "R&D",
+            "SGA"
+          ]
         },
         {
           "name": "amount_usd",
@@ -64,21 +124,39 @@
           "sql_type": "STRING",
           "comment": "Original currency: USD, EUR, GBP",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'USD' WHEN {status_noise} < 0.85 THEN 'EUR' ELSE 'GBP' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'USD' WHEN {status_noise} < 0.85 THEN 'EUR' ELSE 'GBP' END",
+          "entity_values": [
+            "USD",
+            "EUR",
+            "GBP"
+          ]
         },
         {
           "name": "project_code",
           "sql_type": "STRING",
           "comment": "Project code for cost allocation",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'PROD-NB' WHEN {status_noise} < 0.45 THEN 'PROD-WB' WHEN {status_noise} < 0.60 THEN 'DEF-FW' WHEN {status_noise} < 0.72 THEN 'SPC-SAT' WHEN {status_noise} < 0.82 THEN 'BJ-CABIN' WHEN {status_noise} < 0.92 THEN 'SVC-MRO' ELSE 'RD-NXT' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'PROD-NB' WHEN {status_noise} < 0.45 THEN 'PROD-WB' WHEN {status_noise} < 0.60 THEN 'DEF-FW' WHEN {status_noise} < 0.72 THEN 'SPC-SAT' WHEN {status_noise} < 0.82 THEN 'BJ-CABIN' WHEN {status_noise} < 0.92 THEN 'SVC-MRO' ELSE 'RD-NXT' END",
+          "entity_values": [
+            "PROD-NB",
+            "PROD-WB",
+            "DEF-FW",
+            "SPC-SAT",
+            "BJ-CABIN",
+            "SVC-MRO",
+            "RD-NXT"
+          ]
         },
         {
           "name": "is_recurring",
           "sql_type": "STRING",
           "comment": "Recurring vs one-time: Recurring, One-Time",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Recurring' ELSE 'One-Time' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Recurring' ELSE 'One-Time' END",
+          "entity_values": [
+            "Recurring",
+            "One-Time"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -226,14 +304,43 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CC-101",
+            "CC-102",
+            "CC-103",
+            "CC-104",
+            "CC-201",
+            "CC-202",
+            "CC-203",
+            "CC-204",
+            "CC-301",
+            "CC-302",
+            "CC-303",
+            "CC-401",
+            "CC-402",
+            "CC-403",
+            "CC-501",
+            "CC-502",
+            "CC-503",
+            "CC-504",
+            "CC-105",
+            "CC-205"
+          ]
         },
         {
           "name": "business_segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Commercial Aviation",
+            "Defense",
+            "Space",
+            "Business Jets",
+            "Services"
+          ]
         },
         {
           "name": "budgeted_revenue_usd",
@@ -413,14 +520,43 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CC-101",
+            "CC-102",
+            "CC-103",
+            "CC-104",
+            "CC-201",
+            "CC-202",
+            "CC-203",
+            "CC-204",
+            "CC-301",
+            "CC-302",
+            "CC-303",
+            "CC-401",
+            "CC-402",
+            "CC-403",
+            "CC-501",
+            "CC-502",
+            "CC-503",
+            "CC-504",
+            "CC-105",
+            "CC-205"
+          ]
         },
         {
           "name": "business_segment",
           "sql_type": "STRING",
           "comment": "Business segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Commercial Aviation",
+            "Defense",
+            "Space",
+            "Business Jets",
+            "Services"
+          ]
         },
         {
           "name": "gross_margin_pct",
@@ -695,7 +831,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_txn_metrics view (source: financial_transactions) has dimensions: txn_date, business_segment, gl_category, project_code. Measures: total_revenue, total_cogs, total_opex, total_rd_spend, txn_count. The budget_metrics view (source: budget_snapshots) has dimensions: snapshot_date, business_segment. Measures: total_budgeted_revenue, total_actual_revenue, total_budgeted_cost, total_actual_cost, total_headcount. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id, cost_center_name).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroLedger Corp. Answer questions about aerospace financial analytics, cost reporting, and margin analysis using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (cost_center_id, cost_center_name), query the base tables directly.\n- When joining tables, use the shared keys: cost_center_id (shared across budget_snapshots, financial_kpi_monthly, financial_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total revenue count?",
     "How has total cogs count changed over time?",
@@ -902,7 +1038,7 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd (revenue positive, expenses negative)?",
+      "question": "What are the top cost center by total transaction amount in usd (revenue positive, expenses negative)?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

@@ -29,35 +29,105 @@
           "sql_type": "STRING",
           "comment": "Shipping lane identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "LN-001",
+            "LN-002",
+            "LN-003",
+            "LN-004",
+            "LN-005",
+            "LN-006",
+            "LN-007",
+            "LN-008",
+            "LN-009",
+            "LN-010",
+            "LN-011",
+            "LN-012",
+            "LN-013",
+            "LN-014",
+            "LN-015",
+            "LN-016",
+            "LN-017",
+            "LN-018",
+            "LN-019",
+            "LN-020"
+          ]
         },
         {
           "name": "lane_name",
           "sql_type": "STRING",
           "comment": "Human-readable lane name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago to Dallas FTL",
+            "Atlanta to New York FTL",
+            "Los Angeles to Seattle FTL",
+            "Denver to Miami FTL",
+            "New York to Chicago FTL",
+            "Midwest Regional LTL",
+            "Southeast Regional LTL",
+            "West Coast Regional LTL",
+            "Northeast Corridor LTL",
+            "Southwest Regional LTL",
+            "US-Mexico Laredo Corridor",
+            "US-Canada Ontario Gateway",
+            "US-Mexico Nogales Corridor",
+            "US-Canada BC Pacific",
+            "US-Mexico El Paso Corridor",
+            "Chicago Rail Intermodal",
+            "LA Port Drayage Intermodal",
+            "East Coast Rail Intermodal",
+            "Gulf Coast Rail Intermodal",
+            "Pacific NW Intermodal"
+          ]
         },
         {
           "name": "lane_category",
           "sql_type": "STRING",
           "comment": "Lane category: Domestic FTL, Domestic LTL, Cross-Border, Intermodal",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Domestic FTL",
+            "Domestic LTL",
+            "Cross-Border",
+            "Intermodal"
+          ]
         },
         {
           "name": "origin_hub",
           "sql_type": "STRING",
           "comment": "Origin distribution hub",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Chicago Hub' WHEN {status_noise} < 0.25 THEN 'Dallas Hub' WHEN {status_noise} < 0.375 THEN 'Atlanta Hub' WHEN {status_noise} < 0.5 THEN 'Los Angeles Hub' WHEN {status_noise} < 0.625 THEN 'New York Hub' WHEN {status_noise} < 0.75 THEN 'Seattle Hub' WHEN {status_noise} < 0.875 THEN 'Denver Hub' ELSE 'Miami Hub' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Chicago Hub' WHEN {status_noise} < 0.25 THEN 'Dallas Hub' WHEN {status_noise} < 0.375 THEN 'Atlanta Hub' WHEN {status_noise} < 0.5 THEN 'Los Angeles Hub' WHEN {status_noise} < 0.625 THEN 'New York Hub' WHEN {status_noise} < 0.75 THEN 'Seattle Hub' WHEN {status_noise} < 0.875 THEN 'Denver Hub' ELSE 'Miami Hub' END",
+          "entity_values": [
+            "Chicago Hub",
+            "Dallas Hub",
+            "Atlanta Hub",
+            "Los Angeles Hub",
+            "New York Hub",
+            "Seattle Hub",
+            "Denver Hub",
+            "Miami Hub"
+          ]
         },
         {
           "name": "destination_hub",
           "sql_type": "STRING",
           "comment": "Destination hub",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Denver Hub' WHEN {status_noise} < 0.25 THEN 'Miami Hub' WHEN {status_noise} < 0.375 THEN 'New York Hub' WHEN {status_noise} < 0.5 THEN 'Chicago Hub' WHEN {status_noise} < 0.625 THEN 'Dallas Hub' WHEN {status_noise} < 0.75 THEN 'Atlanta Hub' WHEN {status_noise} < 0.875 THEN 'Los Angeles Hub' ELSE 'Seattle Hub' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Denver Hub' WHEN {status_noise} < 0.25 THEN 'Miami Hub' WHEN {status_noise} < 0.375 THEN 'New York Hub' WHEN {status_noise} < 0.5 THEN 'Chicago Hub' WHEN {status_noise} < 0.625 THEN 'Dallas Hub' WHEN {status_noise} < 0.75 THEN 'Atlanta Hub' WHEN {status_noise} < 0.875 THEN 'Los Angeles Hub' ELSE 'Seattle Hub' END",
+          "entity_values": [
+            "Denver Hub",
+            "Miami Hub",
+            "New York Hub",
+            "Chicago Hub",
+            "Dallas Hub",
+            "Atlanta Hub",
+            "Los Angeles Hub",
+            "Seattle Hub"
+          ]
         },
         {
           "name": "weight_lbs",
@@ -85,7 +155,13 @@
           "sql_type": "STRING",
           "comment": "Status: Delivered, In Transit, Delayed, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.10 THEN 'Delayed' WHEN {status_noise} < 0.18 THEN 'In Transit' ELSE 'Delivered' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.10 THEN 'Delayed' WHEN {status_noise} < 0.18 THEN 'In Transit' ELSE 'Delivered' END",
+          "entity_values": [
+            "Cancelled",
+            "Delayed",
+            "In Transit",
+            "Delivered"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -237,28 +313,71 @@
           "sql_type": "STRING",
           "comment": "Shipping lane identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "LN-001",
+            "LN-002",
+            "LN-003",
+            "LN-004",
+            "LN-005",
+            "LN-006",
+            "LN-007",
+            "LN-008",
+            "LN-009",
+            "LN-010",
+            "LN-011",
+            "LN-012",
+            "LN-013",
+            "LN-014",
+            "LN-015",
+            "LN-016",
+            "LN-017",
+            "LN-018",
+            "LN-019",
+            "LN-020"
+          ]
         },
         {
           "name": "lane_category",
           "sql_type": "STRING",
           "comment": "Lane category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Domestic FTL",
+            "Domestic LTL",
+            "Cross-Border",
+            "Intermodal"
+          ]
         },
         {
           "name": "hub_code",
           "sql_type": "STRING",
           "comment": "Target hub code",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'HUB-CHI' WHEN {status_noise} < 0.25 THEN 'HUB-DAL' WHEN {status_noise} < 0.375 THEN 'HUB-ATL' WHEN {status_noise} < 0.5 THEN 'HUB-LAX' WHEN {status_noise} < 0.625 THEN 'HUB-NYC' WHEN {status_noise} < 0.75 THEN 'HUB-SEA' WHEN {status_noise} < 0.875 THEN 'HUB-DEN' ELSE 'HUB-MIA' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'HUB-CHI' WHEN {status_noise} < 0.25 THEN 'HUB-DAL' WHEN {status_noise} < 0.375 THEN 'HUB-ATL' WHEN {status_noise} < 0.5 THEN 'HUB-LAX' WHEN {status_noise} < 0.625 THEN 'HUB-NYC' WHEN {status_noise} < 0.75 THEN 'HUB-SEA' WHEN {status_noise} < 0.875 THEN 'HUB-DEN' ELSE 'HUB-MIA' END",
+          "entity_values": [
+            "HUB-CHI",
+            "HUB-DAL",
+            "HUB-ATL",
+            "HUB-LAX",
+            "HUB-NYC",
+            "HUB-SEA",
+            "HUB-DEN",
+            "HUB-MIA"
+          ]
         },
         {
           "name": "model_version",
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v2.0' WHEN {status_noise} < 0.66 THEN 'v2.1' ELSE 'v2.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v2.0' WHEN {status_noise} < 0.66 THEN 'v2.1' ELSE 'v2.2' END",
+          "entity_values": [
+            "v2.0",
+            "v2.1",
+            "v2.2"
+          ]
         },
         {
           "name": "forecasted_shipments",
@@ -437,21 +556,71 @@
           "sql_type": "STRING",
           "comment": "Shipping lane identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "LN-001",
+            "LN-002",
+            "LN-003",
+            "LN-004",
+            "LN-005",
+            "LN-006",
+            "LN-007",
+            "LN-008",
+            "LN-009",
+            "LN-010",
+            "LN-011",
+            "LN-012",
+            "LN-013",
+            "LN-014",
+            "LN-015",
+            "LN-016",
+            "LN-017",
+            "LN-018",
+            "LN-019",
+            "LN-020"
+          ]
         },
         {
           "name": "lane_name",
           "sql_type": "STRING",
           "comment": "Human-readable lane name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago to Dallas FTL",
+            "Atlanta to New York FTL",
+            "Los Angeles to Seattle FTL",
+            "Denver to Miami FTL",
+            "New York to Chicago FTL",
+            "Midwest Regional LTL",
+            "Southeast Regional LTL",
+            "West Coast Regional LTL",
+            "Northeast Corridor LTL",
+            "Southwest Regional LTL",
+            "US-Mexico Laredo Corridor",
+            "US-Canada Ontario Gateway",
+            "US-Mexico Nogales Corridor",
+            "US-Canada BC Pacific",
+            "US-Mexico El Paso Corridor",
+            "Chicago Rail Intermodal",
+            "LA Port Drayage Intermodal",
+            "East Coast Rail Intermodal",
+            "Gulf Coast Rail Intermodal",
+            "Pacific NW Intermodal"
+          ]
         },
         {
           "name": "lane_category",
           "sql_type": "STRING",
           "comment": "Lane category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Domestic FTL",
+            "Domestic LTL",
+            "Cross-Border",
+            "Intermodal"
+          ]
         },
         {
           "name": "total_capacity_units",
@@ -726,7 +895,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The shipment_orders_metrics view (source: shipment_orders) has dimensions: order_date, lane_category, origin_hub, order_status. Measures: total_freight_revenue, total_weight_delivered_lbs, delivered_order_count, total_order_count, delayed_order_count, avg_transit_days. The demand_forecasts_metrics view (source: demand_forecasts) has dimensions: forecast_month, lane_category, hub_code, model_version. Measures: total_forecasted_shipments, total_actual_shipments, total_forecasted_weight_tons, total_actual_weight_tons, forecast_record_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. lane_id, lane_name).",
+  "genie_instructions": "You are a logistics analytics assistant for CargoSight Analytics. Answer questions about load demand forecasting and shipment volume prediction using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (lane_id, lane_name), query the base tables directly.\n- When joining tables, use the shared keys: lane_id (shared across capacity_snapshots, demand_forecasts, shipment_orders).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total freight revenue count?",
     "How has total weight delivered lbs count changed over time?",
@@ -774,7 +943,7 @@
       ]
     },
     {
-      "question": "How does total shipment weight in pounds break down by shipping lane identifier for 'Delayed' records?",
+      "question": "How does total shipment weight in pounds break down by shipping lane for 'Delayed' records?",
       "sql_lines": [
         "SELECT lane_id, COUNT(*) AS record_count, SUM(weight_lbs) AS total_weight_lbs",
         "FROM {fqn}.shipment_orders",
@@ -937,7 +1106,7 @@
       ]
     },
     {
-      "question": "What are the top shipping lane identifier by total shipment weight in pounds?",
+      "question": "What are the top shipping lane by total shipment weight in pounds?",
       "sql_lines": [
         "SELECT lane_id, SUM(weight_lbs) AS total_weight_lbs",
         "FROM {fqn}.shipment_orders",

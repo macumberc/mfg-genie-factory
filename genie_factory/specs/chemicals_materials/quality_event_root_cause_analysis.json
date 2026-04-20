@@ -29,49 +29,126 @@
           "sql_type": "STRING",
           "comment": "Chemical product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PC-001",
+            "PC-002",
+            "PC-003",
+            "PC-004",
+            "PC-005",
+            "PC-006",
+            "PC-007",
+            "PC-008",
+            "PC-009",
+            "PC-010",
+            "PC-011",
+            "PC-012",
+            "PC-013",
+            "PC-014",
+            "PC-015",
+            "PC-016",
+            "PC-017",
+            "PC-018",
+            "PC-019",
+            "PC-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Chemical product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sulfuric Acid 98%",
+            "Hydrochloric Acid 32%",
+            "Nitric Acid 68%",
+            "Phosphoric Acid 85%",
+            "Sodium Hydroxide 50%",
+            "Potassium Hydroxide 45%",
+            "Calcium Hydroxide Slurry",
+            "Ammonia Solution 25%",
+            "Industrial Acetone",
+            "Methanol Technical Grade",
+            "Toluene High Purity",
+            "Ethyl Acetate",
+            "Polyethylene Resin HD",
+            "Polypropylene Granules",
+            "PVC Compound K67",
+            "Nylon 6,6 Chips",
+            "Titanium Dioxide R-902",
+            "Silica Gel Desiccant",
+            "Activated Carbon Pellets",
+            "Zinc Oxide Nano Powder"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category: Acids, Bases, Solvents, Polymers, Specialty",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Acids",
+            "Bases",
+            "Solvents",
+            "Polymers",
+            "Specialty"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Production line where event occurred",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Line-A1' WHEN {status_noise} < 0.33 THEN 'Line-A2' WHEN {status_noise} < 0.50 THEN 'Line-B1' WHEN {status_noise} < 0.67 THEN 'Line-B2' WHEN {status_noise} < 0.83 THEN 'Line-C1' ELSE 'Line-C2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Line-A1' WHEN {status_noise} < 0.33 THEN 'Line-A2' WHEN {status_noise} < 0.50 THEN 'Line-B1' WHEN {status_noise} < 0.67 THEN 'Line-B2' WHEN {status_noise} < 0.83 THEN 'Line-C1' ELSE 'Line-C2' END",
+          "entity_values": [
+            "Line-A1",
+            "Line-A2",
+            "Line-B1",
+            "Line-B2",
+            "Line-C1",
+            "Line-C2"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Type: Deviation, Non-Conformance, Customer Complaint, Audit Finding",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Deviation' WHEN {status_noise} < 0.65 THEN 'Non-Conformance' WHEN {status_noise} < 0.85 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Deviation' WHEN {status_noise} < 0.65 THEN 'Non-Conformance' WHEN {status_noise} < 0.85 THEN 'Customer Complaint' ELSE 'Audit Finding' END",
+          "entity_values": [
+            "Deviation",
+            "Non-Conformance",
+            "Customer Complaint",
+            "Audit Finding"
+          ]
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Critical, Major, Minor",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.35 THEN 'Major' ELSE 'Minor' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.35 THEN 'Major' ELSE 'Minor' END",
+          "entity_values": [
+            "Critical",
+            "Major",
+            "Minor"
+          ]
         },
         {
           "name": "root_cause_category",
           "sql_type": "STRING",
           "comment": "Root cause: Equipment, Process, Material, Human Error, Environmental",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Equipment' WHEN {status_noise} < 0.50 THEN 'Process' WHEN {status_noise} < 0.70 THEN 'Material' WHEN {status_noise} < 0.88 THEN 'Human Error' ELSE 'Environmental' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Equipment' WHEN {status_noise} < 0.50 THEN 'Process' WHEN {status_noise} < 0.70 THEN 'Material' WHEN {status_noise} < 0.88 THEN 'Human Error' ELSE 'Environmental' END",
+          "entity_values": [
+            "Equipment",
+            "Process",
+            "Material",
+            "Human Error",
+            "Environmental"
+          ]
         },
         {
           "name": "cost_of_quality_usd",
@@ -92,7 +169,13 @@
           "sql_type": "STRING",
           "comment": "CAPA status: Open, In Progress, Closed Effective, Closed Ineffective",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Open' WHEN {status_noise} < 0.25 THEN 'In Progress' WHEN {status_noise} < 0.90 THEN 'Closed Effective' ELSE 'Closed Ineffective' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Open' WHEN {status_noise} < 0.25 THEN 'In Progress' WHEN {status_noise} < 0.90 THEN 'Closed Effective' ELSE 'Closed Ineffective' END",
+          "entity_values": [
+            "Open",
+            "In Progress",
+            "Closed Effective",
+            "Closed Ineffective"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -246,28 +329,87 @@
           "sql_type": "STRING",
           "comment": "Chemical product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PC-001",
+            "PC-002",
+            "PC-003",
+            "PC-004",
+            "PC-005",
+            "PC-006",
+            "PC-007",
+            "PC-008",
+            "PC-009",
+            "PC-010",
+            "PC-011",
+            "PC-012",
+            "PC-013",
+            "PC-014",
+            "PC-015",
+            "PC-016",
+            "PC-017",
+            "PC-018",
+            "PC-019",
+            "PC-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Chemical product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sulfuric Acid 98%",
+            "Hydrochloric Acid 32%",
+            "Nitric Acid 68%",
+            "Phosphoric Acid 85%",
+            "Sodium Hydroxide 50%",
+            "Potassium Hydroxide 45%",
+            "Calcium Hydroxide Slurry",
+            "Ammonia Solution 25%",
+            "Industrial Acetone",
+            "Methanol Technical Grade",
+            "Toluene High Purity",
+            "Ethyl Acetate",
+            "Polyethylene Resin HD",
+            "Polypropylene Granules",
+            "PVC Compound K67",
+            "Nylon 6,6 Chips",
+            "Titanium Dioxide R-902",
+            "Silica Gel Desiccant",
+            "Activated Carbon Pellets",
+            "Zinc Oxide Nano Powder"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Acids",
+            "Bases",
+            "Solvents",
+            "Polymers",
+            "Specialty"
+          ]
         },
         {
           "name": "production_line",
           "sql_type": "STRING",
           "comment": "Production line",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Line-A1' WHEN {status_noise} < 0.33 THEN 'Line-A2' WHEN {status_noise} < 0.50 THEN 'Line-B1' WHEN {status_noise} < 0.67 THEN 'Line-B2' WHEN {status_noise} < 0.83 THEN 'Line-C1' ELSE 'Line-C2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Line-A1' WHEN {status_noise} < 0.33 THEN 'Line-A2' WHEN {status_noise} < 0.50 THEN 'Line-B1' WHEN {status_noise} < 0.67 THEN 'Line-B2' WHEN {status_noise} < 0.83 THEN 'Line-C1' ELSE 'Line-C2' END",
+          "entity_values": [
+            "Line-A1",
+            "Line-A2",
+            "Line-B1",
+            "Line-B2",
+            "Line-C1",
+            "Line-C2"
+          ]
         },
         {
           "name": "batch_size_kg",
@@ -302,7 +444,12 @@
           "sql_type": "STRING",
           "comment": "Quality outcome: Pass, Conditional Pass, Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.06 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional Pass' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.06 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional Pass' ELSE 'Pass' END",
+          "entity_values": [
+            "Fail",
+            "Conditional Pass",
+            "Pass"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -440,21 +587,72 @@
           "sql_type": "STRING",
           "comment": "Chemical product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PC-001",
+            "PC-002",
+            "PC-003",
+            "PC-004",
+            "PC-005",
+            "PC-006",
+            "PC-007",
+            "PC-008",
+            "PC-009",
+            "PC-010",
+            "PC-011",
+            "PC-012",
+            "PC-013",
+            "PC-014",
+            "PC-015",
+            "PC-016",
+            "PC-017",
+            "PC-018",
+            "PC-019",
+            "PC-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Chemical product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sulfuric Acid 98%",
+            "Hydrochloric Acid 32%",
+            "Nitric Acid 68%",
+            "Phosphoric Acid 85%",
+            "Sodium Hydroxide 50%",
+            "Potassium Hydroxide 45%",
+            "Calcium Hydroxide Slurry",
+            "Ammonia Solution 25%",
+            "Industrial Acetone",
+            "Methanol Technical Grade",
+            "Toluene High Purity",
+            "Ethyl Acetate",
+            "Polyethylene Resin HD",
+            "Polypropylene Granules",
+            "PVC Compound K67",
+            "Nylon 6,6 Chips",
+            "Titanium Dioxide R-902",
+            "Silica Gel Desiccant",
+            "Activated Carbon Pellets",
+            "Zinc Oxide Nano Powder"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Acids",
+            "Bases",
+            "Solvents",
+            "Polymers",
+            "Specialty"
+          ]
         },
         {
           "name": "total_events",
@@ -757,7 +955,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The quality_events_metrics view (source: quality_events) has dimensions: event_date, product_category, production_line, event_type, severity, root_cause_category. Measures: total_quality_events, critical_event_count, total_cost_of_quality_usd, avg_resolution_days, closed_effective_count, open_event_count. The quality_kpi_monthly_metrics view (source: quality_kpi_monthly) has dimensions: report_month, product_category, product_id. Measures: total_monthly_events, total_critical_events, avg_capa_closure_rate, total_monthly_coq_usd, avg_batch_pass_rate. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name).",
+  "genie_instructions": "You are a chemicals & materials analytics assistant for PureChem Analytics. Answer questions about quality event tracking and root cause analysis for chemical manufacturing using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_name), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across batch_records, quality_events, quality_kpi_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in critical event count?",
     "How has closed effective count changed over time?",
@@ -796,7 +994,7 @@
       ]
     },
     {
-      "question": "How does total estimated cost of the quality event in usd break down by chemical product identifier for 'Open' records?",
+      "question": "How does total estimated cost of the quality event in usd break down by chemical product for 'Open' records?",
       "sql_lines": [
         "SELECT product_id, COUNT(*) AS record_count, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",
@@ -970,7 +1168,7 @@
       ]
     },
     {
-      "question": "What are the top chemical product identifier by total estimated cost of the quality event in usd?",
+      "question": "What are the top chemical product by total estimated cost of the quality event in usd?",
       "sql_lines": [
         "SELECT product_id, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",

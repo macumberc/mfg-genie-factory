@@ -29,35 +29,109 @@
           "sql_type": "STRING",
           "comment": "Equipment ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WG-TD-001",
+            "WG-TD-002",
+            "WG-MP-003",
+            "WG-MP-004",
+            "WG-DW-005",
+            "WG-DW-006",
+            "WG-BOP-007",
+            "WG-BOP-008",
+            "WG-RK-009",
+            "WG-RK-010",
+            "WG-GEN-011",
+            "WG-GEN-012",
+            "WG-CMP-013",
+            "WG-CMP-014",
+            "WG-ESP-015",
+            "WG-ESP-016",
+            "WG-SRP-017",
+            "WG-SRP-018",
+            "WG-HYD-019",
+            "WG-SCR-020"
+          ]
         },
         {
           "name": "equipment_name",
           "sql_type": "STRING",
           "comment": "Equipment name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Top Drive Unit 1",
+            "Top Drive Unit 2",
+            "Mud Pump Triplex A",
+            "Mud Pump Triplex B",
+            "Drawworks Main",
+            "Drawworks Aux",
+            "BOP Stack Rig 1",
+            "BOP Stack Rig 2",
+            "Rotary Kelly Bushing",
+            "Power Swivel Unit",
+            "Diesel Generator Set 1",
+            "Diesel Generator Set 2",
+            "Air Compressor Main",
+            "Gas Lift Compressor",
+            "ESP Well P-101",
+            "ESP Well P-205",
+            "Sucker Rod Pump W-301",
+            "Sucker Rod Pump W-412",
+            "Hydraulic Power Unit",
+            "SCR Drive System"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Top Drive",
+            "Mud Pump",
+            "Drawworks",
+            "BOP",
+            "Rotary Equipment",
+            "Power Generation",
+            "Compressor",
+            "ESP",
+            "Rod Pump",
+            "Hydraulic",
+            "Electrical"
+          ]
         },
         {
           "name": "field_name",
           "sql_type": "STRING",
           "comment": "Field name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Bakken",
+            "Haynesville",
+            "Marcellus"
+          ]
         },
         {
           "name": "sensor_type",
           "sql_type": "STRING",
           "comment": "Sensor type",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Vibration' WHEN {status_noise} < 0.24 THEN 'Temperature' WHEN {status_noise} < 0.36 THEN 'Pressure' WHEN {status_noise} < 0.48 THEN 'RPM' WHEN {status_noise} < 0.60 THEN 'Torque' WHEN {status_noise} < 0.72 THEN 'Motor Current' WHEN {status_noise} < 0.84 THEN 'Flow Rate' ELSE 'Acoustic' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Vibration' WHEN {status_noise} < 0.24 THEN 'Temperature' WHEN {status_noise} < 0.36 THEN 'Pressure' WHEN {status_noise} < 0.48 THEN 'RPM' WHEN {status_noise} < 0.60 THEN 'Torque' WHEN {status_noise} < 0.72 THEN 'Motor Current' WHEN {status_noise} < 0.84 THEN 'Flow Rate' ELSE 'Acoustic' END",
+          "entity_values": [
+            "Vibration",
+            "Temperature",
+            "Pressure",
+            "RPM",
+            "Torque",
+            "Motor Current",
+            "Flow Rate",
+            "Acoustic"
+          ]
         },
         {
           "name": "sensor_value",
@@ -78,7 +152,14 @@
           "sql_type": "STRING",
           "comment": "Alert: Normal, Advisory, Warning, Alarm, Trip",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END",
+          "entity_values": [
+            "Normal",
+            "Advisory",
+            "Warning",
+            "Alarm",
+            "Trip"
+          ]
         },
         {
           "name": "predicted_rul_days",
@@ -253,35 +334,107 @@
           "sql_type": "STRING",
           "comment": "Equipment ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WG-TD-001",
+            "WG-TD-002",
+            "WG-MP-003",
+            "WG-MP-004",
+            "WG-DW-005",
+            "WG-DW-006",
+            "WG-BOP-007",
+            "WG-BOP-008",
+            "WG-RK-009",
+            "WG-RK-010",
+            "WG-GEN-011",
+            "WG-GEN-012",
+            "WG-CMP-013",
+            "WG-CMP-014",
+            "WG-ESP-015",
+            "WG-ESP-016",
+            "WG-SRP-017",
+            "WG-SRP-018",
+            "WG-HYD-019",
+            "WG-SCR-020"
+          ]
         },
         {
           "name": "equipment_name",
           "sql_type": "STRING",
           "comment": "Equipment name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Top Drive Unit 1",
+            "Top Drive Unit 2",
+            "Mud Pump Triplex A",
+            "Mud Pump Triplex B",
+            "Drawworks Main",
+            "Drawworks Aux",
+            "BOP Stack Rig 1",
+            "BOP Stack Rig 2",
+            "Rotary Kelly Bushing",
+            "Power Swivel Unit",
+            "Diesel Generator Set 1",
+            "Diesel Generator Set 2",
+            "Air Compressor Main",
+            "Gas Lift Compressor",
+            "ESP Well P-101",
+            "ESP Well P-205",
+            "Sucker Rod Pump W-301",
+            "Sucker Rod Pump W-412",
+            "Hydraulic Power Unit",
+            "SCR Drive System"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Top Drive",
+            "Mud Pump",
+            "Drawworks",
+            "BOP",
+            "Rotary Equipment",
+            "Power Generation",
+            "Compressor",
+            "ESP",
+            "Rod Pump",
+            "Hydraulic",
+            "Electrical"
+          ]
         },
         {
           "name": "field_name",
           "sql_type": "STRING",
           "comment": "Field name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Bakken",
+            "Haynesville",
+            "Marcellus"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Type: Planned PM, Predictive, Corrective, Emergency, Rig Move, Overhaul",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.28 THEN 'Planned PM' WHEN {status_noise} < 0.50 THEN 'Predictive' WHEN {status_noise} < 0.68 THEN 'Corrective' WHEN {status_noise} < 0.80 THEN 'Emergency' WHEN {status_noise} < 0.90 THEN 'Rig Move' ELSE 'Overhaul' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.28 THEN 'Planned PM' WHEN {status_noise} < 0.50 THEN 'Predictive' WHEN {status_noise} < 0.68 THEN 'Corrective' WHEN {status_noise} < 0.80 THEN 'Emergency' WHEN {status_noise} < 0.90 THEN 'Rig Move' ELSE 'Overhaul' END",
+          "entity_values": [
+            "Planned PM",
+            "Predictive",
+            "Corrective",
+            "Emergency",
+            "Rig Move",
+            "Overhaul"
+          ]
         },
         {
           "name": "was_predicted",
@@ -469,21 +622,63 @@
           "sql_type": "STRING",
           "comment": "Equipment ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WG-TD-001",
+            "WG-TD-002",
+            "WG-MP-003",
+            "WG-MP-004",
+            "WG-DW-005",
+            "WG-DW-006",
+            "WG-BOP-007",
+            "WG-BOP-008",
+            "WG-RK-009",
+            "WG-RK-010",
+            "WG-GEN-011",
+            "WG-GEN-012",
+            "WG-CMP-013",
+            "WG-CMP-014",
+            "WG-ESP-015",
+            "WG-ESP-016",
+            "WG-SRP-017",
+            "WG-SRP-018",
+            "WG-HYD-019",
+            "WG-SCR-020"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Top Drive",
+            "Mud Pump",
+            "Drawworks",
+            "BOP",
+            "Rotary Equipment",
+            "Power Generation",
+            "Compressor",
+            "ESP",
+            "Rod Pump",
+            "Hydraulic",
+            "Electrical"
+          ]
         },
         {
           "name": "field_name",
           "sql_type": "STRING",
           "comment": "Field name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Basin",
+            "Eagle Ford",
+            "Bakken",
+            "Haynesville",
+            "Marcellus"
+          ]
         },
         {
           "name": "avg_health_score",
@@ -737,7 +932,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_date, equipment_id, equipment_type, field_name, alert_level. Measures: avg_health_score, min_rul_days, alarm_trip_count, total_readings. The maintenance_events_metrics view (source: maintenance_events) has dimensions: event_date, equipment_id, equipment_type, field_name, event_type, was_predicted. Measures: total_events, total_downtime_hours, total_repair_cost_usd, total_production_loss_bbl. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_name).",
+  "genie_instructions": "You are an oil & gas upstream analytics assistant for WellGuard Upstream. Answer questions about predictive maintenance for drilling and production equipment using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (equipment_name), query the base tables directly.\n- When joining tables, use the shared keys: equipment_id (shared across equipment_health_monthly, maintenance_events, sensor_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in alarm trip count?",
     "How has unique total readingss changed over time?",

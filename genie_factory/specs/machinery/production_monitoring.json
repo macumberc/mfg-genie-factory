@@ -29,21 +29,55 @@
           "sql_type": "STRING",
           "comment": "Production line identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-ASM-001",
+            "FP-ASM-002",
+            "FP-ASM-003",
+            "FP-ASM-004",
+            "FP-WLD-005",
+            "FP-WLD-006",
+            "FP-WLD-007",
+            "FP-WLD-008",
+            "FP-PNT-009",
+            "FP-PNT-010",
+            "FP-PNT-011",
+            "FP-PNT-012",
+            "FP-MCH-013",
+            "FP-MCH-014",
+            "FP-MCH-015",
+            "FP-MCH-016",
+            "FP-PKG-017",
+            "FP-PKG-018",
+            "FP-PKG-019",
+            "FP-PKG-020"
+          ]
         },
         {
           "name": "line_type",
           "sql_type": "STRING",
           "comment": "Production line type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Assembly",
+            "Welding",
+            "Painting",
+            "Machining",
+            "Packaging"
+          ]
         },
         {
           "name": "shift",
           "sql_type": "STRING",
           "comment": "Shift: Day, Swing, Night",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Day' WHEN {status_noise} < 0.72 THEN 'Swing' ELSE 'Night' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Day' WHEN {status_noise} < 0.72 THEN 'Swing' ELSE 'Night' END",
+          "entity_values": [
+            "Day",
+            "Swing",
+            "Night"
+          ]
         },
         {
           "name": "planned_qty",
@@ -233,21 +267,56 @@
           "sql_type": "STRING",
           "comment": "Production line identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-ASM-001",
+            "FP-ASM-002",
+            "FP-ASM-003",
+            "FP-ASM-004",
+            "FP-WLD-005",
+            "FP-WLD-006",
+            "FP-WLD-007",
+            "FP-WLD-008",
+            "FP-PNT-009",
+            "FP-PNT-010",
+            "FP-PNT-011",
+            "FP-PNT-012",
+            "FP-MCH-013",
+            "FP-MCH-014",
+            "FP-MCH-015",
+            "FP-MCH-016",
+            "FP-PKG-017",
+            "FP-PKG-018",
+            "FP-PKG-019",
+            "FP-PKG-020"
+          ]
         },
         {
           "name": "line_type",
           "sql_type": "STRING",
           "comment": "Production line type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Assembly",
+            "Welding",
+            "Painting",
+            "Machining",
+            "Packaging"
+          ]
         },
         {
           "name": "line_status",
           "sql_type": "STRING",
           "comment": "Line status: Running, Idle, Down, Changeover",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Running' WHEN {status_noise} < 0.78 THEN 'Idle' WHEN {status_noise} < 0.90 THEN 'Down' ELSE 'Changeover' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Running' WHEN {status_noise} < 0.78 THEN 'Idle' WHEN {status_noise} < 0.90 THEN 'Down' ELSE 'Changeover' END",
+          "entity_values": [
+            "Running",
+            "Idle",
+            "Down",
+            "Changeover"
+          ]
         },
         {
           "name": "speed_pct",
@@ -437,14 +506,43 @@
           "sql_type": "STRING",
           "comment": "Production line identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FP-ASM-001",
+            "FP-ASM-002",
+            "FP-ASM-003",
+            "FP-ASM-004",
+            "FP-WLD-005",
+            "FP-WLD-006",
+            "FP-WLD-007",
+            "FP-WLD-008",
+            "FP-PNT-009",
+            "FP-PNT-010",
+            "FP-PNT-011",
+            "FP-PNT-012",
+            "FP-MCH-013",
+            "FP-MCH-014",
+            "FP-MCH-015",
+            "FP-MCH-016",
+            "FP-PKG-017",
+            "FP-PKG-018",
+            "FP-PKG-019",
+            "FP-PKG-020"
+          ]
         },
         {
           "name": "line_type",
           "sql_type": "STRING",
           "comment": "Production line type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Assembly",
+            "Welding",
+            "Painting",
+            "Machining",
+            "Packaging"
+          ]
         },
         {
           "name": "availability_pct",
@@ -732,7 +830,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_runs_metrics view (source: production_runs) has dimensions: run_date, line_type, shift. Measures: total_actual_qty, total_reject_qty, avg_cycle_time, total_downtime_min. The oee_metrics view (source: oee_monthly) has dimensions: oee_month, line_type. Measures: avg_oee, avg_availability, avg_quality, total_output. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. line_id).",
+  "genie_instructions": "You are a machinery analytics assistant for FactoryPulse Systems. Answer questions about production monitoring and OEE optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (line_id), query the base tables directly.\n- When joining tables, use the shared keys: line_id (shared across line_status_snapshots, oee_monthly, production_runs).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique lines?",
     "How has highest planned qty changed over time?",
@@ -939,7 +1037,7 @@
       ]
     },
     {
-      "question": "What are the top production line identifier by total planned production quantity?",
+      "question": "What are the top production line by total planned production quantity?",
       "sql_lines": [
         "SELECT line_id, SUM(planned_qty) AS total_planned_qty",
         "FROM {fqn}.production_runs",

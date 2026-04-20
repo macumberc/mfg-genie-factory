@@ -29,28 +29,88 @@
           "sql_type": "STRING",
           "comment": "Rail corridor identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RC-NE-001",
+            "RC-NE-002",
+            "RC-SE-003",
+            "RC-SE-004",
+            "RC-MW-005",
+            "RC-MW-006",
+            "RC-MW-007",
+            "RC-SW-008",
+            "RC-SW-009",
+            "RC-WE-010",
+            "RC-WE-011",
+            "RC-WE-012",
+            "RC-MT-013",
+            "RC-MT-014",
+            "RC-CP-015",
+            "RC-CP-016",
+            "RC-XB-017",
+            "RC-XB-018",
+            "RC-NW-019",
+            "RC-NW-020"
+          ]
         },
         {
           "name": "corridor_name",
           "sql_type": "STRING",
           "comment": "Corridor name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast Corridor Express",
+            "Boston-Albany Freight Line",
+            "Southeast Coastal Route",
+            "Atlanta-Jacksonville Trunk",
+            "Chicago Hub Terminal",
+            "Great Lakes Iron Ore Route",
+            "Plains Grain Corridor",
+            "Texas Triangle Route",
+            "Gulf Coast Petrochemical",
+            "Pacific Coast Mainline",
+            "Cascade Range Timber Route",
+            "LA-Long Beach Port Corridor",
+            "Powder River Coal Basin",
+            "Rocky Mountain Pass",
+            "Central Plains Grain Belt",
+            "Mississippi River Gateway",
+            "Laredo Cross-Border",
+            "El Paso International",
+            "Pacific NW Export Route",
+            "Columbia River Corridor"
+          ]
         },
         {
           "name": "corridor_type",
           "sql_type": "STRING",
           "comment": "Type: Intermodal, Bulk, Manifest",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Intermodal",
+            "Bulk",
+            "Manifest"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Operating region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Mountain",
+            "Central",
+            "Cross-Border",
+            "Northwest"
+          ]
         },
         {
           "name": "trains_count",
@@ -244,21 +304,59 @@
           "sql_type": "STRING",
           "comment": "Corridor identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RC-NE-001",
+            "RC-NE-002",
+            "RC-SE-003",
+            "RC-SE-004",
+            "RC-MW-005",
+            "RC-MW-006",
+            "RC-MW-007",
+            "RC-SW-008",
+            "RC-SW-009",
+            "RC-WE-010",
+            "RC-WE-011",
+            "RC-WE-012",
+            "RC-MT-013",
+            "RC-MT-014",
+            "RC-CP-015",
+            "RC-CP-016",
+            "RC-XB-017",
+            "RC-XB-018",
+            "RC-NW-019",
+            "RC-NW-020"
+          ]
         },
         {
           "name": "corridor_type",
           "sql_type": "STRING",
           "comment": "Corridor type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Intermodal",
+            "Bulk",
+            "Manifest"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Mountain",
+            "Central",
+            "Cross-Border",
+            "Northwest"
+          ]
         },
         {
           "name": "on_time_pct",
@@ -293,7 +391,13 @@
           "sql_type": "STRING",
           "comment": "Status: Fluid, Slow, Congested, Blocked",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Blocked' WHEN {status_noise} < 0.12 THEN 'Congested' WHEN {status_noise} < 0.28 THEN 'Slow' ELSE 'Fluid' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Blocked' WHEN {status_noise} < 0.12 THEN 'Congested' WHEN {status_noise} < 0.28 THEN 'Slow' ELSE 'Fluid' END",
+          "entity_values": [
+            "Blocked",
+            "Congested",
+            "Slow",
+            "Fluid"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -459,21 +563,59 @@
           "sql_type": "STRING",
           "comment": "Corridor identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RC-NE-001",
+            "RC-NE-002",
+            "RC-SE-003",
+            "RC-SE-004",
+            "RC-MW-005",
+            "RC-MW-006",
+            "RC-MW-007",
+            "RC-SW-008",
+            "RC-SW-009",
+            "RC-WE-010",
+            "RC-WE-011",
+            "RC-WE-012",
+            "RC-MT-013",
+            "RC-MT-014",
+            "RC-CP-015",
+            "RC-CP-016",
+            "RC-XB-017",
+            "RC-XB-018",
+            "RC-NW-019",
+            "RC-NW-020"
+          ]
         },
         {
           "name": "corridor_type",
           "sql_type": "STRING",
           "comment": "Corridor type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Intermodal",
+            "Bulk",
+            "Manifest"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West",
+            "Mountain",
+            "Central",
+            "Cross-Border",
+            "Northwest"
+          ]
         },
         {
           "name": "projected_trains_per_day",
@@ -508,7 +650,13 @@
           "sql_type": "STRING",
           "comment": "Risk: Low, Moderate, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.18 THEN 'High' WHEN {status_noise} < 0.40 THEN 'Moderate' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.18 THEN 'High' WHEN {status_noise} < 0.40 THEN 'Moderate' ELSE 'Low' END",
+          "entity_values": [
+            "Critical",
+            "High",
+            "Moderate",
+            "Low"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -768,7 +916,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The route_kpi_monthly view (source: rail_corridors) has dimensions: movement_date, corridor_type, region. Measures: total_gross_ton_miles, avg_velocity_mph, total_trains, avg_dwell_hours, corridor_count. The capacity_kpi_monthly view (source: corridor_snapshots) has dimensions: plan_month, corridor_type, region, capacity_risk. Measures: total_projected_gtm, total_capex_needed, avg_maintenance_days, high_risk_count, plan_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. corridor_id, corridor_name).",
+  "genie_instructions": "You are a railroad analytics assistant for RailRoute Logistics. Answer questions about railroad route planning and corridor capacity optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (corridor_id, corridor_name), query the base tables directly.\n- When joining tables, use the shared keys: corridor_id (shared across corridor_snapshots, rail_corridors, train_movements).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique corridors?",
     "How has highest trains count changed over time?",
@@ -967,7 +1115,7 @@
       ]
     },
     {
-      "question": "What are the top rail corridor identifier by total number of trains on corridor?",
+      "question": "What are the top rail corridor by total number of trains on corridor?",
       "sql_lines": [
         "SELECT corridor_id, SUM(trains_count) AS total_trains_count",
         "FROM {fqn}.rail_corridors",

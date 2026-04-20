@@ -29,28 +29,93 @@
           "sql_type": "STRING",
           "comment": "Freight lane identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FL-001",
+            "FL-002",
+            "FL-003",
+            "FL-004",
+            "FL-005",
+            "FL-006",
+            "FL-007",
+            "FL-008",
+            "FL-009",
+            "FL-010",
+            "FL-011",
+            "FL-012",
+            "FL-013",
+            "FL-014",
+            "FL-015",
+            "FL-016",
+            "FL-017",
+            "FL-018",
+            "FL-019",
+            "FL-020"
+          ]
         },
         {
           "name": "lane_name",
           "sql_type": "STRING",
           "comment": "Lane name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Chicago-LA Intermodal",
+            "NY-Atlanta Mixed",
+            "Houston-Chicago Petrochem",
+            "PRB-Midwest Coal",
+            "PNW-Asia Grain Export",
+            "LA Port-Inland Empire",
+            "Gulf-Northeast Chemicals",
+            "Midwest-Texas Auto",
+            "Atlanta-Miami Consumer",
+            "Denver-Kansas City Mixed",
+            "Seattle-Chicago Lumber",
+            "LA-Dallas Intermodal",
+            "Houston-Laredo Export",
+            "Chicago-NY Premium",
+            "PRB-Southeast Coal",
+            "Gulf-Midwest Plastics",
+            "PNW-California Agriculture",
+            "Northeast-Midwest Metals",
+            "Texas-Florida Consumer",
+            "Midwest-Gulf Grain"
+          ]
         },
         {
           "name": "commodity",
           "sql_type": "STRING",
           "comment": "Commodity type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Intermodal",
+            "General",
+            "Chemicals",
+            "Coal",
+            "Agricultural",
+            "Automotive",
+            "Forest Products",
+            "Metals"
+          ]
         },
         {
           "name": "origin_region",
           "sql_type": "STRING",
           "comment": "Origin region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Midwest",
+            "Northeast",
+            "Gulf Coast",
+            "Mountain",
+            "Northwest",
+            "West",
+            "Southeast",
+            "Southwest",
+            "Central"
+          ]
         },
         {
           "name": "carloads",
@@ -78,7 +143,13 @@
           "sql_type": "STRING",
           "comment": "Status: Delivered, In Transit, Delayed, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Cancelled' WHEN {status_noise} < 0.10 THEN 'Delayed' WHEN {status_noise} < 0.25 THEN 'In Transit' ELSE 'Delivered' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Cancelled' WHEN {status_noise} < 0.10 THEN 'Delayed' WHEN {status_noise} < 0.25 THEN 'In Transit' ELSE 'Delivered' END",
+          "entity_values": [
+            "Cancelled",
+            "Delayed",
+            "In Transit",
+            "Delivered"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -272,21 +343,64 @@
           "sql_type": "STRING",
           "comment": "Lane identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FL-001",
+            "FL-002",
+            "FL-003",
+            "FL-004",
+            "FL-005",
+            "FL-006",
+            "FL-007",
+            "FL-008",
+            "FL-009",
+            "FL-010",
+            "FL-011",
+            "FL-012",
+            "FL-013",
+            "FL-014",
+            "FL-015",
+            "FL-016",
+            "FL-017",
+            "FL-018",
+            "FL-019",
+            "FL-020"
+          ]
         },
         {
           "name": "commodity",
           "sql_type": "STRING",
           "comment": "Commodity",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Intermodal",
+            "General",
+            "Chemicals",
+            "Coal",
+            "Agricultural",
+            "Automotive",
+            "Forest Products",
+            "Metals"
+          ]
         },
         {
           "name": "origin_region",
           "sql_type": "STRING",
           "comment": "Origin",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Midwest",
+            "Northeast",
+            "Gulf Coast",
+            "Mountain",
+            "Northwest",
+            "West",
+            "Southeast",
+            "Southwest",
+            "Central"
+          ]
         },
         {
           "name": "bookings_count",
@@ -321,7 +435,13 @@
           "sql_type": "STRING",
           "comment": "Trend: Growing, Stable, Declining, Volatile",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Declining' WHEN {status_noise} < 0.30 THEN 'Volatile' WHEN {status_noise} < 0.60 THEN 'Stable' ELSE 'Growing' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Declining' WHEN {status_noise} < 0.30 THEN 'Volatile' WHEN {status_noise} < 0.60 THEN 'Stable' ELSE 'Growing' END",
+          "entity_values": [
+            "Declining",
+            "Volatile",
+            "Stable",
+            "Growing"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -515,21 +635,64 @@
           "sql_type": "STRING",
           "comment": "Lane identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FL-001",
+            "FL-002",
+            "FL-003",
+            "FL-004",
+            "FL-005",
+            "FL-006",
+            "FL-007",
+            "FL-008",
+            "FL-009",
+            "FL-010",
+            "FL-011",
+            "FL-012",
+            "FL-013",
+            "FL-014",
+            "FL-015",
+            "FL-016",
+            "FL-017",
+            "FL-018",
+            "FL-019",
+            "FL-020"
+          ]
         },
         {
           "name": "commodity",
           "sql_type": "STRING",
           "comment": "Commodity",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Intermodal",
+            "General",
+            "Chemicals",
+            "Coal",
+            "Agricultural",
+            "Automotive",
+            "Forest Products",
+            "Metals"
+          ]
         },
         {
           "name": "origin_region",
           "sql_type": "STRING",
           "comment": "Origin",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Midwest",
+            "Northeast",
+            "Gulf Coast",
+            "Mountain",
+            "Northwest",
+            "West",
+            "Southeast",
+            "Southwest",
+            "Central"
+          ]
         },
         {
           "name": "forecasted_carloads",
@@ -564,7 +727,12 @@
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v1.0' WHEN {status_noise} < 0.65 THEN 'v1.1' ELSE 'v1.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'v1.0' WHEN {status_noise} < 0.65 THEN 'v1.1' ELSE 'v1.2' END",
+          "entity_values": [
+            "v1.0",
+            "v1.1",
+            "v1.2"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -856,7 +1024,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The freight_kpi_monthly view (source: shipping_lanes) has dimensions: shipment_date, commodity, origin_region, shipment_status. Measures: total_carloads, total_revenue, avg_transit_days, shipment_count, delayed_count. The forecast_kpi_monthly view (source: demand_forecasts) has dimensions: forecast_month, commodity, origin_region, model_version. Measures: total_forecasted_carloads, total_actual_carloads, avg_forecast_error, total_forecasted_revenue, forecast_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. lane_id, lane_name).",
+  "genie_instructions": "You are a railroad analytics assistant for FreightSight Analytics. Answer questions about railroad freight demand forecasting and lane optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (lane_id, lane_name), query the base tables directly.\n- When joining tables, use the shared keys: lane_id (shared across demand_forecasts, freight_orders, shipping_lanes).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in delayed count?",
     "How has unique shipments changed over time?",
@@ -904,7 +1072,7 @@
       ]
     },
     {
-      "question": "How does total number of carloads break down by freight lane identifier for 'Delayed' records?",
+      "question": "How does total number of carloads break down by freight lane for 'Delayed' records?",
       "sql_lines": [
         "SELECT lane_id, COUNT(*) AS record_count, SUM(carloads) AS total_carloads",
         "FROM {fqn}.shipping_lanes",
@@ -1054,7 +1222,7 @@
       ]
     },
     {
-      "question": "What are the top freight lane identifier by total number of carloads?",
+      "question": "What are the top freight lane by total number of carloads?",
       "sql_lines": [
         "SELECT lane_id, SUM(carloads) AS total_carloads",
         "FROM {fqn}.shipping_lanes",

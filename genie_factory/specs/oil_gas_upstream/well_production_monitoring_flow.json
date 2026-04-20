@@ -29,28 +29,89 @@
           "sql_type": "STRING",
           "comment": "Well ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WF-001",
+            "WF-002",
+            "WF-003",
+            "WF-004",
+            "WF-005",
+            "WF-006",
+            "WF-007",
+            "WF-008",
+            "WF-009",
+            "WF-010",
+            "WF-011",
+            "WF-012",
+            "WF-013",
+            "WF-014",
+            "WF-015",
+            "WF-016",
+            "WF-017",
+            "WF-018",
+            "WF-019",
+            "WF-020"
+          ]
         },
         {
           "name": "well_name",
           "sql_type": "STRING",
           "comment": "Well name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp H-1",
+            "Wolfcamp H-2",
+            "Wolfcamp H-3",
+            "Bone Spring H-1",
+            "Bone Spring H-2",
+            "Eagle Ford H-1",
+            "Eagle Ford H-2",
+            "Spraberry V-1",
+            "Spraberry V-2",
+            "Niobrara H-1",
+            "Niobrara H-2",
+            "Bakken H-1",
+            "Bakken TF-1",
+            "Haynesville H-1",
+            "Marcellus H-1",
+            "Utica H-1",
+            "Woodford H-1",
+            "SCOOP H-1",
+            "San Andres V-1",
+            "Permian Infill H-1"
+          ]
         },
         {
           "name": "well_type",
           "sql_type": "STRING",
           "comment": "Type: Horizontal, Vertical",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Horizontal",
+            "Vertical"
+          ]
         },
         {
           "name": "pad_name",
           "sql_type": "STRING",
           "comment": "Pad name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pad Alpha",
+            "Pad Bravo",
+            "Pad Charlie",
+            "Pad Delta",
+            "Pad Echo",
+            "Pad Foxtrot",
+            "Pad Golf",
+            "Pad Hotel",
+            "Pad India",
+            "Pad Juliet",
+            "Pad Kilo"
+          ]
         },
         {
           "name": "oil_bpd",
@@ -92,7 +153,14 @@
           "sql_type": "STRING",
           "comment": "Status: Flowing, Shut-In, Workover, Completion, Abandoned",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Flowing' WHEN {status_noise} < 0.82 THEN 'Shut-In' WHEN {status_noise} < 0.90 THEN 'Workover' WHEN {status_noise} < 0.96 THEN 'Completion' ELSE 'Abandoned' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Flowing' WHEN {status_noise} < 0.82 THEN 'Shut-In' WHEN {status_noise} < 0.90 THEN 'Workover' WHEN {status_noise} < 0.96 THEN 'Completion' ELSE 'Abandoned' END",
+          "entity_values": [
+            "Flowing",
+            "Shut-In",
+            "Workover",
+            "Completion",
+            "Abandoned"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -251,28 +319,89 @@
           "sql_type": "STRING",
           "comment": "Well ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WF-001",
+            "WF-002",
+            "WF-003",
+            "WF-004",
+            "WF-005",
+            "WF-006",
+            "WF-007",
+            "WF-008",
+            "WF-009",
+            "WF-010",
+            "WF-011",
+            "WF-012",
+            "WF-013",
+            "WF-014",
+            "WF-015",
+            "WF-016",
+            "WF-017",
+            "WF-018",
+            "WF-019",
+            "WF-020"
+          ]
         },
         {
           "name": "well_name",
           "sql_type": "STRING",
           "comment": "Well name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Wolfcamp H-1",
+            "Wolfcamp H-2",
+            "Wolfcamp H-3",
+            "Bone Spring H-1",
+            "Bone Spring H-2",
+            "Eagle Ford H-1",
+            "Eagle Ford H-2",
+            "Spraberry V-1",
+            "Spraberry V-2",
+            "Niobrara H-1",
+            "Niobrara H-2",
+            "Bakken H-1",
+            "Bakken TF-1",
+            "Haynesville H-1",
+            "Marcellus H-1",
+            "Utica H-1",
+            "Woodford H-1",
+            "SCOOP H-1",
+            "San Andres V-1",
+            "Permian Infill H-1"
+          ]
         },
         {
           "name": "well_type",
           "sql_type": "STRING",
           "comment": "Well type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Horizontal",
+            "Vertical"
+          ]
         },
         {
           "name": "pad_name",
           "sql_type": "STRING",
           "comment": "Pad name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pad Alpha",
+            "Pad Bravo",
+            "Pad Charlie",
+            "Pad Delta",
+            "Pad Echo",
+            "Pad Foxtrot",
+            "Pad Golf",
+            "Pad Hotel",
+            "Pad India",
+            "Pad Juliet",
+            "Pad Kilo"
+          ]
         },
         {
           "name": "cumulative_oil_bbl",
@@ -462,21 +591,60 @@
           "sql_type": "STRING",
           "comment": "Well ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "WF-001",
+            "WF-002",
+            "WF-003",
+            "WF-004",
+            "WF-005",
+            "WF-006",
+            "WF-007",
+            "WF-008",
+            "WF-009",
+            "WF-010",
+            "WF-011",
+            "WF-012",
+            "WF-013",
+            "WF-014",
+            "WF-015",
+            "WF-016",
+            "WF-017",
+            "WF-018",
+            "WF-019",
+            "WF-020"
+          ]
         },
         {
           "name": "well_type",
           "sql_type": "STRING",
           "comment": "Well type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Horizontal",
+            "Vertical"
+          ]
         },
         {
           "name": "pad_name",
           "sql_type": "STRING",
           "comment": "Pad name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pad Alpha",
+            "Pad Bravo",
+            "Pad Charlie",
+            "Pad Delta",
+            "Pad Echo",
+            "Pad Foxtrot",
+            "Pad Golf",
+            "Pad Hotel",
+            "Pad India",
+            "Pad Juliet",
+            "Pad Kilo"
+          ]
         },
         {
           "name": "monthly_oil_bbl",
@@ -731,7 +899,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_readings_metrics view (source: production_readings) has dimensions: reading_date, well_id, well_type, pad_name, well_status. Measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_tubing_pressure. The well_status_snapshots_metrics view (source: well_status_snapshots) has dimensions: snapshot_date, well_id, well_type, pad_name. Measures: avg_water_cut, avg_uptime_pct, avg_lift_efficiency, total_cumulative_oil. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. well_name).",
+  "genie_instructions": "You are an oil & gas upstream analytics assistant for WellFlow Monitoring. Answer questions about well production monitoring and flow optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (well_name), query the base tables directly.\n- When joining tables, use the shared keys: well_id (shared across production_kpi_monthly, production_readings, well_status_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in highest oil bpd?",
     "How has total casing pressure psi changed over time?",

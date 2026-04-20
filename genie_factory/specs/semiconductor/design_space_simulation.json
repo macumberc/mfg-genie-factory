@@ -29,21 +29,72 @@
           "sql_type": "STRING",
           "comment": "Chip design identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SP-AP-001",
+            "SP-AP-002",
+            "SP-AP-003",
+            "SP-AP-004",
+            "SP-AI-001",
+            "SP-AI-002",
+            "SP-AI-003",
+            "SP-AI-004",
+            "SP-RF-001",
+            "SP-RF-002",
+            "SP-RF-003",
+            "SP-RF-004",
+            "SP-IO-001",
+            "SP-IO-002",
+            "SP-IO-003",
+            "SP-IO-004",
+            "SP-PM-001",
+            "SP-PM-002",
+            "SP-PM-003",
+            "SP-PM-004"
+          ]
         },
         {
           "name": "design_name",
           "sql_type": "STRING",
           "comment": "Human-readable chip design name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Orion-7 Application Processor",
+            "Orion-5 Mobile SoC",
+            "Orion-3 Ultra-Low-Power SoC",
+            "Orion-9 Server Processor",
+            "TensorCore T100 NPU",
+            "TensorCore T200 Training ASIC",
+            "TensorCore T50 Edge Inference",
+            "TensorCore T300 HPC Accelerator",
+            "WaveLink 5G Modem",
+            "WaveLink WiFi7 Baseband",
+            "WaveLink Satellite Transceiver",
+            "WaveLink V2X Modem",
+            "PicoNode IoT Controller M0",
+            "PicoNode IoT Controller M4",
+            "PicoNode Sensor Hub",
+            "PicoNode BLE SoC",
+            "VoltEdge GaN PMIC",
+            "VoltEdge SiC Gate Driver",
+            "VoltEdge Multi-Rail PMIC",
+            "VoltEdge USB-PD Controller"
+          ]
         },
         {
           "name": "design_family",
           "sql_type": "STRING",
           "comment": "Design family grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Application Processor",
+            "AI Accelerator",
+            "RF Modem",
+            "IoT Controller",
+            "Power Management"
+          ]
         },
         {
           "name": "target_node_nm",
@@ -92,7 +143,13 @@
           "sql_type": "STRING",
           "comment": "Simulation completion status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Completed' WHEN {status_noise} < 0.80 THEN 'Timing Fail' WHEN {status_noise} < 0.90 THEN 'DRC Fail' ELSE 'Aborted' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Completed' WHEN {status_noise} < 0.80 THEN 'Timing Fail' WHEN {status_noise} < 0.90 THEN 'DRC Fail' ELSE 'Aborted' END",
+          "entity_values": [
+            "Completed",
+            "Timing Fail",
+            "DRC Fail",
+            "Aborted"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -241,21 +298,72 @@
           "sql_type": "STRING",
           "comment": "Chip design identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SP-AP-001",
+            "SP-AP-002",
+            "SP-AP-003",
+            "SP-AP-004",
+            "SP-AI-001",
+            "SP-AI-002",
+            "SP-AI-003",
+            "SP-AI-004",
+            "SP-RF-001",
+            "SP-RF-002",
+            "SP-RF-003",
+            "SP-RF-004",
+            "SP-IO-001",
+            "SP-IO-002",
+            "SP-IO-003",
+            "SP-IO-004",
+            "SP-PM-001",
+            "SP-PM-002",
+            "SP-PM-003",
+            "SP-PM-004"
+          ]
         },
         {
           "name": "design_name",
           "sql_type": "STRING",
           "comment": "Human-readable chip design name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Orion-7 Application Processor",
+            "Orion-5 Mobile SoC",
+            "Orion-3 Ultra-Low-Power SoC",
+            "Orion-9 Server Processor",
+            "TensorCore T100 NPU",
+            "TensorCore T200 Training ASIC",
+            "TensorCore T50 Edge Inference",
+            "TensorCore T300 HPC Accelerator",
+            "WaveLink 5G Modem",
+            "WaveLink WiFi7 Baseband",
+            "WaveLink Satellite Transceiver",
+            "WaveLink V2X Modem",
+            "PicoNode IoT Controller M0",
+            "PicoNode IoT Controller M4",
+            "PicoNode Sensor Hub",
+            "PicoNode BLE SoC",
+            "VoltEdge GaN PMIC",
+            "VoltEdge SiC Gate Driver",
+            "VoltEdge Multi-Rail PMIC",
+            "VoltEdge USB-PD Controller"
+          ]
         },
         {
           "name": "design_family",
           "sql_type": "STRING",
           "comment": "Design family grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Application Processor",
+            "AI Accelerator",
+            "RF Modem",
+            "IoT Controller",
+            "Power Management"
+          ]
         },
         {
           "name": "clock_freq_ghz",
@@ -297,7 +405,11 @@
           "sql_type": "STRING",
           "comment": "Whether this point is Pareto optimal",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Yes' ELSE 'No' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Yes' ELSE 'No' END",
+          "entity_values": [
+            "Yes",
+            "No"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -446,21 +558,72 @@
           "sql_type": "STRING",
           "comment": "Chip design identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SP-AP-001",
+            "SP-AP-002",
+            "SP-AP-003",
+            "SP-AP-004",
+            "SP-AI-001",
+            "SP-AI-002",
+            "SP-AI-003",
+            "SP-AI-004",
+            "SP-RF-001",
+            "SP-RF-002",
+            "SP-RF-003",
+            "SP-RF-004",
+            "SP-IO-001",
+            "SP-IO-002",
+            "SP-IO-003",
+            "SP-IO-004",
+            "SP-PM-001",
+            "SP-PM-002",
+            "SP-PM-003",
+            "SP-PM-004"
+          ]
         },
         {
           "name": "design_name",
           "sql_type": "STRING",
           "comment": "Human-readable chip design name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Orion-7 Application Processor",
+            "Orion-5 Mobile SoC",
+            "Orion-3 Ultra-Low-Power SoC",
+            "Orion-9 Server Processor",
+            "TensorCore T100 NPU",
+            "TensorCore T200 Training ASIC",
+            "TensorCore T50 Edge Inference",
+            "TensorCore T300 HPC Accelerator",
+            "WaveLink 5G Modem",
+            "WaveLink WiFi7 Baseband",
+            "WaveLink Satellite Transceiver",
+            "WaveLink V2X Modem",
+            "PicoNode IoT Controller M0",
+            "PicoNode IoT Controller M4",
+            "PicoNode Sensor Hub",
+            "PicoNode BLE SoC",
+            "VoltEdge GaN PMIC",
+            "VoltEdge SiC Gate Driver",
+            "VoltEdge Multi-Rail PMIC",
+            "VoltEdge USB-PD Controller"
+          ]
         },
         {
           "name": "design_family",
           "sql_type": "STRING",
           "comment": "Design family grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Application Processor",
+            "AI Accelerator",
+            "RF Modem",
+            "IoT Controller",
+            "Power Management"
+          ]
         },
         {
           "name": "best_power_mw",
@@ -502,7 +665,13 @@
           "sql_type": "STRING",
           "comment": "Design closure status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'On Track' WHEN {status_noise} < 0.65 THEN 'At Risk' WHEN {status_noise} < 0.85 THEN 'Behind Schedule' ELSE 'Blocked' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'On Track' WHEN {status_noise} < 0.65 THEN 'At Risk' WHEN {status_noise} < 0.85 THEN 'Behind Schedule' ELSE 'Blocked' END",
+          "entity_values": [
+            "On Track",
+            "At Risk",
+            "Behind Schedule",
+            "Blocked"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -764,7 +933,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_run_metrics view (source: simulation_runs) has dimensions: run_date, design_family, run_status, target_node_nm. Measures: total_simulation_runs, completed_runs, avg_dynamic_power_mw, avg_die_area_mm2, avg_drc_violations. The optimization_result_metrics view (source: optimization_results) has dimensions: result_month, design_family, design_closure_status. Measures: avg_best_power_mw, avg_best_performance, avg_convergence_pct, total_optimization_records, blocked_design_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. design_id, design_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for SiliconPath Design. Answer questions about chip design space exploration and multi-objective optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (design_id, design_name), query the base tables directly.\n- When joining tables, use the shared keys: design_id (shared across optimization_results, parameter_explorations, simulation_runs).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in completed runs count?",
     "How has unique total simulation runss changed over time?",
@@ -803,7 +972,7 @@
       ]
     },
     {
-      "question": "How does total target process node in nanometers break down by chip design identifier for 'Completed' records?",
+      "question": "How does total target process node in nanometers break down by chip design for 'Completed' records?",
       "sql_lines": [
         "SELECT design_id, COUNT(*) AS record_count, SUM(target_node_nm) AS total_target_node_nm",
         "FROM {fqn}.simulation_runs",
@@ -973,7 +1142,7 @@
       ]
     },
     {
-      "question": "What are the top chip design identifier by total target process node in nanometers?",
+      "question": "What are the top chip design by total target process node in nanometers?",
       "sql_lines": [
         "SELECT design_id, SUM(target_node_nm) AS total_target_node_nm",
         "FROM {fqn}.simulation_runs",

@@ -29,35 +29,110 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SL-FAB-001",
+            "SL-FAB-002",
+            "SL-FAB-003",
+            "SL-FAB-004",
+            "SL-RD-001",
+            "SL-RD-002",
+            "SL-RD-003",
+            "SL-RD-004",
+            "SL-SM-001",
+            "SL-SM-002",
+            "SL-SM-003",
+            "SL-SM-004",
+            "SL-QA-001",
+            "SL-QA-002",
+            "SL-QA-003",
+            "SL-QA-004",
+            "SL-SC-001",
+            "SL-SC-002",
+            "SL-SC-003",
+            "SL-SC-004"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Human-readable cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fab Operations - Logic",
+            "Fab Operations - Memory",
+            "Fab Operations - Analog",
+            "Fab Operations - Power",
+            "R&D - Advanced Process",
+            "R&D - Design Methodology",
+            "R&D - IP Cores",
+            "R&D - Packaging Innovation",
+            "Sales - North America",
+            "Sales - Asia Pacific",
+            "Sales - Europe",
+            "Marketing - Global",
+            "Quality Assurance - Wafer",
+            "Quality Assurance - Package",
+            "Test Engineering - ATE",
+            "Reliability Engineering",
+            "Supply Chain - Procurement",
+            "Supply Chain - Logistics",
+            "Supply Chain - Planning",
+            "Supply Chain - Warehousing"
+          ]
         },
         {
           "name": "department",
           "sql_type": "STRING",
           "comment": "Department grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fab Operations",
+            "R&D Engineering",
+            "Sales & Marketing",
+            "Quality & Test",
+            "Supply Chain"
+          ]
         },
         {
           "name": "gl_category",
           "sql_type": "STRING",
           "comment": "General ledger category",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Revenue' WHEN {status_noise} < 0.50 THEN 'COGS' WHEN {status_noise} < 0.70 THEN 'OpEx' WHEN {status_noise} < 0.85 THEN 'CapEx' ELSE 'Other' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Revenue' WHEN {status_noise} < 0.50 THEN 'COGS' WHEN {status_noise} < 0.70 THEN 'OpEx' WHEN {status_noise} < 0.85 THEN 'CapEx' ELSE 'Other' END",
+          "entity_values": [
+            "Revenue",
+            "COGS",
+            "OpEx",
+            "CapEx",
+            "Other"
+          ]
         },
         {
           "name": "gl_account",
           "sql_type": "STRING",
           "comment": "Specific GL account",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Product Revenue' WHEN {status_noise} < 0.22 THEN 'License Revenue' WHEN {status_noise} < 0.30 THEN 'Service Revenue' WHEN {status_noise} < 0.38 THEN 'Wafer Cost' WHEN {status_noise} < 0.44 THEN 'Packaging Cost' WHEN {status_noise} < 0.50 THEN 'Test Cost' WHEN {status_noise} < 0.56 THEN 'R&D Salaries' WHEN {status_noise} < 0.62 THEN 'R&D Equipment' WHEN {status_noise} < 0.68 THEN 'SG&A' WHEN {status_noise} < 0.73 THEN 'Marketing' WHEN {status_noise} < 0.78 THEN 'Fab Equipment' WHEN {status_noise} < 0.83 THEN 'IT Infrastructure' WHEN {status_noise} < 0.88 THEN 'Facilities' WHEN {status_noise} < 0.93 THEN 'Depreciation' ELSE 'Other Expense' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Product Revenue' WHEN {status_noise} < 0.22 THEN 'License Revenue' WHEN {status_noise} < 0.30 THEN 'Service Revenue' WHEN {status_noise} < 0.38 THEN 'Wafer Cost' WHEN {status_noise} < 0.44 THEN 'Packaging Cost' WHEN {status_noise} < 0.50 THEN 'Test Cost' WHEN {status_noise} < 0.56 THEN 'R&D Salaries' WHEN {status_noise} < 0.62 THEN 'R&D Equipment' WHEN {status_noise} < 0.68 THEN 'SG&A' WHEN {status_noise} < 0.73 THEN 'Marketing' WHEN {status_noise} < 0.78 THEN 'Fab Equipment' WHEN {status_noise} < 0.83 THEN 'IT Infrastructure' WHEN {status_noise} < 0.88 THEN 'Facilities' WHEN {status_noise} < 0.93 THEN 'Depreciation' ELSE 'Other Expense' END",
+          "entity_values": [
+            "Product Revenue",
+            "License Revenue",
+            "Service Revenue",
+            "Wafer Cost",
+            "Packaging Cost",
+            "Test Cost",
+            "R&D Salaries",
+            "R&D Equipment",
+            "SG&A",
+            "Marketing",
+            "Fab Equipment",
+            "IT Infrastructure",
+            "Facilities",
+            "Depreciation",
+            "Other Expense"
+          ]
         },
         {
           "name": "amount_usd",
@@ -71,7 +146,13 @@
           "sql_type": "STRING",
           "comment": "Original transaction currency",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'USD' WHEN {status_noise} < 0.70 THEN 'EUR' WHEN {status_noise} < 0.85 THEN 'TWD' ELSE 'JPY' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'USD' WHEN {status_noise} < 0.70 THEN 'EUR' WHEN {status_noise} < 0.85 THEN 'TWD' ELSE 'JPY' END",
+          "entity_values": [
+            "USD",
+            "EUR",
+            "TWD",
+            "JPY"
+          ]
         },
         {
           "name": "fiscal_quarter",
@@ -228,21 +309,72 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SL-FAB-001",
+            "SL-FAB-002",
+            "SL-FAB-003",
+            "SL-FAB-004",
+            "SL-RD-001",
+            "SL-RD-002",
+            "SL-RD-003",
+            "SL-RD-004",
+            "SL-SM-001",
+            "SL-SM-002",
+            "SL-SM-003",
+            "SL-SM-004",
+            "SL-QA-001",
+            "SL-QA-002",
+            "SL-QA-003",
+            "SL-QA-004",
+            "SL-SC-001",
+            "SL-SC-002",
+            "SL-SC-003",
+            "SL-SC-004"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Human-readable cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fab Operations - Logic",
+            "Fab Operations - Memory",
+            "Fab Operations - Analog",
+            "Fab Operations - Power",
+            "R&D - Advanced Process",
+            "R&D - Design Methodology",
+            "R&D - IP Cores",
+            "R&D - Packaging Innovation",
+            "Sales - North America",
+            "Sales - Asia Pacific",
+            "Sales - Europe",
+            "Marketing - Global",
+            "Quality Assurance - Wafer",
+            "Quality Assurance - Package",
+            "Test Engineering - ATE",
+            "Reliability Engineering",
+            "Supply Chain - Procurement",
+            "Supply Chain - Logistics",
+            "Supply Chain - Planning",
+            "Supply Chain - Warehousing"
+          ]
         },
         {
           "name": "department",
           "sql_type": "STRING",
           "comment": "Department grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fab Operations",
+            "R&D Engineering",
+            "Sales & Marketing",
+            "Quality & Test",
+            "Supply Chain"
+          ]
         },
         {
           "name": "budgeted_amount_usd",
@@ -277,7 +409,13 @@
           "sql_type": "STRING",
           "comment": "Budget health status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN ({qty_noise} - 0.5) * 30.0 > 5.0 THEN 'Under Budget' WHEN ({qty_noise} - 0.5) * 30.0 > -5.0 THEN 'On Track' WHEN ({qty_noise} - 0.5) * 30.0 > -15.0 THEN 'Over Budget' ELSE 'Critical Overrun' END"
+          "generation_expr": "CASE WHEN ({qty_noise} - 0.5) * 30.0 > 5.0 THEN 'Under Budget' WHEN ({qty_noise} - 0.5) * 30.0 > -5.0 THEN 'On Track' WHEN ({qty_noise} - 0.5) * 30.0 > -15.0 THEN 'Over Budget' ELSE 'Critical Overrun' END",
+          "entity_values": [
+            "Under Budget",
+            "On Track",
+            "Over Budget",
+            "Critical Overrun"
+          ]
         },
         {
           "name": "headcount",
@@ -433,21 +571,72 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SL-FAB-001",
+            "SL-FAB-002",
+            "SL-FAB-003",
+            "SL-FAB-004",
+            "SL-RD-001",
+            "SL-RD-002",
+            "SL-RD-003",
+            "SL-RD-004",
+            "SL-SM-001",
+            "SL-SM-002",
+            "SL-SM-003",
+            "SL-SM-004",
+            "SL-QA-001",
+            "SL-QA-002",
+            "SL-QA-003",
+            "SL-QA-004",
+            "SL-SC-001",
+            "SL-SC-002",
+            "SL-SC-003",
+            "SL-SC-004"
+          ]
         },
         {
           "name": "cost_center_name",
           "sql_type": "STRING",
           "comment": "Human-readable cost center name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fab Operations - Logic",
+            "Fab Operations - Memory",
+            "Fab Operations - Analog",
+            "Fab Operations - Power",
+            "R&D - Advanced Process",
+            "R&D - Design Methodology",
+            "R&D - IP Cores",
+            "R&D - Packaging Innovation",
+            "Sales - North America",
+            "Sales - Asia Pacific",
+            "Sales - Europe",
+            "Marketing - Global",
+            "Quality Assurance - Wafer",
+            "Quality Assurance - Package",
+            "Test Engineering - ATE",
+            "Reliability Engineering",
+            "Supply Chain - Procurement",
+            "Supply Chain - Logistics",
+            "Supply Chain - Planning",
+            "Supply Chain - Warehousing"
+          ]
         },
         {
           "name": "department",
           "sql_type": "STRING",
           "comment": "Department grouping",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fab Operations",
+            "R&D Engineering",
+            "Sales & Marketing",
+            "Quality & Test",
+            "Supply Chain"
+          ]
         },
         {
           "name": "gross_margin_pct",
@@ -735,7 +924,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_transaction_metrics view (source: financial_transactions) has dimensions: transaction_date, department, gl_category, fiscal_quarter. Measures: total_transactions, total_revenue_usd, total_cogs_usd, total_opex_usd, total_capex_usd. The budget_variance_metrics view (source: budget_snapshots) has dimensions: snapshot_date, department, budget_status. Measures: total_budgeted_usd, total_actual_usd, total_variance_usd, avg_variance_pct, critical_overrun_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id, cost_center_name).",
+  "genie_instructions": "You are a semiconductor analytics assistant for SemiLedger Analytics. Answer questions about semiconductor financial analytics, margin analysis, and cost reporting using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (cost_center_id, cost_center_name), query the base tables directly.\n- When joining tables, use the shared keys: cost_center_id (shared across budget_snapshots, financial_kpi_monthly, financial_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total revenue usd count?",
     "How has total cogs usd count changed over time?",
@@ -947,7 +1136,7 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd (positive = credit/revenue, negative = debit/expense)?",
+      "question": "What are the top cost center by total transaction amount in usd (positive = credit/revenue, negative = debit/expense)?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

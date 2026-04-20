@@ -29,28 +29,88 @@
           "sql_type": "STRING",
           "comment": "Vehicle asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FLT-001",
+            "FLT-002",
+            "FLT-003",
+            "FLT-004",
+            "FLT-005",
+            "FLT-006",
+            "FLT-007",
+            "FLT-008",
+            "FLT-009",
+            "FLT-010",
+            "FLT-011",
+            "FLT-012",
+            "FLT-013",
+            "FLT-014",
+            "FLT-015",
+            "FLT-016",
+            "FLT-017",
+            "FLT-018",
+            "FLT-019",
+            "FLT-020"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Human-readable vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Titan I",
+            "Titan II",
+            "Titan III",
+            "Titan IV",
+            "Titan V",
+            "Atlas I",
+            "Atlas II",
+            "Atlas III",
+            "Atlas IV",
+            "Atlas V",
+            "Scout I",
+            "Scout II",
+            "Scout III",
+            "Scout IV",
+            "Scout V",
+            "Sprint I",
+            "Sprint II",
+            "Sprint III",
+            "Sprint IV",
+            "Sprint V"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
           "comment": "Vehicle class: Heavy Duty, Medium Duty, Light Duty, Sprinter",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Heavy Duty",
+            "Medium Duty",
+            "Light Duty",
+            "Sprinter"
+          ]
         },
         {
           "name": "depot_code",
           "sql_type": "STRING",
           "comment": "Depot/hub origin code",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'DEP-NE' WHEN {status_noise} < 0.25 THEN 'DEP-SE' WHEN {status_noise} < 0.375 THEN 'DEP-MW' WHEN {status_noise} < 0.5 THEN 'DEP-SW' WHEN {status_noise} < 0.625 THEN 'DEP-NW' WHEN {status_noise} < 0.75 THEN 'DEP-SC' WHEN {status_noise} < 0.875 THEN 'DEP-WC' ELSE 'DEP-CE' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'DEP-NE' WHEN {status_noise} < 0.25 THEN 'DEP-SE' WHEN {status_noise} < 0.375 THEN 'DEP-MW' WHEN {status_noise} < 0.5 THEN 'DEP-SW' WHEN {status_noise} < 0.625 THEN 'DEP-NW' WHEN {status_noise} < 0.75 THEN 'DEP-SC' WHEN {status_noise} < 0.875 THEN 'DEP-WC' ELSE 'DEP-CE' END",
+          "entity_values": [
+            "DEP-NE",
+            "DEP-SE",
+            "DEP-MW",
+            "DEP-SW",
+            "DEP-NW",
+            "DEP-SC",
+            "DEP-WC",
+            "DEP-CE"
+          ]
         },
         {
           "name": "route_distance_km",
@@ -78,7 +138,13 @@
           "sql_type": "STRING",
           "comment": "Delivery outcome: On Time, Late, Partial, Failed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Failed' WHEN {status_noise} < 0.08 THEN 'Partial' WHEN {status_noise} < 0.18 THEN 'Late' ELSE 'On Time' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Failed' WHEN {status_noise} < 0.08 THEN 'Partial' WHEN {status_noise} < 0.18 THEN 'Late' ELSE 'On Time' END",
+          "entity_values": [
+            "Failed",
+            "Partial",
+            "Late",
+            "On Time"
+          ]
         },
         {
           "name": "revenue_usd",
@@ -237,21 +303,71 @@
           "sql_type": "STRING",
           "comment": "Vehicle asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FLT-001",
+            "FLT-002",
+            "FLT-003",
+            "FLT-004",
+            "FLT-005",
+            "FLT-006",
+            "FLT-007",
+            "FLT-008",
+            "FLT-009",
+            "FLT-010",
+            "FLT-011",
+            "FLT-012",
+            "FLT-013",
+            "FLT-014",
+            "FLT-015",
+            "FLT-016",
+            "FLT-017",
+            "FLT-018",
+            "FLT-019",
+            "FLT-020"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Human-readable vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Titan I",
+            "Titan II",
+            "Titan III",
+            "Titan IV",
+            "Titan V",
+            "Atlas I",
+            "Atlas II",
+            "Atlas III",
+            "Atlas IV",
+            "Atlas V",
+            "Scout I",
+            "Scout II",
+            "Scout III",
+            "Scout IV",
+            "Scout V",
+            "Sprint I",
+            "Sprint II",
+            "Sprint III",
+            "Sprint IV",
+            "Sprint V"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
           "comment": "Vehicle class",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Heavy Duty",
+            "Medium Duty",
+            "Light Duty",
+            "Sprinter"
+          ]
         },
         {
           "name": "available_hours",
@@ -430,21 +546,71 @@
           "sql_type": "STRING",
           "comment": "Vehicle asset identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "FLT-001",
+            "FLT-002",
+            "FLT-003",
+            "FLT-004",
+            "FLT-005",
+            "FLT-006",
+            "FLT-007",
+            "FLT-008",
+            "FLT-009",
+            "FLT-010",
+            "FLT-011",
+            "FLT-012",
+            "FLT-013",
+            "FLT-014",
+            "FLT-015",
+            "FLT-016",
+            "FLT-017",
+            "FLT-018",
+            "FLT-019",
+            "FLT-020"
+          ]
         },
         {
           "name": "vehicle_name",
           "sql_type": "STRING",
           "comment": "Human-readable vehicle name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Titan I",
+            "Titan II",
+            "Titan III",
+            "Titan IV",
+            "Titan V",
+            "Atlas I",
+            "Atlas II",
+            "Atlas III",
+            "Atlas IV",
+            "Atlas V",
+            "Scout I",
+            "Scout II",
+            "Scout III",
+            "Scout IV",
+            "Scout V",
+            "Sprint I",
+            "Sprint II",
+            "Sprint III",
+            "Sprint IV",
+            "Sprint V"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
           "comment": "Vehicle class",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Heavy Duty",
+            "Medium Duty",
+            "Light Duty",
+            "Sprinter"
+          ]
         },
         {
           "name": "monthly_revenue_usd",
@@ -735,7 +901,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The fleet_operations_metrics view (source: fleet_operations) has dimensions: operation_date, vehicle_class, depot_code, delivery_status. Measures: total_revenue_usd, total_fuel_consumed_liters, total_distance_km, total_cargo_weight_kg, operation_count, on_time_operation_count. The fleet_kpi_monthly_metrics view (source: fleet_kpi_monthly) has dimensions: report_month, vehicle_class, vehicle_id. Measures: total_monthly_revenue, total_monthly_fuel_cost, total_monthly_maintenance_cost, avg_utilization_pct, avg_on_time_delivery_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. vehicle_name).",
+  "genie_instructions": "You are a logistics analytics assistant for FleetEdge Solutions. Answer questions about fleet planning, vehicle allocation, and capacity optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (vehicle_name), query the base tables directly.\n- When joining tables, use the shared keys: vehicle_id (shared across fleet_kpi_monthly, fleet_operations, vehicle_utilization_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in on time operation count?",
     "How has unique operations changed over time?",
@@ -783,7 +949,7 @@
       ]
     },
     {
-      "question": "How does total total route distance in kilometers break down by vehicle asset identifier for 'Failed' records?",
+      "question": "How does total total route distance in kilometers break down by vehicle asset for 'Failed' records?",
       "sql_lines": [
         "SELECT vehicle_id, COUNT(*) AS record_count, SUM(route_distance_km) AS total_route_distance_km",
         "FROM {fqn}.fleet_operations",
@@ -947,7 +1113,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle asset identifier by total total route distance in kilometers?",
+      "question": "What are the top vehicle asset by total total route distance in kilometers?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(route_distance_km) AS total_route_distance_km",
         "FROM {fqn}.fleet_operations",

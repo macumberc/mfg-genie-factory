@@ -29,35 +29,105 @@
           "sql_type": "STRING",
           "comment": "Business unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MC-01",
+            "MC-02",
+            "MC-03",
+            "MC-04",
+            "MC-05",
+            "MC-06",
+            "MC-07",
+            "MC-08",
+            "MC-09",
+            "MC-10",
+            "MC-11",
+            "MC-12",
+            "MC-13",
+            "MC-14",
+            "MC-15",
+            "MC-16",
+            "MC-17",
+            "MC-18",
+            "MC-19",
+            "MC-20"
+          ]
         },
         {
           "name": "business_unit_name",
           "sql_type": "STRING",
           "comment": "Business unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Pipeline Ops",
+            "Gas Pipeline Ops",
+            "NGL Pipeline Ops",
+            "Products Pipeline",
+            "Gas Plant Alpha",
+            "Gas Plant Beta",
+            "NGL Fractionation",
+            "Crude Tanks Cushing",
+            "Products Terminal",
+            "LNG Dock",
+            "Pipeline Maintenance",
+            "SCADA Center",
+            "Right-of-Way",
+            "Trading Desk",
+            "Biz Dev",
+            "Regulatory",
+            "Corp Finance",
+            "IT & Cyber",
+            "HSE",
+            "HR"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Segment: Transportation, Processing, Storage, Maintenance, Commercial, Corporate",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Transportation",
+            "Processing",
+            "Storage",
+            "Maintenance",
+            "Commercial",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf Coast",
+            "Appalachia",
+            "Permian",
+            "Midwest",
+            "Marcellus",
+            "Midcontinent",
+            "National",
+            "Houston",
+            "DC"
+          ]
         },
         {
           "name": "flow_type",
           "sql_type": "STRING",
           "comment": "Flow: Collection, Disbursement, Intercompany, Tax Payment, Dividend",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Collection' WHEN {status_noise} < 0.65 THEN 'Disbursement' WHEN {status_noise} < 0.80 THEN 'Intercompany' WHEN {status_noise} < 0.92 THEN 'Tax Payment' ELSE 'Dividend' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'Collection' WHEN {status_noise} < 0.65 THEN 'Disbursement' WHEN {status_noise} < 0.80 THEN 'Intercompany' WHEN {status_noise} < 0.92 THEN 'Tax Payment' ELSE 'Dividend' END",
+          "entity_values": [
+            "Collection",
+            "Disbursement",
+            "Intercompany",
+            "Tax Payment",
+            "Dividend"
+          ]
         },
         {
           "name": "amount_usd",
@@ -71,7 +141,14 @@
           "sql_type": "STRING",
           "comment": "Counterparty type",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Customer' WHEN {status_noise} < 0.55 THEN 'Supplier' WHEN {status_noise} < 0.72 THEN 'Government' WHEN {status_noise} < 0.88 THEN 'Internal' ELSE 'Shareholder' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Customer' WHEN {status_noise} < 0.55 THEN 'Supplier' WHEN {status_noise} < 0.72 THEN 'Government' WHEN {status_noise} < 0.88 THEN 'Internal' ELSE 'Shareholder' END",
+          "entity_values": [
+            "Customer",
+            "Supplier",
+            "Government",
+            "Internal",
+            "Shareholder"
+          ]
         },
         {
           "name": "days_outstanding",
@@ -237,28 +314,91 @@
           "sql_type": "STRING",
           "comment": "Business unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MC-01",
+            "MC-02",
+            "MC-03",
+            "MC-04",
+            "MC-05",
+            "MC-06",
+            "MC-07",
+            "MC-08",
+            "MC-09",
+            "MC-10",
+            "MC-11",
+            "MC-12",
+            "MC-13",
+            "MC-14",
+            "MC-15",
+            "MC-16",
+            "MC-17",
+            "MC-18",
+            "MC-19",
+            "MC-20"
+          ]
         },
         {
           "name": "business_unit_name",
           "sql_type": "STRING",
           "comment": "Business unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Pipeline Ops",
+            "Gas Pipeline Ops",
+            "NGL Pipeline Ops",
+            "Products Pipeline",
+            "Gas Plant Alpha",
+            "Gas Plant Beta",
+            "NGL Fractionation",
+            "Crude Tanks Cushing",
+            "Products Terminal",
+            "LNG Dock",
+            "Pipeline Maintenance",
+            "SCADA Center",
+            "Right-of-Way",
+            "Trading Desk",
+            "Biz Dev",
+            "Regulatory",
+            "Corp Finance",
+            "IT & Cyber",
+            "HSE",
+            "HR"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Transportation",
+            "Processing",
+            "Storage",
+            "Maintenance",
+            "Commercial",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf Coast",
+            "Appalachia",
+            "Permian",
+            "Midwest",
+            "Marcellus",
+            "Midcontinent",
+            "National",
+            "Houston",
+            "DC"
+          ]
         },
         {
           "name": "accounts_receivable_usd",
@@ -459,21 +599,62 @@
           "sql_type": "STRING",
           "comment": "Business unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "MC-01",
+            "MC-02",
+            "MC-03",
+            "MC-04",
+            "MC-05",
+            "MC-06",
+            "MC-07",
+            "MC-08",
+            "MC-09",
+            "MC-10",
+            "MC-11",
+            "MC-12",
+            "MC-13",
+            "MC-14",
+            "MC-15",
+            "MC-16",
+            "MC-17",
+            "MC-18",
+            "MC-19",
+            "MC-20"
+          ]
         },
         {
           "name": "segment",
           "sql_type": "STRING",
           "comment": "Segment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Transportation",
+            "Processing",
+            "Storage",
+            "Maintenance",
+            "Commercial",
+            "Corporate"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Gulf Coast",
+            "Appalachia",
+            "Permian",
+            "Midwest",
+            "Marcellus",
+            "Midcontinent",
+            "National",
+            "Houston",
+            "DC"
+          ]
         },
         {
           "name": "free_cash_flow_usd",
@@ -737,7 +918,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The cash_transactions_metrics view (source: cash_transactions) has dimensions: transaction_date, business_unit_id, segment, region, flow_type. Measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions. The working_capital_snapshots_metrics view (source: working_capital_snapshots) has dimensions: snapshot_date, business_unit_id, segment, region. Measures: total_receivables_usd, total_payables_usd, total_cash_balance_usd, avg_dso_days. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. business_unit_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for MidCapital Systems. Answer questions about working capital and cash flow optimization for oil & gas midstream operations using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (business_unit_name), query the base tables directly.\n- When joining tables, use the shared keys: business_unit_id (shared across cash_transactions, cashflow_monthly, working_capital_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total inflows usd count?",
     "How has total outflows usd count changed over time?",

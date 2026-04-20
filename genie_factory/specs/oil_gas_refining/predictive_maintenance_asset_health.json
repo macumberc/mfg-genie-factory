@@ -29,35 +29,109 @@
           "sql_type": "STRING",
           "comment": "Refinery equipment identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RG-PMP-001",
+            "RG-PMP-002",
+            "RG-CMP-003",
+            "RG-CMP-004",
+            "RG-HX-005",
+            "RG-HX-006",
+            "RG-HX-007",
+            "RG-RX-008",
+            "RG-RX-009",
+            "RG-RX-010",
+            "RG-COL-011",
+            "RG-COL-012",
+            "RG-COL-013",
+            "RG-FUR-014",
+            "RG-FUR-015",
+            "RG-FUR-016",
+            "RG-PMP-017",
+            "RG-CMP-018",
+            "RG-HX-019",
+            "RG-PMP-020"
+          ]
         },
         {
           "name": "equipment_name",
           "sql_type": "STRING",
           "comment": "Equipment name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Charge Pump P-101",
+            "Reflux Pump P-201",
+            "Wet Gas Compressor C-301",
+            "Hydrogen Compressor C-401",
+            "Crude Preheat Exchanger E-101",
+            "FCC Feed Exchanger E-301",
+            "Reformer Effluent Cooler E-501",
+            "FCC Reactor R-301",
+            "Hydrotreater Reactor R-401",
+            "Reformer Reactor R-501",
+            "Atmospheric Column T-101",
+            "Vacuum Column T-102",
+            "FCC Main Fractionator T-301",
+            "Crude Heater H-101",
+            "Vacuum Heater H-102",
+            "Reformer Heater H-501",
+            "Alkylation Feed Pump P-601",
+            "Reformer Recycle Compressor C-501",
+            "Alkylation Cooler E-601",
+            "Product Transfer Pump P-701"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type: Pump, Compressor, Heat Exchanger, Reactor, Column, Furnace",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pump",
+            "Compressor",
+            "Heat Exchanger",
+            "Reactor",
+            "Column",
+            "Furnace"
+          ]
         },
         {
           "name": "process_unit",
           "sql_type": "STRING",
           "comment": "Refinery process unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation",
+            "Catalytic Cracking",
+            "Hydrotreating",
+            "Catalytic Reforming",
+            "Vacuum Distillation",
+            "Alkylation",
+            "Blending & Dispatch"
+          ]
         },
         {
           "name": "sensor_type",
           "sql_type": "STRING",
           "comment": "Sensor measurement type",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Vibration' WHEN {status_noise} < 0.20 THEN 'Temperature' WHEN {status_noise} < 0.30 THEN 'Pressure' WHEN {status_noise} < 0.40 THEN 'Flow Rate' WHEN {status_noise} < 0.50 THEN 'Motor Current' WHEN {status_noise} < 0.58 THEN 'Bearing Temp' WHEN {status_noise} < 0.66 THEN 'Corrosion Rate' WHEN {status_noise} < 0.74 THEN 'Thickness' WHEN {status_noise} < 0.82 THEN 'Acoustic Emission' WHEN {status_noise} < 0.90 THEN 'RPM' ELSE 'Differential Pressure' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Vibration' WHEN {status_noise} < 0.20 THEN 'Temperature' WHEN {status_noise} < 0.30 THEN 'Pressure' WHEN {status_noise} < 0.40 THEN 'Flow Rate' WHEN {status_noise} < 0.50 THEN 'Motor Current' WHEN {status_noise} < 0.58 THEN 'Bearing Temp' WHEN {status_noise} < 0.66 THEN 'Corrosion Rate' WHEN {status_noise} < 0.74 THEN 'Thickness' WHEN {status_noise} < 0.82 THEN 'Acoustic Emission' WHEN {status_noise} < 0.90 THEN 'RPM' ELSE 'Differential Pressure' END",
+          "entity_values": [
+            "Vibration",
+            "Temperature",
+            "Pressure",
+            "Flow Rate",
+            "Motor Current",
+            "Bearing Temp",
+            "Corrosion Rate",
+            "Thickness",
+            "Acoustic Emission",
+            "RPM",
+            "Differential Pressure"
+          ]
         },
         {
           "name": "sensor_value",
@@ -78,7 +152,14 @@
           "sql_type": "STRING",
           "comment": "Alert level: Normal, Advisory, Warning, Alarm, Trip",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END",
+          "entity_values": [
+            "Normal",
+            "Advisory",
+            "Warning",
+            "Alarm",
+            "Trip"
+          ]
         },
         {
           "name": "predicted_rul_days",
@@ -251,42 +332,124 @@
           "sql_type": "STRING",
           "comment": "Equipment identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RG-PMP-001",
+            "RG-PMP-002",
+            "RG-CMP-003",
+            "RG-CMP-004",
+            "RG-HX-005",
+            "RG-HX-006",
+            "RG-HX-007",
+            "RG-RX-008",
+            "RG-RX-009",
+            "RG-RX-010",
+            "RG-COL-011",
+            "RG-COL-012",
+            "RG-COL-013",
+            "RG-FUR-014",
+            "RG-FUR-015",
+            "RG-FUR-016",
+            "RG-PMP-017",
+            "RG-CMP-018",
+            "RG-HX-019",
+            "RG-PMP-020"
+          ]
         },
         {
           "name": "equipment_name",
           "sql_type": "STRING",
           "comment": "Equipment name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Charge Pump P-101",
+            "Reflux Pump P-201",
+            "Wet Gas Compressor C-301",
+            "Hydrogen Compressor C-401",
+            "Crude Preheat Exchanger E-101",
+            "FCC Feed Exchanger E-301",
+            "Reformer Effluent Cooler E-501",
+            "FCC Reactor R-301",
+            "Hydrotreater Reactor R-401",
+            "Reformer Reactor R-501",
+            "Atmospheric Column T-101",
+            "Vacuum Column T-102",
+            "FCC Main Fractionator T-301",
+            "Crude Heater H-101",
+            "Vacuum Heater H-102",
+            "Reformer Heater H-501",
+            "Alkylation Feed Pump P-601",
+            "Reformer Recycle Compressor C-501",
+            "Alkylation Cooler E-601",
+            "Product Transfer Pump P-701"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pump",
+            "Compressor",
+            "Heat Exchanger",
+            "Reactor",
+            "Column",
+            "Furnace"
+          ]
         },
         {
           "name": "process_unit",
           "sql_type": "STRING",
           "comment": "Refinery process unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation",
+            "Catalytic Cracking",
+            "Hydrotreating",
+            "Catalytic Reforming",
+            "Vacuum Distillation",
+            "Alkylation",
+            "Blending & Dispatch"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Type: Planned PM, Predictive, Corrective, Turnaround, Inspection, Emergency",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.28 THEN 'Planned PM' WHEN {status_noise} < 0.48 THEN 'Predictive' WHEN {status_noise} < 0.65 THEN 'Corrective' WHEN {status_noise} < 0.78 THEN 'Turnaround' WHEN {status_noise} < 0.90 THEN 'Inspection' ELSE 'Emergency' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.28 THEN 'Planned PM' WHEN {status_noise} < 0.48 THEN 'Predictive' WHEN {status_noise} < 0.65 THEN 'Corrective' WHEN {status_noise} < 0.78 THEN 'Turnaround' WHEN {status_noise} < 0.90 THEN 'Inspection' ELSE 'Emergency' END",
+          "entity_values": [
+            "Planned PM",
+            "Predictive",
+            "Corrective",
+            "Turnaround",
+            "Inspection",
+            "Emergency"
+          ]
         },
         {
           "name": "failure_mode",
           "sql_type": "STRING",
           "comment": "Root cause failure mode",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Fouling' WHEN {status_noise} < 0.20 THEN 'Corrosion' WHEN {status_noise} < 0.30 THEN 'Erosion' WHEN {status_noise} < 0.40 THEN 'Catalyst Deactivation' WHEN {status_noise} < 0.50 THEN 'Seal Failure' WHEN {status_noise} < 0.58 THEN 'Bearing Wear' WHEN {status_noise} < 0.66 THEN 'Tube Leak' WHEN {status_noise} < 0.74 THEN 'Coking' WHEN {status_noise} < 0.82 THEN 'Vibration Fatigue' WHEN {status_noise} < 0.90 THEN 'Tray Damage' ELSE 'Refractory Failure' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Fouling' WHEN {status_noise} < 0.20 THEN 'Corrosion' WHEN {status_noise} < 0.30 THEN 'Erosion' WHEN {status_noise} < 0.40 THEN 'Catalyst Deactivation' WHEN {status_noise} < 0.50 THEN 'Seal Failure' WHEN {status_noise} < 0.58 THEN 'Bearing Wear' WHEN {status_noise} < 0.66 THEN 'Tube Leak' WHEN {status_noise} < 0.74 THEN 'Coking' WHEN {status_noise} < 0.82 THEN 'Vibration Fatigue' WHEN {status_noise} < 0.90 THEN 'Tray Damage' ELSE 'Refractory Failure' END",
+          "entity_values": [
+            "Fouling",
+            "Corrosion",
+            "Erosion",
+            "Catalyst Deactivation",
+            "Seal Failure",
+            "Bearing Wear",
+            "Tube Leak",
+            "Coking",
+            "Vibration Fatigue",
+            "Tray Damage",
+            "Refractory Failure"
+          ]
         },
         {
           "name": "was_predicted",
@@ -473,21 +636,60 @@
           "sql_type": "STRING",
           "comment": "Equipment identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RG-PMP-001",
+            "RG-PMP-002",
+            "RG-CMP-003",
+            "RG-CMP-004",
+            "RG-HX-005",
+            "RG-HX-006",
+            "RG-HX-007",
+            "RG-RX-008",
+            "RG-RX-009",
+            "RG-RX-010",
+            "RG-COL-011",
+            "RG-COL-012",
+            "RG-COL-013",
+            "RG-FUR-014",
+            "RG-FUR-015",
+            "RG-FUR-016",
+            "RG-PMP-017",
+            "RG-CMP-018",
+            "RG-HX-019",
+            "RG-PMP-020"
+          ]
         },
         {
           "name": "equipment_type",
           "sql_type": "STRING",
           "comment": "Equipment type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pump",
+            "Compressor",
+            "Heat Exchanger",
+            "Reactor",
+            "Column",
+            "Furnace"
+          ]
         },
         {
           "name": "process_unit",
           "sql_type": "STRING",
           "comment": "Refinery process unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Crude Distillation",
+            "Catalytic Cracking",
+            "Hydrotreating",
+            "Catalytic Reforming",
+            "Vacuum Distillation",
+            "Alkylation",
+            "Blending & Dispatch"
+          ]
         },
         {
           "name": "avg_health_score",
@@ -765,7 +967,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_timestamp, equipment_id, equipment_type, process_unit, alert_level. Measures: avg_health_score, total_readings, alarm_trip_count, min_rul_days. The maintenance_events_metrics view (source: maintenance_events) has dimensions: event_date, equipment_id, equipment_type, process_unit, event_type, failure_mode, was_predicted. Measures: total_events, total_downtime_hours, total_throughput_loss_bbl, total_repair_cost_usd, avg_repair_cost_usd. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_name).",
+  "genie_instructions": "You are an oil & gas refining analytics assistant for RefineGuard Systems. Answer questions about predictive maintenance and asset health monitoring for refinery equipment using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (equipment_name), query the base tables directly.\n- When joining tables, use the shared keys: equipment_id (shared across equipment_health_monthly, maintenance_events, sensor_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the alarm trip count by reading timestamp?",
     "Which reading timestamps have the most unique total readingss?",
@@ -973,7 +1175,7 @@
       ]
     },
     {
-      "question": "What are the top refinery equipment identifier by total raw sensor measurement value?",
+      "question": "What are the top refinery equipment by total raw sensor measurement value?",
       "sql_lines": [
         "SELECT equipment_id, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",

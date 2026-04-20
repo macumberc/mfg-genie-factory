@@ -29,14 +29,46 @@
           "sql_type": "STRING",
           "comment": "Supplier identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SL-001",
+            "SL-002",
+            "SL-003",
+            "SL-004",
+            "SL-005",
+            "SL-006",
+            "SL-007",
+            "SL-008",
+            "SL-009",
+            "SL-010",
+            "SL-011",
+            "SL-012",
+            "SL-013",
+            "SL-014",
+            "SL-015",
+            "SL-016",
+            "SL-017",
+            "SL-018",
+            "SL-019",
+            "SL-020"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Spend category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bearings & Seals",
+            "Hydraulics",
+            "Automation",
+            "Electrical",
+            "Consumables",
+            "MRO Distribution",
+            "Cutting Tools",
+            "OEM Parts"
+          ]
         },
         {
           "name": "po_amount_usd",
@@ -64,7 +96,12 @@
           "sql_type": "STRING",
           "comment": "Delivery: On Time, Late, Early",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'On Time' WHEN {status_noise} < 0.90 THEN 'Late' ELSE 'Early' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'On Time' WHEN {status_noise} < 0.90 THEN 'Late' ELSE 'Early' END",
+          "entity_values": [
+            "On Time",
+            "Late",
+            "Early"
+          ]
         },
         {
           "name": "quality_accepted",
@@ -266,14 +303,46 @@
           "sql_type": "STRING",
           "comment": "Supplier identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SL-001",
+            "SL-002",
+            "SL-003",
+            "SL-004",
+            "SL-005",
+            "SL-006",
+            "SL-007",
+            "SL-008",
+            "SL-009",
+            "SL-010",
+            "SL-011",
+            "SL-012",
+            "SL-013",
+            "SL-014",
+            "SL-015",
+            "SL-016",
+            "SL-017",
+            "SL-018",
+            "SL-019",
+            "SL-020"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Spend category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bearings & Seals",
+            "Hydraulics",
+            "Automation",
+            "Electrical",
+            "Consumables",
+            "MRO Distribution",
+            "Cutting Tools",
+            "OEM Parts"
+          ]
         },
         {
           "name": "on_time_delivery_pct",
@@ -503,14 +572,46 @@
           "sql_type": "STRING",
           "comment": "Supplier identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SL-001",
+            "SL-002",
+            "SL-003",
+            "SL-004",
+            "SL-005",
+            "SL-006",
+            "SL-007",
+            "SL-008",
+            "SL-009",
+            "SL-010",
+            "SL-011",
+            "SL-012",
+            "SL-013",
+            "SL-014",
+            "SL-015",
+            "SL-016",
+            "SL-017",
+            "SL-018",
+            "SL-019",
+            "SL-020"
+          ]
         },
         {
           "name": "spend_category",
           "sql_type": "STRING",
           "comment": "Spend category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Bearings & Seals",
+            "Hydraulics",
+            "Automation",
+            "Electrical",
+            "Consumables",
+            "MRO Distribution",
+            "Cutting Tools",
+            "OEM Parts"
+          ]
         },
         {
           "name": "total_spend_usd",
@@ -836,7 +937,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The procurement_metrics view (source: procurement_transactions) has dimensions: po_date, spend_category, delivery_status. Measures: total_po_amount, total_po_count, maverick_po_count, late_delivery_count. The spend_kpi_metrics view (source: spend_kpi_monthly) has dimensions: kpi_month, spend_category. Measures: total_spend, total_savings, avg_maverick_pct, total_cost_avoidance. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. supplier_id).",
+  "genie_instructions": "You are a machinery analytics assistant for SpendLens Manufacturing. Answer questions about procurement spend intelligence and supplier performance analytics using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (supplier_id), query the base tables directly.\n- When joining tables, use the shared keys: supplier_id (shared across procurement_transactions, spend_kpi_monthly, supplier_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in maverick po count?",
     "How has late delivery count changed over time?",
@@ -884,7 +985,7 @@
       ]
     },
     {
-      "question": "How does total purchase order amount in usd break down by supplier identifier for 'On Time' records?",
+      "question": "How does total purchase order amount in usd break down by supplier for 'On Time' records?",
       "sql_lines": [
         "SELECT supplier_id, COUNT(*) AS record_count, SUM(po_amount_usd) AS total_po_amount_usd",
         "FROM {fqn}.procurement_transactions",
@@ -1043,7 +1144,7 @@
       ]
     },
     {
-      "question": "What are the top supplier identifier by total purchase order amount in usd?",
+      "question": "What are the top supplier by total purchase order amount in usd?",
       "sql_lines": [
         "SELECT supplier_id, SUM(po_amount_usd) AS total_po_amount_usd",
         "FROM {fqn}.procurement_transactions",

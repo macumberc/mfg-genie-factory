@@ -29,21 +29,57 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "LV-CC-001",
+            "LV-CC-002",
+            "LV-CC-003",
+            "LV-CC-004",
+            "LV-CC-005",
+            "LV-CC-006",
+            "LV-CC-007",
+            "LV-CC-008",
+            "LV-CC-009",
+            "LV-CC-010",
+            "LV-CC-011",
+            "LV-CC-012",
+            "LV-CC-013",
+            "LV-CC-014",
+            "LV-CC-015",
+            "LV-CC-016",
+            "LV-CC-017",
+            "LV-CC-018",
+            "LV-CC-019",
+            "LV-CC-020"
+          ]
         },
         {
           "name": "cost_center_type",
           "sql_type": "STRING",
           "comment": "Cost center type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Manufacturing",
+            "R&D",
+            "Sales & Marketing",
+            "G&A",
+            "IT"
+          ]
         },
         {
           "name": "account_category",
           "sql_type": "STRING",
           "comment": "Account: Revenue, COGS, Opex, Capex, Other",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Revenue' WHEN {status_noise} < 0.45 THEN 'COGS' WHEN {status_noise} < 0.72 THEN 'Opex' WHEN {status_noise} < 0.88 THEN 'Capex' ELSE 'Other' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Revenue' WHEN {status_noise} < 0.45 THEN 'COGS' WHEN {status_noise} < 0.72 THEN 'Opex' WHEN {status_noise} < 0.88 THEN 'Capex' ELSE 'Other' END",
+          "entity_values": [
+            "Revenue",
+            "COGS",
+            "Opex",
+            "Capex",
+            "Other"
+          ]
         },
         {
           "name": "amount_usd",
@@ -57,7 +93,11 @@
           "sql_type": "STRING",
           "comment": "Debit or Credit",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Debit' ELSE 'Credit' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Debit' ELSE 'Credit' END",
+          "entity_values": [
+            "Debit",
+            "Credit"
+          ]
         },
         {
           "name": "fiscal_period",
@@ -78,7 +118,12 @@
           "sql_type": "STRING",
           "comment": "Status: Posted, Pending, Reversed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.88 THEN 'Posted' WHEN {status_noise} < 0.96 THEN 'Pending' ELSE 'Reversed' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.88 THEN 'Posted' WHEN {status_noise} < 0.96 THEN 'Pending' ELSE 'Reversed' END",
+          "entity_values": [
+            "Posted",
+            "Pending",
+            "Reversed"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -235,14 +280,43 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "LV-CC-001",
+            "LV-CC-002",
+            "LV-CC-003",
+            "LV-CC-004",
+            "LV-CC-005",
+            "LV-CC-006",
+            "LV-CC-007",
+            "LV-CC-008",
+            "LV-CC-009",
+            "LV-CC-010",
+            "LV-CC-011",
+            "LV-CC-012",
+            "LV-CC-013",
+            "LV-CC-014",
+            "LV-CC-015",
+            "LV-CC-016",
+            "LV-CC-017",
+            "LV-CC-018",
+            "LV-CC-019",
+            "LV-CC-020"
+          ]
         },
         {
           "name": "cost_center_type",
           "sql_type": "STRING",
           "comment": "Cost center type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Manufacturing",
+            "R&D",
+            "Sales & Marketing",
+            "G&A",
+            "IT"
+          ]
         },
         {
           "name": "budget_amount_usd",
@@ -441,14 +515,43 @@
           "sql_type": "STRING",
           "comment": "Cost center identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "LV-CC-001",
+            "LV-CC-002",
+            "LV-CC-003",
+            "LV-CC-004",
+            "LV-CC-005",
+            "LV-CC-006",
+            "LV-CC-007",
+            "LV-CC-008",
+            "LV-CC-009",
+            "LV-CC-010",
+            "LV-CC-011",
+            "LV-CC-012",
+            "LV-CC-013",
+            "LV-CC-014",
+            "LV-CC-015",
+            "LV-CC-016",
+            "LV-CC-017",
+            "LV-CC-018",
+            "LV-CC-019",
+            "LV-CC-020"
+          ]
         },
         {
           "name": "cost_center_type",
           "sql_type": "STRING",
           "comment": "Cost center type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Manufacturing",
+            "R&D",
+            "Sales & Marketing",
+            "G&A",
+            "IT"
+          ]
         },
         {
           "name": "gross_margin_pct",
@@ -738,7 +841,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The financial_txn_metrics view (source: financial_transactions) has dimensions: txn_date, cost_center_type, account_category. Measures: total_amount, total_transactions, total_revenue, total_opex. The financial_kpi_metrics view (source: financial_kpi_monthly) has dimensions: kpi_month, cost_center_type. Measures: avg_gross_margin, avg_operating_margin, total_revenue, total_expenses. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. cost_center_id).",
+  "genie_instructions": "You are a machinery analytics assistant for LedgerView Industrial. Answer questions about financial analytics and management reporting using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (cost_center_id), query the base tables directly.\n- When joining tables, use the shared keys: cost_center_id (shared across budget_snapshots, financial_kpi_monthly, financial_transactions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in total monthly revenue?",
     "How has total opex count changed over time?",
@@ -786,7 +889,7 @@
       ]
     },
     {
-      "question": "How does total transaction amount in usd break down by cost center identifier for 'Posted' records?",
+      "question": "How does total transaction amount in usd break down by cost center for 'Posted' records?",
       "sql_lines": [
         "SELECT cost_center_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
@@ -944,7 +1047,7 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "question": "What are the top cost center by total transaction amount in usd?",
       "sql_lines": [
         "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",

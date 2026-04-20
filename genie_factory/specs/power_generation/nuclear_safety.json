@@ -29,28 +29,83 @@
           "sql_type": "STRING",
           "comment": "Reactor component identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RC-FA-001",
+            "RC-FA-002",
+            "RC-FA-003",
+            "RC-FA-004",
+            "RC-CR-005",
+            "RC-CR-006",
+            "RC-CR-007",
+            "RC-CR-008",
+            "RC-CP-009",
+            "RC-CP-010",
+            "RC-CP-011",
+            "RC-CP-012",
+            "RC-SG-013",
+            "RC-SG-014",
+            "RC-SG-015",
+            "RC-SG-016",
+            "RC-CT-017",
+            "RC-CT-018",
+            "RC-CT-019",
+            "RC-CT-020"
+          ]
         },
         {
           "name": "component_name",
           "sql_type": "STRING",
           "comment": "Component name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fuel Assembly A1",
+            "Fuel Assembly A2",
+            "Fuel Assembly B1",
+            "Fuel Assembly B2",
+            "Control Rod Bank Alpha",
+            "Control Rod Bank Beta",
+            "Control Rod Bank Gamma",
+            "Control Rod Bank Delta",
+            "Primary Coolant Pump 1A",
+            "Primary Coolant Pump 1B",
+            "Primary Coolant Pump 2A",
+            "Primary Coolant Pump 2B",
+            "Steam Generator SG-1A",
+            "Steam Generator SG-1B",
+            "Steam Generator SG-2A",
+            "Steam Generator SG-2B",
+            "Containment Vessel Unit 1",
+            "Containment Liner Unit 1",
+            "Containment Vessel Unit 2",
+            "Containment Liner Unit 2"
+          ]
         },
         {
           "name": "component_type",
           "sql_type": "STRING",
           "comment": "Component type: Fuel Assembly, Control Rod, Coolant Pump, Steam Generator, Containment",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fuel Assembly",
+            "Control Rod",
+            "Coolant Pump",
+            "Steam Generator",
+            "Containment"
+          ]
         },
         {
           "name": "reactor_unit",
           "sql_type": "STRING",
           "comment": "Reactor unit designation",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Unit 1",
+            "Unit 2"
+          ]
         },
         {
           "name": "temperature_celsius",
@@ -78,7 +133,13 @@
           "sql_type": "STRING",
           "comment": "Component health: Normal, Watch, Warning, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Critical' WHEN {status_noise} < 0.08 THEN 'Warning' WHEN {status_noise} < 0.18 THEN 'Watch' ELSE 'Normal' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Critical' WHEN {status_noise} < 0.08 THEN 'Warning' WHEN {status_noise} < 0.18 THEN 'Watch' ELSE 'Normal' END",
+          "entity_values": [
+            "Critical",
+            "Warning",
+            "Watch",
+            "Normal"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -247,21 +308,54 @@
           "sql_type": "STRING",
           "comment": "Reactor component identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RC-FA-001",
+            "RC-FA-002",
+            "RC-FA-003",
+            "RC-FA-004",
+            "RC-CR-005",
+            "RC-CR-006",
+            "RC-CR-007",
+            "RC-CR-008",
+            "RC-CP-009",
+            "RC-CP-010",
+            "RC-CP-011",
+            "RC-CP-012",
+            "RC-SG-013",
+            "RC-SG-014",
+            "RC-SG-015",
+            "RC-SG-016",
+            "RC-CT-017",
+            "RC-CT-018",
+            "RC-CT-019",
+            "RC-CT-020"
+          ]
         },
         {
           "name": "component_type",
           "sql_type": "STRING",
           "comment": "Component type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fuel Assembly",
+            "Control Rod",
+            "Coolant Pump",
+            "Steam Generator",
+            "Containment"
+          ]
         },
         {
           "name": "reactor_unit",
           "sql_type": "STRING",
           "comment": "Reactor unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Unit 1",
+            "Unit 2"
+          ]
         },
         {
           "name": "neutron_flux_pct",
@@ -465,21 +559,54 @@
           "sql_type": "STRING",
           "comment": "Reactor component identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "RC-FA-001",
+            "RC-FA-002",
+            "RC-FA-003",
+            "RC-FA-004",
+            "RC-CR-005",
+            "RC-CR-006",
+            "RC-CR-007",
+            "RC-CR-008",
+            "RC-CP-009",
+            "RC-CP-010",
+            "RC-CP-011",
+            "RC-CP-012",
+            "RC-SG-013",
+            "RC-SG-014",
+            "RC-SG-015",
+            "RC-SG-016",
+            "RC-CT-017",
+            "RC-CT-018",
+            "RC-CT-019",
+            "RC-CT-020"
+          ]
         },
         {
           "name": "component_type",
           "sql_type": "STRING",
           "comment": "Component type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Fuel Assembly",
+            "Control Rod",
+            "Coolant Pump",
+            "Steam Generator",
+            "Containment"
+          ]
         },
         {
           "name": "reactor_unit",
           "sql_type": "STRING",
           "comment": "Reactor unit",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Unit 1",
+            "Unit 2"
+          ]
         },
         {
           "name": "compliance_score",
@@ -514,7 +641,13 @@
           "sql_type": "STRING",
           "comment": "Result: Pass, Conditional Pass, Fail, Deferred",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fail' WHEN {status_noise} < 0.10 THEN 'Deferred' WHEN {status_noise} < 0.25 THEN 'Conditional Pass' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fail' WHEN {status_noise} < 0.10 THEN 'Deferred' WHEN {status_noise} < 0.25 THEN 'Conditional Pass' ELSE 'Pass' END",
+          "entity_values": [
+            "Fail",
+            "Deferred",
+            "Conditional Pass",
+            "Pass"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -787,7 +920,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The safety_kpi_monthly view (source: safety_readings) has dimensions: reading_date, component_type, reactor_unit. Measures: avg_neutron_flux_pct, avg_coolant_flow_rate, total_alarm_count, avg_safety_margin, reading_count. The inspection_kpi_monthly view (source: inspection_snapshots) has dimensions: inspection_date, component_type, reactor_unit, inspection_result. Measures: avg_compliance_score, total_deficiencies, total_open_corrective_actions, inspection_count, fail_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. component_id, component_name).",
+  "genie_instructions": "You are a power generation analytics assistant for NucleoSafe Systems. Answer questions about nuclear reactor safety monitoring and compliance tracking using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (component_id, component_name), query the base tables directly.\n- When joining tables, use the shared keys: component_id (shared across inspection_snapshots, reactor_components, safety_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in unique readings?",
     "How has unique components changed over time?",
@@ -835,7 +968,7 @@
       ]
     },
     {
-      "question": "How does total component temperature in celsius break down by reactor component identifier for 'Critical' records?",
+      "question": "How does total component temperature in celsius break down by reactor component for 'Critical' records?",
       "sql_lines": [
         "SELECT component_id, COUNT(*) AS record_count, SUM(temperature_celsius) AS total_temperature_celsius",
         "FROM {fqn}.reactor_components",
@@ -993,7 +1126,7 @@
       ]
     },
     {
-      "question": "What are the top reactor component identifier by total component temperature in celsius?",
+      "question": "What are the top reactor component by total component temperature in celsius?",
       "sql_lines": [
         "SELECT component_id, SUM(temperature_celsius) AS total_temperature_celsius",
         "FROM {fqn}.reactor_components",

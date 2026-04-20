@@ -29,28 +29,78 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DW-V001",
+            "DW-V002",
+            "DW-V003",
+            "DW-V004",
+            "DW-V005",
+            "DW-V006",
+            "DW-V007",
+            "DW-V008",
+            "DW-V009",
+            "DW-V010",
+            "DW-V011",
+            "DW-V012",
+            "DW-V013",
+            "DW-V014",
+            "DW-V015",
+            "DW-V016",
+            "DW-V017",
+            "DW-V018",
+            "DW-V019",
+            "DW-V020"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Apex Sedan",
+            "Horizon SUV",
+            "Titan Truck",
+            "Pulse EV",
+            "Venture Crossover",
+            "Sierra Wagon",
+            "Bolt Sport",
+            "Atlas Van",
+            "Horizon SUV Hybrid",
+            "Apex Sedan Hybrid",
+            "Ranger Pickup"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
-          "comment": "Vehicle classification (Sedan, SUV, Truck, etc.)",
+          "comment": "Vehicle classification",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sedan",
+            "SUV",
+            "Truck",
+            "EV Sedan",
+            "Crossover",
+            "Wagon",
+            "Coupe",
+            "Van"
+          ]
         },
         {
           "name": "connectivity_tier",
           "sql_type": "STRING",
           "comment": "Connected services tier level",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Premium",
+            "Elite",
+            "Standard"
+          ]
         },
         {
           "name": "engine_temp_celsius",
@@ -92,7 +142,13 @@
           "sql_type": "STRING",
           "comment": "Alert severity level for the reading",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.78 THEN 'Low' WHEN {status_noise} < 0.92 THEN 'Medium' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.78 THEN 'Low' WHEN {status_noise} < 0.92 THEN 'Medium' ELSE 'Critical' END",
+          "entity_values": [
+            "None",
+            "Low",
+            "Medium",
+            "Critical"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -306,28 +362,80 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DW-V001",
+            "DW-V002",
+            "DW-V003",
+            "DW-V004",
+            "DW-V005",
+            "DW-V006",
+            "DW-V007",
+            "DW-V008",
+            "DW-V009",
+            "DW-V010",
+            "DW-V011",
+            "DW-V012",
+            "DW-V013",
+            "DW-V014",
+            "DW-V015",
+            "DW-V016",
+            "DW-V017",
+            "DW-V018",
+            "DW-V019",
+            "DW-V020"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Apex Sedan",
+            "Horizon SUV",
+            "Titan Truck",
+            "Pulse EV",
+            "Venture Crossover",
+            "Sierra Wagon",
+            "Bolt Sport",
+            "Atlas Van",
+            "Horizon SUV Hybrid",
+            "Apex Sedan Hybrid",
+            "Ranger Pickup"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
           "comment": "Vehicle classification",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sedan",
+            "SUV",
+            "Truck",
+            "EV Sedan",
+            "Crossover",
+            "Wagon",
+            "Coupe",
+            "Van"
+          ]
         },
         {
           "name": "service_type",
           "sql_type": "STRING",
           "comment": "Type of service performed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Routine Maintenance' WHEN {status_noise} < 0.50 THEN 'Recall Repair' WHEN {status_noise} < 0.70 THEN 'Warranty Repair' WHEN {status_noise} < 0.85 THEN 'Diagnostic' ELSE 'Emergency Repair' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Routine Maintenance' WHEN {status_noise} < 0.50 THEN 'Recall Repair' WHEN {status_noise} < 0.70 THEN 'Warranty Repair' WHEN {status_noise} < 0.85 THEN 'Diagnostic' ELSE 'Emergency Repair' END",
+          "entity_values": [
+            "Routine Maintenance",
+            "Recall Repair",
+            "Warranty Repair",
+            "Diagnostic",
+            "Emergency Repair"
+          ]
         },
         {
           "name": "parts_replaced_count",
@@ -355,14 +463,28 @@
           "sql_type": "STRING",
           "comment": "Whether repair was covered by warranty",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Yes' WHEN {status_noise} < 0.80 THEN 'No' ELSE 'Partial' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Yes' WHEN {status_noise} < 0.80 THEN 'No' ELSE 'Partial' END",
+          "entity_values": [
+            "Yes",
+            "No",
+            "Partial"
+          ]
         },
         {
           "name": "service_region",
           "sql_type": "STRING",
           "comment": "Service center region",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Northeast' WHEN {status_noise} < 0.30 THEN 'Southeast' WHEN {status_noise} < 0.45 THEN 'Midwest' WHEN {status_noise} < 0.60 THEN 'Southwest' WHEN {status_noise} < 0.75 THEN 'West Coast' WHEN {status_noise} < 0.88 THEN 'Mountain' ELSE 'Pacific NW' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Northeast' WHEN {status_noise} < 0.30 THEN 'Southeast' WHEN {status_noise} < 0.45 THEN 'Midwest' WHEN {status_noise} < 0.60 THEN 'Southwest' WHEN {status_noise} < 0.75 THEN 'West Coast' WHEN {status_noise} < 0.88 THEN 'Mountain' ELSE 'Pacific NW' END",
+          "entity_values": [
+            "Northeast",
+            "Southeast",
+            "Midwest",
+            "Southwest",
+            "West Coast",
+            "Mountain",
+            "Pacific NW"
+          ]
         },
         {
           "name": "customer_satisfaction",
@@ -583,21 +705,66 @@
           "sql_type": "STRING",
           "comment": "Unique vehicle identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "DW-V001",
+            "DW-V002",
+            "DW-V003",
+            "DW-V004",
+            "DW-V005",
+            "DW-V006",
+            "DW-V007",
+            "DW-V008",
+            "DW-V009",
+            "DW-V010",
+            "DW-V011",
+            "DW-V012",
+            "DW-V013",
+            "DW-V014",
+            "DW-V015",
+            "DW-V016",
+            "DW-V017",
+            "DW-V018",
+            "DW-V019",
+            "DW-V020"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Apex Sedan",
+            "Horizon SUV",
+            "Titan Truck",
+            "Pulse EV",
+            "Venture Crossover",
+            "Sierra Wagon",
+            "Bolt Sport",
+            "Atlas Van",
+            "Horizon SUV Hybrid",
+            "Apex Sedan Hybrid",
+            "Ranger Pickup"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
           "comment": "Vehicle classification",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sedan",
+            "SUV",
+            "Truck",
+            "EV Sedan",
+            "Crossover",
+            "Wagon",
+            "Coupe",
+            "Van"
+          ]
         },
         {
           "name": "forecasted_health_score",
@@ -625,14 +792,24 @@
           "sql_type": "STRING",
           "comment": "Predictive model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v2.0' WHEN {status_noise} < 0.60 THEN 'v2.1' ELSE 'v2.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v2.0' WHEN {status_noise} < 0.60 THEN 'v2.1' ELSE 'v2.2' END",
+          "entity_values": [
+            "v2.0",
+            "v2.1",
+            "v2.2"
+          ]
         },
         {
           "name": "trend_indicator",
           "sql_type": "STRING",
           "comment": "Health score trend direction",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Improving' WHEN {status_noise} < 0.70 THEN 'Stable' ELSE 'Declining' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Improving' WHEN {status_noise} < 0.70 THEN 'Stable' ELSE 'Declining' END",
+          "entity_values": [
+            "Improving",
+            "Stable",
+            "Declining"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -964,7 +1141,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The vehicle_telemetry_metrics view (source: vehicle_telemetry) has dimensions: reading_date, model, vehicle_class, connectivity_tier, alert_severity. Measures: total_readings, avg_health_score, avg_engine_temp, critical_alert_count, avg_dtc_count. The maintenance_records_metrics view (source: maintenance_records) has dimensions: service_date, model, vehicle_class, service_type, service_region. Measures: total_service_records, total_repair_cost, avg_labor_hours, warranty_covered_count, avg_customer_satisfaction. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. vehicle_id).",
+  "genie_instructions": "You are an automotive analytics assistant for DriveWell Automotive. Answer questions about connected vehicle health monitoring and predictive maintenance reporting using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (vehicle_id), query the base tables directly.\n- When joining tables, use the shared keys: vehicle_id (shared across maintenance_records, vehicle_health_monthly, vehicle_telemetry).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in critical alert count?",
     "How has unique total readingss changed over time?",
@@ -1178,7 +1355,7 @@
       ]
     },
     {
-      "question": "What are the top unique vehicle identifier by total engine coolant temperature in celsius?",
+      "question": "What are the top unique vehicle by total engine coolant temperature in celsius?",
       "sql_lines": [
         "SELECT vehicle_id, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
         "FROM {fqn}.vehicle_telemetry",

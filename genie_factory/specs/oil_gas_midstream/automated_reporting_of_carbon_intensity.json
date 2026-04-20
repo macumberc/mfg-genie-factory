@@ -29,28 +29,89 @@
           "sql_type": "STRING",
           "comment": "Emission source ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CT-CMP-001",
+            "CT-CMP-002",
+            "CT-CMP-003",
+            "CT-CMP-004",
+            "CT-PRC-005",
+            "CT-PRC-006",
+            "CT-PRC-007",
+            "CT-FUG-008",
+            "CT-FUG-009",
+            "CT-FUG-010",
+            "CT-VNT-011",
+            "CT-VNT-012",
+            "CT-FLR-013",
+            "CT-FLR-014",
+            "CT-FLR-015",
+            "CT-CMP-016",
+            "CT-PRC-017",
+            "CT-FUG-018",
+            "CT-ELC-019",
+            "CT-VEH-020"
+          ]
         },
         {
           "name": "source_name",
           "sql_type": "STRING",
           "comment": "Source name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Permian Compressor Station 1",
+            "Permian Compressor Station 2",
+            "Appalachian Compressor",
+            "Gulf Coast Compressor",
+            "Gas Processing Plant Alpha",
+            "Gas Processing Plant Beta",
+            "NGL Fractionator",
+            "Permian Gathering Fugitive",
+            "Marcellus Gathering Fugitive",
+            "Eagle Ford Gathering Fugitive",
+            "Tank Battery Venting 1",
+            "Tank Battery Venting 2",
+            "Permian Flare Stack 1",
+            "Permian Flare Stack 2",
+            "Processing Plant Flare",
+            "Midcontinent Compressor",
+            "Amine Treating Unit",
+            "Pipeline Valve Fugitive",
+            "Electrical Equipment",
+            "Fleet Vehicles"
+          ]
         },
         {
           "name": "emission_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Combustion",
+            "Process",
+            "Fugitive",
+            "Venting",
+            "Flaring",
+            "Indirect",
+            "Mobile"
+          ]
         },
         {
           "name": "facility_type",
           "sql_type": "STRING",
           "comment": "Facility type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Compressor Station",
+            "Processing Plant",
+            "Gathering System",
+            "Storage Facility",
+            "Transmission Pipeline",
+            "Field Operations"
+          ]
         },
         {
           "name": "co2e_metric_tons",
@@ -85,7 +146,13 @@
           "sql_type": "STRING",
           "comment": "Method: CEMS, Engineering Calc, Emission Factor, LDAR",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'CEMS' WHEN {status_noise} < 0.55 THEN 'Engineering Calc' WHEN {status_noise} < 0.80 THEN 'Emission Factor' ELSE 'LDAR' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'CEMS' WHEN {status_noise} < 0.55 THEN 'Engineering Calc' WHEN {status_noise} < 0.80 THEN 'Emission Factor' ELSE 'LDAR' END",
+          "entity_values": [
+            "CEMS",
+            "Engineering Calc",
+            "Emission Factor",
+            "LDAR"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -249,21 +316,60 @@
           "sql_type": "STRING",
           "comment": "Source ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CT-CMP-001",
+            "CT-CMP-002",
+            "CT-CMP-003",
+            "CT-CMP-004",
+            "CT-PRC-005",
+            "CT-PRC-006",
+            "CT-PRC-007",
+            "CT-FUG-008",
+            "CT-FUG-009",
+            "CT-FUG-010",
+            "CT-VNT-011",
+            "CT-VNT-012",
+            "CT-FLR-013",
+            "CT-FLR-014",
+            "CT-FLR-015",
+            "CT-CMP-016",
+            "CT-PRC-017",
+            "CT-FUG-018",
+            "CT-ELC-019",
+            "CT-VEH-020"
+          ]
         },
         {
           "name": "emission_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Combustion",
+            "Process",
+            "Fugitive",
+            "Venting",
+            "Flaring",
+            "Indirect",
+            "Mobile"
+          ]
         },
         {
           "name": "facility_type",
           "sql_type": "STRING",
           "comment": "Facility type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Compressor Station",
+            "Processing Plant",
+            "Gathering System",
+            "Storage Facility",
+            "Transmission Pipeline",
+            "Field Operations"
+          ]
         },
         {
           "name": "monthly_co2e_tons",
@@ -429,14 +535,45 @@
           "sql_type": "STRING",
           "comment": "Source ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CT-CMP-001",
+            "CT-CMP-002",
+            "CT-CMP-003",
+            "CT-CMP-004",
+            "CT-PRC-005",
+            "CT-PRC-006",
+            "CT-PRC-007",
+            "CT-FUG-008",
+            "CT-FUG-009",
+            "CT-FUG-010",
+            "CT-VNT-011",
+            "CT-VNT-012",
+            "CT-FLR-013",
+            "CT-FLR-014",
+            "CT-FLR-015",
+            "CT-CMP-016",
+            "CT-PRC-017",
+            "CT-FUG-018",
+            "CT-ELC-019",
+            "CT-VEH-020"
+          ]
         },
         {
           "name": "emission_category",
           "sql_type": "STRING",
           "comment": "Category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Combustion",
+            "Process",
+            "Fugitive",
+            "Venting",
+            "Flaring",
+            "Indirect",
+            "Mobile"
+          ]
         },
         {
           "name": "total_emissions_tons",
@@ -464,7 +601,12 @@
           "sql_type": "STRING",
           "comment": "Status: Compliant, Warning, Non-Compliant",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Compliant' WHEN {status_noise} < 0.90 THEN 'Warning' ELSE 'Non-Compliant' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Compliant' WHEN {status_noise} < 0.90 THEN 'Warning' ELSE 'Non-Compliant' END",
+          "entity_values": [
+            "Compliant",
+            "Warning",
+            "Non-Compliant"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -664,7 +806,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The emission_readings_metrics view (source: emission_readings) has dimensions: reading_date, source_id, emission_category, facility_type, measurement_method. Measures: total_co2e_tons, total_methane_tons, avg_carbon_intensity, total_throughput_boe. The carbon_snapshots_metrics view (source: carbon_snapshots) has dimensions: snapshot_date, source_id, emission_category, facility_type. Measures: total_monthly_co2e, total_leaks, total_offset_credits, avg_reduction_target. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. source_name).",
+  "genie_instructions": "You are an oil & gas midstream analytics assistant for CarbonTrack Midstream. Answer questions about automated carbon intensity reporting and emissions monitoring using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (source_name), query the base tables directly.\n- When joining tables, use the shared keys: source_id (shared across carbon_kpi_monthly, carbon_snapshots, emission_readings).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in highest co2e metric tons?",
     "How has total co2e metric tons changed over time?",

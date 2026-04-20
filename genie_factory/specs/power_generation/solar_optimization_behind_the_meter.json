@@ -29,28 +29,85 @@
           "sql_type": "STRING",
           "comment": "Solar+storage site identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SS-COM-001",
+            "SS-COM-002",
+            "SS-COM-003",
+            "SS-COM-004",
+            "SS-COM-005",
+            "SS-IND-006",
+            "SS-IND-007",
+            "SS-IND-008",
+            "SS-IND-009",
+            "SS-IND-010",
+            "SS-MUN-011",
+            "SS-MUN-012",
+            "SS-MUN-013",
+            "SS-MUN-014",
+            "SS-MUN-015",
+            "SS-CAM-016",
+            "SS-CAM-017",
+            "SS-CAM-018",
+            "SS-CAM-019",
+            "SS-CAM-020"
+          ]
         },
         {
           "name": "site_name",
           "sql_type": "STRING",
           "comment": "Site name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Sunbelt Office Park",
+            "Metro Tower Complex",
+            "Parkway Business Center",
+            "Harbor Point Retail",
+            "Valley Green Mall",
+            "Desert Manufacturing Hub",
+            "Lakefront Warehouse Dist",
+            "Ridgeline Data Center",
+            "Ironworks Industrial Park",
+            "Prairie Logistics Depot",
+            "City Hall Solar Array",
+            "Civic Center Rooftop",
+            "Water Treatment Solar",
+            "Fire Station 7 Solar",
+            "Community Recreation Center",
+            "State University North",
+            "Tech Institute Solar",
+            "Medical Center Campus",
+            "Research Park Solar",
+            "Community College Array"
+          ]
         },
         {
           "name": "site_type",
           "sql_type": "STRING",
           "comment": "Site type: Commercial, Industrial, Municipal, Campus",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Commercial",
+            "Industrial",
+            "Municipal",
+            "Campus"
+          ]
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Geographic region",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Southwest",
+            "Southeast",
+            "West",
+            "Northeast",
+            "Midwest"
+          ]
         },
         {
           "name": "solar_generation_kwh",
@@ -78,7 +135,13 @@
           "sql_type": "STRING",
           "comment": "Inverter status: Online, Degraded, Offline, Clipping",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Offline' WHEN {status_noise} < 0.08 THEN 'Degraded' WHEN {status_noise} < 0.15 THEN 'Clipping' ELSE 'Online' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Offline' WHEN {status_noise} < 0.08 THEN 'Degraded' WHEN {status_noise} < 0.15 THEN 'Clipping' ELSE 'Online' END",
+          "entity_values": [
+            "Offline",
+            "Degraded",
+            "Clipping",
+            "Online"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -250,14 +313,42 @@
           "sql_type": "STRING",
           "comment": "Site identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SS-COM-001",
+            "SS-COM-002",
+            "SS-COM-003",
+            "SS-COM-004",
+            "SS-COM-005",
+            "SS-IND-006",
+            "SS-IND-007",
+            "SS-IND-008",
+            "SS-IND-009",
+            "SS-IND-010",
+            "SS-MUN-011",
+            "SS-MUN-012",
+            "SS-MUN-013",
+            "SS-MUN-014",
+            "SS-MUN-015",
+            "SS-CAM-016",
+            "SS-CAM-017",
+            "SS-CAM-018",
+            "SS-CAM-019",
+            "SS-CAM-020"
+          ]
         },
         {
           "name": "site_type",
           "sql_type": "STRING",
           "comment": "Site type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Commercial",
+            "Industrial",
+            "Municipal",
+            "Campus"
+          ]
         },
         {
           "name": "grid_export_kwh",
@@ -470,14 +561,42 @@
           "sql_type": "STRING",
           "comment": "Site identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SS-COM-001",
+            "SS-COM-002",
+            "SS-COM-003",
+            "SS-COM-004",
+            "SS-COM-005",
+            "SS-IND-006",
+            "SS-IND-007",
+            "SS-IND-008",
+            "SS-IND-009",
+            "SS-IND-010",
+            "SS-MUN-011",
+            "SS-MUN-012",
+            "SS-MUN-013",
+            "SS-MUN-014",
+            "SS-MUN-015",
+            "SS-CAM-016",
+            "SS-CAM-017",
+            "SS-CAM-018",
+            "SS-CAM-019",
+            "SS-CAM-020"
+          ]
         },
         {
           "name": "site_type",
           "sql_type": "STRING",
           "comment": "Site type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Commercial",
+            "Industrial",
+            "Municipal",
+            "Campus"
+          ]
         },
         {
           "name": "state_of_charge_pct",
@@ -519,7 +638,13 @@
           "sql_type": "STRING",
           "comment": "Battery status: Charging, Discharging, Idle, Fault",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fault' WHEN {status_noise} < 0.25 THEN 'Discharging' WHEN {status_noise} < 0.50 THEN 'Charging' ELSE 'Idle' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Fault' WHEN {status_noise} < 0.25 THEN 'Discharging' WHEN {status_noise} < 0.50 THEN 'Charging' ELSE 'Idle' END",
+          "entity_values": [
+            "Fault",
+            "Discharging",
+            "Charging",
+            "Idle"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -783,7 +908,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The solar_kpi_monthly view (source: solar_installations) has dimensions: record_date, site_type, region, inverter_status. Measures: total_solar_generation_kwh, avg_panel_efficiency, avg_irradiance, online_site_count, total_site_count. The battery_kpi_monthly view (source: battery_snapshots) has dimensions: snapshot_date, site_type, battery_status. Measures: avg_state_of_charge, avg_battery_health, total_discharge_kwh, total_charge_kwh, fault_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. site_id, site_name).",
+  "genie_instructions": "You are a power generation analytics assistant for SolarEdge Power. Answer questions about behind-the-meter solar and battery storage optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (site_id, site_name), query the base tables directly.\n- When joining tables, use the shared keys: site_id (shared across battery_snapshots, generation_readings, solar_installations).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in online site count?",
     "How has unique total sites changed over time?",
@@ -822,7 +947,7 @@
       ]
     },
     {
-      "question": "How does total solar irradiance in kwh/m2 break down by solar+storage site identifier for 'Offline' records?",
+      "question": "How does total solar irradiance in kwh/m2 break down by solar+storage site for 'Offline' records?",
       "sql_lines": [
         "SELECT site_id, COUNT(*) AS record_count, SUM(irradiance_kwh_m2) AS total_irradiance_kwh_m2",
         "FROM {fqn}.solar_installations",
@@ -988,7 +1113,7 @@
       ]
     },
     {
-      "question": "What are the top solar+storage site identifier by total solar irradiance in kwh/m2?",
+      "question": "What are the top solar+storage site by total solar irradiance in kwh/m2?",
       "sql_lines": [
         "SELECT site_id, SUM(irradiance_kwh_m2) AS total_irradiance_kwh_m2",
         "FROM {fqn}.solar_installations",

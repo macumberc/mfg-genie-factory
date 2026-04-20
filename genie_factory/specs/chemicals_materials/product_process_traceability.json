@@ -29,21 +29,72 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "TC-001",
+            "TC-002",
+            "TC-003",
+            "TC-004",
+            "TC-005",
+            "TC-006",
+            "TC-007",
+            "TC-008",
+            "TC-009",
+            "TC-010",
+            "TC-011",
+            "TC-012",
+            "TC-013",
+            "TC-014",
+            "TC-015",
+            "TC-016",
+            "TC-017",
+            "TC-018",
+            "TC-019",
+            "TC-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Epoxy Resin ER-100",
+            "Polyester Resin PR-200",
+            "Acrylic Resin AR-300",
+            "Phenolic Resin PH-400",
+            "Titanium White TW-110",
+            "Iron Oxide Red IR-220",
+            "Carbon Black CB-330",
+            "Ultramarine Blue UB-440",
+            "Platinum Catalyst PT-510",
+            "Palladium Catalyst PD-520",
+            "Zeolite Catalyst ZE-530",
+            "Nickel Catalyst NI-540",
+            "SLS Surfactant SF-610",
+            "Alkyl Polyglucoside AP-620",
+            "Betaine Surfactant BT-630",
+            "Silicone Surfactant SI-640",
+            "Ethylene Glycol EG-710",
+            "Propylene Oxide PO-720",
+            "Adipic Acid AA-730",
+            "Caprolactam CL-740"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Category: Resins, Pigments, Catalysts, Surfactants, Intermediates",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Resins",
+            "Pigments",
+            "Catalysts",
+            "Surfactants",
+            "Intermediates"
+          ]
         },
         {
           "name": "lot_number",
@@ -57,21 +108,44 @@
           "sql_type": "STRING",
           "comment": "Production facility",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'FAC-TX' WHEN {status_noise} < 0.40 THEN 'FAC-OH' WHEN {status_noise} < 0.60 THEN 'FAC-NJ' WHEN {status_noise} < 0.80 THEN 'FAC-CA' ELSE 'FAC-GA' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'FAC-TX' WHEN {status_noise} < 0.40 THEN 'FAC-OH' WHEN {status_noise} < 0.60 THEN 'FAC-NJ' WHEN {status_noise} < 0.80 THEN 'FAC-CA' ELSE 'FAC-GA' END",
+          "entity_values": [
+            "FAC-TX",
+            "FAC-OH",
+            "FAC-NJ",
+            "FAC-CA",
+            "FAC-GA"
+          ]
         },
         {
           "name": "process_step",
           "sql_type": "STRING",
           "comment": "Process step: Mixing, Reaction, Purification, Drying, Packaging",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Mixing' WHEN {status_noise} < 0.44 THEN 'Reaction' WHEN {status_noise} < 0.62 THEN 'Purification' WHEN {status_noise} < 0.80 THEN 'Drying' ELSE 'Packaging' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Mixing' WHEN {status_noise} < 0.44 THEN 'Reaction' WHEN {status_noise} < 0.62 THEN 'Purification' WHEN {status_noise} < 0.80 THEN 'Drying' ELSE 'Packaging' END",
+          "entity_values": [
+            "Mixing",
+            "Reaction",
+            "Purification",
+            "Drying",
+            "Packaging"
+          ]
         },
         {
           "name": "supplier_id",
           "sql_type": "STRING",
           "comment": "Raw material supplier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'SUP-01' WHEN {status_noise} < 0.30 THEN 'SUP-02' WHEN {status_noise} < 0.45 THEN 'SUP-03' WHEN {status_noise} < 0.60 THEN 'SUP-04' WHEN {status_noise} < 0.75 THEN 'SUP-05' WHEN {status_noise} < 0.88 THEN 'SUP-06' ELSE 'SUP-07' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'SUP-01' WHEN {status_noise} < 0.30 THEN 'SUP-02' WHEN {status_noise} < 0.45 THEN 'SUP-03' WHEN {status_noise} < 0.60 THEN 'SUP-04' WHEN {status_noise} < 0.75 THEN 'SUP-05' WHEN {status_noise} < 0.88 THEN 'SUP-06' ELSE 'SUP-07' END",
+          "entity_values": [
+            "SUP-01",
+            "SUP-02",
+            "SUP-03",
+            "SUP-04",
+            "SUP-05",
+            "SUP-06",
+            "SUP-07"
+          ]
         },
         {
           "name": "input_quantity_kg",
@@ -92,7 +166,12 @@
           "sql_type": "STRING",
           "comment": "Quality checkpoint result: Pass, Fail, Hold",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.12 THEN 'Hold' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.12 THEN 'Hold' ELSE 'Pass' END",
+          "entity_values": [
+            "Fail",
+            "Hold",
+            "Pass"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -247,21 +326,72 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "TC-001",
+            "TC-002",
+            "TC-003",
+            "TC-004",
+            "TC-005",
+            "TC-006",
+            "TC-007",
+            "TC-008",
+            "TC-009",
+            "TC-010",
+            "TC-011",
+            "TC-012",
+            "TC-013",
+            "TC-014",
+            "TC-015",
+            "TC-016",
+            "TC-017",
+            "TC-018",
+            "TC-019",
+            "TC-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Epoxy Resin ER-100",
+            "Polyester Resin PR-200",
+            "Acrylic Resin AR-300",
+            "Phenolic Resin PH-400",
+            "Titanium White TW-110",
+            "Iron Oxide Red IR-220",
+            "Carbon Black CB-330",
+            "Ultramarine Blue UB-440",
+            "Platinum Catalyst PT-510",
+            "Palladium Catalyst PD-520",
+            "Zeolite Catalyst ZE-530",
+            "Nickel Catalyst NI-540",
+            "SLS Surfactant SF-610",
+            "Alkyl Polyglucoside AP-620",
+            "Betaine Surfactant BT-630",
+            "Silicone Surfactant SI-640",
+            "Ethylene Glycol EG-710",
+            "Propylene Oxide PO-720",
+            "Adipic Acid AA-730",
+            "Caprolactam CL-740"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Resins",
+            "Pigments",
+            "Catalysts",
+            "Surfactants",
+            "Intermediates"
+          ]
         },
         {
           "name": "lot_number",
@@ -275,7 +405,14 @@
           "sql_type": "STRING",
           "comment": "Lot status: Released, Quarantine, Shipped, Expired, Recalled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Recalled' WHEN {status_noise} < 0.06 THEN 'Expired' WHEN {status_noise} < 0.15 THEN 'Quarantine' WHEN {status_noise} < 0.50 THEN 'Shipped' ELSE 'Released' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Recalled' WHEN {status_noise} < 0.06 THEN 'Expired' WHEN {status_noise} < 0.15 THEN 'Quarantine' WHEN {status_noise} < 0.50 THEN 'Shipped' ELSE 'Released' END",
+          "entity_values": [
+            "Recalled",
+            "Expired",
+            "Quarantine",
+            "Shipped",
+            "Released"
+          ]
         },
         {
           "name": "quantity_on_hand_kg",
@@ -441,21 +578,72 @@
           "sql_type": "STRING",
           "comment": "Product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "TC-001",
+            "TC-002",
+            "TC-003",
+            "TC-004",
+            "TC-005",
+            "TC-006",
+            "TC-007",
+            "TC-008",
+            "TC-009",
+            "TC-010",
+            "TC-011",
+            "TC-012",
+            "TC-013",
+            "TC-014",
+            "TC-015",
+            "TC-016",
+            "TC-017",
+            "TC-018",
+            "TC-019",
+            "TC-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Epoxy Resin ER-100",
+            "Polyester Resin PR-200",
+            "Acrylic Resin AR-300",
+            "Phenolic Resin PH-400",
+            "Titanium White TW-110",
+            "Iron Oxide Red IR-220",
+            "Carbon Black CB-330",
+            "Ultramarine Blue UB-440",
+            "Platinum Catalyst PT-510",
+            "Palladium Catalyst PD-520",
+            "Zeolite Catalyst ZE-530",
+            "Nickel Catalyst NI-540",
+            "SLS Surfactant SF-610",
+            "Alkyl Polyglucoside AP-620",
+            "Betaine Surfactant BT-630",
+            "Silicone Surfactant SI-640",
+            "Ethylene Glycol EG-710",
+            "Propylene Oxide PO-720",
+            "Adipic Acid AA-730",
+            "Caprolactam CL-740"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Resins",
+            "Pigments",
+            "Catalysts",
+            "Surfactants",
+            "Intermediates"
+          ]
         },
         {
           "name": "lots_produced",
@@ -758,7 +946,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_events_metrics view (source: production_events) has dimensions: event_date, product_category, facility_id, process_step, supplier_id, quality_check_result. Measures: total_production_events, total_input_kg, total_output_kg, passed_quality_checks, failed_quality_checks, unique_lot_count. The traceability_monthly_metrics view (source: traceability_monthly) has dimensions: report_month, product_category, product_id. Measures: total_lots_produced, total_lots_full_genealogy, avg_traceability_score, avg_recall_readiness_hours, total_quality_holds. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name).",
+  "genie_instructions": "You are a chemicals & materials analytics assistant for TraceCore Materials. Answer questions about product and process traceability for chemical manufacturing using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_name), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across lot_tracking_snapshots, production_events, traceability_monthly); lot_number (joins lot_tracking_snapshots and production_events).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in passed quality checks count?",
     "How has failed quality checks count changed over time?",
@@ -970,7 +1158,7 @@
       ]
     },
     {
-      "question": "What are the top product identifier by total input material quantity in kg?",
+      "question": "What are the top product by total input material quantity in kg?",
       "sql_lines": [
         "SELECT product_id, SUM(input_quantity_kg) AS total_input_quantity_kg",
         "FROM {fqn}.production_events",

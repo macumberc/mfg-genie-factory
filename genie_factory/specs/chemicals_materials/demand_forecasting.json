@@ -29,35 +29,101 @@
           "sql_type": "STRING",
           "comment": "Chemical product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-001",
+            "CF-002",
+            "CF-003",
+            "CF-004",
+            "CF-005",
+            "CF-006",
+            "CF-007",
+            "CF-008",
+            "CF-009",
+            "CF-010",
+            "CF-011",
+            "CF-012",
+            "CF-013",
+            "CF-014",
+            "CF-015",
+            "CF-016",
+            "CF-017",
+            "CF-018",
+            "CF-019",
+            "CF-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Chemical product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Industrial Acetone",
+            "Methyl Ethyl Ketone",
+            "Isopropyl Alcohol",
+            "Toluene Grade A",
+            "Polyethylene HD Resin",
+            "Polypropylene Copolymer",
+            "PVC Suspension Resin",
+            "Nylon 6 Pellets",
+            "Titanium Dioxide Pigment",
+            "Sodium Hydroxide 50%",
+            "Hydrochloric Acid 32%",
+            "Sulfuric Acid 98%",
+            "Epoxy Primer Coat",
+            "Polyurethane Topcoat",
+            "Acrylic Latex Paint",
+            "Marine Anti-Fouling Coat",
+            "Structural Epoxy Adhesive",
+            "Cyanoacrylate Instant Bond",
+            "Hot Melt Packaging Adhesive",
+            "Silicone Sealant Pro"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category: Solvents, Polymers, Specialty Chemicals, Coatings, Adhesives",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Solvents",
+            "Polymers",
+            "Specialty Chemicals",
+            "Coatings",
+            "Adhesives"
+          ]
         },
         {
           "name": "plant_id",
           "sql_type": "STRING",
           "comment": "Manufacturing plant identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END",
+          "entity_values": [
+            "PLT-HOU",
+            "PLT-CHI",
+            "PLT-NJ",
+            "PLT-LA",
+            "PLT-ATL",
+            "PLT-SEA"
+          ]
         },
         {
           "name": "customer_segment",
           "sql_type": "STRING",
           "comment": "Customer segment: Industrial, Automotive, Construction, Consumer, Pharmaceutical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Industrial' WHEN {status_noise} < 0.45 THEN 'Automotive' WHEN {status_noise} < 0.65 THEN 'Construction' WHEN {status_noise} < 0.82 THEN 'Consumer' ELSE 'Pharmaceutical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Industrial' WHEN {status_noise} < 0.45 THEN 'Automotive' WHEN {status_noise} < 0.65 THEN 'Construction' WHEN {status_noise} < 0.82 THEN 'Consumer' ELSE 'Pharmaceutical' END",
+          "entity_values": [
+            "Industrial",
+            "Automotive",
+            "Construction",
+            "Consumer",
+            "Pharmaceutical"
+          ]
         },
         {
           "name": "order_quantity_kg",
@@ -85,7 +151,13 @@
           "sql_type": "STRING",
           "comment": "Fulfillment status: Fulfilled, Partial, Backorder, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Cancelled' WHEN {status_noise} < 0.08 THEN 'Backorder' WHEN {status_noise} < 0.15 THEN 'Partial' ELSE 'Fulfilled' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Cancelled' WHEN {status_noise} < 0.08 THEN 'Backorder' WHEN {status_noise} < 0.15 THEN 'Partial' ELSE 'Fulfilled' END",
+          "entity_values": [
+            "Cancelled",
+            "Backorder",
+            "Partial",
+            "Fulfilled"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -241,28 +313,70 @@
           "sql_type": "STRING",
           "comment": "Chemical product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-001",
+            "CF-002",
+            "CF-003",
+            "CF-004",
+            "CF-005",
+            "CF-006",
+            "CF-007",
+            "CF-008",
+            "CF-009",
+            "CF-010",
+            "CF-011",
+            "CF-012",
+            "CF-013",
+            "CF-014",
+            "CF-015",
+            "CF-016",
+            "CF-017",
+            "CF-018",
+            "CF-019",
+            "CF-020"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Solvents",
+            "Polymers",
+            "Specialty Chemicals",
+            "Coatings",
+            "Adhesives"
+          ]
         },
         {
           "name": "plant_id",
           "sql_type": "STRING",
           "comment": "Manufacturing plant",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END",
+          "entity_values": [
+            "PLT-HOU",
+            "PLT-CHI",
+            "PLT-NJ",
+            "PLT-LA",
+            "PLT-ATL",
+            "PLT-SEA"
+          ]
         },
         {
           "name": "model_version",
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v4.0' WHEN {status_noise} < 0.66 THEN 'v4.1' ELSE 'v4.2' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v4.0' WHEN {status_noise} < 0.66 THEN 'v4.1' ELSE 'v4.2' END",
+          "entity_values": [
+            "v4.0",
+            "v4.1",
+            "v4.2"
+          ]
         },
         {
           "name": "forecasted_quantity_kg",
@@ -444,28 +558,87 @@
           "sql_type": "STRING",
           "comment": "Chemical product identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "CF-001",
+            "CF-002",
+            "CF-003",
+            "CF-004",
+            "CF-005",
+            "CF-006",
+            "CF-007",
+            "CF-008",
+            "CF-009",
+            "CF-010",
+            "CF-011",
+            "CF-012",
+            "CF-013",
+            "CF-014",
+            "CF-015",
+            "CF-016",
+            "CF-017",
+            "CF-018",
+            "CF-019",
+            "CF-020"
+          ]
         },
         {
           "name": "product_name",
           "sql_type": "STRING",
           "comment": "Chemical product name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Industrial Acetone",
+            "Methyl Ethyl Ketone",
+            "Isopropyl Alcohol",
+            "Toluene Grade A",
+            "Polyethylene HD Resin",
+            "Polypropylene Copolymer",
+            "PVC Suspension Resin",
+            "Nylon 6 Pellets",
+            "Titanium Dioxide Pigment",
+            "Sodium Hydroxide 50%",
+            "Hydrochloric Acid 32%",
+            "Sulfuric Acid 98%",
+            "Epoxy Primer Coat",
+            "Polyurethane Topcoat",
+            "Acrylic Latex Paint",
+            "Marine Anti-Fouling Coat",
+            "Structural Epoxy Adhesive",
+            "Cyanoacrylate Instant Bond",
+            "Hot Melt Packaging Adhesive",
+            "Silicone Sealant Pro"
+          ]
         },
         {
           "name": "product_category",
           "sql_type": "STRING",
           "comment": "Product category",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Solvents",
+            "Polymers",
+            "Specialty Chemicals",
+            "Coatings",
+            "Adhesives"
+          ]
         },
         {
           "name": "plant_id",
           "sql_type": "STRING",
           "comment": "Plant where inventory is held",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'PLT-HOU' WHEN {status_noise} < 0.33 THEN 'PLT-CHI' WHEN {status_noise} < 0.50 THEN 'PLT-NJ' WHEN {status_noise} < 0.67 THEN 'PLT-LA' WHEN {status_noise} < 0.83 THEN 'PLT-ATL' ELSE 'PLT-SEA' END",
+          "entity_values": [
+            "PLT-HOU",
+            "PLT-CHI",
+            "PLT-NJ",
+            "PLT-LA",
+            "PLT-ATL",
+            "PLT-SEA"
+          ]
         },
         {
           "name": "on_hand_qty_kg",
@@ -493,7 +666,13 @@
           "sql_type": "STRING",
           "comment": "Reorder status: Adequate, Low, Critical, Reorder Placed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.15 THEN 'Reorder Placed' WHEN {status_noise} < 0.30 THEN 'Low' ELSE 'Adequate' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.15 THEN 'Reorder Placed' WHEN {status_noise} < 0.30 THEN 'Low' ELSE 'Adequate' END",
+          "entity_values": [
+            "Critical",
+            "Reorder Placed",
+            "Low",
+            "Adequate"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -738,7 +917,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The chemical_orders_metrics view (source: chemical_orders) has dimensions: order_date, product_category, customer_segment, plant_id, fulfillment_status. Measures: total_order_value_usd, total_order_quantity_kg, fulfilled_order_count, total_order_count, backorder_count, avg_unit_price_usd. The demand_forecasts_metrics view (source: demand_forecasts) has dimensions: forecast_month, product_category, plant_id, model_version. Measures: total_forecasted_qty_kg, total_actual_qty_kg, total_forecasted_revenue, total_actual_revenue, forecast_record_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "genie_instructions": "You are a chemicals & materials analytics assistant for ChemFlow Industries. Answer questions about chemical product demand forecasting and inventory optimization using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (product_id, product_name), query the base tables directly.\n- When joining tables, use the shared keys: product_id (shared across chemical_orders, demand_forecasts, inventory_positions); plant_id (shared across chemical_orders, demand_forecasts, inventory_positions).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in fulfilled order count?",
     "How has backorder count changed over time?",
@@ -786,7 +965,7 @@
       ]
     },
     {
-      "question": "How does total order quantity in kilograms break down by chemical product identifier for 'Backorder' records?",
+      "question": "How does total order quantity in kilograms break down by chemical product for 'Backorder' records?",
       "sql_lines": [
         "SELECT product_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.chemical_orders",
@@ -950,7 +1129,7 @@
       ]
     },
     {
-      "question": "What are the top chemical product identifier by total order quantity in kilograms?",
+      "question": "What are the top chemical product by total order quantity in kilograms?",
       "sql_lines": [
         "SELECT product_id, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.chemical_orders",

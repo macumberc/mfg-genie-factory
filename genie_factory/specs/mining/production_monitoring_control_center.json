@@ -29,28 +29,95 @@
           "sql_type": "STRING",
           "comment": "Unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PU-001",
+            "PU-002",
+            "PU-003",
+            "PU-004",
+            "PU-005",
+            "PU-006",
+            "PU-007",
+            "PU-008",
+            "PU-009",
+            "PU-010",
+            "PU-011",
+            "PU-012",
+            "PU-013",
+            "PU-014",
+            "PU-015",
+            "PU-016",
+            "PU-017",
+            "PU-018",
+            "PU-019",
+            "PU-020"
+          ]
         },
         {
           "name": "unit_name",
           "sql_type": "STRING",
           "comment": "Unit name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary Jaw Crusher A",
+            "Primary Jaw Crusher B",
+            "Primary Gyratory Crusher",
+            "Secondary Cone Crusher 1",
+            "Secondary Cone Crusher 2",
+            "Tertiary Impact Crusher",
+            "HPGR Unit 1",
+            "SAG Mill 1",
+            "SAG Mill 2",
+            "Ball Mill 1",
+            "Ball Mill 2",
+            "Flotation Cell Bank A",
+            "Flotation Cell Bank B",
+            "Thickener 1",
+            "Thickener 2",
+            "Overland Conveyor 1",
+            "Overland Conveyor 2",
+            "Stacker-Reclaimer 1",
+            "Screening Plant A",
+            "Screening Plant B"
+          ]
         },
         {
           "name": "unit_type",
           "sql_type": "STRING",
           "comment": "Unit type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Jaw Crusher",
+            "Gyratory Crusher",
+            "Cone Crusher",
+            "Impact Crusher",
+            "HPGR",
+            "SAG Mill",
+            "Ball Mill",
+            "Flotation Cell",
+            "Thickener",
+            "Conveyor",
+            "Stacker",
+            "Vibrating Screen"
+          ]
         },
         {
           "name": "processing_stage",
           "sql_type": "STRING",
           "comment": "Processing stage",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary Crushing",
+            "Secondary Crushing",
+            "Tertiary Crushing",
+            "Grinding",
+            "Concentration",
+            "Material Handling",
+            "Classification"
+          ]
         },
         {
           "name": "throughput_tph",
@@ -78,7 +145,13 @@
           "sql_type": "STRING",
           "comment": "Status: Running, Idle, Maintenance, Fault",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fault' WHEN {status_noise} < 0.12 THEN 'Maintenance' WHEN {status_noise} < 0.20 THEN 'Idle' ELSE 'Running' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fault' WHEN {status_noise} < 0.12 THEN 'Maintenance' WHEN {status_noise} < 0.20 THEN 'Idle' ELSE 'Running' END",
+          "entity_values": [
+            "Fault",
+            "Maintenance",
+            "Idle",
+            "Running"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -253,21 +326,66 @@
           "sql_type": "STRING",
           "comment": "Unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PU-001",
+            "PU-002",
+            "PU-003",
+            "PU-004",
+            "PU-005",
+            "PU-006",
+            "PU-007",
+            "PU-008",
+            "PU-009",
+            "PU-010",
+            "PU-011",
+            "PU-012",
+            "PU-013",
+            "PU-014",
+            "PU-015",
+            "PU-016",
+            "PU-017",
+            "PU-018",
+            "PU-019",
+            "PU-020"
+          ]
         },
         {
           "name": "unit_type",
           "sql_type": "STRING",
           "comment": "Unit type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Jaw Crusher",
+            "Gyratory Crusher",
+            "Cone Crusher",
+            "Impact Crusher",
+            "HPGR",
+            "SAG Mill",
+            "Ball Mill",
+            "Flotation Cell",
+            "Thickener",
+            "Conveyor",
+            "Stacker",
+            "Vibrating Screen"
+          ]
         },
         {
           "name": "processing_stage",
           "sql_type": "STRING",
           "comment": "Stage",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary Crushing",
+            "Secondary Crushing",
+            "Tertiary Crushing",
+            "Grinding",
+            "Concentration",
+            "Material Handling",
+            "Classification"
+          ]
         },
         {
           "name": "ore_grade_pct",
@@ -302,7 +420,12 @@
           "sql_type": "STRING",
           "comment": "Quality: On Spec, Marginal, Off Spec",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Off Spec' WHEN {status_noise} < 0.18 THEN 'Marginal' ELSE 'On Spec' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Off Spec' WHEN {status_noise} < 0.18 THEN 'Marginal' ELSE 'On Spec' END",
+          "entity_values": [
+            "Off Spec",
+            "Marginal",
+            "On Spec"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -477,21 +600,66 @@
           "sql_type": "STRING",
           "comment": "Unit ID",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PU-001",
+            "PU-002",
+            "PU-003",
+            "PU-004",
+            "PU-005",
+            "PU-006",
+            "PU-007",
+            "PU-008",
+            "PU-009",
+            "PU-010",
+            "PU-011",
+            "PU-012",
+            "PU-013",
+            "PU-014",
+            "PU-015",
+            "PU-016",
+            "PU-017",
+            "PU-018",
+            "PU-019",
+            "PU-020"
+          ]
         },
         {
           "name": "unit_type",
           "sql_type": "STRING",
           "comment": "Unit type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Jaw Crusher",
+            "Gyratory Crusher",
+            "Cone Crusher",
+            "Impact Crusher",
+            "HPGR",
+            "SAG Mill",
+            "Ball Mill",
+            "Flotation Cell",
+            "Thickener",
+            "Conveyor",
+            "Stacker",
+            "Vibrating Screen"
+          ]
         },
         {
           "name": "processing_stage",
           "sql_type": "STRING",
           "comment": "Stage",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Primary Crushing",
+            "Secondary Crushing",
+            "Tertiary Crushing",
+            "Grinding",
+            "Concentration",
+            "Material Handling",
+            "Classification"
+          ]
         },
         {
           "name": "planned_throughput_tpd",
@@ -526,7 +694,11 @@
           "sql_type": "STRING",
           "comment": "Bottleneck: Yes, No",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Yes' ELSE 'No' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Yes' ELSE 'No' END",
+          "entity_values": [
+            "Yes",
+            "No"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -794,7 +966,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_kpi_monthly view (source: processing_units) has dimensions: record_date, unit_type, processing_stage, unit_status. Measures: avg_throughput_tph, avg_recovery_pct, avg_energy_per_ton, running_count, total_unit_count. The throughput_kpi_monthly view (source: throughput_snapshots) has dimensions: snapshot_date, unit_type, processing_stage, bottleneck_flag. Measures: total_planned_tpd, total_actual_tpd, avg_utilization, total_downtime, bottleneck_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_id, unit_name).",
+  "genie_instructions": "You are a mining analytics assistant for MineOps Central. Answer questions about mining production monitoring and processing control center using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (unit_id, unit_name), query the base tables directly.\n- When joining tables, use the shared keys: unit_id (shared across processing_units, production_readings, throughput_snapshots).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in running count?",
     "How has unique total units changed over time?",

@@ -20,37 +20,107 @@
         {
           "name": "vehicle_model_id",
           "sql_type": "STRING",
-          "comment": "Vehicle model identifier (FK to dimension)",
+          "comment": "Vehicle model identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VM-0001",
+            "VM-0002",
+            "VM-0003",
+            "VM-0005",
+            "VM-0006",
+            "VM-0008",
+            "VM-0011",
+            "VM-0012",
+            "VM-0013",
+            "VM-0015",
+            "VM-0016",
+            "VM-0017",
+            "VM-0020",
+            "VM-0021",
+            "VM-0025",
+            "VM-0026",
+            "VM-0027",
+            "VM-0028",
+            "VM-0029",
+            "VM-0030"
+          ]
         },
         {
           "name": "make",
           "sql_type": "STRING",
           "comment": "Vehicle manufacturer brand",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Ford",
+            "Chevrolet",
+            "Toyota",
+            "Honda",
+            "Hyundai",
+            "Ram",
+            "Jeep",
+            "Tesla",
+            "Nissan"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "F-150",
+            "Explorer",
+            "Escape",
+            "Bronco",
+            "Silverado 1500",
+            "Traverse",
+            "Camry",
+            "RAV4",
+            "Tacoma",
+            "Corolla",
+            "CR-V",
+            "Civic",
+            "Tucson",
+            "Santa Fe",
+            "1500",
+            "Grand Cherokee",
+            "Wrangler",
+            "Model Y",
+            "Model 3",
+            "Rogue"
+          ]
         },
         {
           "name": "model_year",
           "sql_type": "INT",
           "comment": "Vehicle model year",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "2022",
+            "2023",
+            "2024",
+            "2025"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
-          "comment": "Vehicle classification (SUV, Sedan, Pickup Truck, etc.)",
+          "comment": "Vehicle classification",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pickup Truck",
+            "SUV",
+            "Crossover",
+            "Sedan",
+            "Off-Road SUV",
+            "Electric Crossover",
+            "Electric Sedan"
+          ]
         },
         {
           "name": "recall_date",
@@ -71,21 +141,59 @@
           "sql_type": "STRING",
           "comment": "Component system affected by the recall",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Infotainment System' WHEN {status_noise} < 0.143 THEN 'Visibility/Wipers' WHEN {status_noise} < 0.214 THEN 'Fuel System' WHEN {status_noise} < 0.286 THEN 'Powertrain' WHEN {status_noise} < 0.357 THEN 'Brakes' WHEN {status_noise} < 0.429 THEN 'Suspension' WHEN {status_noise} < 0.500 THEN 'Exterior Lighting' WHEN {status_noise} < 0.571 THEN 'Wheels/Tires' WHEN {status_noise} < 0.643 THEN 'Steering' WHEN {status_noise} < 0.714 THEN 'Seats/Restraints' WHEN {status_noise} < 0.786 THEN 'Electrical System' WHEN {status_noise} < 0.857 THEN 'ADAS Software' WHEN {status_noise} < 0.929 THEN 'Engine Cooling' ELSE 'Air Bags' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Infotainment System' WHEN {status_noise} < 0.143 THEN 'Visibility/Wipers' WHEN {status_noise} < 0.214 THEN 'Fuel System' WHEN {status_noise} < 0.286 THEN 'Powertrain' WHEN {status_noise} < 0.357 THEN 'Brakes' WHEN {status_noise} < 0.429 THEN 'Suspension' WHEN {status_noise} < 0.500 THEN 'Exterior Lighting' WHEN {status_noise} < 0.571 THEN 'Wheels/Tires' WHEN {status_noise} < 0.643 THEN 'Steering' WHEN {status_noise} < 0.714 THEN 'Seats/Restraints' WHEN {status_noise} < 0.786 THEN 'Electrical System' WHEN {status_noise} < 0.857 THEN 'ADAS Software' WHEN {status_noise} < 0.929 THEN 'Engine Cooling' ELSE 'Air Bags' END",
+          "entity_values": [
+            "Infotainment System",
+            "Visibility/Wipers",
+            "Fuel System",
+            "Powertrain",
+            "Brakes",
+            "Suspension",
+            "Exterior Lighting",
+            "Wheels/Tires",
+            "Steering",
+            "Seats/Restraints",
+            "Electrical System",
+            "ADAS Software",
+            "Engine Cooling",
+            "Air Bags"
+          ]
         },
         {
           "name": "defect_description",
           "sql_type": "STRING",
           "comment": "Free-text description of the defect",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Touchscreen may become unresponsive during operation' WHEN {status_noise} < 0.143 THEN 'Wiper motor may fail intermittently in heavy rain conditions' WHEN {status_noise} < 0.214 THEN 'Fuel line connector may develop micro-cracks causing vapor leak' WHEN {status_noise} < 0.286 THEN 'Transmission control module may cause unexpected downshift' WHEN {status_noise} < 0.357 THEN 'Brake caliper mounting bolt may loosen over time' WHEN {status_noise} < 0.429 THEN 'Front strut bearing may corrode prematurely in salt belt regions' WHEN {status_noise} < 0.500 THEN 'Daytime running light LED module may overheat and fail' WHEN {status_noise} < 0.571 THEN 'Wheel lug nuts may not maintain proper torque specification' WHEN {status_noise} < 0.643 THEN 'Power steering assist may reduce unexpectedly at low speed' WHEN {status_noise} < 0.714 THEN 'Seat belt pretensioner may not deploy in rear-end collision' WHEN {status_noise} < 0.786 THEN 'Battery management system may incorrectly report state of charge' WHEN {status_noise} < 0.857 THEN 'Forward collision warning may generate false alerts in fog' WHEN {status_noise} < 0.929 THEN 'Coolant thermostat housing may crack causing slow coolant loss' ELSE 'Side curtain airbag inflator may produce excessive force' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Touchscreen may become unresponsive during operation' WHEN {status_noise} < 0.143 THEN 'Wiper motor may fail intermittently in heavy rain conditions' WHEN {status_noise} < 0.214 THEN 'Fuel line connector may develop micro-cracks causing vapor leak' WHEN {status_noise} < 0.286 THEN 'Transmission control module may cause unexpected downshift' WHEN {status_noise} < 0.357 THEN 'Brake caliper mounting bolt may loosen over time' WHEN {status_noise} < 0.429 THEN 'Front strut bearing may corrode prematurely in salt belt regions' WHEN {status_noise} < 0.500 THEN 'Daytime running light LED module may overheat and fail' WHEN {status_noise} < 0.571 THEN 'Wheel lug nuts may not maintain proper torque specification' WHEN {status_noise} < 0.643 THEN 'Power steering assist may reduce unexpectedly at low speed' WHEN {status_noise} < 0.714 THEN 'Seat belt pretensioner may not deploy in rear-end collision' WHEN {status_noise} < 0.786 THEN 'Battery management system may incorrectly report state of charge' WHEN {status_noise} < 0.857 THEN 'Forward collision warning may generate false alerts in fog' WHEN {status_noise} < 0.929 THEN 'Coolant thermostat housing may crack causing slow coolant loss' ELSE 'Side curtain airbag inflator may produce excessive force' END",
+          "entity_values": [
+            "Touchscreen may become unresponsive during operation",
+            "Wiper motor may fail intermittently in heavy rain conditions",
+            "Fuel line connector may develop micro-cracks causing vapor leak",
+            "Transmission control module may cause unexpected downshift",
+            "Brake caliper mounting bolt may loosen over time",
+            "Front strut bearing may corrode prematurely in salt belt regions",
+            "Daytime running light LED module may overheat and fail",
+            "Wheel lug nuts may not maintain proper torque specification",
+            "Power steering assist may reduce unexpectedly at low speed",
+            "Seat belt pretensioner may not deploy in rear-end collision",
+            "Battery management system may incorrectly report state of charge",
+            "Forward collision warning may generate false alerts in fog",
+            "Coolant thermostat housing may crack causing slow coolant loss",
+            "Side curtain airbag inflator may produce excessive force"
+          ]
         },
         {
           "name": "severity_level",
           "sql_type": "STRING",
           "comment": "Recall severity classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.44 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.91 THEN 'Safety Advisory' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.44 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.91 THEN 'Safety Advisory' ELSE 'Critical' END",
+          "entity_values": [
+            "Minor",
+            "Major",
+            "Safety Advisory",
+            "Critical"
+          ]
         },
         {
           "name": "units_affected",
@@ -113,14 +221,43 @@
           "sql_type": "STRING",
           "comment": "Root cause classification for the defect",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 100 < 11 THEN 'Calibration Drift' WHEN {seed} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {seed} % 100 < 33 THEN 'Assembly Error' WHEN {seed} % 100 < 44 THEN 'Inadequate Testing' WHEN {seed} % 100 < 55 THEN 'Environmental Degradation' WHEN {seed} % 100 < 65 THEN 'Design Deficiency' WHEN {seed} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {seed} % 100 < 84 THEN 'Material Specification Failure' WHEN {seed} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END"
+          "generation_expr": "CASE WHEN {seed} % 100 < 11 THEN 'Calibration Drift' WHEN {seed} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {seed} % 100 < 33 THEN 'Assembly Error' WHEN {seed} % 100 < 44 THEN 'Inadequate Testing' WHEN {seed} % 100 < 55 THEN 'Environmental Degradation' WHEN {seed} % 100 < 65 THEN 'Design Deficiency' WHEN {seed} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {seed} % 100 < 84 THEN 'Material Specification Failure' WHEN {seed} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END",
+          "entity_values": [
+            "Calibration Drift",
+            "Supplier Quality Escape",
+            "Assembly Error",
+            "Inadequate Testing",
+            "Environmental Degradation",
+            "Design Deficiency",
+            "Manufacturing Process Error",
+            "Material Specification Failure",
+            "Component Wear-Out",
+            "Software Bug"
+          ]
         },
         {
           "name": "supplier_id",
           "sql_type": "STRING",
           "comment": "Tier-1 supplier identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 15 = 0 THEN 'SUP-BOSCH' WHEN {seed} % 15 = 1 THEN 'SUP-DENSO' WHEN {seed} % 15 = 2 THEN 'SUP-MAGNA' WHEN {seed} % 15 = 3 THEN 'SUP-CONTI' WHEN {seed} % 15 = 4 THEN 'SUP-ZF' WHEN {seed} % 15 = 5 THEN 'SUP-AISIN' WHEN {seed} % 15 = 6 THEN 'SUP-LEAR' WHEN {seed} % 15 = 7 THEN 'SUP-APTIV' WHEN {seed} % 15 = 8 THEN 'SUP-VALEO' WHEN {seed} % 15 = 9 THEN 'SUP-HELLA' WHEN {seed} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {seed} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {seed} % 15 = 12 THEN 'SUP-MANDO' WHEN {seed} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END"
+          "generation_expr": "CASE WHEN {seed} % 15 = 0 THEN 'SUP-BOSCH' WHEN {seed} % 15 = 1 THEN 'SUP-DENSO' WHEN {seed} % 15 = 2 THEN 'SUP-MAGNA' WHEN {seed} % 15 = 3 THEN 'SUP-CONTI' WHEN {seed} % 15 = 4 THEN 'SUP-ZF' WHEN {seed} % 15 = 5 THEN 'SUP-AISIN' WHEN {seed} % 15 = 6 THEN 'SUP-LEAR' WHEN {seed} % 15 = 7 THEN 'SUP-APTIV' WHEN {seed} % 15 = 8 THEN 'SUP-VALEO' WHEN {seed} % 15 = 9 THEN 'SUP-HELLA' WHEN {seed} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {seed} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {seed} % 15 = 12 THEN 'SUP-MANDO' WHEN {seed} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END",
+          "entity_values": [
+            "SUP-BOSCH",
+            "SUP-DENSO",
+            "SUP-MAGNA",
+            "SUP-CONTI",
+            "SUP-ZF",
+            "SUP-AISIN",
+            "SUP-LEAR",
+            "SUP-APTIV",
+            "SUP-VALEO",
+            "SUP-HELLA",
+            "SUP-YAZAKI",
+            "SUP-SUMITOMO",
+            "SUP-MANDO",
+            "SUP-SCHAEFFLER",
+            "SUP-NEXTEER"
+          ]
         },
         {
           "name": "days_to_remedy",
@@ -134,7 +271,14 @@
           "sql_type": "STRING",
           "comment": "Type of remedy applied to resolve the recall",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.31 THEN 'Repair' WHEN {status_noise} < 0.55 THEN 'Replace' WHEN {status_noise} < 0.78 THEN 'Software Update' WHEN {status_noise} < 0.91 THEN 'Inspection' ELSE 'Owner Notification' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.31 THEN 'Repair' WHEN {status_noise} < 0.55 THEN 'Replace' WHEN {status_noise} < 0.78 THEN 'Software Update' WHEN {status_noise} < 0.91 THEN 'Inspection' ELSE 'Owner Notification' END",
+          "entity_values": [
+            "Repair",
+            "Replace",
+            "Software Update",
+            "Inspection",
+            "Owner Notification"
+          ]
         },
         {
           "name": "injuries_reported",
@@ -155,7 +299,12 @@
           "sql_type": "STRING",
           "comment": "Current status of the recall campaign",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.57 THEN 'Closed' WHEN {status_noise} < 0.85 THEN 'In Progress' ELSE 'Open' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.57 THEN 'Closed' WHEN {status_noise} < 0.85 THEN 'In Progress' ELSE 'Open' END",
+          "entity_values": [
+            "Closed",
+            "In Progress",
+            "Open"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -350,37 +499,107 @@
         {
           "name": "vehicle_model_id",
           "sql_type": "STRING",
-          "comment": "Vehicle model identifier (FK to dimension)",
+          "comment": "Vehicle model identifier",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "VM-0001",
+            "VM-0002",
+            "VM-0003",
+            "VM-0005",
+            "VM-0006",
+            "VM-0008",
+            "VM-0011",
+            "VM-0012",
+            "VM-0013",
+            "VM-0015",
+            "VM-0016",
+            "VM-0017",
+            "VM-0020",
+            "VM-0021",
+            "VM-0025",
+            "VM-0026",
+            "VM-0027",
+            "VM-0028",
+            "VM-0029",
+            "VM-0030"
+          ]
         },
         {
           "name": "make",
           "sql_type": "STRING",
           "comment": "Vehicle manufacturer brand",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Ford",
+            "Chevrolet",
+            "Toyota",
+            "Honda",
+            "Hyundai",
+            "Ram",
+            "Jeep",
+            "Tesla",
+            "Nissan"
+          ]
         },
         {
           "name": "model",
           "sql_type": "STRING",
           "comment": "Vehicle model name",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "F-150",
+            "Explorer",
+            "Escape",
+            "Bronco",
+            "Silverado 1500",
+            "Traverse",
+            "Camry",
+            "RAV4",
+            "Tacoma",
+            "Corolla",
+            "CR-V",
+            "Civic",
+            "Tucson",
+            "Santa Fe",
+            "1500",
+            "Grand Cherokee",
+            "Wrangler",
+            "Model Y",
+            "Model 3",
+            "Rogue"
+          ]
         },
         {
           "name": "model_year",
           "sql_type": "INT",
           "comment": "Vehicle model year",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "2022",
+            "2023",
+            "2024",
+            "2025"
+          ]
         },
         {
           "name": "vehicle_class",
           "sql_type": "STRING",
-          "comment": "Vehicle classification (SUV, Sedan, Pickup Truck, etc.)",
+          "comment": "Vehicle classification",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Pickup Truck",
+            "SUV",
+            "Crossover",
+            "Sedan",
+            "Off-Road SUV",
+            "Electric Crossover",
+            "Electric Sedan"
+          ]
         },
         {
           "name": "claim_date",
@@ -401,7 +620,39 @@
           "sql_type": "STRING",
           "comment": "Component code identifying the failed part",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 30 = 0 THEN 'SU-BLJ' WHEN {seed} % 30 = 1 THEN 'PT-TBW' WHEN {seed} % 30 = 2 THEN 'BR-PAD' WHEN {seed} % 30 = 3 THEN 'EL-BCM' WHEN {seed} % 30 = 4 THEN 'EN-THR' WHEN {seed} % 30 = 5 THEN 'IN-TCH' WHEN {seed} % 30 = 6 THEN 'FS-INJ' WHEN {seed} % 30 = 7 THEN 'ST-RCK' WHEN {seed} % 30 = 8 THEN 'CL-RAD' WHEN {seed} % 30 = 9 THEN 'EX-LED' WHEN {seed} % 30 = 10 THEN 'SE-BKL' WHEN {seed} % 30 = 11 THEN 'WH-BRG' WHEN {seed} % 30 = 12 THEN 'AD-CAM' WHEN {seed} % 30 = 13 THEN 'AB-SNS' WHEN {seed} % 30 = 14 THEN 'PT-CVT' WHEN {seed} % 30 = 15 THEN 'BR-ABS' WHEN {seed} % 30 = 16 THEN 'EL-ALT' WHEN {seed} % 30 = 17 THEN 'EN-WTP' WHEN {seed} % 30 = 18 THEN 'SU-SWA' WHEN {seed} % 30 = 19 THEN 'IN-AMP' WHEN {seed} % 30 = 20 THEN 'FS-PMP' WHEN {seed} % 30 = 21 THEN 'ST-EPS' WHEN {seed} % 30 = 22 THEN 'CL-FAN' WHEN {seed} % 30 = 23 THEN 'EX-HRN' WHEN {seed} % 30 = 24 THEN 'SE-MTR' WHEN {seed} % 30 = 25 THEN 'WH-TPS' WHEN {seed} % 30 = 26 THEN 'AD-RDR' WHEN {seed} % 30 = 27 THEN 'AB-INF' WHEN {seed} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END"
+          "generation_expr": "CASE WHEN {seed} % 30 = 0 THEN 'SU-BLJ' WHEN {seed} % 30 = 1 THEN 'PT-TBW' WHEN {seed} % 30 = 2 THEN 'BR-PAD' WHEN {seed} % 30 = 3 THEN 'EL-BCM' WHEN {seed} % 30 = 4 THEN 'EN-THR' WHEN {seed} % 30 = 5 THEN 'IN-TCH' WHEN {seed} % 30 = 6 THEN 'FS-INJ' WHEN {seed} % 30 = 7 THEN 'ST-RCK' WHEN {seed} % 30 = 8 THEN 'CL-RAD' WHEN {seed} % 30 = 9 THEN 'EX-LED' WHEN {seed} % 30 = 10 THEN 'SE-BKL' WHEN {seed} % 30 = 11 THEN 'WH-BRG' WHEN {seed} % 30 = 12 THEN 'AD-CAM' WHEN {seed} % 30 = 13 THEN 'AB-SNS' WHEN {seed} % 30 = 14 THEN 'PT-CVT' WHEN {seed} % 30 = 15 THEN 'BR-ABS' WHEN {seed} % 30 = 16 THEN 'EL-ALT' WHEN {seed} % 30 = 17 THEN 'EN-WTP' WHEN {seed} % 30 = 18 THEN 'SU-SWA' WHEN {seed} % 30 = 19 THEN 'IN-AMP' WHEN {seed} % 30 = 20 THEN 'FS-PMP' WHEN {seed} % 30 = 21 THEN 'ST-EPS' WHEN {seed} % 30 = 22 THEN 'CL-FAN' WHEN {seed} % 30 = 23 THEN 'EX-HRN' WHEN {seed} % 30 = 24 THEN 'SE-MTR' WHEN {seed} % 30 = 25 THEN 'WH-TPS' WHEN {seed} % 30 = 26 THEN 'AD-RDR' WHEN {seed} % 30 = 27 THEN 'AB-INF' WHEN {seed} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END",
+          "entity_values": [
+            "SU-BLJ",
+            "PT-TBW",
+            "BR-PAD",
+            "EL-BCM",
+            "EN-THR",
+            "IN-TCH",
+            "FS-INJ",
+            "ST-RCK",
+            "CL-RAD",
+            "EX-LED",
+            "SE-BKL",
+            "WH-BRG",
+            "AD-CAM",
+            "AB-SNS",
+            "PT-CVT",
+            "BR-ABS",
+            "EL-ALT",
+            "EN-WTP",
+            "SU-SWA",
+            "IN-AMP",
+            "FS-PMP",
+            "ST-EPS",
+            "CL-FAN",
+            "EX-HRN",
+            "SE-MTR",
+            "WH-TPS",
+            "AD-RDR",
+            "AB-INF",
+            "PT-OIL",
+            "BR-ROT"
+          ]
         },
         {
           "name": "labor_hours",
@@ -436,14 +687,29 @@
           "sql_type": "STRING",
           "comment": "Geographic region where the claim was filed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Northwest' WHEN {status_noise} < 0.33 THEN 'Midwest' WHEN {status_noise} < 0.48 THEN 'Mountain' WHEN {status_noise} < 0.62 THEN 'Southwest' WHEN {status_noise} < 0.76 THEN 'Southeast' WHEN {status_noise} < 0.90 THEN 'West Coast' ELSE 'Northeast' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.17 THEN 'Northwest' WHEN {status_noise} < 0.33 THEN 'Midwest' WHEN {status_noise} < 0.48 THEN 'Mountain' WHEN {status_noise} < 0.62 THEN 'Southwest' WHEN {status_noise} < 0.76 THEN 'Southeast' WHEN {status_noise} < 0.90 THEN 'West Coast' ELSE 'Northeast' END",
+          "entity_values": [
+            "Northwest",
+            "Midwest",
+            "Mountain",
+            "Southwest",
+            "Southeast",
+            "West Coast",
+            "Northeast"
+          ]
         },
         {
           "name": "claim_disposition",
           "sql_type": "STRING",
           "comment": "Claim review outcome",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.62 THEN 'Approved' WHEN {status_noise} < 0.77 THEN 'Partially Approved' WHEN {status_noise} < 0.90 THEN 'Pending Review' ELSE 'Denied' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.62 THEN 'Approved' WHEN {status_noise} < 0.77 THEN 'Partially Approved' WHEN {status_noise} < 0.90 THEN 'Pending Review' ELSE 'Denied' END",
+          "entity_values": [
+            "Approved",
+            "Partially Approved",
+            "Pending Review",
+            "Denied"
+          ]
         }
       ],
       "seasonal_patterns": {
@@ -628,7 +894,10 @@
           "sql_type": "STRING",
           "comment": "Reporting period granularity",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "monthly"
+          ]
         },
         {
           "name": "total_recalls_opened",
@@ -836,7 +1105,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The recall_analysis_metrics view (source: recall_events) has dimensions: component_group, severity_level, root_cause_category, recall_month. Measures: total_recall_events, total_estimated_cost, avg_units_affected, avg_days_to_remedy, critical_recall_count. The warranty_claim_metrics view (source: warranty_claims) has dimensions: region, claim_disposition, claim_month. Measures: total_claims, total_claim_cost, avg_claim_cost, avg_labor_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. make, metric_period, model, model_year, vehicle_class, vehicle_model_id).",
+  "genie_instructions": "You are an automotive analytics assistant for Apex Motor Group. Answer questions about vehicle recall root cause analysis and defect pattern identification using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (vehicle_model_id, make, model, model_year), query the base tables directly.\n- When joining tables, use the shared keys: vehicle_model_id (joins recall_events and warranty_claims).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.\n- Treat the `status` field as authoritative for lifecycle state.",
   "sample_questions": [
     "What is the critical recall count by component group?",
     "Which component groups have the highest open status count?",
@@ -875,7 +1144,7 @@
       ]
     },
     {
-      "question": "How does total number of vehicles affected by the recall break down by vehicle model identifier (fk to dimension) for 'Closed' records?",
+      "question": "How does total number of vehicles affected by the recall break down by vehicle model for 'Closed' records?",
       "sql_lines": [
         "SELECT vehicle_model_id, COUNT(*) AS record_count, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.recall_events",
@@ -891,7 +1160,7 @@
       ]
     },
     {
-      "question": "Show the distribution of records by reporting period granularity",
+      "question": "Show the distribution of records by reporting period",
       "sql_lines": [
         "SELECT metric_period, COUNT(*) AS record_count",
         "FROM {fqn}.recall_metrics_monthly",
@@ -912,54 +1181,90 @@
     "filters": [
       {
         "sql": "WHERE severity_level = 'Critical'",
-        "display_name": "Critical severity only"
+        "display_name": "Critical severity only",
+        "synonyms": [
+          "critical severity only"
+        ],
+        "instruction": "Use when the user asks about critical severity only."
       },
       {
         "sql": "WHERE YEAR(recall_date) = 2025",
-        "display_name": "Current year recalls"
+        "display_name": "Current year recalls",
+        "synonyms": [
+          "current year recalls"
+        ],
+        "instruction": "Use when the user asks about current year recalls."
       },
       {
         "sql": "WHERE total_estimated_cost > 50000000",
-        "display_name": "High cost recalls"
+        "display_name": "High cost recalls",
+        "synonyms": [
+          "high cost recalls"
+        ],
+        "instruction": "Use when the user asks about high cost recalls."
       }
     ],
     "expressions": [
       {
         "sql": "total_estimated_cost / NULLIF(units_affected, 0)",
         "display_name": "Cost per unit",
-        "alias": "Cost per unit"
+        "alias": "Cost per unit",
+        "synonyms": [
+          "cost per unit"
+        ]
       },
       {
         "sql": "DATE_TRUNC('month', recall_date)",
         "display_name": "Recall month",
-        "alias": "Recall month"
+        "alias": "Recall month",
+        "synonyms": [
+          "recall month"
+        ]
       },
       {
         "sql": "CASE WHEN severity_level IN ('Critical', 'Safety Advisory') THEN 'Yes' ELSE 'No' END",
         "display_name": "Is safety critical",
-        "alias": "Is safety critical"
+        "alias": "Is safety critical",
+        "synonyms": [
+          "is safety critical"
+        ]
       }
     ],
     "measures": [
       {
         "sql": "SUM(total_estimated_cost)",
         "display_name": "Total recall cost",
-        "alias": "Total recall cost"
+        "alias": "Total recall cost",
+        "synonyms": [
+          "total recall cost",
+          "recall cost"
+        ]
       },
       {
         "sql": "AVG(days_to_remedy)",
         "display_name": "Average days to remedy",
-        "alias": "Average days to remedy"
+        "alias": "Average days to remedy",
+        "synonyms": [
+          "average days to remedy",
+          "days to remedy"
+        ]
       },
       {
         "sql": "COUNT(DISTINCT recall_event_id)",
         "display_name": "Recall event count",
-        "alias": "Recall event count"
+        "alias": "Recall event count",
+        "synonyms": [
+          "recall event count"
+        ]
       },
       {
         "sql": "SUM(injuries_reported)",
         "display_name": "Total injuries",
-        "alias": "Total injuries"
+        "alias": "Total injuries",
+        "synonyms": [
+          "total injuries",
+          "injuries"
+        ]
       }
     ]
   },
@@ -1001,7 +1306,7 @@
       ]
     },
     {
-      "question": "What are the top vehicle model identifier (fk to dimension) by total number of vehicles affected by the recall?",
+      "question": "What are the top vehicle model by total number of vehicles affected by the recall?",
       "sql_lines": [
         "SELECT vehicle_model_id, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.recall_events",
@@ -1017,7 +1322,7 @@
       ]
     },
     {
-      "question": "Which reporting period granularity have the most records?",
+      "question": "Which reporting period have the most records?",
       "sql_lines": [
         "SELECT metric_period, COUNT(*) AS record_count",
         "FROM {fqn}.recall_metrics_monthly",

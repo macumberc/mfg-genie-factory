@@ -29,49 +29,130 @@
           "sql_type": "STRING",
           "comment": "Component serial number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SN-A1001",
+            "SN-A1002",
+            "SN-A1003",
+            "SN-B2001",
+            "SN-B2002",
+            "SN-B2003",
+            "SN-C3001",
+            "SN-C3002",
+            "SN-C3003",
+            "SN-D4001",
+            "SN-D4002",
+            "SN-D4003",
+            "SN-E5001",
+            "SN-E5002",
+            "SN-E5003",
+            "SN-F6001",
+            "SN-F6002",
+            "SN-F6003",
+            "SN-A1004",
+            "SN-B2004"
+          ]
         },
         {
           "name": "part_number",
           "sql_type": "STRING",
           "comment": "Part number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "PN-ENG-100",
+            "PN-ENG-101",
+            "PN-ENG-102",
+            "PN-AFR-200",
+            "PN-AFR-201",
+            "PN-AFR-202",
+            "PN-AVI-300",
+            "PN-AVI-301",
+            "PN-AVI-302",
+            "PN-LDG-400",
+            "PN-LDG-401",
+            "PN-LDG-402",
+            "PN-APU-500",
+            "PN-APU-501",
+            "PN-APU-502",
+            "PN-HYD-600",
+            "PN-HYD-601",
+            "PN-HYD-602",
+            "PN-ENG-103",
+            "PN-AFR-203"
+          ]
         },
         {
           "name": "component_type",
           "sql_type": "STRING",
           "comment": "Component type: Engine, Airframe, Avionics, Landing Gear, APU, Hydraulic",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Engine",
+            "Airframe",
+            "Avionics",
+            "Landing Gear",
+            "APU",
+            "Hydraulic"
+          ]
         },
         {
           "name": "criticality",
           "sql_type": "STRING",
           "comment": "Criticality: Flight Critical, Safety Critical, Mission Critical, Standard",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Flight Critical",
+            "Safety Critical",
+            "Mission Critical",
+            "Standard"
+          ]
         },
         {
           "name": "event_type",
           "sql_type": "STRING",
           "comment": "Event type: Manufacture, Installation, Removal, Shop Visit, Certification, Scrapped",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Manufacture' WHEN {status_noise} < 0.35 THEN 'Installation' WHEN {status_noise} < 0.50 THEN 'Removal' WHEN {status_noise} < 0.70 THEN 'Shop Visit' WHEN {status_noise} < 0.90 THEN 'Certification' ELSE 'Scrapped' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Manufacture' WHEN {status_noise} < 0.35 THEN 'Installation' WHEN {status_noise} < 0.50 THEN 'Removal' WHEN {status_noise} < 0.70 THEN 'Shop Visit' WHEN {status_noise} < 0.90 THEN 'Certification' ELSE 'Scrapped' END",
+          "entity_values": [
+            "Manufacture",
+            "Installation",
+            "Removal",
+            "Shop Visit",
+            "Certification",
+            "Scrapped"
+          ]
         },
         {
           "name": "facility_code",
           "sql_type": "STRING",
           "comment": "Facility where event occurred",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'OEM-SEA' WHEN {status_noise} < 0.40 THEN 'MRO-DFW' WHEN {status_noise} < 0.55 THEN 'MRO-SIN' WHEN {status_noise} < 0.70 THEN 'MRO-DUB' WHEN {status_noise} < 0.82 THEN 'OEM-TLS' WHEN {status_noise} < 0.92 THEN 'MRO-HKG' ELSE 'DEPOT-OKC' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'OEM-SEA' WHEN {status_noise} < 0.40 THEN 'MRO-DFW' WHEN {status_noise} < 0.55 THEN 'MRO-SIN' WHEN {status_noise} < 0.70 THEN 'MRO-DUB' WHEN {status_noise} < 0.82 THEN 'OEM-TLS' WHEN {status_noise} < 0.92 THEN 'MRO-HKG' ELSE 'DEPOT-OKC' END",
+          "entity_values": [
+            "OEM-SEA",
+            "MRO-DFW",
+            "MRO-SIN",
+            "MRO-DUB",
+            "OEM-TLS",
+            "MRO-HKG",
+            "DEPOT-OKC"
+          ]
         },
         {
           "name": "document_reference",
           "sql_type": "STRING",
           "comment": "Reference document: 8130-3, EASA Form 1, Work Order, Birth Certificate",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN '8130-3' WHEN {status_noise} < 0.55 THEN 'EASA Form 1' WHEN {status_noise} < 0.80 THEN 'Work Order' ELSE 'Birth Certificate' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN '8130-3' WHEN {status_noise} < 0.55 THEN 'EASA Form 1' WHEN {status_noise} < 0.80 THEN 'Work Order' ELSE 'Birth Certificate' END",
+          "entity_values": [
+            "8130-3",
+            "EASA Form 1",
+            "Work Order",
+            "Birth Certificate"
+          ]
         },
         {
           "name": "counterfeit_risk_score",
@@ -85,7 +166,12 @@
           "sql_type": "STRING",
           "comment": "Chain of custody validation: Valid, Gap Detected, Under Review",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Valid' WHEN {status_noise} < 0.94 THEN 'Gap Detected' ELSE 'Under Review' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Valid' WHEN {status_noise} < 0.94 THEN 'Gap Detected' ELSE 'Under Review' END",
+          "entity_values": [
+            "Valid",
+            "Gap Detected",
+            "Under Review"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -244,28 +330,70 @@
           "sql_type": "STRING",
           "comment": "Component serial number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SN-A1001",
+            "SN-A1002",
+            "SN-A1003",
+            "SN-B2001",
+            "SN-B2002",
+            "SN-B2003",
+            "SN-C3001",
+            "SN-C3002",
+            "SN-C3003",
+            "SN-D4001",
+            "SN-D4002",
+            "SN-D4003",
+            "SN-E5001",
+            "SN-E5002",
+            "SN-E5003",
+            "SN-F6001",
+            "SN-F6002",
+            "SN-F6003",
+            "SN-A1004",
+            "SN-B2004"
+          ]
         },
         {
           "name": "component_type",
           "sql_type": "STRING",
           "comment": "Component type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Engine",
+            "Airframe",
+            "Avionics",
+            "Landing Gear",
+            "APU",
+            "Hydraulic"
+          ]
         },
         {
           "name": "criticality",
           "sql_type": "STRING",
           "comment": "Criticality level",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Flight Critical",
+            "Safety Critical",
+            "Mission Critical",
+            "Standard"
+          ]
         },
         {
           "name": "airworthiness_status",
           "sql_type": "STRING",
           "comment": "Airworthiness: Serviceable, Unserviceable, Quarantined, Beyond Repair",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Serviceable' WHEN {status_noise} < 0.85 THEN 'Unserviceable' WHEN {status_noise} < 0.95 THEN 'Quarantined' ELSE 'Beyond Repair' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Serviceable' WHEN {status_noise} < 0.85 THEN 'Unserviceable' WHEN {status_noise} < 0.95 THEN 'Quarantined' ELSE 'Beyond Repair' END",
+          "entity_values": [
+            "Serviceable",
+            "Unserviceable",
+            "Quarantined",
+            "Beyond Repair"
+          ]
         },
         {
           "name": "days_until_cert_expiry",
@@ -293,7 +421,12 @@
           "sql_type": "STRING",
           "comment": "Airworthiness Directive compliance: Compliant, Pending, Overdue",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.78 THEN 'Compliant' WHEN {status_noise} < 0.93 THEN 'Pending' ELSE 'Overdue' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.78 THEN 'Compliant' WHEN {status_noise} < 0.93 THEN 'Pending' ELSE 'Overdue' END",
+          "entity_values": [
+            "Compliant",
+            "Pending",
+            "Overdue"
+          ]
         }
       ],
       "seasonal_patterns": {},
@@ -452,21 +585,57 @@
           "sql_type": "STRING",
           "comment": "Component serial number",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "SN-A1001",
+            "SN-A1002",
+            "SN-A1003",
+            "SN-B2001",
+            "SN-B2002",
+            "SN-B2003",
+            "SN-C3001",
+            "SN-C3002",
+            "SN-C3003",
+            "SN-D4001",
+            "SN-D4002",
+            "SN-D4003",
+            "SN-E5001",
+            "SN-E5002",
+            "SN-E5003",
+            "SN-F6001",
+            "SN-F6002",
+            "SN-F6003",
+            "SN-A1004",
+            "SN-B2004"
+          ]
         },
         {
           "name": "component_type",
           "sql_type": "STRING",
           "comment": "Component type",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Engine",
+            "Airframe",
+            "Avionics",
+            "Landing Gear",
+            "APU",
+            "Hydraulic"
+          ]
         },
         {
           "name": "criticality",
           "sql_type": "STRING",
           "comment": "Criticality level",
           "is_dimension": true,
-          "generation_expr": ""
+          "generation_expr": "",
+          "entity_values": [
+            "Flight Critical",
+            "Safety Critical",
+            "Mission Critical",
+            "Standard"
+          ]
         },
         {
           "name": "custody_gap_count",
@@ -735,7 +904,7 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The lifecycle_metrics view (source: lifecycle_events) has dimensions: event_date, component_type, criticality, event_type, chain_of_custody_valid. Measures: total_events, avg_counterfeit_risk, custody_gap_events, high_risk_events, scrapped_count. The certification_metrics view (source: certification_snapshots) has dimensions: snapshot_date, component_type, criticality, airworthiness_status. Measures: serviceable_count, avg_days_until_expiry, overdue_ad_count, avg_flight_hours, snapshot_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. part_number, serial_number).",
+  "genie_instructions": "You are an aerospace analytics assistant for AeroTrace Systems. Answer questions about aerospace product traceability and anti-counterfeit compliance using the tables and metric views below.\n\n- When a question aggregates a measure (totals, counts, averages, rates), use the metric views with MEASURE() and GROUP BY ALL.\n- When a question needs a base-table column (serial_number, part_number), query the base tables directly.\n- When joining tables, use the shared keys: serial_number (shared across certification_snapshots, lifecycle_events, traceability_monthly).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in custody gap events count?",
     "How has high risk events count changed over time?",
