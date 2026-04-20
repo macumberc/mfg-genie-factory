@@ -51,6 +51,11 @@
             "PJ-018",
             "PJ-019",
             "PJ-020"
+          ],
+          "synonyms": [
+            "job number",
+            "work order",
+            "job code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Riverfront Park Development",
             "Solar Farm Infrastructure",
             "Wind Farm Foundations"
+          ],
+          "synonyms": [
+            "job title",
+            "engagement name",
+            "job description"
           ]
         },
         {
@@ -98,6 +108,11 @@
             "Industrial",
             "Public Works",
             "Energy"
+          ],
+          "synonyms": [
+            "work category",
+            "job category",
+            "construction type"
           ]
         },
         {
@@ -112,6 +127,11 @@
             "West",
             "Southwest",
             "Midwest"
+          ],
+          "synonyms": [
+            "territory",
+            "geographic area",
+            "market area"
           ]
         },
         {
@@ -343,6 +363,11 @@
             "PJ-018",
             "PJ-019",
             "PJ-020"
+          ],
+          "synonyms": [
+            "job number",
+            "work order",
+            "job code"
           ]
         },
         {
@@ -361,6 +386,11 @@
             "Industrial",
             "Public Works",
             "Energy"
+          ],
+          "synonyms": [
+            "work category",
+            "job category",
+            "construction type"
           ]
         },
         {
@@ -375,6 +405,11 @@
             "West",
             "Southwest",
             "Midwest"
+          ],
+          "synonyms": [
+            "territory",
+            "geographic area",
+            "market area"
           ]
         },
         {
@@ -607,6 +642,11 @@
             "PJ-018",
             "PJ-019",
             "PJ-020"
+          ],
+          "synonyms": [
+            "job number",
+            "work order",
+            "job code"
           ]
         },
         {
@@ -625,6 +665,11 @@
             "Industrial",
             "Public Works",
             "Energy"
+          ],
+          "synonyms": [
+            "work category",
+            "job category",
+            "construction type"
           ]
         },
         {
@@ -639,6 +684,11 @@
             "West",
             "Southwest",
             "Midwest"
+          ],
+          "synonyms": [
+            "territory",
+            "geographic area",
+            "market area"
           ]
         },
         {
@@ -961,7 +1011,8 @@
         "FROM {fqn}.bid_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY bid_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique projects tracked in bid_kpi_monthly; matches questions about project count volume or portfolio breadth over time."
     },
     {
       "question": "How has highest estimated cost changed over time?",
@@ -970,7 +1021,8 @@
         "FROM {fqn}.bid_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY bid_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of the single highest estimated project cost; matches questions about peak or maximum cost estimates changing across bid periods."
     },
     {
       "question": "How has avg competitors per bid changed over time?",
@@ -979,7 +1031,8 @@
         "FROM {fqn}.pipeline_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average competitor count per bid from pipeline_kpi_monthly; matches questions about competitive intensity or market crowding over time."
     },
     {
       "question": "What is the trend of total estimated project cost usd over time?",
@@ -987,7 +1040,8 @@
         "SELECT bid_date, SUM(estimated_cost_usd) AS total_estimated_cost_usd",
         "FROM {fqn}.projects",
         "GROUP BY bid_date ORDER BY bid_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total estimated project cost in USD directly from the projects table; matches questions about overall cost estimation volume trends by bid date."
     },
     {
       "question": "What is the trend of total labor cost usd over time?",
@@ -995,7 +1049,8 @@
         "SELECT estimate_date, SUM(labor_cost_usd) AS total_labor_cost_usd",
         "FROM {fqn}.bid_submissions",
         "GROUP BY estimate_date ORDER BY estimate_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total labor cost in USD from bid_submissions; matches questions about workforce cost trends or labor spend patterns across estimate dates."
     },
     {
       "question": "How has the average cost estimate accuracy 0-100 changed over time?",
@@ -1003,7 +1058,8 @@
         "SELECT perf_month, AVG(estimate_accuracy_pct) AS avg_estimate_accuracy_pct",
         "FROM {fqn}.cost_estimate_snapshots",
         "GROUP BY perf_month ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average cost estimate accuracy percentage from cost_estimate_snapshots; matches questions about estimating precision, forecast quality, or accuracy improvement over time."
     },
     {
       "question": "How has won count changed over time?",
@@ -1012,7 +1068,8 @@
         "FROM {fqn}.bid_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY bid_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of won bid count from bid_kpi_monthly; matches questions about bid win volume, award frequency, or sales success rate over time."
     }
   ],
   "sql_snippets": {
@@ -1021,7 +1078,9 @@
         "sql": "projects.bid_result = 'Won'",
         "display_name": "won bids",
         "synonyms": [
-          "awarded"
+          "awarded",
+          "awarded jobs",
+          "successful tenders"
         ],
         "instruction": "Filter won."
       },
@@ -1029,7 +1088,9 @@
         "sql": "projects.bid_result = 'Lost'",
         "display_name": "lost bids",
         "synonyms": [
-          "unsuccessful"
+          "unsuccessful",
+          "unsuccessful tenders",
+          "failed proposals"
         ],
         "instruction": "Filter lost."
       },
@@ -1037,7 +1098,9 @@
         "sql": "cost_estimate_snapshots.estimate_accuracy_pct < 85",
         "display_name": "inaccurate estimates",
         "synonyms": [
-          "off estimates"
+          "off estimates",
+          "poor accuracy",
+          "off-target estimates"
         ],
         "instruction": "Filter inaccurate."
       }
@@ -1048,7 +1111,9 @@
         "sql": "DATE_TRUNC('month', projects.bid_date)",
         "display_name": "bid month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "tender month",
+          "submission month"
         ]
       },
       {
@@ -1056,7 +1121,9 @@
         "sql": "(projects.bid_amount_usd - projects.estimated_cost_usd) / NULLIF(projects.bid_amount_usd, 0) * 100",
         "display_name": "bid margin pct",
         "synonyms": [
-          "markup"
+          "markup",
+          "markup pct",
+          "profit margin"
         ]
       },
       {
@@ -1064,7 +1131,9 @@
         "sql": "bid_submissions.labor_cost_usd + bid_submissions.material_cost_usd + bid_submissions.equipment_cost_usd + bid_submissions.subcontractor_cost_usd",
         "display_name": "total direct cost",
         "synonyms": [
-          "project cost"
+          "project cost",
+          "hard costs",
+          "direct spend"
         ]
       }
     ],
@@ -1074,7 +1143,9 @@
         "sql": "COUNT(DISTINCT projects.bid_id)",
         "display_name": "total bids",
         "synonyms": [
-          "submissions"
+          "submissions",
+          "proposal count",
+          "tender count"
         ]
       },
       {
@@ -1082,7 +1153,9 @@
         "sql": "SUM(projects.bid_amount_usd)",
         "display_name": "total bid value",
         "synonyms": [
-          "bid volume"
+          "bid volume",
+          "tender volume",
+          "quoted revenue"
         ]
       },
       {
@@ -1090,7 +1163,9 @@
         "sql": "AVG(cost_estimate_snapshots.estimate_accuracy_pct)",
         "display_name": "avg estimate accuracy",
         "synonyms": [
-          "accuracy"
+          "accuracy",
+          "estimate precision",
+          "forecast accuracy"
         ]
       },
       {
@@ -1098,7 +1173,9 @@
         "sql": "SUM(cost_estimate_snapshots.pipeline_value_usd)",
         "display_name": "total pipeline",
         "synonyms": [
-          "backlog"
+          "backlog",
+          "opportunity value",
+          "backlog value"
         ]
       }
     ]

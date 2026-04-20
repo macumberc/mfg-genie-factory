@@ -51,6 +51,11 @@
             "CF-018",
             "CF-019",
             "CF-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "chemical code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Cyanoacrylate Instant Bond",
             "Hot Melt Packaging Adhesive",
             "Silicone Sealant Pro"
+          ],
+          "synonyms": [
+            "item name",
+            "chemical name",
+            "material name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Specialty Chemicals",
             "Coatings",
             "Adhesives"
+          ],
+          "synonyms": [
+            "chemical type",
+            "material class",
+            "product line"
           ]
         },
         {
@@ -109,6 +124,11 @@
             "PLT-LA",
             "PLT-ATL",
             "PLT-SEA"
+          ],
+          "synonyms": [
+            "facility",
+            "site code",
+            "manufacturing site"
           ]
         },
         {
@@ -123,6 +143,11 @@
             "Construction",
             "Consumer",
             "Pharmaceutical"
+          ],
+          "synonyms": [
+            "client type",
+            "buyer group",
+            "market segment"
           ]
         },
         {
@@ -157,6 +182,11 @@
             "Backorder",
             "Partial",
             "Fulfilled"
+          ],
+          "synonyms": [
+            "order status",
+            "delivery status",
+            "shipment status"
           ]
         }
       ],
@@ -306,7 +336,12 @@
           "sql_type": "DATE",
           "comment": "Month being forecasted",
           "is_dimension": false,
-          "generation_expr": "DATE_TRUNC('month', dt)"
+          "generation_expr": "DATE_TRUNC('month', dt)",
+          "synonyms": [
+            "planning month",
+            "projection period",
+            "forecast period"
+          ]
         },
         {
           "name": "product_id",
@@ -335,6 +370,11 @@
             "CF-018",
             "CF-019",
             "CF-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "chemical code"
           ]
         },
         {
@@ -349,6 +389,11 @@
             "Specialty Chemicals",
             "Coatings",
             "Adhesives"
+          ],
+          "synonyms": [
+            "chemical type",
+            "material class",
+            "product line"
           ]
         },
         {
@@ -364,6 +409,11 @@
             "PLT-LA",
             "PLT-ATL",
             "PLT-SEA"
+          ],
+          "synonyms": [
+            "facility",
+            "site code",
+            "manufacturing site"
           ]
         },
         {
@@ -376,6 +426,11 @@
             "v4.0",
             "v4.1",
             "v4.2"
+          ],
+          "synonyms": [
+            "forecast model",
+            "algorithm version",
+            "model release"
           ]
         },
         {
@@ -580,6 +635,11 @@
             "CF-018",
             "CF-019",
             "CF-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "chemical code"
           ]
         },
         {
@@ -609,6 +669,11 @@
             "Cyanoacrylate Instant Bond",
             "Hot Melt Packaging Adhesive",
             "Silicone Sealant Pro"
+          ],
+          "synonyms": [
+            "item name",
+            "chemical name",
+            "material name"
           ]
         },
         {
@@ -623,6 +688,11 @@
             "Specialty Chemicals",
             "Coatings",
             "Adhesives"
+          ],
+          "synonyms": [
+            "chemical type",
+            "material class",
+            "product line"
           ]
         },
         {
@@ -638,6 +708,11 @@
             "PLT-LA",
             "PLT-ATL",
             "PLT-SEA"
+          ],
+          "synonyms": [
+            "facility",
+            "site code",
+            "manufacturing site"
           ]
         },
         {
@@ -645,21 +720,36 @@
           "sql_type": "DOUBLE",
           "comment": "On-hand inventory in kg",
           "is_dimension": false,
-          "generation_expr": "ROUND(1000 + {qty_noise} * 49000, 1)"
+          "generation_expr": "ROUND(1000 + {qty_noise} * 49000, 1)",
+          "synonyms": [
+            "stock on hand",
+            "available stock",
+            "current inventory"
+          ]
         },
         {
           "name": "safety_stock_kg",
           "sql_type": "DOUBLE",
           "comment": "Safety stock level in kg",
           "is_dimension": false,
-          "generation_expr": "ROUND(500 + {qty_noise} * 9500, 1)"
+          "generation_expr": "ROUND(500 + {qty_noise} * 9500, 1)",
+          "synonyms": [
+            "buffer stock",
+            "minimum stock",
+            "reserve stock"
+          ]
         },
         {
           "name": "days_of_supply",
           "sql_type": "DOUBLE",
           "comment": "Estimated days of supply remaining",
           "is_dimension": false,
-          "generation_expr": "ROUND(5 + {qty_noise} * 55, 1)"
+          "generation_expr": "ROUND(5 + {qty_noise} * 55, 1)",
+          "synonyms": [
+            "supply runway",
+            "stock coverage",
+            "inventory days"
+          ]
         },
         {
           "name": "reorder_status",
@@ -672,6 +762,11 @@
             "Reorder Placed",
             "Low",
             "Adequate"
+          ],
+          "synonyms": [
+            "stock alert",
+            "replenishment flag",
+            "inventory alert"
           ]
         }
       ],
@@ -935,7 +1030,8 @@
         "FROM {fqn}.chemical_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total order volume; matches phrases like 'order count over time' or 'how many orders per month' using order_date dimension."
     },
     {
       "question": "How has unique products changed over time?",
@@ -944,7 +1040,8 @@
         "FROM {fqn}.chemical_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of product variety; matches 'how many unique products ordered over time' using unique_product_count across order_date."
     },
     {
       "question": "How has average price per kg in usd changed over time?",
@@ -953,7 +1050,8 @@
         "FROM {fqn}.chemical_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Trend of average chemical pricing per kg; matches 'price changes over time' or 'avg unit price trend' using avg_unit_price_usd by order_date."
     },
     {
       "question": "How does backorder count vary across product categories?",
@@ -962,7 +1060,8 @@
         "FROM {fqn}.chemical_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY backorder_count DESC"
-      ]
+      ],
+      "usage_guidance": "Ranked breakdown of supply shortfalls by chemical category; matches 'which product categories have the most backorders' using backorder_count grouped by product_category."
     },
     {
       "question": "How does total order quantity in kilograms break down by chemical product for 'Backorder' records?",
@@ -970,7 +1069,8 @@
         "SELECT product_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.chemical_orders",
         "WHERE fulfillment_status = 'Backorder' GROUP BY product_id ORDER BY total_order_quantity_kg DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of order quantity by product for backlogged demand; matches 'backorder volumes by product' filtering fulfillment_status = 'Backorder' on chemical_orders."
     },
     {
       "question": "What is the trend of total predicted demand quantity in kg over time?",
@@ -978,7 +1078,8 @@
         "SELECT forecast_month, SUM(forecasted_quantity_kg) AS total_forecasted_quantity_kg",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Time-series of total forecasted demand in kg; matches 'predicted demand trend' or 'forecasted quantity over time' using demand_forecasts grouped by forecast_month."
     },
     {
       "question": "How many distinct unique inventory snapshot id are there per product category?",
@@ -986,7 +1087,8 @@
         "SELECT product_category, COUNT(DISTINCT snapshot_id) AS distinct_count",
         "FROM {fqn}.inventory_positions",
         "GROUP BY product_category ORDER BY distinct_count DESC"
-      ]
+      ],
+      "usage_guidance": "Count of distinct inventory snapshots per chemical category; matches 'how many inventory records exist by category' using snapshot_id on inventory_positions."
     }
   ],
   "sql_snippets": {
@@ -996,7 +1098,8 @@
         "display_name": "fulfilled orders",
         "synonyms": [
           "completed orders",
-          "shipped orders"
+          "shipped orders",
+          "delivered orders"
         ],
         "instruction": "Use when calculating fulfillment rate or revenue from completed orders."
       },
@@ -1028,7 +1131,8 @@
         "display_name": "order month",
         "synonyms": [
           "month",
-          "booking month"
+          "booking month",
+          "billing month"
         ]
       },
       {
@@ -1037,7 +1141,8 @@
         "display_name": "forecast error (kg)",
         "synonyms": [
           "demand forecast miss",
-          "prediction error"
+          "prediction error",
+          "volume variance"
         ]
       },
       {
@@ -1046,7 +1151,8 @@
         "display_name": "inventory coverage ratio",
         "synonyms": [
           "stock coverage",
-          "safety stock ratio"
+          "safety stock ratio",
+          "stock coverage ratio"
         ]
       }
     ],
@@ -1067,7 +1173,8 @@
         "display_name": "fulfillment rate",
         "synonyms": [
           "fill rate",
-          "order completion rate"
+          "order completion rate",
+          "delivery rate"
         ]
       },
       {
@@ -1086,7 +1193,8 @@
         "display_name": "forecast quantity accuracy",
         "synonyms": [
           "forecast accuracy",
-          "demand accuracy"
+          "demand accuracy",
+          "volume accuracy"
         ]
       }
     ]

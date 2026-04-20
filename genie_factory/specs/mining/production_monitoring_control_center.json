@@ -51,6 +51,11 @@
             "PU-018",
             "PU-019",
             "PU-020"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "machine code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Stacker-Reclaimer 1",
             "Screening Plant A",
             "Screening Plant B"
+          ],
+          "synonyms": [
+            "equipment name",
+            "asset name",
+            "machine label"
           ]
         },
         {
@@ -101,6 +111,11 @@
             "Conveyor",
             "Stacker",
             "Vibrating Screen"
+          ],
+          "synonyms": [
+            "equipment type",
+            "asset class",
+            "machine category"
           ]
         },
         {
@@ -117,6 +132,11 @@
             "Concentration",
             "Material Handling",
             "Classification"
+          ],
+          "synonyms": [
+            "plant stage",
+            "circuit stage",
+            "process step"
           ]
         },
         {
@@ -348,6 +368,11 @@
             "PU-018",
             "PU-019",
             "PU-020"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "machine code"
           ]
         },
         {
@@ -369,6 +394,11 @@
             "Conveyor",
             "Stacker",
             "Vibrating Screen"
+          ],
+          "synonyms": [
+            "equipment type",
+            "asset class",
+            "machine category"
           ]
         },
         {
@@ -385,6 +415,11 @@
             "Concentration",
             "Material Handling",
             "Classification"
+          ],
+          "synonyms": [
+            "plant stage",
+            "circuit stage",
+            "process step"
           ]
         },
         {
@@ -622,6 +657,11 @@
             "PU-018",
             "PU-019",
             "PU-020"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "machine code"
           ]
         },
         {
@@ -643,6 +683,11 @@
             "Conveyor",
             "Stacker",
             "Vibrating Screen"
+          ],
+          "synonyms": [
+            "equipment type",
+            "asset class",
+            "machine category"
           ]
         },
         {
@@ -659,6 +704,11 @@
             "Concentration",
             "Material Handling",
             "Classification"
+          ],
+          "synonyms": [
+            "plant stage",
+            "circuit stage",
+            "process step"
           ]
         },
         {
@@ -984,7 +1034,8 @@
         "FROM {fqn}.production_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak throughput tph; matches phrases like 'highest throughput over time' or 'maximum tph by month' using max_throughput_tph from production_kpi_monthly."
     },
     {
       "question": "How has avg throughput tph changed over time?",
@@ -993,7 +1044,8 @@
         "FROM {fqn}.production_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average throughput tph; matches phrases like 'how has average tph changed' or 'avg throughput over time' using avg_throughput_tph from production_kpi_monthly."
     },
     {
       "question": "What is the monthly trend in highest planned throughput tpd?",
@@ -1002,7 +1054,8 @@
         "FROM {fqn}.throughput_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak planned throughput tpd; matches phrases like 'highest planned tonnage per day over time' using max_planned_throughput_tpd from throughput_kpi_monthly."
     },
     {
       "question": "How has bottleneck count changed over time?",
@@ -1011,7 +1064,8 @@
         "FROM {fqn}.throughput_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of bottleneck occurrences; matches phrases like 'how often are bottlenecks occurring' or 'bottleneck count over time' using bottleneck_count from throughput_kpi_monthly."
     },
     {
       "question": "How does total throughput tons per hour break down by unit id for 'Fault' records?",
@@ -1019,7 +1073,8 @@
         "SELECT unit_id, COUNT(*) AS record_count, SUM(throughput_tph) AS total_throughput_tph",
         "FROM {fqn}.processing_units",
         "WHERE unit_status = 'Fault' GROUP BY unit_id ORDER BY total_throughput_tph DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total throughput tph broken down by unit_id where unit_status is 'Fault'; matches phrases like 'faulty units throughput' or 'which units have faults'."
     },
     {
       "question": "What is the trend of total average particle size mm over time?",
@@ -1027,7 +1082,8 @@
         "SELECT reading_date, SUM(particle_size_mm) AS total_particle_size_mm",
         "FROM {fqn}.production_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total particle size mm across production readings; matches phrases like 'particle size trend over time' or 'how has particle size changed' from production_readings."
     },
     {
       "question": "How has the average equipment utilization 0-100 changed over time?",
@@ -1035,7 +1091,8 @@
         "SELECT snapshot_date, AVG(utilization_pct) AS avg_utilization_pct",
         "FROM {fqn}.throughput_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average equipment utilization percentage; matches phrases like 'how has utilization changed' or 'equipment utilization over time' using utilization_pct from throughput_snapshots."
     }
   ],
   "sql_snippets": {
@@ -1044,7 +1101,9 @@
         "sql": "throughput_snapshots.bottleneck_flag = 'Yes'",
         "display_name": "bottlenecks",
         "synonyms": [
-          "constraints"
+          "constraints",
+          "capacity constraints",
+          "choke points"
         ],
         "instruction": "Filter bottlenecks."
       },
@@ -1052,7 +1111,9 @@
         "sql": "processing_units.unit_status = 'Fault'",
         "display_name": "faulted units",
         "synonyms": [
-          "down"
+          "down",
+          "broken equipment",
+          "failed assets"
         ],
         "instruction": "Filter faulted."
       },
@@ -1060,7 +1121,9 @@
         "sql": "production_readings.quality_status = 'Off Spec'",
         "display_name": "off spec",
         "synonyms": [
-          "quality issues"
+          "quality issues",
+          "out of spec",
+          "quality failures"
         ],
         "instruction": "Filter off spec."
       }
@@ -1071,7 +1134,9 @@
         "sql": "DATE_TRUNC('month', processing_units.record_date)",
         "display_name": "record month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "reporting month",
+          "calendar month"
         ]
       },
       {
@@ -1079,7 +1144,9 @@
         "sql": "throughput_snapshots.actual_throughput_tpd / NULLIF(throughput_snapshots.planned_throughput_tpd, 0) * 100",
         "display_name": "plan adherence pct",
         "synonyms": [
-          "achievement rate"
+          "achievement rate",
+          "schedule compliance",
+          "target achievement"
         ]
       },
       {
@@ -1087,7 +1154,9 @@
         "sql": "processing_units.energy_kwh_per_ton * 0.08",
         "display_name": "energy cost per ton USD",
         "synonyms": [
-          "power cost"
+          "power cost",
+          "power cost per ton",
+          "electricity spend"
         ]
       }
     ],
@@ -1097,7 +1166,9 @@
         "sql": "AVG(processing_units.throughput_tph)",
         "display_name": "avg throughput",
         "synonyms": [
-          "processing rate"
+          "processing rate",
+          "mean feed rate",
+          "average tonnage"
         ]
       },
       {
@@ -1105,7 +1176,9 @@
         "sql": "AVG(processing_units.recovery_pct)",
         "display_name": "avg recovery",
         "synonyms": [
-          "yield"
+          "yield",
+          "mean recovery",
+          "average yield"
         ]
       },
       {
@@ -1113,7 +1186,9 @@
         "sql": "SUM(throughput_snapshots.downtime_hours)",
         "display_name": "total downtime",
         "synonyms": [
-          "lost time"
+          "lost time",
+          "total outage hours",
+          "cumulative downtime"
         ]
       },
       {
@@ -1121,7 +1196,9 @@
         "sql": "AVG(throughput_snapshots.utilization_pct)",
         "display_name": "avg utilization",
         "synonyms": [
-          "OEE"
+          "OEE",
+          "mean utilization",
+          "average availability"
         ]
       }
     ]

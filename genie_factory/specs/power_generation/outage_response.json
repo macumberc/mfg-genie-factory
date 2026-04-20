@@ -51,6 +51,11 @@
             "GU-HY-018",
             "GU-HY-019",
             "GU-HY-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "generator id",
+            "machine id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Eagle Falls Hydro 2",
             "Canyon Run Hydro A",
             "Canyon Run Hydro B"
+          ],
+          "synonyms": [
+            "generator name",
+            "asset name",
+            "machine name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Steam",
             "Diesel",
             "Hydro"
+          ],
+          "synonyms": [
+            "fuel type",
+            "generator class",
+            "technology type"
           ]
         },
         {
@@ -114,6 +129,11 @@
             "Crossroads Station",
             "Eagle Falls Station",
             "Canyon Run Station"
+          ],
+          "synonyms": [
+            "plant",
+            "facility",
+            "power plant"
           ]
         },
         {
@@ -343,6 +363,11 @@
             "GU-HY-018",
             "GU-HY-019",
             "GU-HY-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "generator id",
+            "machine id"
           ]
         },
         {
@@ -357,6 +382,11 @@
             "Steam",
             "Diesel",
             "Hydro"
+          ],
+          "synonyms": [
+            "fuel type",
+            "generator class",
+            "technology type"
           ]
         },
         {
@@ -377,6 +407,11 @@
             "Crossroads Station",
             "Eagle Falls Station",
             "Canyon Run Station"
+          ],
+          "synonyms": [
+            "plant",
+            "facility",
+            "power plant"
           ]
         },
         {
@@ -619,6 +654,11 @@
             "GU-HY-018",
             "GU-HY-019",
             "GU-HY-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "generator id",
+            "machine id"
           ]
         },
         {
@@ -633,6 +673,11 @@
             "Steam",
             "Diesel",
             "Hydro"
+          ],
+          "synonyms": [
+            "fuel type",
+            "generator class",
+            "technology type"
           ]
         },
         {
@@ -964,7 +1009,8 @@
         "FROM {fqn}.outage_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct affected generators; matches phrases like 'how many unique units had outages each month' using outage_kpi_monthly.unique_unit_count."
     },
     {
       "question": "How has highest duration hours changed over time?",
@@ -973,7 +1019,8 @@
         "FROM {fqn}.outage_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of worst single outage duration per month; matches 'longest outage duration trend' using outage_kpi_monthly.max_duration_hours."
     },
     {
       "question": "What is the monthly trend in highest runtime hours?",
@@ -982,7 +1029,8 @@
         "FROM {fqn}.unit_availability_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak generator runtime hours; matches 'highest runtime hours over time' using unit_availability_monthly.max_runtime_hours."
     },
     {
       "question": "How has running unit count changed over time?",
@@ -991,7 +1039,8 @@
         "FROM {fqn}.unit_availability_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Time-series count of actively running generators per month; matches 'how many units were running each month' using unit_availability_monthly.running_unit_count."
     },
     {
       "question": "How does total hours of operation in the day break down by generator unit for 'Forced Outage' records?",
@@ -999,7 +1048,8 @@
         "SELECT unit_id, COUNT(*) AS record_count, SUM(runtime_hours) AS total_runtime_hours",
         "FROM {fqn}.generating_units",
         "WHERE operational_status = 'Forced Outage' GROUP BY unit_id ORDER BY total_runtime_hours DESC"
-      ]
+      ],
+      "usage_guidance": "Per-unit aggregated runtime hours filtered to Forced Outage status; matches 'runtime breakdown by generator during forced outages' from generating_units."
     },
     {
       "question": "What is the trend of total repair and restoration cost in usd over time?",
@@ -1007,7 +1057,8 @@
         "SELECT outage_date, SUM(repair_cost_usd) AS total_repair_cost_usd",
         "FROM {fqn}.outage_events",
         "GROUP BY outage_date ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of total outage repair costs; matches 'repair cost trend over time' or 'restoration spending by date' from outage_events.repair_cost_usd."
     },
     {
       "question": "How has the average percentage of required parts available changed over time?",
@@ -1015,7 +1066,8 @@
         "SELECT snapshot_date, AVG(parts_on_hand_pct) AS avg_parts_on_hand_pct",
         "FROM {fqn}.repair_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of average parts inventory readiness over time; matches 'parts availability trend' or 'how well-stocked are repair crews' from repair_snapshots.parts_on_hand_pct."
     }
   ],
   "sql_snippets": {
@@ -1025,7 +1077,8 @@
         "display_name": "forced outages",
         "synonyms": [
           "unplanned outages",
-          "unexpected outages"
+          "unexpected outages",
+          "emergency outages"
         ],
         "instruction": "Use when analyzing forced/unplanned outage events."
       },
@@ -1034,7 +1087,8 @@
         "display_name": "units in forced outage",
         "synonyms": [
           "down units",
-          "tripped units"
+          "tripped units",
+          "emergency down units"
         ],
         "instruction": "Use when filtering to units currently in forced outage."
       },
@@ -1043,7 +1097,8 @@
         "display_name": "active repairs",
         "synonyms": [
           "open repairs",
-          "in progress repairs"
+          "in progress repairs",
+          "ongoing repairs"
         ],
         "instruction": "Use when filtering to repairs still in progress."
       }
@@ -1054,7 +1109,9 @@
         "sql": "DATE_TRUNC('month', outage_events.outage_date)",
         "display_name": "outage month",
         "synonyms": [
-          "month of outage"
+          "month of outage",
+          "failure month",
+          "incident month"
         ]
       },
       {
@@ -1062,7 +1119,9 @@
         "sql": "outage_events.repair_cost_usd / NULLIF(outage_events.duration_hours, 0)",
         "display_name": "repair cost per hour",
         "synonyms": [
-          "hourly repair cost"
+          "hourly repair cost",
+          "hourly repair rate",
+          "cost per downtime hour"
         ]
       },
       {
@@ -1071,7 +1130,8 @@
         "display_name": "estimated lost revenue USD",
         "synonyms": [
           "revenue impact",
-          "financial impact"
+          "financial impact",
+          "foregone revenue"
         ]
       }
     ],
@@ -1082,7 +1142,8 @@
         "display_name": "total lost generation MWh",
         "synonyms": [
           "lost energy",
-          "generation loss"
+          "generation loss",
+          "total energy lost"
         ]
       },
       {
@@ -1091,7 +1152,8 @@
         "display_name": "total repair cost",
         "synonyms": [
           "maintenance cost",
-          "restoration cost"
+          "restoration cost",
+          "total maintenance spend"
         ]
       },
       {
@@ -1100,7 +1162,8 @@
         "display_name": "average outage duration hours",
         "synonyms": [
           "mean time to repair",
-          "MTTR"
+          "MTTR",
+          "mean downtime"
         ]
       },
       {
@@ -1109,7 +1172,8 @@
         "display_name": "average availability",
         "synonyms": [
           "unit availability",
-          "uptime"
+          "uptime",
+          "mean availability"
         ]
       }
     ]

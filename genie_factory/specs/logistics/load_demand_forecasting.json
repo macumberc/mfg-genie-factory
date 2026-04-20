@@ -51,6 +51,11 @@
             "LN-018",
             "LN-019",
             "LN-020"
+          ],
+          "synonyms": [
+            "route code",
+            "corridor id",
+            "path identifier"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "East Coast Rail Intermodal",
             "Gulf Coast Rail Intermodal",
             "Pacific NW Intermodal"
+          ],
+          "synonyms": [
+            "route name",
+            "corridor label",
+            "path description"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Domestic LTL",
             "Cross-Border",
             "Intermodal"
+          ],
+          "synonyms": [
+            "shipment type",
+            "freight mode",
+            "route type"
           ]
         },
         {
@@ -335,6 +350,11 @@
             "LN-018",
             "LN-019",
             "LN-020"
+          ],
+          "synonyms": [
+            "route code",
+            "corridor id",
+            "path identifier"
           ]
         },
         {
@@ -348,6 +368,11 @@
             "Domestic LTL",
             "Cross-Border",
             "Intermodal"
+          ],
+          "synonyms": [
+            "shipment type",
+            "freight mode",
+            "route type"
           ]
         },
         {
@@ -578,6 +603,11 @@
             "LN-018",
             "LN-019",
             "LN-020"
+          ],
+          "synonyms": [
+            "route code",
+            "corridor id",
+            "path identifier"
           ]
         },
         {
@@ -607,6 +637,11 @@
             "East Coast Rail Intermodal",
             "Gulf Coast Rail Intermodal",
             "Pacific NW Intermodal"
+          ],
+          "synonyms": [
+            "route name",
+            "corridor label",
+            "path description"
           ]
         },
         {
@@ -620,6 +655,11 @@
             "Domestic LTL",
             "Cross-Border",
             "Intermodal"
+          ],
+          "synonyms": [
+            "shipment type",
+            "freight mode",
+            "route type"
           ]
         },
         {
@@ -913,7 +953,8 @@
         "FROM {fqn}.shipment_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of delivered shipment counts; matches phrases like 'delivered orders over time' using order_date and delivered_order_count measure."
     },
     {
       "question": "How has delayed order count changed over time?",
@@ -922,7 +963,8 @@
         "FROM {fqn}.shipment_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of delayed shipments; matches phrases like 'delays worsening over time' using order_date and delayed_order_count measure."
     },
     {
       "question": "What is the monthly trend in highest forecasted shipments?",
@@ -931,7 +973,8 @@
         "FROM {fqn}.demand_forecasts_metrics",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly peak forecasted shipment volume trend; matches phrases like 'highest predicted shipments by month' using forecast_month and max_forecasted_shipments."
     },
     {
       "question": "How has unique forecast records changed over time?",
@@ -940,7 +983,8 @@
         "FROM {fqn}.demand_forecasts_metrics",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly count of forecast records over time; matches phrases like 'how many forecasts were generated each month' using forecast_month and forecast_record_count."
     },
     {
       "question": "How does total shipment weight in pounds break down by shipping lane for 'Delayed' records?",
@@ -948,7 +992,8 @@
         "SELECT lane_id, COUNT(*) AS record_count, SUM(weight_lbs) AS total_weight_lbs",
         "FROM {fqn}.shipment_orders",
         "WHERE order_status = 'Delayed' GROUP BY lane_id ORDER BY total_weight_lbs DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total shipment weight broken down by lane for Delayed status; matches phrases like 'weight of delayed shipments per lane'."
     },
     {
       "question": "What is the trend of total predicted shipment count for month over time?",
@@ -956,7 +1001,8 @@
         "SELECT forecast_month, SUM(forecasted_shipments) AS total_forecasted_shipments",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly aggregate trend of total predicted shipment volume; matches phrases like 'forecasted shipment demand over time' using demand_forecasts.forecasted_shipments."
     },
     {
       "question": "How has the average capacity utilization percentage changed over time?",
@@ -964,7 +1010,8 @@
         "SELECT snapshot_date, AVG(capacity_utilization_pct) AS avg_capacity_utilization_pct",
         "FROM {fqn}.capacity_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series average of capacity utilization percentage across lanes; matches phrases like 'how full are our lanes over time' using capacity_snapshots."
     }
   ],
   "sql_snippets": {
@@ -974,7 +1021,8 @@
         "display_name": "delivered orders",
         "synonyms": [
           "completed shipments",
-          "on-time deliveries"
+          "on-time deliveries",
+          "fulfilled orders"
         ],
         "instruction": "Use when calculating delivery rate or revenue from completed orders."
       },
@@ -983,7 +1031,8 @@
         "display_name": "delayed orders",
         "synonyms": [
           "late shipments",
-          "overdue orders"
+          "overdue orders",
+          "behind schedule"
         ],
         "instruction": "Use when analyzing delay rates or identifying problem lanes."
       },
@@ -1005,7 +1054,8 @@
         "display_name": "order month",
         "synonyms": [
           "month",
-          "booking month"
+          "booking month",
+          "shipment month"
         ]
       },
       {
@@ -1014,7 +1064,8 @@
         "display_name": "forecast error (shipments)",
         "synonyms": [
           "shipment forecast miss",
-          "prediction error"
+          "prediction error",
+          "volume variance"
         ]
       },
       {
@@ -1023,7 +1074,8 @@
         "display_name": "weight in tons",
         "synonyms": [
           "tons",
-          "short tons"
+          "short tons",
+          "tonnage"
         ]
       }
     ],
@@ -1054,7 +1106,8 @@
         "display_name": "avg capacity utilization",
         "synonyms": [
           "utilization",
-          "lane utilization"
+          "lane utilization",
+          "capacity usage"
         ]
       },
       {
@@ -1063,7 +1116,8 @@
         "display_name": "forecast volume accuracy",
         "synonyms": [
           "forecast accuracy",
-          "prediction accuracy"
+          "prediction accuracy",
+          "volume accuracy"
         ]
       }
     ]

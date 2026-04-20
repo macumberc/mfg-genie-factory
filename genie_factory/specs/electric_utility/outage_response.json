@@ -51,6 +51,11 @@
             "FD-W02",
             "FD-W03",
             "FD-W04"
+          ],
+          "synonyms": [
+            "circuit id",
+            "line id",
+            "feed code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "West Valley 2",
             "West University",
             "West Airport"
+          ],
+          "synonyms": [
+            "circuit name",
+            "line name",
+            "feed label"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "South",
             "East",
             "West"
+          ],
+          "synonyms": [
+            "service area",
+            "territory",
+            "region"
           ]
         },
         {
@@ -106,6 +121,11 @@
             "Underground",
             "Mixed",
             "Overhead"
+          ],
+          "synonyms": [
+            "line type",
+            "circuit type",
+            "construction type"
           ]
         },
         {
@@ -346,6 +366,11 @@
             "FD-W02",
             "FD-W03",
             "FD-W04"
+          ],
+          "synonyms": [
+            "circuit id",
+            "line id",
+            "feed code"
           ]
         },
         {
@@ -360,6 +385,11 @@
             "South",
             "East",
             "West"
+          ],
+          "synonyms": [
+            "service area",
+            "territory",
+            "region"
           ]
         },
         {
@@ -372,6 +402,11 @@
             "Underground",
             "Mixed",
             "Overhead"
+          ],
+          "synonyms": [
+            "line type",
+            "circuit type",
+            "construction type"
           ]
         },
         {
@@ -604,6 +639,11 @@
             "FD-W02",
             "FD-W03",
             "FD-W04"
+          ],
+          "synonyms": [
+            "circuit id",
+            "line id",
+            "feed code"
           ]
         },
         {
@@ -618,6 +658,11 @@
             "South",
             "East",
             "West"
+          ],
+          "synonyms": [
+            "service area",
+            "territory",
+            "region"
           ]
         },
         {
@@ -630,6 +675,11 @@
             "Underground",
             "Mixed",
             "Overhead"
+          ],
+          "synonyms": [
+            "line type",
+            "circuit type",
+            "construction type"
           ]
         },
         {
@@ -937,7 +987,8 @@
         "FROM {fqn}.outage_events_metrics",
         "GROUP BY ALL",
         "ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct feeders experiencing outages; matches questions about feeder count changes or unique feeder activity over time using outage_events_metrics."
     },
     {
       "question": "How has highest customers affected changed over time?",
@@ -946,7 +997,8 @@
         "FROM {fqn}.outage_events_metrics",
         "GROUP BY ALL",
         "ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak single-event customer impact; matches questions about worst-case or highest customers affected per period using max_customers_affected."
     },
     {
       "question": "How has storm outage count changed over time?",
@@ -955,7 +1007,8 @@
         "FROM {fqn}.outage_events_metrics",
         "GROUP BY ALL",
         "ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Trend of storm-caused outage frequency over time; matches questions about weather-related or storm outage counts changing across dates using storm_outage_count."
     },
     {
       "question": "Which districts have the highest total customer-minutes interrupted?",
@@ -964,7 +1017,8 @@
         "FROM {fqn}.outage_events_metrics",
         "GROUP BY ALL",
         "ORDER BY total_customer_minutes DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N district ranking by cumulative customer-minutes interrupted; matches questions about which districts suffer the most total outage impact using total_customer_minutes."
     },
     {
       "question": "What is the trend of total number of customers without power over time?",
@@ -972,7 +1026,8 @@
         "SELECT outage_date, SUM(customers_affected) AS total_customers_affected",
         "FROM {fqn}.outage_events",
         "GROUP BY outage_date ORDER BY outage_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of total customers without power; matches questions about how many customers lost service over time using raw outage_events customers_affected."
     },
     {
       "question": "What is the trend of total time from report to crew dispatch in minutes over time?",
@@ -980,7 +1035,8 @@
         "SELECT dispatch_date, SUM(response_time_minutes) AS total_response_time_minutes",
         "FROM {fqn}.crew_dispatch_snapshots",
         "GROUP BY dispatch_date ORDER BY dispatch_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of total crew response time from report to dispatch; matches questions about dispatch speed or response time volume over time using crew_dispatch_snapshots."
     },
     {
       "question": "How has the average percentage of outages restored within sla target changed over time?",
@@ -988,7 +1044,8 @@
         "SELECT report_month, AVG(restoration_rate_pct) AS avg_restoration_rate_pct",
         "FROM {fqn}.outage_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of SLA restoration compliance rate; matches questions about how often outages are restored on time or restoration rate performance using outage_kpi_monthly."
     }
   ],
   "sql_snippets": {
@@ -998,7 +1055,8 @@
         "display_name": "storm outages",
         "synonyms": [
           "weather-related outages",
-          "storm events"
+          "storm events",
+          "weather events"
         ],
         "instruction": "Use when analyzing storm-caused outages specifically."
       },
@@ -1007,7 +1065,8 @@
         "display_name": "critical outages",
         "synonyms": [
           "P1 outages",
-          "highest priority"
+          "highest priority",
+          "p1 outages"
         ],
         "instruction": "Use when filtering for the most critical outage events."
       },
@@ -1016,7 +1075,8 @@
         "display_name": "contractor crews",
         "synonyms": [
           "external crews",
-          "contract workers"
+          "contract workers",
+          "outside crews"
         ],
         "instruction": "Use when analyzing contractor-specific dispatch metrics."
       }
@@ -1028,7 +1088,8 @@
         "display_name": "outage month",
         "synonyms": [
           "month of outage",
-          "monthly"
+          "monthly",
+          "billing month"
         ]
       },
       {
@@ -1037,7 +1098,8 @@
         "display_name": "total dispatch cycle time minutes",
         "synonyms": [
           "end-to-end time",
-          "total service time"
+          "total service time",
+          "end-to-end cycle time"
         ]
       },
       {
@@ -1046,7 +1108,8 @@
         "display_name": "outage severity",
         "synonyms": [
           "impact level",
-          "severity category"
+          "severity category",
+          "event size"
         ]
       }
     ],
@@ -1057,7 +1120,8 @@
         "display_name": "total outage count",
         "synonyms": [
           "outage events",
-          "number of outages"
+          "number of outages",
+          "outage count"
         ]
       },
       {
@@ -1066,7 +1130,8 @@
         "display_name": "total customer-minutes interrupted",
         "synonyms": [
           "CMI",
-          "customer impact"
+          "customer impact",
+          "cmi total"
         ]
       },
       {
@@ -1075,7 +1140,8 @@
         "display_name": "average response time minutes",
         "synonyms": [
           "dispatch time",
-          "time to respond"
+          "time to respond",
+          "mean response time"
         ]
       },
       {
@@ -1084,7 +1150,8 @@
         "display_name": "average crew utilization",
         "synonyms": [
           "crew efficiency",
-          "utilization rate"
+          "utilization rate",
+          "mean utilization"
         ]
       }
     ]

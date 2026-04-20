@@ -51,6 +51,11 @@
             "IP-MTR-018",
             "IP-MTR-019",
             "IP-MTR-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "machine number",
+            "unit tag"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Turbine",
             "Gearbox",
             "Motor"
+          ],
+          "synonyms": [
+            "equipment category",
+            "machine class",
+            "device kind"
           ]
         },
         {
@@ -86,6 +96,11 @@
             "ABB",
             "Siemens",
             "WEG"
+          ],
+          "synonyms": [
+            "vendor",
+            "oem",
+            "maker"
           ]
         },
         {
@@ -322,6 +337,11 @@
             "IP-MTR-018",
             "IP-MTR-019",
             "IP-MTR-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "machine number",
+            "unit tag"
           ]
         },
         {
@@ -336,6 +356,11 @@
             "Turbine",
             "Gearbox",
             "Motor"
+          ],
+          "synonyms": [
+            "equipment category",
+            "machine class",
+            "device kind"
           ]
         },
         {
@@ -357,6 +382,11 @@
             "ABB",
             "Siemens",
             "WEG"
+          ],
+          "synonyms": [
+            "vendor",
+            "oem",
+            "maker"
           ]
         },
         {
@@ -625,6 +655,11 @@
             "IP-MTR-018",
             "IP-MTR-019",
             "IP-MTR-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "machine number",
+            "unit tag"
           ]
         },
         {
@@ -639,6 +674,11 @@
             "Turbine",
             "Gearbox",
             "Motor"
+          ],
+          "synonyms": [
+            "equipment category",
+            "machine class",
+            "device kind"
           ]
         },
         {
@@ -660,6 +700,11 @@
             "ABB",
             "Siemens",
             "WEG"
+          ],
+          "synonyms": [
+            "vendor",
+            "oem",
+            "maker"
           ]
         },
         {
@@ -982,7 +1027,8 @@
         "FROM {fqn}.condition_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total oil temperature across all assets; matches phrases like 'oil temperature over time' using condition_readings_metrics."
     },
     {
       "question": "How has average vibration velocity in mm/s changed over time?",
@@ -991,7 +1037,8 @@
         "FROM {fqn}.condition_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average vibration velocity in mm/s; matches 'vibration levels over time' using condition_readings_metrics avg_vibration_velocity measure."
     },
     {
       "question": "What is the monthly trend in total avg health index?",
@@ -1000,7 +1047,8 @@
         "FROM {fqn}.asset_health_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY summary_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of aggregated fleet health index; matches 'how is overall asset health trending' using asset_health_monthly_metrics total_avg_health_index."
     },
     {
       "question": "Rank asset types by total unplanned downtime hours",
@@ -1009,7 +1057,8 @@
         "FROM {fqn}.asset_health_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY total_unplanned_downtime DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of asset types by total unplanned downtime hours; matches 'which equipment causes most unplanned downtime' using asset_health_monthly_metrics."
     },
     {
       "question": "What is the trend of total bearing temperature in celsius over time?",
@@ -1017,7 +1066,8 @@
         "SELECT reading_date, SUM(bearing_temperature_c) AS total_bearing_temperature_c",
         "FROM {fqn}.condition_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of summed bearing temperature in Celsius; matches 'bearing temperature over time' querying raw condition_readings table directly."
     },
     {
       "question": "What is the trend of total downtime caused by failure in hours over time?",
@@ -1025,7 +1075,8 @@
         "SELECT failure_date, SUM(downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.failure_events",
         "GROUP BY failure_date ORDER BY failure_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total failure-caused downtime hours; matches 'downtime from failures over time' querying raw failure_events table by failure_date."
     },
     {
       "question": "How has the average average health index for the month 0-100 changed over time?",
@@ -1033,7 +1084,8 @@
         "SELECT summary_month, AVG(avg_health_index) AS avg_avg_health_index",
         "FROM {fqn}.asset_health_monthly",
         "GROUP BY summary_month ORDER BY summary_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average health index score (0–100); matches 'how has asset health score changed monthly' querying raw asset_health_monthly table."
     }
   ],
   "sql_snippets": {
@@ -1043,7 +1095,8 @@
         "display_name": "critical failures",
         "synonyms": [
           "critical events",
-          "critical severity"
+          "critical severity",
+          "severe breakdowns"
         ],
         "instruction": "Use when filtering for the most severe failure events."
       },
@@ -1052,7 +1105,8 @@
         "display_name": "predicted failures",
         "synonyms": [
           "ML predicted",
-          "anticipated failures"
+          "anticipated failures",
+          "forecasted faults"
         ],
         "instruction": "Use when analyzing the effectiveness of predictive maintenance."
       },
@@ -1061,7 +1115,8 @@
         "display_name": "breakdown failures",
         "synonyms": [
           "undetected failures",
-          "surprise failures"
+          "surprise failures",
+          "reactive failures"
         ],
         "instruction": "Use when analyzing failures that were not caught by sensors or inspection."
       }
@@ -1073,7 +1128,8 @@
         "display_name": "reading month",
         "synonyms": [
           "month of reading",
-          "monthly"
+          "monthly",
+          "sensor month"
         ]
       },
       {
@@ -1082,7 +1138,8 @@
         "display_name": "vibration zone (ISO 10816)",
         "synonyms": [
           "vibration severity",
-          "vibration classification"
+          "vibration classification",
+          "iso vibration band"
         ]
       },
       {
@@ -1091,7 +1148,8 @@
         "display_name": "health category",
         "synonyms": [
           "asset condition",
-          "health status"
+          "health status",
+          "condition band"
         ]
       }
     ],
@@ -1102,7 +1160,8 @@
         "display_name": "total repair cost",
         "synonyms": [
           "repair spend",
-          "failure cost"
+          "failure cost",
+          "fix spend"
         ]
       },
       {
@@ -1111,7 +1170,8 @@
         "display_name": "total downtime hours",
         "synonyms": [
           "downtime",
-          "hours lost"
+          "hours lost",
+          "lost hours"
         ]
       },
       {
@@ -1120,7 +1180,8 @@
         "display_name": "average health index",
         "synonyms": [
           "health score",
-          "asset health"
+          "asset health",
+          "mean condition score"
         ]
       },
       {
@@ -1129,7 +1190,8 @@
         "display_name": "average availability",
         "synonyms": [
           "uptime",
-          "availability rate"
+          "availability rate",
+          "mean uptime"
         ]
       }
     ]

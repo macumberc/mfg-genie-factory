@@ -51,6 +51,11 @@
             "VT-DSP-EINK-30",
             "VT-DSP-MICRO-40",
             "VT-DSP-TFT-50"
+          ],
+          "synonyms": [
+            "part number",
+            "board type",
+            "chip model"
           ]
         },
         {
@@ -64,6 +69,11 @@
             "Power Module",
             "Sensor Module",
             "Display Panel"
+          ],
+          "synonyms": [
+            "product family",
+            "product category",
+            "business line"
           ]
         },
         {
@@ -307,6 +317,11 @@
             "VT-DSP-EINK-30",
             "VT-DSP-MICRO-40",
             "VT-DSP-TFT-50"
+          ],
+          "synonyms": [
+            "part number",
+            "board type",
+            "chip model"
           ]
         },
         {
@@ -320,6 +335,11 @@
             "Power Module",
             "Sensor Module",
             "Display Panel"
+          ],
+          "synonyms": [
+            "product family",
+            "product category",
+            "business line"
           ]
         },
         {
@@ -549,6 +569,11 @@
             "VT-DSP-EINK-30",
             "VT-DSP-MICRO-40",
             "VT-DSP-TFT-50"
+          ],
+          "synonyms": [
+            "part number",
+            "board type",
+            "chip model"
           ]
         },
         {
@@ -562,6 +587,11 @@
             "Power Module",
             "Sensor Module",
             "Display Panel"
+          ],
+          "synonyms": [
+            "product family",
+            "product category",
+            "business line"
           ]
         },
         {
@@ -875,7 +905,8 @@
         "FROM {fqn}.inspection_events_metrics",
         "GROUP BY ALL",
         "ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak/highest confidence score from the visual inspection model, when users ask about maximum detection confidence over time."
     },
     {
       "question": "How has average detection model confidence score changed over time?",
@@ -884,7 +915,8 @@
         "FROM {fqn}.inspection_events_metrics",
         "GROUP BY ALL",
         "ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average AI model confidence score across all inspections, distinguishing average from maximum confidence metrics."
     },
     {
       "question": "What is the monthly trend in total rework cost in usd?",
@@ -893,7 +925,8 @@
         "FROM {fqn}.detection_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly rework cost trend in USD from detection_kpi_metrics, when users ask how rework expenses have changed over time by product line."
     },
     {
       "question": "What is the trend of total time to complete inspection in seconds over time?",
@@ -901,7 +934,8 @@
         "SELECT inspection_date, SUM(inspection_time_sec) AS total_inspection_time_sec",
         "FROM {fqn}.inspection_events",
         "GROUP BY inspection_date ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative inspection throughput trend over time in seconds, when users ask about total inspection duration or time spent on inspections daily."
     },
     {
       "question": "What is the trend of total total inspections in snapshot period over time?",
@@ -909,7 +943,8 @@
         "SELECT snapshot_date, SUM(total_inspections) AS total_total_inspections",
         "FROM {fqn}.defect_classification_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total inspections logged in classification snapshots over snapshot periods, for questions about historical inspection volume from snapshot data."
     },
     {
       "question": "How has the average target first-pass yield percentage changed over time?",
@@ -917,7 +952,8 @@
         "SELECT kpi_month, AVG(target_pass_rate_pct) AS avg_target_pass_rate_pct",
         "FROM {fqn}.detection_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series of average target first-pass yield percentage from KPI table, when users ask how pass rate targets have shifted month over month."
     },
     {
       "question": "How does total defects found count vary across product lines?",
@@ -926,7 +962,8 @@
         "FROM {fqn}.inspection_events_metrics",
         "GROUP BY ALL",
         "ORDER BY total_defects_found DESC"
-      ]
+      ],
+      "usage_guidance": "Ranked breakdown of total defects found by product line, when users ask which product lines have the highest defect counts or detection volume."
     }
   ],
   "sql_snippets": {
@@ -946,7 +983,8 @@
         "display_name": "critical defects",
         "synonyms": [
           "critical severity",
-          "critical issues"
+          "critical issues",
+          "high severity flaws"
         ],
         "instruction": "Use when focusing on the most severe defect classifications."
       },
@@ -955,7 +993,8 @@
         "display_name": "latest model version",
         "synonyms": [
           "v2.3 model",
-          "newest detection model"
+          "newest detection model",
+          "current algorithm"
         ],
         "instruction": "Use to filter to the most recent detection model version."
       }
@@ -967,7 +1006,8 @@
         "display_name": "inspection month",
         "synonyms": [
           "month of inspection",
-          "monthly"
+          "monthly",
+          "monthly period"
         ]
       },
       {
@@ -986,7 +1026,8 @@
         "display_name": "defect rate ratio",
         "synonyms": [
           "defect ratio",
-          "failure rate"
+          "failure rate",
+          "fault ratio"
         ]
       }
     ],
@@ -997,7 +1038,8 @@
         "display_name": "total inspections",
         "synonyms": [
           "inspection count",
-          "number of inspections"
+          "number of inspections",
+          "checks run"
         ]
       },
       {
@@ -1006,7 +1048,8 @@
         "display_name": "total defects",
         "synonyms": [
           "defect count",
-          "failures"
+          "failures",
+          "faults found"
         ]
       },
       {
@@ -1015,7 +1058,8 @@
         "display_name": "total scrap cost",
         "synonyms": [
           "scrap cost",
-          "scrap expense"
+          "scrap expense",
+          "scrap spend"
         ]
       },
       {

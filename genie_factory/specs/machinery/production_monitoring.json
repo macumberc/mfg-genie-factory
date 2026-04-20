@@ -51,6 +51,11 @@
             "FP-PKG-018",
             "FP-PKG-019",
             "FP-PKG-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "equipment number",
+            "cell code"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Painting",
             "Machining",
             "Packaging"
+          ],
+          "synonyms": [
+            "machine category",
+            "asset class",
+            "equipment type"
           ]
         },
         {
@@ -289,6 +299,11 @@
             "FP-PKG-018",
             "FP-PKG-019",
             "FP-PKG-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "equipment number",
+            "cell code"
           ]
         },
         {
@@ -303,6 +318,11 @@
             "Painting",
             "Machining",
             "Packaging"
+          ],
+          "synonyms": [
+            "machine category",
+            "asset class",
+            "equipment type"
           ]
         },
         {
@@ -528,6 +548,11 @@
             "FP-PKG-018",
             "FP-PKG-019",
             "FP-PKG-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "equipment number",
+            "cell code"
           ]
         },
         {
@@ -542,6 +567,11 @@
             "Painting",
             "Machining",
             "Packaging"
+          ],
+          "synonyms": [
+            "machine category",
+            "asset class",
+            "equipment type"
           ]
         },
         {
@@ -848,7 +878,8 @@
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about good units, actual output, or production volume using the production_runs_metrics metric view."
     },
     {
       "question": "How has total rejected units changed over time?",
@@ -857,7 +888,8 @@
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about rejected units, scrap counts, or defect quantity trends using the production_runs_metrics metric view."
     },
     {
       "question": "What is the monthly trend in total planned downtime hours?",
@@ -866,7 +898,8 @@
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
         "ORDER BY oee_month"
-      ]
+      ],
+      "usage_guidance": "Route monthly trend questions about planned downtime hours or scheduled maintenance duration using the oee_metrics metric view."
     },
     {
       "question": "Rank line types by total performance pct",
@@ -875,7 +908,8 @@
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
         "ORDER BY total_performance_percent DESC"
-      ]
+      ],
+      "usage_guidance": "Route ranking or comparison questions about line type performance percentage using a category-ranked aggregate from oee_metrics."
     },
     {
       "question": "What is the trend of total planned production quantity over time?",
@@ -883,7 +917,8 @@
         "SELECT run_date, SUM(planned_qty) AS total_planned_qty",
         "FROM {fqn}.production_runs",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about planned production quantity or scheduled output targets directly from the production_runs table."
     },
     {
       "question": "What is the trend of total units produced in this hour over time?",
@@ -891,7 +926,8 @@
         "SELECT snapshot_date, SUM(units_produced_hour) AS total_units_produced_hour",
         "FROM {fqn}.line_status_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route trend questions about hourly units produced or real-time throughput snapshots using the line_status_snapshots table."
     },
     {
       "question": "How has the average availability component of oee changed over time?",
@@ -899,7 +935,8 @@
         "SELECT oee_month, AVG(availability_pct) AS avg_availability_pct",
         "FROM {fqn}.oee_monthly",
         "GROUP BY oee_month ORDER BY oee_month"
-      ]
+      ],
+      "usage_guidance": "Route monthly trend questions about OEE availability percentage or machine uptime component using the oee_monthly table."
     }
   ],
   "sql_snippets": {
@@ -909,7 +946,8 @@
         "display_name": "lines down",
         "synonyms": [
           "downtime",
-          "stopped lines"
+          "stopped lines",
+          "offline equipment"
         ],
         "instruction": "Use when analyzing unplanned downtime events."
       },
@@ -918,7 +956,8 @@
         "display_name": "night shift",
         "synonyms": [
           "night production",
-          "third shift"
+          "third shift",
+          "graveyard shift"
         ],
         "instruction": "Use when filtering to night shift production."
       },
@@ -927,7 +966,8 @@
         "display_name": "below world-class OEE",
         "synonyms": [
           "low OEE",
-          "underperforming"
+          "underperforming",
+          "underperforming oee"
         ],
         "instruction": "Use when identifying lines below the 85% OEE target."
       }
@@ -938,7 +978,9 @@
         "sql": "DATE_TRUNC('month', production_runs.run_date)",
         "display_name": "production month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "production month",
+          "output month"
         ]
       },
       {
@@ -947,7 +989,8 @@
         "display_name": "production yield",
         "synonyms": [
           "yield",
-          "plan attainment"
+          "plan attainment",
+          "fill rate"
         ]
       },
       {
@@ -956,7 +999,8 @@
         "display_name": "reject rate",
         "synonyms": [
           "scrap rate",
-          "defect rate"
+          "defect rate",
+          "scrap percentage"
         ]
       }
     ],
@@ -967,7 +1011,8 @@
         "display_name": "total good output",
         "synonyms": [
           "production volume",
-          "output"
+          "output",
+          "good units"
         ]
       },
       {
@@ -976,7 +1021,8 @@
         "display_name": "total rejects",
         "synonyms": [
           "scrap",
-          "defects"
+          "defects",
+          "scrap count"
         ]
       },
       {
@@ -985,7 +1031,8 @@
         "display_name": "average OEE",
         "synonyms": [
           "OEE",
-          "equipment effectiveness"
+          "equipment effectiveness",
+          "mean oee"
         ]
       },
       {
@@ -994,7 +1041,8 @@
         "display_name": "total downtime",
         "synonyms": [
           "downtime minutes",
-          "lost time"
+          "lost time",
+          "idle minutes"
         ]
       }
     ]

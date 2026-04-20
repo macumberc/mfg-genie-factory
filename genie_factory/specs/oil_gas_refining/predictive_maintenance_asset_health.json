@@ -51,6 +51,11 @@
             "RG-CMP-018",
             "RG-HX-019",
             "RG-PMP-020"
+          ],
+          "synonyms": [
+            "asset tag",
+            "unit id",
+            "asset number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Reformer Recycle Compressor C-501",
             "Alkylation Cooler E-601",
             "Product Transfer Pump P-701"
+          ],
+          "synonyms": [
+            "asset name",
+            "machine name",
+            "unit label"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Reactor",
             "Column",
             "Furnace"
+          ],
+          "synonyms": [
+            "asset class",
+            "machine category",
+            "asset kind"
           ]
         },
         {
@@ -111,6 +126,11 @@
             "Vacuum Distillation",
             "Alkylation",
             "Blending & Dispatch"
+          ],
+          "synonyms": [
+            "plant unit",
+            "processing area",
+            "refinery section"
           ]
         },
         {
@@ -354,6 +374,11 @@
             "RG-CMP-018",
             "RG-HX-019",
             "RG-PMP-020"
+          ],
+          "synonyms": [
+            "asset tag",
+            "unit id",
+            "asset number"
           ]
         },
         {
@@ -383,6 +408,11 @@
             "Reformer Recycle Compressor C-501",
             "Alkylation Cooler E-601",
             "Product Transfer Pump P-701"
+          ],
+          "synonyms": [
+            "asset name",
+            "machine name",
+            "unit label"
           ]
         },
         {
@@ -398,6 +428,11 @@
             "Reactor",
             "Column",
             "Furnace"
+          ],
+          "synonyms": [
+            "asset class",
+            "machine category",
+            "asset kind"
           ]
         },
         {
@@ -414,6 +449,11 @@
             "Vacuum Distillation",
             "Alkylation",
             "Blending & Dispatch"
+          ],
+          "synonyms": [
+            "plant unit",
+            "processing area",
+            "refinery section"
           ]
         },
         {
@@ -658,6 +698,11 @@
             "RG-CMP-018",
             "RG-HX-019",
             "RG-PMP-020"
+          ],
+          "synonyms": [
+            "asset tag",
+            "unit id",
+            "asset number"
           ]
         },
         {
@@ -673,6 +718,11 @@
             "Reactor",
             "Column",
             "Furnace"
+          ],
+          "synonyms": [
+            "asset class",
+            "machine category",
+            "asset kind"
           ]
         },
         {
@@ -689,6 +739,11 @@
             "Vacuum Distillation",
             "Alkylation",
             "Blending & Dispatch"
+          ],
+          "synonyms": [
+            "plant unit",
+            "processing area",
+            "refinery section"
           ]
         },
         {
@@ -985,7 +1040,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY max_sensor_value DESC"
-      ]
+      ],
+      "usage_guidance": "Route peak sensor measurement questions — highest recorded sensor value ranked by reading timestamp — to this max-per-timestamp aggregate."
     },
     {
       "question": "Rank reading timestamps by total sensor value",
@@ -994,7 +1050,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY total_sensor_value DESC"
-      ]
+      ],
+      "usage_guidance": "Route cumulative sensor output ranking questions — total raw sensor value ordered by reading timestamp — to this descending-rank aggregate."
     },
     {
       "question": "What is the monthly trend in total equipment downtime?",
@@ -1003,7 +1060,8 @@
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route monthly equipment downtime trend questions — total downtime hours over time across the refinery — to this time-series aggregate on event_date."
     },
     {
       "question": "What is the trend of total raw sensor measurement value over time?",
@@ -1011,7 +1069,8 @@
         "SELECT reading_timestamp, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",
         "GROUP BY reading_timestamp ORDER BY reading_timestamp"
-      ]
+      ],
+      "usage_guidance": "Route raw sensor measurement trend questions — total sensor_value summed over time from sensor_readings table — to this time-series aggregate."
     },
     {
       "question": "What is the trend of total equipment downtime in hours over time?",
@@ -1019,7 +1078,8 @@
         "SELECT event_date, SUM(downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.maintenance_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route equipment downtime trend questions using the maintenance_events table — total downtime hours over time — to this direct-table time-series aggregate."
     },
     {
       "question": "How has the average average health score for the month changed over time?",
@@ -1027,7 +1087,8 @@
         "SELECT snapshot_month, AVG(avg_health_score) AS avg_avg_health_score",
         "FROM {fqn}.equipment_health_monthly",
         "GROUP BY snapshot_month ORDER BY snapshot_month"
-      ]
+      ],
+      "usage_guidance": "Route fleet health trend questions — how average health score changes month-over-month across process units — to this equipment_health_monthly time-series aggregate."
     },
     {
       "question": "Rank reading timestamps by lowest rul days",
@@ -1036,7 +1097,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY min_rul_days DESC"
-      ]
+      ],
+      "usage_guidance": "Route remaining useful life ranking questions — which reading timestamps show the lowest predicted RUL days — to this ascending min_rul_days ranked aggregate."
     }
   ],
   "sql_snippets": {
@@ -1066,7 +1128,8 @@
         "display_name": "near end of life",
         "synonyms": [
           "low RUL",
-          "critical assets"
+          "critical assets",
+          "expiring assets"
         ],
         "instruction": "Use to find equipment near predicted failure."
       }
@@ -1078,7 +1141,8 @@
         "display_name": "prediction rate",
         "synonyms": [
           "accuracy",
-          "predicted pct"
+          "predicted pct",
+          "forecast hit rate"
         ]
       },
       {
@@ -1086,7 +1150,9 @@
         "sql": "ROUND(maintenance_events.repair_cost_usd / NULLIF(maintenance_events.downtime_hours, 0), 2)",
         "display_name": "cost per downtime hour",
         "synonyms": [
-          "cost efficiency"
+          "cost efficiency",
+          "hourly repair cost",
+          "cost per hour down"
         ]
       },
       {
@@ -1094,7 +1160,9 @@
         "sql": "DATE_TRUNC('month', maintenance_events.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "month"
+          "month",
+          "failure month",
+          "maintenance month"
         ]
       }
     ],
@@ -1105,7 +1173,8 @@
         "display_name": "total repair cost",
         "synonyms": [
           "maintenance cost",
-          "repair spend"
+          "repair spend",
+          "maintenance spend"
         ]
       },
       {
@@ -1114,7 +1183,8 @@
         "display_name": "total downtime",
         "synonyms": [
           "downtime hours",
-          "hours offline"
+          "hours offline",
+          "lost uptime"
         ]
       },
       {
@@ -1123,7 +1193,8 @@
         "display_name": "total throughput loss",
         "synonyms": [
           "lost barrels",
-          "production loss"
+          "production loss",
+          "barrel loss"
         ]
       },
       {
@@ -1132,7 +1203,8 @@
         "display_name": "average health score",
         "synonyms": [
           "health",
-          "equipment health"
+          "equipment health",
+          "mean health"
         ]
       }
     ]

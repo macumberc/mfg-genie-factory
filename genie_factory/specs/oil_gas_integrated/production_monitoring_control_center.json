@@ -51,6 +51,11 @@
             "PP-W-018",
             "PP-W-019",
             "PP-W-020"
+          ],
+          "synonyms": [
+            "wellbore code",
+            "asset id",
+            "well number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Tiber D-1",
             "Kaskida K-1",
             "Kaskida K-3"
+          ],
+          "synonyms": [
+            "wellbore label",
+            "asset tag",
+            "well designation"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Na Kika Semi",
             "Shenzi TLP",
             "Mad Dog Spar"
+          ],
+          "synonyms": [
+            "rig name",
+            "topsides unit",
+            "offshore structure"
           ]
         },
         {
@@ -112,6 +127,11 @@
             "Mad Dog",
             "Tiber",
             "Kaskida"
+          ],
+          "synonyms": [
+            "asset area",
+            "producing block",
+            "reservoir zone"
           ]
         },
         {
@@ -350,6 +370,11 @@
             "PP-W-018",
             "PP-W-019",
             "PP-W-020"
+          ],
+          "synonyms": [
+            "wellbore code",
+            "asset id",
+            "well number"
           ]
         },
         {
@@ -379,6 +404,11 @@
             "Tiber D-1",
             "Kaskida K-1",
             "Kaskida K-3"
+          ],
+          "synonyms": [
+            "wellbore label",
+            "asset tag",
+            "well designation"
           ]
         },
         {
@@ -394,6 +424,11 @@
             "Na Kika Semi",
             "Shenzi TLP",
             "Mad Dog Spar"
+          ],
+          "synonyms": [
+            "rig name",
+            "topsides unit",
+            "offshore structure"
           ]
         },
         {
@@ -411,6 +446,11 @@
             "Mad Dog",
             "Tiber",
             "Kaskida"
+          ],
+          "synonyms": [
+            "asset area",
+            "producing block",
+            "reservoir zone"
           ]
         },
         {
@@ -650,6 +690,11 @@
             "PP-W-018",
             "PP-W-019",
             "PP-W-020"
+          ],
+          "synonyms": [
+            "wellbore code",
+            "asset id",
+            "well number"
           ]
         },
         {
@@ -665,6 +710,11 @@
             "Na Kika Semi",
             "Shenzi TLP",
             "Mad Dog Spar"
+          ],
+          "synonyms": [
+            "rig name",
+            "topsides unit",
+            "offshore structure"
           ]
         },
         {
@@ -682,6 +732,11 @@
             "Mad Dog",
             "Tiber",
             "Kaskida"
+          ],
+          "synonyms": [
+            "asset area",
+            "producing block",
+            "reservoir zone"
           ]
         },
         {
@@ -983,7 +1038,8 @@
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about gas output volume in MCF using the production_readings_metrics metric view."
     },
     {
       "question": "How has total water production in barrels changed over time?",
@@ -992,7 +1048,8 @@
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about water production volumes in barrels using the production_readings_metrics metric view."
     },
     {
       "question": "What is the monthly trend in total deferred oil production in barrels?",
@@ -1001,7 +1058,8 @@
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about deferred gas or oil losses in barrels using the production_events_metrics metric view."
     },
     {
       "question": "How does total daily oil production in barrels break down by well for 'Flowing' records?",
@@ -1009,7 +1067,8 @@
         "SELECT well_id, COUNT(*) AS record_count, SUM(oil_bbl) AS total_oil_bbl",
         "FROM {fqn}.production_readings",
         "WHERE status = 'Flowing' GROUP BY well_id ORDER BY total_oil_bbl DESC"
-      ]
+      ],
+      "usage_guidance": "Route per-well breakdown or top-N oil production questions filtered to 'Flowing' well status from raw production_readings."
     },
     {
       "question": "What is the trend of total oil production deferred in barrels over time?",
@@ -1017,7 +1076,8 @@
         "SELECT event_date, SUM(deferred_oil_bbl) AS total_deferred_oil_bbl",
         "FROM {fqn}.production_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about cumulative deferred oil barrels lost to production events from the production_events table."
     },
     {
       "question": "How has the average water cut percentage changed over time?",
@@ -1025,7 +1085,8 @@
         "SELECT snapshot_month, AVG(water_cut_pct) AS avg_water_cut_pct",
         "FROM {fqn}.production_kpi_monthly",
         "GROUP BY snapshot_month ORDER BY snapshot_month"
-      ]
+      ],
+      "usage_guidance": "Route trend questions about water cut percentage over monthly KPI snapshots using production_kpi_monthly."
     },
     {
       "question": "How has average wellhead pressure in psi changed over time?",
@@ -1034,7 +1095,8 @@
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about wellhead pressure in PSI using the production_readings_metrics metric view."
     }
   ],
   "sql_snippets": {
@@ -1044,7 +1106,8 @@
         "display_name": "flowing wells",
         "synonyms": [
           "producing",
-          "active wells"
+          "active wells",
+          "producing wells"
         ],
         "instruction": "Use to filter to actively producing wells."
       },
@@ -1063,7 +1126,8 @@
         "display_name": "high severity events",
         "synonyms": [
           "serious events",
-          "critical incidents"
+          "critical incidents",
+          "major events"
         ],
         "instruction": "Use to filter to high-impact production events."
       }
@@ -1075,7 +1139,8 @@
         "display_name": "water cut percent",
         "synonyms": [
           "water cut",
-          "BSW"
+          "BSW",
+          "bsw percent"
         ]
       },
       {
@@ -1084,7 +1149,8 @@
         "display_name": "barrels of oil equivalent",
         "synonyms": [
           "BOE",
-          "total equivalent"
+          "total equivalent",
+          "equivalent barrels"
         ]
       },
       {
@@ -1093,7 +1159,8 @@
         "display_name": "production month",
         "synonyms": [
           "month",
-          "period"
+          "period",
+          "monthly period"
         ]
       }
     ],
@@ -1104,7 +1171,8 @@
         "display_name": "total oil production",
         "synonyms": [
           "oil volume",
-          "oil barrels"
+          "oil barrels",
+          "gross oil"
         ]
       },
       {
@@ -1113,7 +1181,8 @@
         "display_name": "total gas production",
         "synonyms": [
           "gas volume",
-          "gas MCF"
+          "gas MCF",
+          "gross gas"
         ]
       },
       {
@@ -1122,7 +1191,8 @@
         "display_name": "total deferred oil",
         "synonyms": [
           "lost oil",
-          "deferred production"
+          "deferred production",
+          "deferred barrels"
         ]
       },
       {
@@ -1131,7 +1201,8 @@
         "display_name": "total BOE",
         "synonyms": [
           "barrels equivalent",
-          "BOE"
+          "BOE",
+          "gross boe"
         ]
       }
     ]

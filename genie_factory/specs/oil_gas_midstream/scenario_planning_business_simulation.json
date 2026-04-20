@@ -51,6 +51,11 @@
             "MS-SC-018",
             "MS-SC-019",
             "MS-SC-020"
+          ],
+          "synonyms": [
+            "case code",
+            "plan identifier",
+            "sim reference"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "LNG Export Ramp",
             "Hydrogen Blending Pilot",
             "Baseline Conservative"
+          ],
+          "synonyms": [
+            "case label",
+            "plan title",
+            "simulation name"
           ]
         },
         {
@@ -97,6 +107,11 @@
             "Market",
             "Risk",
             "Strategic"
+          ],
+          "synonyms": [
+            "case category",
+            "plan classification",
+            "simulation kind"
           ]
         },
         {
@@ -295,6 +310,11 @@
             "MS-SC-018",
             "MS-SC-019",
             "MS-SC-020"
+          ],
+          "synonyms": [
+            "case code",
+            "plan identifier",
+            "sim reference"
           ]
         },
         {
@@ -324,6 +344,11 @@
             "LNG Export Ramp",
             "Hydrogen Blending Pilot",
             "Baseline Conservative"
+          ],
+          "synonyms": [
+            "case label",
+            "plan title",
+            "simulation name"
           ]
         },
         {
@@ -341,6 +366,11 @@
             "Market",
             "Risk",
             "Strategic"
+          ],
+          "synonyms": [
+            "case category",
+            "plan classification",
+            "simulation kind"
           ]
         },
         {
@@ -537,6 +567,11 @@
             "MS-SC-018",
             "MS-SC-019",
             "MS-SC-020"
+          ],
+          "synonyms": [
+            "case code",
+            "plan identifier",
+            "sim reference"
           ]
         },
         {
@@ -554,6 +589,11 @@
             "Market",
             "Risk",
             "Strategic"
+          ],
+          "synonyms": [
+            "case category",
+            "plan classification",
+            "simulation kind"
           ]
         },
         {
@@ -790,7 +830,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of capital expenditure commitments across simulation runs, matching phrases like 'capex over time' or 'investment spending trend' using total_capex_mm."
     },
     {
       "question": "How has total throughput change pct changed over time?",
@@ -799,7 +840,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of pipeline throughput change percentage across scenarios, matching phrases like 'throughput shift over time' or 'volume change trend' using total_throughput_change_percent."
     },
     {
       "question": "What is the monthly trend in avg throughput mbpd?",
@@ -808,7 +850,8 @@
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of projected pipeline throughput in mbpd from outcome snapshots, matching phrases like 'throughput forecast over time' or 'flow rate trend' using avg_throughput_mbpd."
     },
     {
       "question": "Rank scenario ids by avg ebitda millions",
@@ -817,7 +860,8 @@
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY avg_ebitda_mm DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of scenarios by average projected EBITDA, matching phrases like 'best performing scenarios' or 'highest EBITDA scenarios' grouped by scenario_id."
     },
     {
       "question": "What is the trend of total revenue impact millions usd over time?",
@@ -825,7 +869,8 @@
         "SELECT run_date, SUM(revenue_impact_mm) AS total_revenue_impact_mm",
         "FROM {fqn}.simulation_runs",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total revenue impact in USD millions from simulation_runs table, matching phrases like 'revenue impact trend' or 'financial impact over time' using revenue_impact_mm."
     },
     {
       "question": "What is the trend of total projected ebitda millions over time?",
@@ -833,7 +878,8 @@
         "SELECT snapshot_date, SUM(projected_ebitda_mm) AS total_projected_ebitda_mm",
         "FROM {fqn}.outcome_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total projected EBITDA from outcome_snapshots table, matching phrases like 'EBITDA forecast trend' or 'earnings projection over time' using projected_ebitda_mm."
     },
     {
       "question": "How has the average risk score 0-100 changed over time?",
@@ -841,7 +887,8 @@
         "SELECT kpi_month, AVG(risk_score) AS avg_risk_score",
         "FROM {fqn}.scenario_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average operational and regulatory risk score (0–100) from scenario KPIs, matching phrases like 'risk score over time' or 'how is risk changing' using scenario_kpi_monthly.risk_score."
     }
   ],
   "sql_snippets": {
@@ -850,7 +897,9 @@
         "sql": "scenario_type = 'Regulatory'",
         "display_name": "regulatory scenarios",
         "synonyms": [
-          "regulatory"
+          "regulatory",
+          "compliance cases",
+          "regulatory cases"
         ],
         "instruction": "Filter to regulatory scenarios."
       },
@@ -858,7 +907,9 @@
         "sql": "npv_mm > 0",
         "display_name": "positive NPV",
         "synonyms": [
-          "profitable"
+          "profitable",
+          "value-creating runs",
+          "profitable scenarios"
         ],
         "instruction": "Positive NPV only."
       },
@@ -866,7 +917,9 @@
         "sql": "confidence_level = 'High'",
         "display_name": "high confidence",
         "synonyms": [
-          "reliable"
+          "reliable",
+          "high certainty",
+          "strong confidence"
         ],
         "instruction": "High confidence projections."
       }
@@ -877,7 +930,9 @@
         "sql": "ROUND(simulation_runs.npv_mm / NULLIF(simulation_runs.capex_required_mm, 0), 3)",
         "display_name": "NPV per capex",
         "synonyms": [
-          "capital efficiency"
+          "capital efficiency",
+          "return on spend",
+          "value per dollar"
         ]
       },
       {
@@ -885,7 +940,9 @@
         "sql": "ROUND(outcome_snapshots.projected_ebitda_mm / NULLIF(outcome_snapshots.projected_throughput_mbpd * 365 * 0.05, 0), 2)",
         "display_name": "EBITDA per unit",
         "synonyms": [
-          "unit economics"
+          "unit economics",
+          "earnings per barrel",
+          "unit profitability"
         ]
       },
       {
@@ -893,7 +950,9 @@
         "sql": "DATE_TRUNC('month', simulation_runs.run_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "simulation month",
+          "run period"
         ]
       }
     ],
@@ -903,7 +962,9 @@
         "sql": "AVG(simulation_runs.npv_mm)",
         "display_name": "avg NPV",
         "synonyms": [
-          "NPV"
+          "NPV",
+          "mean value",
+          "average net value"
         ]
       },
       {
@@ -911,7 +972,9 @@
         "sql": "SUM(simulation_runs.capex_required_mm)",
         "display_name": "total capex",
         "synonyms": [
-          "investment"
+          "investment",
+          "total investment",
+          "capital spend"
         ]
       },
       {
@@ -919,7 +982,9 @@
         "sql": "AVG(outcome_snapshots.projected_ebitda_mm)",
         "display_name": "avg EBITDA",
         "synonyms": [
-          "earnings"
+          "earnings",
+          "mean earnings",
+          "average operating profit"
         ]
       },
       {
@@ -927,7 +992,9 @@
         "sql": "AVG(scenario_kpi_monthly.risk_score)",
         "display_name": "avg risk",
         "synonyms": [
-          "risk score"
+          "risk score",
+          "mean risk score",
+          "average exposure"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "CT-FUG-018",
             "CT-ELC-019",
             "CT-VEH-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "emitter id",
+            "node id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Pipeline Valve Fugitive",
             "Electrical Equipment",
             "Fleet Vehicles"
+          ],
+          "synonyms": [
+            "asset name",
+            "emitter name",
+            "site label"
           ]
         },
         {
@@ -96,6 +106,11 @@
             "Flaring",
             "Indirect",
             "Mobile"
+          ],
+          "synonyms": [
+            "emission type",
+            "ghg class",
+            "pollutant group"
           ]
         },
         {
@@ -111,6 +126,11 @@
             "Storage Facility",
             "Transmission Pipeline",
             "Field Operations"
+          ],
+          "synonyms": [
+            "site type",
+            "asset class",
+            "installation kind"
           ]
         },
         {
@@ -338,6 +358,11 @@
             "CT-FUG-018",
             "CT-ELC-019",
             "CT-VEH-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "emitter id",
+            "node id"
           ]
         },
         {
@@ -354,6 +379,11 @@
             "Flaring",
             "Indirect",
             "Mobile"
+          ],
+          "synonyms": [
+            "emission type",
+            "ghg class",
+            "pollutant group"
           ]
         },
         {
@@ -369,6 +399,11 @@
             "Storage Facility",
             "Transmission Pipeline",
             "Field Operations"
+          ],
+          "synonyms": [
+            "site type",
+            "asset class",
+            "installation kind"
           ]
         },
         {
@@ -557,6 +592,11 @@
             "CT-FUG-018",
             "CT-ELC-019",
             "CT-VEH-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "emitter id",
+            "node id"
           ]
         },
         {
@@ -573,6 +613,11 @@
             "Flaring",
             "Indirect",
             "Mobile"
+          ],
+          "synonyms": [
+            "emission type",
+            "ghg class",
+            "pollutant group"
           ]
         },
         {
@@ -824,7 +869,8 @@
         "FROM {fqn}.emission_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about methane emissions volume, such as 'show methane tons by month' using total_methane_tons from emission_readings_metrics."
     },
     {
       "question": "How has total throughput boe changed over time?",
@@ -833,7 +879,8 @@
         "FROM {fqn}.emission_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about pipeline or facility throughput volume, such as 'how is throughput boe trending' using total_throughput_boe from emission_readings_metrics."
     },
     {
       "question": "What is the monthly trend in total detected leaks?",
@@ -842,7 +889,8 @@
         "FROM {fqn}.carbon_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about leak detection counts, such as 'are leaks increasing over time' using total_leaks from carbon_snapshots_metrics."
     },
     {
       "question": "What is the trend of total co2 equivalent metric tons over time?",
@@ -850,7 +898,8 @@
         "SELECT reading_date, SUM(co2e_metric_tons) AS total_co2e_metric_tons",
         "FROM {fqn}.emission_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about raw CO2 equivalent tons per reading date, such as 'show co2e emissions history' directly from emission_readings table."
     },
     {
       "question": "What is the trend of total monthly co2e tons over time?",
@@ -858,7 +907,8 @@
         "SELECT snapshot_date, SUM(monthly_co2e_tons) AS total_monthly_co2e_tons",
         "FROM {fqn}.carbon_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about aggregated monthly CO2e tons from snapshots, such as 'how are monthly emissions changing' using carbon_snapshots table."
     },
     {
       "question": "How has the average methane intensity pct changed over time?",
@@ -866,7 +916,8 @@
         "SELECT kpi_month, AVG(methane_intensity_pct) AS avg_methane_intensity_pct",
         "FROM {fqn}.carbon_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about methane intensity as a percentage of total emissions, such as 'is methane intensity improving' using carbon_kpi_monthly."
     },
     {
       "question": "How has avg carbon intensity changed over time?",
@@ -875,7 +926,8 @@
         "FROM {fqn}.emission_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about carbon intensity per barrel of oil equivalent, such as 'how is our carbon intensity per boe trending' using avg_carbon_intensity from emission_readings_metrics."
     }
   ],
   "sql_snippets": {
@@ -884,7 +936,9 @@
         "sql": "emission_category = 'Fugitive'",
         "display_name": "fugitive emissions",
         "synonyms": [
-          "leaks"
+          "leaks",
+          "unintended releases",
+          "vented losses"
         ],
         "instruction": "Fugitive leak emissions."
       },
@@ -892,7 +946,9 @@
         "sql": "compliance_status = 'Non-Compliant'",
         "display_name": "non-compliant",
         "synonyms": [
-          "violations"
+          "violations",
+          "out of compliance",
+          "failing status"
         ],
         "instruction": "Non-compliant sources."
       },
@@ -900,7 +956,9 @@
         "sql": "methane_tons > 1.0",
         "display_name": "high methane",
         "synonyms": [
-          "methane heavy"
+          "methane heavy",
+          "elevated methane",
+          "methane exceedance"
         ],
         "instruction": "High methane sources."
       }
@@ -911,7 +969,9 @@
         "sql": "carbon_snapshots.monthly_co2e_tons - carbon_snapshots.offset_credits_tons",
         "display_name": "net emissions",
         "synonyms": [
-          "net CO2"
+          "net CO2",
+          "net co2e",
+          "adjusted emissions"
         ]
       },
       {
@@ -919,7 +979,9 @@
         "sql": "ROUND(100.0 * emission_readings.methane_tons * 28 / NULLIF(emission_readings.co2e_metric_tons, 0), 2)",
         "display_name": "methane pct of CO2e",
         "synonyms": [
-          "methane share"
+          "methane share",
+          "ch4 share",
+          "methane fraction"
         ]
       },
       {
@@ -927,7 +989,9 @@
         "sql": "DATE_TRUNC('month', emission_readings.reading_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "emission month",
+          "reporting month"
         ]
       }
     ],
@@ -937,7 +1001,9 @@
         "sql": "SUM(emission_readings.co2e_metric_tons)",
         "display_name": "total CO2e",
         "synonyms": [
-          "emissions"
+          "emissions",
+          "total ghg",
+          "gross emissions"
         ]
       },
       {
@@ -945,7 +1011,9 @@
         "sql": "SUM(emission_readings.methane_tons)",
         "display_name": "total methane",
         "synonyms": [
-          "CH4"
+          "CH4",
+          "ch4 volume",
+          "methane volume"
         ]
       },
       {
@@ -953,7 +1021,9 @@
         "sql": "AVG(emission_readings.carbon_intensity_kg_boe)",
         "display_name": "avg intensity",
         "synonyms": [
-          "carbon intensity"
+          "carbon intensity",
+          "mean intensity",
+          "average ci"
         ]
       },
       {
@@ -961,7 +1031,9 @@
         "sql": "SUM(carbon_snapshots.leak_count)",
         "display_name": "total leaks",
         "synonyms": [
-          "leak count"
+          "leak count",
+          "total fugitives",
+          "number of leaks"
         ]
       }
     ]

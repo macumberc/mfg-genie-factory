@@ -51,6 +51,11 @@
             "WF-GW-018",
             "WF-GW-019",
             "WF-GW-020"
+          ],
+          "synonyms": [
+            "unit id",
+            "asset id",
+            "machine id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Bluewater T03",
             "Bluewater T04",
             "Bluewater T05"
+          ],
+          "synonyms": [
+            "unit name",
+            "asset name",
+            "machine label"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "SG-5.8",
             "GE-3.6",
             "Goldwind-6.7"
+          ],
+          "synonyms": [
+            "unit type",
+            "rotor model",
+            "generator type"
           ]
         },
         {
@@ -106,6 +121,11 @@
             "Coastal Breeze Wind",
             "Mesa Ridge Wind Park",
             "Bluewater Offshore"
+          ],
+          "synonyms": [
+            "site",
+            "park",
+            "farm location"
           ]
         },
         {
@@ -334,6 +354,11 @@
             "WF-GW-018",
             "WF-GW-019",
             "WF-GW-020"
+          ],
+          "synonyms": [
+            "unit id",
+            "asset id",
+            "machine id"
           ]
         },
         {
@@ -347,6 +372,11 @@
             "SG-5.8",
             "GE-3.6",
             "Goldwind-6.7"
+          ],
+          "synonyms": [
+            "unit type",
+            "rotor model",
+            "generator type"
           ]
         },
         {
@@ -360,6 +390,11 @@
             "Coastal Breeze Wind",
             "Mesa Ridge Wind Park",
             "Bluewater Offshore"
+          ],
+          "synonyms": [
+            "site",
+            "park",
+            "farm location"
           ]
         },
         {
@@ -587,6 +622,11 @@
             "WF-GW-018",
             "WF-GW-019",
             "WF-GW-020"
+          ],
+          "synonyms": [
+            "unit id",
+            "asset id",
+            "machine id"
           ]
         },
         {
@@ -600,6 +640,11 @@
             "Coastal Breeze Wind",
             "Mesa Ridge Wind Park",
             "Bluewater Offshore"
+          ],
+          "synonyms": [
+            "site",
+            "park",
+            "farm location"
           ]
         },
         {
@@ -920,7 +965,8 @@
         "FROM {fqn}.turbine_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak/highest single-turbine generation MWh, using the turbine_kpi_monthly metric view max_generation_mwh measure."
     },
     {
       "question": "How has total wind generation mwh changed over time?",
@@ -929,7 +975,8 @@
         "FROM {fqn}.turbine_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of fleet-wide total energy output in MWh, aggregated across all turbines via turbine_kpi_monthly total_generation_mwh measure."
     },
     {
       "question": "What is the monthly trend in total forecasted generation mwh?",
@@ -938,7 +985,8 @@
         "FROM {fqn}.wind_forecast_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total forecasted wind generation MWh across farms, sourced from wind_forecast_monthly total_forecasted_mwh measure."
     },
     {
       "question": "How has total ppa price mwh changed over time?",
@@ -947,7 +995,8 @@
         "FROM {fqn}.wind_forecast_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of cumulative PPA price per MWh over time, tracked via wind_forecast_monthly total_ppa_price_mwh measure."
     },
     {
       "question": "How does total average wind speed in meters per second break down by wind turbine for 'Fault' records?",
@@ -955,7 +1004,8 @@
         "SELECT turbine_id, COUNT(*) AS record_count, SUM(avg_wind_speed_ms) AS total_avg_wind_speed_ms",
         "FROM {fqn}.wind_turbines",
         "WHERE turbine_status = 'Fault' GROUP BY turbine_id ORDER BY total_avg_wind_speed_ms DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate breaking down wind speed by individual turbine for fault-status records only, using turbine_status = 'Fault' filter."
     },
     {
       "question": "What is the trend of total blade pitch angle in degrees over time?",
@@ -963,7 +1013,8 @@
         "SELECT reading_date, SUM(blade_pitch_deg) AS total_blade_pitch_deg",
         "FROM {fqn}.performance_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total blade pitch angle in degrees across all turbines, aggregated daily from performance_readings."
     },
     {
       "question": "How has the average forecasted generation in mwh changed over time?",
@@ -971,7 +1022,8 @@
         "SELECT snapshot_date, AVG(forecasted_generation_mwh) AS avg_forecasted_generation_mwh",
         "FROM {fqn}.wind_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of average forecasted generation MWh per turbine snapshot, calculated directly from wind_snapshots forecasted_generation_mwh column."
     }
   ],
   "sql_snippets": {
@@ -981,7 +1033,8 @@
         "display_name": "generating turbines",
         "synonyms": [
           "active turbines",
-          "producing turbines"
+          "producing turbines",
+          "active units"
         ],
         "instruction": "Use when filtering to actively generating wind turbines."
       },
@@ -990,7 +1043,8 @@
         "display_name": "turbines down",
         "synonyms": [
           "offline turbines",
-          "unavailable turbines"
+          "unavailable turbines",
+          "offline units"
         ],
         "instruction": "Use when filtering to turbines in fault or maintenance."
       },
@@ -999,7 +1053,8 @@
         "display_name": "high deviation turbines",
         "synonyms": [
           "underperforming",
-          "off curve"
+          "off curve",
+          "underperforming units"
         ],
         "instruction": "Use when filtering to turbines deviating significantly from power curve."
       }
@@ -1010,7 +1065,9 @@
         "sql": "DATE_TRUNC('month', wind_turbines.record_date)",
         "display_name": "generation month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "output month",
+          "production month"
         ]
       },
       {
@@ -1018,7 +1075,9 @@
         "sql": "wind_snapshots.actual_generation_mwh / NULLIF(wind_snapshots.forecasted_generation_mwh, 0) * 100",
         "display_name": "forecast accuracy pct",
         "synonyms": [
-          "prediction accuracy"
+          "prediction accuracy",
+          "forecast hit rate",
+          "forecast vs actual"
         ]
       },
       {
@@ -1027,7 +1086,8 @@
         "display_name": "revenue per MWh",
         "synonyms": [
           "unit revenue",
-          "realized price"
+          "realized price",
+          "earnings per mwh"
         ]
       }
     ],
@@ -1038,7 +1098,8 @@
         "display_name": "total wind generation MWh",
         "synonyms": [
           "wind output",
-          "energy produced"
+          "energy produced",
+          "total output"
         ]
       },
       {
@@ -1047,7 +1108,8 @@
         "display_name": "average capacity factor",
         "synonyms": [
           "CF",
-          "capacity utilization"
+          "capacity utilization",
+          "utilization rate"
         ]
       },
       {
@@ -1056,7 +1118,8 @@
         "display_name": "total revenue",
         "synonyms": [
           "energy revenue",
-          "sales"
+          "sales",
+          "total earnings"
         ]
       },
       {
@@ -1065,7 +1128,8 @@
         "display_name": "total curtailment MWh",
         "synonyms": [
           "curtailed energy",
-          "wasted wind"
+          "wasted wind",
+          "lost generation"
         ]
       }
     ]

@@ -44,6 +44,11 @@
             "VM-0028",
             "VM-0029",
             "VM-0030"
+          ],
+          "synonyms": [
+            "car id",
+            "platform code",
+            "model code"
           ]
         },
         {
@@ -62,6 +67,11 @@
             "Jeep",
             "Tesla",
             "Nissan"
+          ],
+          "synonyms": [
+            "brand",
+            "automaker",
+            "manufacturer"
           ]
         },
         {
@@ -91,6 +101,11 @@
             "Model Y",
             "Model 3",
             "Rogue"
+          ],
+          "synonyms": [
+            "nameplate",
+            "car line",
+            "trim line"
           ]
         },
         {
@@ -104,6 +119,11 @@
             "2023",
             "2024",
             "2025"
+          ],
+          "synonyms": [
+            "production year",
+            "my",
+            "build year"
           ]
         },
         {
@@ -120,6 +140,11 @@
             "Off-Road SUV",
             "Electric Crossover",
             "Electric Sedan"
+          ],
+          "synonyms": [
+            "segment",
+            "body style",
+            "car category"
           ]
         },
         {
@@ -523,6 +548,11 @@
             "VM-0028",
             "VM-0029",
             "VM-0030"
+          ],
+          "synonyms": [
+            "car id",
+            "platform code",
+            "model code"
           ]
         },
         {
@@ -541,6 +571,11 @@
             "Jeep",
             "Tesla",
             "Nissan"
+          ],
+          "synonyms": [
+            "brand",
+            "automaker",
+            "manufacturer"
           ]
         },
         {
@@ -570,6 +605,11 @@
             "Model Y",
             "Model 3",
             "Rogue"
+          ],
+          "synonyms": [
+            "nameplate",
+            "car line",
+            "trim line"
           ]
         },
         {
@@ -583,6 +623,11 @@
             "2023",
             "2024",
             "2025"
+          ],
+          "synonyms": [
+            "production year",
+            "my",
+            "build year"
           ]
         },
         {
@@ -599,6 +644,11 @@
             "Off-Road SUV",
             "Electric Crossover",
             "Electric Sedan"
+          ],
+          "synonyms": [
+            "segment",
+            "body style",
+            "car category"
           ]
         },
         {
@@ -897,6 +947,11 @@
           "generation_expr": "",
           "entity_values": [
             "monthly"
+          ],
+          "synonyms": [
+            "time bucket",
+            "reporting cadence",
+            "period grain"
           ]
         },
         {
@@ -1123,7 +1178,8 @@
         "FROM {fqn}.recall_analysis_metrics",
         "GROUP BY ALL",
         "ORDER BY unique_vehicle_model_count DESC"
-      ]
+      ],
+      "usage_guidance": "Route cross-tabulation questions comparing unique vehicle model breadth across recall component groups, e.g. 'which components span the most models'."
     },
     {
       "question": "How many unique suppliers are there per component group?",
@@ -1132,7 +1188,8 @@
         "FROM {fqn}.recall_analysis_metrics",
         "GROUP BY ALL",
         "ORDER BY unique_supplier_count DESC"
-      ]
+      ],
+      "usage_guidance": "Route supplier diversity breakdowns per recall component group, e.g. 'how many different suppliers are tied to each component category'."
     },
     {
       "question": "What is the highest mileage at claim for each region?",
@@ -1141,7 +1198,8 @@
         "FROM {fqn}.warranty_claim_metrics",
         "GROUP BY ALL",
         "ORDER BY max_mileage_at_claim DESC"
-      ]
+      ],
+      "usage_guidance": "Route peak-mileage-at-failure questions segmented by geographic region, e.g. 'which region sees the highest odometer readings on warranty claims'."
     },
     {
       "question": "How does total number of vehicles affected by the recall break down by vehicle model for 'Closed' records?",
@@ -1149,7 +1207,8 @@
         "SELECT vehicle_model_id, COUNT(*) AS record_count, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.recall_events",
         "WHERE status = 'Closed' GROUP BY vehicle_model_id ORDER BY total_units_affected DESC"
-      ]
+      ],
+      "usage_guidance": "Route filtered aggregate questions about total units affected by closed recalls broken down by vehicle model, using status='Closed' filter on recall_events."
     },
     {
       "question": "What is the trend of total vehicle odometer reading at time of claim over time?",
@@ -1157,7 +1216,8 @@
         "SELECT claim_date, SUM(mileage_at_claim) AS total_mileage_at_claim",
         "FROM {fqn}.warranty_claims",
         "GROUP BY claim_date ORDER BY claim_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series trend questions about cumulative vehicle mileage at warranty claim submission, e.g. 'how has total odometer reading at claim changed over time'."
     },
     {
       "question": "Show the distribution of records by reporting period",
@@ -1165,7 +1225,8 @@
         "SELECT metric_period, COUNT(*) AS record_count",
         "FROM {fqn}.recall_metrics_monthly",
         "GROUP BY metric_period ORDER BY record_count DESC"
-      ]
+      ],
+      "usage_guidance": "Route distribution or record-count questions segmented by reporting period using the recall_metrics_monthly metric_period column."
     },
     {
       "question": "Which component groups have the most unique suppliers?",
@@ -1174,7 +1235,8 @@
         "FROM {fqn}.recall_analysis_metrics",
         "GROUP BY ALL",
         "ORDER BY unique_supplier_count DESC"
-      ]
+      ],
+      "usage_guidance": "Route top-N ranking questions identifying which recall component groups involve the greatest number of distinct suppliers, ordered descending."
     }
   ],
   "sql_snippets": {
@@ -1183,7 +1245,9 @@
         "sql": "WHERE severity_level = 'Critical'",
         "display_name": "Critical severity only",
         "synonyms": [
-          "critical severity only"
+          "critical severity only",
+          "safety recalls",
+          "high risk only"
         ],
         "instruction": "Use when the user asks about critical severity only."
       },
@@ -1191,7 +1255,9 @@
         "sql": "WHERE YEAR(recall_date) = 2025",
         "display_name": "Current year recalls",
         "synonyms": [
-          "current year recalls"
+          "current year recalls",
+          "2025 recalls",
+          "this year only"
         ],
         "instruction": "Use when the user asks about current year recalls."
       },
@@ -1199,7 +1265,9 @@
         "sql": "WHERE total_estimated_cost > 50000000",
         "display_name": "High cost recalls",
         "synonyms": [
-          "high cost recalls"
+          "high cost recalls",
+          "expensive recalls",
+          "major cost events"
         ],
         "instruction": "Use when the user asks about high cost recalls."
       }
@@ -1210,7 +1278,9 @@
         "display_name": "Cost per unit",
         "alias": "Cost per unit",
         "synonyms": [
-          "cost per unit"
+          "cost per unit",
+          "per vehicle cost",
+          "unit repair cost"
         ]
       },
       {
@@ -1218,7 +1288,9 @@
         "display_name": "Recall month",
         "alias": "Recall month",
         "synonyms": [
-          "recall month"
+          "recall month",
+          "recall period",
+          "issue month"
         ]
       },
       {
@@ -1226,7 +1298,9 @@
         "display_name": "Is safety critical",
         "alias": "Is safety critical",
         "synonyms": [
-          "is safety critical"
+          "is safety critical",
+          "safety flag",
+          "critical indicator"
         ]
       }
     ],
@@ -1237,7 +1311,8 @@
         "alias": "Total recall cost",
         "synonyms": [
           "total recall cost",
-          "recall cost"
+          "recall cost",
+          "total exposure"
         ]
       },
       {
@@ -1246,7 +1321,8 @@
         "alias": "Average days to remedy",
         "synonyms": [
           "average days to remedy",
-          "days to remedy"
+          "days to remedy",
+          "avg fix time"
         ]
       },
       {
@@ -1254,7 +1330,9 @@
         "display_name": "Recall event count",
         "alias": "Recall event count",
         "synonyms": [
-          "recall event count"
+          "recall event count",
+          "number of recalls",
+          "recall volume"
         ]
       },
       {
@@ -1263,7 +1341,8 @@
         "alias": "Total injuries",
         "synonyms": [
           "total injuries",
-          "injuries"
+          "injuries",
+          "injury count"
         ]
       }
     ]

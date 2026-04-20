@@ -51,6 +51,11 @@
             "CA-AUT-CABIN-1",
             "CA-AUT-ZONAL-1",
             "CA-AUT-VCU-1"
+          ],
+          "synonyms": [
+            "chip variant",
+            "silicon config",
+            "design instance"
           ]
         },
         {
@@ -64,6 +69,11 @@
             "Server SoC",
             "IoT SoC",
             "Automotive SoC"
+          ],
+          "synonyms": [
+            "chip lineage",
+            "product line",
+            "architecture group"
           ]
         },
         {
@@ -293,6 +303,11 @@
             "CA-AUT-CABIN-1",
             "CA-AUT-ZONAL-1",
             "CA-AUT-VCU-1"
+          ],
+          "synonyms": [
+            "chip variant",
+            "silicon config",
+            "design instance"
           ]
         },
         {
@@ -306,6 +321,11 @@
             "Server SoC",
             "IoT SoC",
             "Automotive SoC"
+          ],
+          "synonyms": [
+            "chip lineage",
+            "product line",
+            "architecture group"
           ]
         },
         {
@@ -536,6 +556,11 @@
             "CA-AUT-CABIN-1",
             "CA-AUT-ZONAL-1",
             "CA-AUT-VCU-1"
+          ],
+          "synonyms": [
+            "chip variant",
+            "silicon config",
+            "design instance"
           ]
         },
         {
@@ -549,6 +574,11 @@
             "Server SoC",
             "IoT SoC",
             "Automotive SoC"
+          ],
+          "synonyms": [
+            "chip lineage",
+            "product line",
+            "architecture group"
           ]
         },
         {
@@ -860,7 +890,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak clock frequency (GHz) across simulation runs, matching phrases like 'highest clock speed over time' using max_clock_freq_ghz from simulation_runs_metrics."
     },
     {
       "question": "How has total area mm2 changed over time?",
@@ -869,7 +900,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of cumulative silicon area (mm²) across simulation runs, matching phrases like 'how area footprint evolved' using total_area_mm2 from simulation_runs_metrics."
     },
     {
       "question": "What is the monthly trend in total simulation compute hours?",
@@ -878,7 +910,8 @@
         "FROM {fqn}.optimization_metrics",
         "GROUP BY ALL",
         "ORDER BY opt_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total compute hours consumed by optimization jobs, matching phrases like 'simulation compute cost over time' using total_sim_hours from optimization_metrics."
     },
     {
       "question": "How has total best power mw changed over time?",
@@ -887,7 +920,8 @@
         "FROM {fqn}.optimization_metrics",
         "GROUP BY ALL",
         "ORDER BY opt_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of best-achieved power (mW) from optimization runs, matching phrases like 'lowest power results over time' using total_best_power_mw from optimization_metrics."
     },
     {
       "question": "How does total simulated clock frequency in ghz break down by soc design for 'Converged' records?",
@@ -895,7 +929,8 @@
         "SELECT soc_design, COUNT(*) AS record_count, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
         "FROM {fqn}.simulation_runs",
         "WHERE convergence_status = 'Converged' GROUP BY soc_design ORDER BY total_clock_freq_ghz DESC"
-      ]
+      ],
+      "usage_guidance": "Per-SoC-design breakdown of summed clock frequency filtered to Converged status only, matching phrases like 'frequency distribution by design for converged runs' from simulation_runs."
     },
     {
       "question": "What is the trend of total supply voltage in volts over time?",
@@ -903,7 +938,8 @@
         "SELECT sweep_date, SUM(voltage_v) AS total_voltage_v",
         "FROM {fqn}.parameter_sweeps",
         "GROUP BY sweep_date ORDER BY sweep_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total supply voltage across parameter sweep experiments, matching phrases like 'voltage levels over sweep dates' using voltage_v from parameter_sweeps."
     },
     {
       "question": "How has the average percentage of simulations that converged changed over time?",
@@ -911,7 +947,8 @@
         "SELECT opt_month, AVG(convergence_rate_pct) AS avg_convergence_rate_pct",
         "FROM {fqn}.optimization_monthly",
         "GROUP BY opt_month ORDER BY opt_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average convergence rate percentage across optimization cycles, matching phrases like 'how often simulations converge over time' using convergence_rate_pct from optimization_monthly."
     }
   ],
   "sql_snippets": {
@@ -921,7 +958,8 @@
         "display_name": "converged simulations",
         "synonyms": [
           "successful sims",
-          "completed simulations"
+          "completed simulations",
+          "successful runs"
         ],
         "instruction": "Use when analyzing only successfully converged simulation runs."
       },
@@ -930,7 +968,8 @@
         "display_name": "Pareto-optimal points",
         "synonyms": [
           "Pareto frontier",
-          "optimal tradeoff points"
+          "optimal tradeoff points",
+          "best tradeoffs"
         ],
         "instruction": "Use when analyzing the best power-performance tradeoff configurations."
       },
@@ -939,7 +978,8 @@
         "display_name": "timing violations",
         "synonyms": [
           "negative slack",
-          "timing failures"
+          "timing failures",
+          "setup failures"
         ],
         "instruction": "Use when identifying simulations that failed timing closure."
       }
@@ -951,7 +991,8 @@
         "display_name": "simulation month",
         "synonyms": [
           "month of simulation",
-          "monthly"
+          "monthly",
+          "sim month"
         ]
       },
       {
@@ -960,7 +1001,8 @@
         "display_name": "power per GHz",
         "synonyms": [
           "power efficiency",
-          "mW per GHz"
+          "mW per GHz",
+          "mw per ghz"
         ]
       },
       {
@@ -969,7 +1011,8 @@
         "display_name": "energy efficiency GOPS/W",
         "synonyms": [
           "efficiency",
-          "performance per watt"
+          "performance per watt",
+          "gops per watt"
         ]
       }
     ],
@@ -980,7 +1023,8 @@
         "display_name": "total simulations",
         "synonyms": [
           "sim count",
-          "number of runs"
+          "number of runs",
+          "run count"
         ]
       },
       {
@@ -989,7 +1033,8 @@
         "display_name": "average power",
         "synonyms": [
           "power consumption",
-          "dynamic power"
+          "dynamic power",
+          "mean power"
         ]
       },
       {
@@ -998,7 +1043,8 @@
         "display_name": "total compute hours",
         "synonyms": [
           "simulation hours",
-          "compute cost"
+          "compute cost",
+          "compute hours"
         ]
       },
       {
@@ -1007,7 +1053,8 @@
         "display_name": "average convergence rate",
         "synonyms": [
           "convergence",
-          "success rate"
+          "success rate",
+          "mean convergence"
         ]
       }
     ]

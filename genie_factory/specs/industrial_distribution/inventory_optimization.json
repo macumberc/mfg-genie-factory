@@ -51,6 +51,11 @@
             "WP-WD-018",
             "WP-WD-019",
             "WP-WD-020"
+          ],
+          "synonyms": [
+            "sku location",
+            "item code",
+            "stock unit id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Stick Electrode 6011 5/32",
             "TIG Rod SS308L 1/16",
             "Welding Gas 75/25 Cylinder"
+          ],
+          "synonyms": [
+            "item name",
+            "part description",
+            "goods name"
           ]
         },
         {
@@ -92,6 +102,11 @@
             "Chicago DC",
             "Houston DC",
             "Atlanta DC"
+          ],
+          "synonyms": [
+            "facility",
+            "distribution center",
+            "storage site"
           ]
         },
         {
@@ -106,6 +121,11 @@
             "Abrasives",
             "Cutting Tools",
             "Welding"
+          ],
+          "synonyms": [
+            "item type",
+            "goods segment",
+            "product line"
           ]
         },
         {
@@ -378,6 +398,11 @@
             "WP-WD-018",
             "WP-WD-019",
             "WP-WD-020"
+          ],
+          "synonyms": [
+            "sku location",
+            "item code",
+            "stock unit id"
           ]
         },
         {
@@ -390,6 +415,11 @@
             "Chicago DC",
             "Houston DC",
             "Atlanta DC"
+          ],
+          "synonyms": [
+            "facility",
+            "distribution center",
+            "storage site"
           ]
         },
         {
@@ -404,6 +434,11 @@
             "Abrasives",
             "Cutting Tools",
             "Welding"
+          ],
+          "synonyms": [
+            "item type",
+            "goods segment",
+            "product line"
           ]
         },
         {
@@ -661,6 +696,11 @@
             "WP-WD-018",
             "WP-WD-019",
             "WP-WD-020"
+          ],
+          "synonyms": [
+            "sku location",
+            "item code",
+            "stock unit id"
           ]
         },
         {
@@ -673,6 +713,11 @@
             "Chicago DC",
             "Houston DC",
             "Atlanta DC"
+          ],
+          "synonyms": [
+            "facility",
+            "distribution center",
+            "storage site"
           ]
         },
         {
@@ -687,6 +732,11 @@
             "Abrasives",
             "Cutting Tools",
             "Welding"
+          ],
+          "synonyms": [
+            "item type",
+            "goods segment",
+            "product line"
           ]
         },
         {
@@ -1034,7 +1084,8 @@
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique warehouse-product count; matches phrases like 'how many distinct WPs tracked each month' using unique_wp_count from inventory_kpi_monthly."
     },
     {
       "question": "How has highest on hand qty changed over time?",
@@ -1043,7 +1094,8 @@
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak on-hand quantity; matches phrases like 'highest stock level over time' using max_on_hand_qty from inventory_kpi_monthly."
     },
     {
       "question": "What is the monthly trend in total stockout days?",
@@ -1052,7 +1104,8 @@
         "FROM {fqn}.inventory_perf_monthly",
         "GROUP BY ALL",
         "ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total stockout days across all warehouses; matches phrases like 'how often were we out of stock each month' using total_stockout_days from inventory_perf_monthly."
     },
     {
       "question": "How has total monthly carrying cost changed over time?",
@@ -1061,7 +1114,8 @@
         "FROM {fqn}.inventory_perf_monthly",
         "GROUP BY ALL",
         "ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total inventory carrying cost; matches phrases like 'how has our holding cost changed over time' using total_monthly_carrying_cost from inventory_perf_monthly."
     },
     {
       "question": "What is the trend of total units moved (positive=receipt, negative=issue) over time?",
@@ -1069,7 +1123,8 @@
         "SELECT movement_date, SUM(quantity_moved) AS total_quantity_moved",
         "FROM {fqn}.warehouse_products",
         "GROUP BY movement_date ORDER BY movement_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of net units moved (receipts vs. issues); matches phrases like 'inventory flow over time' using quantity_moved from warehouse_products movement transactions."
     },
     {
       "question": "What is the trend of total units on hand over time?",
@@ -1077,7 +1132,8 @@
         "SELECT snapshot_date, SUM(on_hand_qty) AS total_on_hand_qty",
         "FROM {fqn}.inventory_transactions",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of total on-hand units across all locations; matches phrases like 'total stock on hand over time' using on_hand_qty from inventory_transactions snapshots."
     },
     {
       "question": "How has the average inventory turnover ratio changed over time?",
@@ -1085,7 +1141,8 @@
         "SELECT perf_month, AVG(turnover_ratio) AS avg_turnover_ratio",
         "FROM {fqn}.inventory_snapshots",
         "GROUP BY perf_month ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average inventory turnover ratio; matches phrases like 'how fast is inventory turning each month' using turnover_ratio from inventory_snapshots."
     }
   ],
   "sql_snippets": {
@@ -1094,7 +1151,9 @@
         "sql": "inventory_transactions.stock_status = 'Stockout'",
         "display_name": "stockouts",
         "synonyms": [
-          "out of stock"
+          "out of stock",
+          "zero inventory",
+          "depleted stock"
         ],
         "instruction": "Filter to stockout items."
       },
@@ -1102,7 +1161,9 @@
         "sql": "inventory_transactions.stock_status = 'Overstock'",
         "display_name": "overstocked",
         "synonyms": [
-          "excess inventory"
+          "excess inventory",
+          "surplus stock",
+          "bloated stock"
         ],
         "instruction": "Filter to overstocked items."
       },
@@ -1111,7 +1172,8 @@
         "display_name": "issues",
         "synonyms": [
           "outbound",
-          "shipments"
+          "shipments",
+          "disbursements"
         ],
         "instruction": "Filter to inventory issues."
       }
@@ -1122,7 +1184,9 @@
         "sql": "DATE_TRUNC('month', warehouse_products.movement_date)",
         "display_name": "movement month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "activity month",
+          "transaction month"
         ]
       },
       {
@@ -1130,7 +1194,9 @@
         "sql": "inventory_transactions.on_hand_qty * warehouse_products.unit_cost_usd",
         "display_name": "inventory value USD",
         "synonyms": [
-          "stock value"
+          "stock value",
+          "on-hand worth",
+          "holdings value"
         ]
       },
       {
@@ -1138,7 +1204,9 @@
         "sql": "CASE WHEN inventory_transactions.on_hand_qty < inventory_transactions.reorder_point THEN 'Yes' ELSE 'No' END",
         "display_name": "below reorder point",
         "synonyms": [
-          "needs reorder"
+          "needs reorder",
+          "reorder flag",
+          "low stock flag"
         ]
       }
     ],
@@ -1148,7 +1216,9 @@
         "sql": "AVG(inventory_transactions.on_hand_qty)",
         "display_name": "average on-hand qty",
         "synonyms": [
-          "stock level"
+          "stock level",
+          "mean stock qty",
+          "typical inventory"
         ]
       },
       {
@@ -1156,7 +1226,9 @@
         "sql": "SUM(inventory_transactions.carrying_cost_usd)",
         "display_name": "total carrying cost",
         "synonyms": [
-          "holding cost"
+          "holding cost",
+          "storage expense",
+          "inventory overhead"
         ]
       },
       {
@@ -1164,7 +1236,9 @@
         "sql": "AVG(inventory_snapshots.turnover_ratio)",
         "display_name": "average turnover",
         "synonyms": [
-          "turns"
+          "turns",
+          "stock rotation",
+          "inventory churn"
         ]
       },
       {
@@ -1172,7 +1246,9 @@
         "sql": "AVG(inventory_snapshots.fill_rate_pct)",
         "display_name": "average fill rate",
         "synonyms": [
-          "service level"
+          "service level",
+          "order fulfillment rate",
+          "demand satisfaction"
         ]
       }
     ]

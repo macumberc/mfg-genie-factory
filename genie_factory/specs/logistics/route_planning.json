@@ -45,6 +45,11 @@
             "VH-026",
             "VH-027",
             "VH-028"
+          ],
+          "synonyms": [
+            "truck id",
+            "unit number",
+            "asset id"
           ]
         },
         {
@@ -82,6 +87,11 @@
             "Apex Hauler",
             "Zenith Cargo",
             "Pinnacle Van"
+          ],
+          "synonyms": [
+            "truck name",
+            "unit label",
+            "fleet name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Semi",
             "Truck",
             "Van"
+          ],
+          "synonyms": [
+            "truck class",
+            "fleet category",
+            "asset class"
           ]
         },
         {
@@ -141,6 +156,11 @@
             "CNG",
             "Gasoline",
             "Electric"
+          ],
+          "synonyms": [
+            "energy source",
+            "propulsion type",
+            "fuel kind"
           ]
         },
         {
@@ -187,6 +207,11 @@
             "Denver",
             "Miami",
             "New York"
+          ],
+          "synonyms": [
+            "base location",
+            "dispatch hub",
+            "home base"
           ]
         },
         {
@@ -199,6 +224,11 @@
             "Active",
             "Maintenance",
             "Retired"
+          ],
+          "synonyms": [
+            "fleet status",
+            "availability",
+            "operational state"
           ]
         }
       ],
@@ -537,6 +567,11 @@
             "VH-018",
             "VH-019",
             "VH-020"
+          ],
+          "synonyms": [
+            "truck id",
+            "unit number",
+            "asset id"
           ]
         },
         {
@@ -566,6 +601,11 @@
             "Sigma Courier",
             "Tau Glider",
             "Upsilon Metro"
+          ],
+          "synonyms": [
+            "truck name",
+            "unit label",
+            "fleet name"
           ]
         },
         {
@@ -578,6 +618,11 @@
             "Semi",
             "Truck",
             "Van"
+          ],
+          "synonyms": [
+            "truck class",
+            "fleet category",
+            "asset class"
           ]
         },
         {
@@ -848,6 +893,11 @@
             "VH-018",
             "VH-019",
             "VH-020"
+          ],
+          "synonyms": [
+            "truck id",
+            "unit number",
+            "asset id"
           ]
         },
         {
@@ -877,6 +927,11 @@
             "Sigma Courier",
             "Tau Glider",
             "Upsilon Metro"
+          ],
+          "synonyms": [
+            "truck name",
+            "unit label",
+            "fleet name"
           ]
         },
         {
@@ -889,6 +944,11 @@
             "Semi",
             "Truck",
             "Van"
+          ],
+          "synonyms": [
+            "truck class",
+            "fleet category",
+            "asset class"
           ]
         },
         {
@@ -1198,7 +1258,8 @@
         "FROM {fqn}.route_segments_metrics",
         "GROUP BY ALL",
         "ORDER BY segment_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique routes over time; matches questions about route variety, network coverage, or how many distinct routes ran each month."
     },
     {
       "question": "How has highest distance km changed over time?",
@@ -1207,7 +1268,8 @@
         "FROM {fqn}.route_segments_metrics",
         "GROUP BY ALL",
         "ORDER BY segment_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of the single longest segment distance; matches questions about maximum haul length or peak distance milestones changing over time."
     },
     {
       "question": "How does weekly fuel consumption in liters vary by week start?",
@@ -1216,7 +1278,8 @@
         "FROM {fqn}.route_efficiency_metrics_mv",
         "GROUP BY ALL",
         "ORDER BY total_weekly_fuel_liters DESC"
-      ]
+      ],
+      "usage_guidance": "Weekly fuel consumption volume ranked by highest-usage weeks; matches questions about fuel-heavy periods, weekly burn rates, or liters consumed by week."
     },
     {
       "question": "Show the distribution of records by unique vehicle",
@@ -1224,7 +1287,8 @@
         "SELECT vehicle_id, COUNT(*) AS record_count",
         "FROM {fqn}.vehicles",
         "GROUP BY vehicle_id ORDER BY record_count DESC"
-      ]
+      ],
+      "usage_guidance": "Distribution of records per vehicle ID in the fleet master table; matches questions about vehicle inventory counts or how many entries each vehicle has."
     },
     {
       "question": "What is the trend of total segment distance in kilometers over time?",
@@ -1232,7 +1296,8 @@
         "SELECT segment_date, SUM(distance_km) AS total_distance_km",
         "FROM {fqn}.route_segments",
         "GROUP BY segment_date ORDER BY segment_date"
-      ]
+      ],
+      "usage_guidance": "Daily cumulative segment distance trend from raw route_segments; matches questions about total kilometers driven per day or distance throughput over time."
     },
     {
       "question": "How has the average percentage of deliveries completed on time changed over time?",
@@ -1240,7 +1305,8 @@
         "SELECT week_start, AVG(on_time_delivery_pct) AS avg_on_time_delivery_pct",
         "FROM {fqn}.route_efficiency_metrics",
         "GROUP BY week_start ORDER BY week_start"
-      ]
+      ],
+      "usage_guidance": "Weekly on-time delivery rate trend from route_efficiency_metrics; matches questions about delivery punctuality, service-level changes, or on-time performance over weeks."
     },
     {
       "question": "Which vehicle types have the highest total load weight kg?",
@@ -1249,7 +1315,8 @@
         "FROM {fqn}.route_segments_metrics",
         "GROUP BY ALL",
         "ORDER BY total_load_weight_kg DESC"
-      ]
+      ],
+      "usage_guidance": "Top vehicle types ranked by total cargo weight carried; matches questions about which truck or van categories haul the most freight or load volume."
     }
   ],
   "sql_snippets": {
@@ -1292,7 +1359,8 @@
         "display_name": "segment month",
         "synonyms": [
           "month",
-          "reporting month"
+          "reporting month",
+          "monthly period"
         ]
       },
       {
@@ -1311,7 +1379,8 @@
         "display_name": "fuel cost per km",
         "synonyms": [
           "cost per kilometer",
-          "unit fuel cost"
+          "unit fuel cost",
+          "per km spend"
         ]
       }
     ],

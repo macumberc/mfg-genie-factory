@@ -51,6 +51,11 @@
             "RS-Gondola-018",
             "RS-Gondola-019",
             "RS-Flatcar-020"
+          ],
+          "synonyms": [
+            "unit number",
+            "car number",
+            "equipment id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Mill Gondola MG-4001",
             "Coil Car CC-4002",
             "Heavy Duty Flat HF-5001"
+          ],
+          "synonyms": [
+            "unit name",
+            "equipment name",
+            "car name"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Tank",
             "Gondola",
             "Flatcar"
+          ],
+          "synonyms": [
+            "rolling stock type",
+            "car type",
+            "equipment category"
           ]
         },
         {
@@ -110,6 +125,11 @@
             "Intermodal",
             "Hazmat",
             "General"
+          ],
+          "synonyms": [
+            "fleet group",
+            "train consist",
+            "operating division"
           ]
         },
         {
@@ -329,6 +349,11 @@
             "RS-Gondola-018",
             "RS-Gondola-019",
             "RS-Flatcar-020"
+          ],
+          "synonyms": [
+            "unit number",
+            "car number",
+            "equipment id"
           ]
         },
         {
@@ -344,6 +369,11 @@
             "Tank",
             "Gondola",
             "Flatcar"
+          ],
+          "synonyms": [
+            "rolling stock type",
+            "car type",
+            "equipment category"
           ]
         },
         {
@@ -359,6 +389,11 @@
             "Intermodal",
             "Hazmat",
             "General"
+          ],
+          "synonyms": [
+            "fleet group",
+            "train consist",
+            "operating division"
           ]
         },
         {
@@ -599,6 +634,11 @@
             "RS-Gondola-018",
             "RS-Gondola-019",
             "RS-Flatcar-020"
+          ],
+          "synonyms": [
+            "unit number",
+            "car number",
+            "equipment id"
           ]
         },
         {
@@ -614,6 +654,11 @@
             "Tank",
             "Gondola",
             "Flatcar"
+          ],
+          "synonyms": [
+            "rolling stock type",
+            "car type",
+            "equipment category"
           ]
         },
         {
@@ -629,6 +674,11 @@
             "Intermodal",
             "Hazmat",
             "General"
+          ],
+          "synonyms": [
+            "fleet group",
+            "train consist",
+            "operating division"
           ]
         },
         {
@@ -951,7 +1001,8 @@
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak vibration levels across rolling stock; matches phrases like 'highest vibration over time' using max_vibration_g from health_monthly."
     },
     {
       "question": "How has total oil pressure psi changed over time?",
@@ -960,7 +1011,8 @@
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of oil pressure across the fleet; matches 'oil pressure trend' or 'how has oil pressure changed' using total_oil_pressure_psi from health_monthly."
     },
     {
       "question": "What is the monthly trend in unique assets?",
@@ -969,7 +1021,8 @@
         "FROM {fqn}.maintenance_cost_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct assets appearing in maintenance events; matches 'unique assets over time' or 'how many assets had events each month' from maintenance_cost_monthly."
     },
     {
       "question": "How does the number of unique events vary by asset type?",
@@ -978,7 +1031,8 @@
         "FROM {fqn}.maintenance_cost_monthly",
         "GROUP BY ALL",
         "ORDER BY event_count DESC"
-      ]
+      ],
+      "usage_guidance": "Category breakdown of maintenance event counts by asset type; matches 'which asset type has most events' or 'event frequency by asset type' ranked descending."
     },
     {
       "question": "What is the trend of total bearing temperature celsius over time?",
@@ -986,7 +1040,8 @@
         "SELECT reading_date, SUM(bearing_temp_celsius) AS total_bearing_temp_celsius",
         "FROM {fqn}.rolling_stock",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series sum of bearing temperature across all rolling stock readings; matches 'bearing temp trend' or 'how hot are bearings over time' from rolling_stock table."
     },
     {
       "question": "What is the trend of total asset downtime hours over time?",
@@ -994,7 +1049,8 @@
         "SELECT event_date, SUM(downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.sensor_readings",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Daily or monthly trend of cumulative downtime hours from sensor-triggered maintenance; matches 'asset downtime over time' or 'how much downtime occurred each period' from sensor_readings."
     },
     {
       "question": "How has the average 30-day failure probability 0-100 changed over time?",
@@ -1002,7 +1058,8 @@
         "SELECT forecast_month, AVG(failure_probability_pct) AS avg_failure_probability_pct",
         "FROM {fqn}.maintenance_events",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average failure probability forecasts; matches 'failure risk over time' or 'how has predicted failure chance changed' using failure_probability_pct from maintenance_events."
     }
   ],
   "sql_snippets": {
@@ -1012,7 +1069,8 @@
         "display_name": "low health assets",
         "synonyms": [
           "unhealthy",
-          "at risk"
+          "at risk",
+          "at-risk units"
         ],
         "instruction": "Filter to assets with health below 60."
       },
@@ -1020,7 +1078,9 @@
         "sql": "sensor_readings.event_type = 'Emergency'",
         "display_name": "emergency events",
         "synonyms": [
-          "unplanned failures"
+          "unplanned failures",
+          "critical failures",
+          "unplanned breakdowns"
         ],
         "instruction": "Filter to emergency maintenance."
       },
@@ -1028,7 +1088,9 @@
         "sql": "maintenance_events.failure_probability_pct > 25",
         "display_name": "high failure risk",
         "synonyms": [
-          "likely to fail"
+          "likely to fail",
+          "imminent failure",
+          "critical risk units"
         ],
         "instruction": "Filter to assets with >25% failure probability."
       }
@@ -1039,7 +1101,9 @@
         "sql": "DATE_TRUNC('month', rolling_stock.reading_date)",
         "display_name": "reading month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "sensor month",
+          "telemetry period"
         ]
       },
       {
@@ -1047,7 +1111,9 @@
         "sql": "sensor_readings.parts_cost_usd + sensor_readings.labor_cost_usd",
         "display_name": "total maintenance cost",
         "synonyms": [
-          "repair cost"
+          "repair cost",
+          "repair spend",
+          "work order cost"
         ]
       },
       {
@@ -1055,7 +1121,9 @@
         "sql": "maintenance_events.maintenance_budget_usd - maintenance_events.actual_maintenance_usd",
         "display_name": "budget variance",
         "synonyms": [
-          "over/under budget"
+          "over/under budget",
+          "spend variance",
+          "cost overrun"
         ]
       }
     ],
@@ -1065,7 +1133,9 @@
         "sql": "AVG(rolling_stock.health_score)",
         "display_name": "average health score",
         "synonyms": [
-          "fleet health"
+          "fleet health",
+          "mean condition score",
+          "fleet wellness"
         ]
       },
       {
@@ -1073,7 +1143,9 @@
         "sql": "SUM(sensor_readings.downtime_hours)",
         "display_name": "total downtime hours",
         "synonyms": [
-          "downtime"
+          "downtime",
+          "out-of-service hours",
+          "offline hours"
         ]
       },
       {
@@ -1081,7 +1153,9 @@
         "sql": "SUM(sensor_readings.parts_cost_usd + sensor_readings.labor_cost_usd)",
         "display_name": "total maintenance spend",
         "synonyms": [
-          "repair spend"
+          "repair spend",
+          "total repair cost",
+          "maintenance outlay"
         ]
       },
       {
@@ -1089,7 +1163,9 @@
         "sql": "AVG(maintenance_events.remaining_useful_life_days)",
         "display_name": "average RUL days",
         "synonyms": [
-          "remaining life"
+          "remaining life",
+          "mean life remaining",
+          "average lifespan left"
         ]
       }
     ]

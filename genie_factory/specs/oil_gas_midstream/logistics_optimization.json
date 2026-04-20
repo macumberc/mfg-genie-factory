@@ -51,6 +51,11 @@
             "PR-REF-018",
             "PR-CRD-019",
             "PR-GAS-020"
+          ],
+          "synonyms": [
+            "pipe id",
+            "line code",
+            "corridor id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Northeast Products",
             "Midland-to-Gulf Crude",
             "Utica Shale Gas"
+          ],
+          "synonyms": [
+            "pipe name",
+            "line name",
+            "corridor name"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "NGL",
             "Natural Gas",
             "Refined Products"
+          ],
+          "synonyms": [
+            "commodity type",
+            "fluid type",
+            "product class"
           ]
         },
         {
@@ -114,6 +129,11 @@
             "Williston Basin",
             "DJ Basin",
             "Northeast"
+          ],
+          "synonyms": [
+            "geography",
+            "operating area",
+            "district"
           ]
         },
         {
@@ -341,6 +361,11 @@
             "PR-REF-018",
             "PR-CRD-019",
             "PR-GAS-020"
+          ],
+          "synonyms": [
+            "pipe id",
+            "line code",
+            "corridor id"
           ]
         },
         {
@@ -370,6 +395,11 @@
             "Northeast Products",
             "Midland-to-Gulf Crude",
             "Utica Shale Gas"
+          ],
+          "synonyms": [
+            "pipe name",
+            "line name",
+            "corridor name"
           ]
         },
         {
@@ -383,6 +413,11 @@
             "NGL",
             "Natural Gas",
             "Refined Products"
+          ],
+          "synonyms": [
+            "commodity type",
+            "fluid type",
+            "product class"
           ]
         },
         {
@@ -404,6 +439,11 @@
             "Williston Basin",
             "DJ Basin",
             "Northeast"
+          ],
+          "synonyms": [
+            "geography",
+            "operating area",
+            "district"
           ]
         },
         {
@@ -632,6 +672,11 @@
             "PR-REF-018",
             "PR-CRD-019",
             "PR-GAS-020"
+          ],
+          "synonyms": [
+            "pipe id",
+            "line code",
+            "corridor id"
           ]
         },
         {
@@ -645,6 +690,11 @@
             "NGL",
             "Natural Gas",
             "Refined Products"
+          ],
+          "synonyms": [
+            "commodity type",
+            "fluid type",
+            "product class"
           ]
         },
         {
@@ -666,6 +716,11 @@
             "Williston Basin",
             "DJ Basin",
             "Northeast"
+          ],
+          "synonyms": [
+            "geography",
+            "operating area",
+            "district"
           ]
         },
         {
@@ -944,7 +999,8 @@
         "FROM {fqn}.flow_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total pressure PSI across pipeline segments; matches questions about pressure levels or pipeline integrity over time using flow_readings_metrics."
     },
     {
       "question": "How has avg throughput bpd changed over time?",
@@ -953,7 +1009,8 @@
         "FROM {fqn}.flow_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average throughput in barrels per day; matches questions about flow rate changes or throughput performance history using flow_readings_metrics."
     },
     {
       "question": "What is the monthly trend in total volume impact bbl?",
@@ -962,7 +1019,8 @@
         "FROM {fqn}.logistics_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total volume impact in barrels from logistics disruptions; matches questions about cumulative volume losses or event impact over time using logistics_events_metrics."
     },
     {
       "question": "How does total throughput in bpd break down by pipeline segment id for 'Operating' records?",
@@ -970,7 +1028,8 @@
         "SELECT segment_id, COUNT(*) AS record_count, SUM(throughput_bpd) AS total_throughput_bpd",
         "FROM {fqn}.flow_readings",
         "WHERE status = 'Operating' GROUP BY segment_id ORDER BY total_throughput_bpd DESC"
-      ]
+      ],
+      "usage_guidance": "Segment-level breakdown of total throughput BPD filtered to 'Operating' status; matches questions comparing active pipeline segments by flow volume using flow_readings."
     },
     {
       "question": "What is the trend of total volume impact bbl over time?",
@@ -978,7 +1037,8 @@
         "SELECT event_date, SUM(volume_impact_bbl) AS total_volume_impact_bbl",
         "FROM {fqn}.logistics_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Date-level trend of cumulative volume impact barrels from logistics events; matches questions about disruption severity or volume loss patterns over time using logistics_events."
     },
     {
       "question": "How has the average average utilization changed over time?",
@@ -986,7 +1046,8 @@
         "SELECT kpi_month, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
         "FROM {fqn}.throughput_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average capacity utilization percentage across pipeline segments; matches questions about utilization efficiency or capacity trends using throughput_kpi_monthly."
     },
     {
       "question": "How has avg tariff usd/bbl changed over time?",
@@ -995,7 +1056,8 @@
         "FROM {fqn}.flow_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average tariff in USD per barrel; matches questions about tariff rate changes, pricing trends, or revenue-per-barrel over time using flow_readings_metrics."
     }
   ],
   "sql_snippets": {
@@ -1004,7 +1066,9 @@
         "sql": "status = 'Operating'",
         "display_name": "operating segments",
         "synonyms": [
-          "active"
+          "active",
+          "active lines",
+          "live segments"
         ],
         "instruction": "Filter to operating segments."
       },
@@ -1013,7 +1077,8 @@
         "display_name": "apportionment events",
         "synonyms": [
           "rationing",
-          "capacity limit"
+          "capacity limit",
+          "capacity cuts"
         ],
         "instruction": "Filter to apportionment events."
       },
@@ -1021,7 +1086,9 @@
         "sql": "severity IN ('High', 'Critical')",
         "display_name": "high severity",
         "synonyms": [
-          "serious events"
+          "serious events",
+          "critical incidents",
+          "major events"
         ],
         "instruction": "High severity events."
       }
@@ -1032,7 +1099,9 @@
         "sql": "ROUND(throughput_kpi_monthly.revenue_usd / NULLIF(throughput_kpi_monthly.monthly_throughput_bbl, 0), 2)",
         "display_name": "revenue per barrel",
         "synonyms": [
-          "unit economics"
+          "unit economics",
+          "yield per barrel",
+          "tariff yield"
         ]
       },
       {
@@ -1040,7 +1109,9 @@
         "sql": "100.0 - flow_readings.capacity_utilization_pct",
         "display_name": "spare capacity pct",
         "synonyms": [
-          "headroom"
+          "headroom",
+          "idle capacity",
+          "headroom pct"
         ]
       },
       {
@@ -1048,7 +1119,9 @@
         "sql": "DATE_TRUNC('month', flow_readings.reading_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "flow month",
+          "measurement month"
         ]
       }
     ],
@@ -1058,7 +1131,9 @@
         "sql": "AVG(flow_readings.throughput_bpd)",
         "display_name": "avg throughput",
         "synonyms": [
-          "throughput"
+          "throughput",
+          "average flow rate",
+          "mean volumes"
         ]
       },
       {
@@ -1066,7 +1141,9 @@
         "sql": "SUM(logistics_events.volume_impact_bbl)",
         "display_name": "total volume impact",
         "synonyms": [
-          "lost volume"
+          "lost volume",
+          "barrels lost",
+          "volume disrupted"
         ]
       },
       {
@@ -1074,7 +1151,9 @@
         "sql": "SUM(throughput_kpi_monthly.revenue_usd)",
         "display_name": "total revenue",
         "synonyms": [
-          "income"
+          "income",
+          "gross revenue",
+          "total earnings"
         ]
       },
       {
@@ -1082,7 +1161,9 @@
         "sql": "AVG(flow_readings.capacity_utilization_pct)",
         "display_name": "avg utilization",
         "synonyms": [
-          "utilization"
+          "utilization",
+          "mean utilization",
+          "average fill rate"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "AM-V018",
             "AM-V019",
             "AM-V020"
+          ],
+          "synonyms": [
+            "vin",
+            "car id",
+            "unit id"
           ]
         },
         {
@@ -61,6 +66,11 @@
           "generation_expr": "",
           "entity_values": [
             "AutoMetrics"
+          ],
+          "synonyms": [
+            "brand",
+            "automaker",
+            "manufacturer"
           ]
         },
         {
@@ -81,6 +91,11 @@
             "Trailblazer SUV Hybrid",
             "Nexus Sedan Hybrid",
             "Ridgeline Pickup"
+          ],
+          "synonyms": [
+            "car model",
+            "vehicle line",
+            "nameplate"
           ]
         },
         {
@@ -92,6 +107,10 @@
           "entity_values": [
             "2024",
             "2025"
+          ],
+          "synonyms": [
+            "my",
+            "production year"
           ]
         },
         {
@@ -104,6 +123,11 @@
             "Premium",
             "Elite",
             "Basic"
+          ],
+          "synonyms": [
+            "subscription level",
+            "plan tier",
+            "package level"
           ]
         },
         {
@@ -375,6 +399,11 @@
             "AM-V018",
             "AM-V019",
             "AM-V020"
+          ],
+          "synonyms": [
+            "vin",
+            "car id",
+            "unit id"
           ]
         },
         {
@@ -395,6 +424,11 @@
             "Trailblazer SUV Hybrid",
             "Nexus Sedan Hybrid",
             "Ridgeline Pickup"
+          ],
+          "synonyms": [
+            "car model",
+            "vehicle line",
+            "nameplate"
           ]
         },
         {
@@ -407,6 +441,11 @@
             "Premium",
             "Elite",
             "Basic"
+          ],
+          "synonyms": [
+            "subscription level",
+            "plan tier",
+            "package level"
           ]
         },
         {
@@ -670,6 +709,11 @@
             "AM-V018",
             "AM-V019",
             "AM-V020"
+          ],
+          "synonyms": [
+            "vin",
+            "car id",
+            "unit id"
           ]
         },
         {
@@ -690,6 +734,11 @@
             "Trailblazer SUV Hybrid",
             "Nexus Sedan Hybrid",
             "Ridgeline Pickup"
+          ],
+          "synonyms": [
+            "car model",
+            "vehicle line",
+            "nameplate"
           ]
         },
         {
@@ -702,6 +751,11 @@
             "Premium",
             "Elite",
             "Basic"
+          ],
+          "synonyms": [
+            "subscription level",
+            "plan tier",
+            "package level"
           ]
         },
         {
@@ -1062,7 +1116,8 @@
         "FROM {fqn}.feature_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique vehicles engaging with in-vehicle features, answering questions like 'how is vehicle adoption growing over time' using event_date and unique_vehicle_count."
     },
     {
       "question": "How has highest session duration sec changed over time?",
@@ -1071,7 +1126,8 @@
         "FROM {fqn}.feature_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak session length, answering 'how has the longest feature session changed over time' using max_session_duration_sec across event dates."
     },
     {
       "question": "How has average interactions per session changed over time?",
@@ -1080,7 +1136,8 @@
         "FROM {fqn}.feature_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average in-session interactions, answering 'are drivers engaging more per session over time' using avg_interaction_count across event dates."
     },
     {
       "question": "How does failed activation count vary across models?",
@@ -1089,7 +1146,8 @@
         "FROM {fqn}.feature_events_metrics",
         "GROUP BY ALL",
         "ORDER BY failed_activation_count DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of vehicle models by failed feature activations, answering 'which models have the most activation failures' using failed_activation_count grouped by model."
     },
     {
       "question": "How does total number of user interactions during the session break down by unique vehicle for 'Success' records?",
@@ -1097,7 +1155,8 @@
         "SELECT vehicle_id, COUNT(*) AS record_count, SUM(interaction_count) AS total_interaction_count",
         "FROM {fqn}.feature_events",
         "WHERE activation_status = 'Success' GROUP BY vehicle_id ORDER BY total_interaction_count DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total interactions per vehicle restricted to successful activations only, answering 'which vehicles interact most when features activate successfully' using activation_status = Success."
     },
     {
       "question": "What is the trend of total number of distinct features used during the week over time?",
@@ -1105,7 +1164,8 @@
         "SELECT snapshot_date, SUM(features_used_count) AS total_features_used_count",
         "FROM {fqn}.user_engagement_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total distinct features used across the fleet, answering 'how is overall feature breadth usage changing week over week' using features_used_count from snapshots."
     },
     {
       "question": "How has the average predicted feature adoption rate 0-100 changed over time?",
@@ -1113,7 +1173,8 @@
         "SELECT forecast_month, AVG(forecasted_adoption_pct) AS avg_forecasted_adoption_pct",
         "FROM {fqn}.feature_adoption_monthly",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average forecasted feature adoption percentage, answering 'how are adoption rate predictions trending month over month' using forecasted_adoption_pct from feature_adoption_monthly."
     }
   ],
   "sql_snippets": {
@@ -1156,7 +1217,8 @@
         "display_name": "event month",
         "synonyms": [
           "month of event",
-          "feature event month"
+          "feature event month",
+          "usage month"
         ]
       },
       {
@@ -1165,7 +1227,8 @@
         "display_name": "adoption forecast gap",
         "synonyms": [
           "forecast vs actual adoption",
-          "adoption prediction error"
+          "adoption prediction error",
+          "forecast miss"
         ]
       },
       {
@@ -1174,7 +1237,8 @@
         "display_name": "session duration in minutes",
         "synonyms": [
           "session minutes",
-          "usage time in minutes"
+          "usage time in minutes",
+          "usage minutes"
         ]
       }
     ],

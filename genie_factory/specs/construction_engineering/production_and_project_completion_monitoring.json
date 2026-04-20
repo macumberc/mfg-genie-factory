@@ -51,6 +51,11 @@
             "AP-018",
             "AP-019",
             "AP-020"
+          ],
+          "synonyms": [
+            "job number",
+            "site code",
+            "work order"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Port Facility Expansion",
             "Mountain Highway Tunnel",
             "Mixed-Use Development"
+          ],
+          "synonyms": [
+            "job title",
+            "site name",
+            "development name"
           ]
         },
         {
@@ -104,6 +114,11 @@
             "Water Infrastructure",
             "Marine Infrastructure",
             "Tunnel Construction"
+          ],
+          "synonyms": [
+            "work category",
+            "job category",
+            "construction type"
           ]
         },
         {
@@ -118,6 +133,11 @@
             "West",
             "Midwest",
             "Southwest"
+          ],
+          "synonyms": [
+            "territory",
+            "district",
+            "area"
           ]
         },
         {
@@ -350,6 +370,11 @@
             "AP-018",
             "AP-019",
             "AP-020"
+          ],
+          "synonyms": [
+            "job number",
+            "site code",
+            "work order"
           ]
         },
         {
@@ -374,6 +399,11 @@
             "Water Infrastructure",
             "Marine Infrastructure",
             "Tunnel Construction"
+          ],
+          "synonyms": [
+            "work category",
+            "job category",
+            "construction type"
           ]
         },
         {
@@ -388,6 +418,11 @@
             "West",
             "Midwest",
             "Southwest"
+          ],
+          "synonyms": [
+            "territory",
+            "district",
+            "area"
           ]
         },
         {
@@ -632,6 +667,11 @@
             "AP-018",
             "AP-019",
             "AP-020"
+          ],
+          "synonyms": [
+            "job number",
+            "site code",
+            "work order"
           ]
         },
         {
@@ -656,6 +696,11 @@
             "Water Infrastructure",
             "Marine Infrastructure",
             "Tunnel Construction"
+          ],
+          "synonyms": [
+            "work category",
+            "job category",
+            "construction type"
           ]
         },
         {
@@ -670,6 +715,11 @@
             "West",
             "Midwest",
             "Southwest"
+          ],
+          "synonyms": [
+            "territory",
+            "district",
+            "area"
           ]
         },
         {
@@ -1000,7 +1050,8 @@
         "FROM {fqn}.project_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend over time for total work hours logged across construction projects, matching phrases like 'work hours over time' or 'labor hours trend by month'."
     },
     {
       "question": "How has total daily cost changed over time?",
@@ -1009,7 +1060,8 @@
         "FROM {fqn}.project_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend over time for total daily cost spend, matching phrases like 'daily cost over time' or 'how has project spending changed month by month'."
     },
     {
       "question": "What is the monthly trend in highest budget at completion?",
@@ -1018,7 +1070,8 @@
         "FROM {fqn}.completion_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend over time for the highest single-project budget at completion, matching phrases like 'largest budget forecast trend' or 'max budget at completion over time'."
     },
     {
       "question": "Rank project types by avg schedule variance days",
@@ -1027,7 +1080,8 @@
         "FROM {fqn}.completion_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY avg_schedule_variance DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of project types by average schedule variance days, matching phrases like 'which project type is most behind schedule' or 'schedule variance by project type'."
     },
     {
       "question": "What is the trend of total work hours logged over time?",
@@ -1035,7 +1089,8 @@
         "SELECT event_date, SUM(work_hours) AS total_work_hours",
         "FROM {fqn}.projects",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Date-level trend of raw work hours from the projects table, matching phrases like 'daily work hours logged' or 'work hours per event date' using granular project-level data."
     },
     {
       "question": "What is the trend of total milestones completed to date over time?",
@@ -1043,7 +1098,8 @@
         "SELECT snapshot_date, SUM(milestones_completed) AS total_milestones_completed",
         "FROM {fqn}.progress_events",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Date-level trend of cumulative milestones completed from progress snapshots, matching phrases like 'milestone completion over time' or 'how many milestones completed per snapshot date'."
     },
     {
       "question": "How many distinct forecast id are there per region?",
@@ -1051,7 +1107,8 @@
         "SELECT region, COUNT(DISTINCT forecast_id) AS distinct_count",
         "FROM {fqn}.milestone_snapshots",
         "GROUP BY region ORDER BY distinct_count DESC"
-      ]
+      ],
+      "usage_guidance": "Count of distinct forecast records per region from milestone snapshots, matching phrases like 'how many forecasts per region' or 'forecast coverage by region'."
     }
   ],
   "sql_snippets": {
@@ -1060,7 +1117,9 @@
         "sql": "progress_events.project_health = 'Red'",
         "display_name": "red projects",
         "synonyms": [
-          "troubled"
+          "troubled",
+          "troubled jobs",
+          "at-risk sites"
         ],
         "instruction": "Filter troubled projects."
       },
@@ -1068,7 +1127,9 @@
         "sql": "milestone_snapshots.risk_level IN ('High', 'Critical')",
         "display_name": "high risk",
         "synonyms": [
-          "at risk"
+          "at risk",
+          "elevated risk",
+          "critical risk"
         ],
         "instruction": "Filter high risk."
       },
@@ -1076,7 +1137,9 @@
         "sql": "progress_events.schedule_performance_index < 0.9",
         "display_name": "behind schedule",
         "synonyms": [
-          "delayed"
+          "delayed",
+          "delayed projects",
+          "running late"
         ],
         "instruction": "Filter projects behind schedule."
       }
@@ -1087,7 +1150,9 @@
         "sql": "DATE_TRUNC('month', projects.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "reporting month",
+          "activity month"
         ]
       },
       {
@@ -1095,7 +1160,9 @@
         "sql": "milestone_snapshots.earned_value_usd - milestone_snapshots.actual_cost_to_date_usd",
         "display_name": "cost variance",
         "synonyms": [
-          "CV"
+          "CV",
+          "budget gap",
+          "spend deviation"
         ]
       },
       {
@@ -1103,7 +1170,9 @@
         "sql": "milestone_snapshots.earned_value_usd - (milestone_snapshots.budget_at_completion_usd * 0.5)",
         "display_name": "schedule variance USD",
         "synonyms": [
-          "SV dollars"
+          "SV dollars",
+          "time cost gap",
+          "schedule dollar gap"
         ]
       }
     ],
@@ -1113,7 +1182,9 @@
         "sql": "SUM(projects.daily_cost_usd)",
         "display_name": "total project cost",
         "synonyms": [
-          "spend"
+          "spend",
+          "total spend",
+          "overall expenditure"
         ]
       },
       {
@@ -1121,7 +1192,9 @@
         "sql": "SUM(milestone_snapshots.earned_value_usd)",
         "display_name": "total earned value",
         "synonyms": [
-          "value earned"
+          "value earned",
+          "value delivered",
+          "work accomplished"
         ]
       },
       {
@@ -1129,7 +1202,9 @@
         "sql": "SUM(projects.safety_incidents)",
         "display_name": "total safety incidents",
         "synonyms": [
-          "incidents"
+          "incidents",
+          "accident count",
+          "safety events"
         ]
       },
       {
@@ -1137,7 +1212,9 @@
         "sql": "AVG(progress_events.schedule_performance_index)",
         "display_name": "avg SPI",
         "synonyms": [
-          "schedule performance"
+          "schedule performance",
+          "schedule efficiency",
+          "delivery performance"
         ]
       }
     ]

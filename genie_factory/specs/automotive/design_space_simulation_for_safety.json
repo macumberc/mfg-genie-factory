@@ -51,6 +51,11 @@
             "SD-CFG-018",
             "SD-CFG-019",
             "SD-CFG-020"
+          ],
+          "synonyms": [
+            "setup code",
+            "variant id",
+            "design id"
           ]
         },
         {
@@ -71,6 +76,11 @@
             "Fortress SUV Hybrid",
             "Guardian Sedan Hybrid",
             "Titan Pickup"
+          ],
+          "synonyms": [
+            "vehicle model",
+            "car model",
+            "platform name"
           ]
         },
         {
@@ -88,6 +98,11 @@
             "Wagon",
             "Coupe",
             "Van"
+          ],
+          "synonyms": [
+            "vehicle class",
+            "car type",
+            "body style"
           ]
         },
         {
@@ -102,6 +117,11 @@
             "Side Impact",
             "Rollover",
             "Rear Impact"
+          ],
+          "synonyms": [
+            "impact scenario",
+            "collision type",
+            "test protocol"
           ]
         },
         {
@@ -371,6 +391,11 @@
             "SD-CFG-018",
             "SD-CFG-019",
             "SD-CFG-020"
+          ],
+          "synonyms": [
+            "setup code",
+            "variant id",
+            "design id"
           ]
         },
         {
@@ -391,6 +416,11 @@
             "Fortress SUV Hybrid",
             "Guardian Sedan Hybrid",
             "Titan Pickup"
+          ],
+          "synonyms": [
+            "vehicle model",
+            "car model",
+            "platform name"
           ]
         },
         {
@@ -408,6 +438,11 @@
             "Wagon",
             "Coupe",
             "Van"
+          ],
+          "synonyms": [
+            "vehicle class",
+            "car type",
+            "body style"
           ]
         },
         {
@@ -420,6 +455,11 @@
             "Advanced",
             "Standard",
             "Premium"
+          ],
+          "synonyms": [
+            "safety tier",
+            "protection bundle",
+            "equipment level"
           ]
         },
         {
@@ -686,6 +726,11 @@
             "SD-CFG-018",
             "SD-CFG-019",
             "SD-CFG-020"
+          ],
+          "synonyms": [
+            "setup code",
+            "variant id",
+            "design id"
           ]
         },
         {
@@ -706,6 +751,11 @@
             "Fortress SUV Hybrid",
             "Guardian Sedan Hybrid",
             "Titan Pickup"
+          ],
+          "synonyms": [
+            "vehicle model",
+            "car model",
+            "platform name"
           ]
         },
         {
@@ -723,6 +773,11 @@
             "Wagon",
             "Coupe",
             "Van"
+          ],
+          "synonyms": [
+            "vehicle class",
+            "car type",
+            "body style"
           ]
         },
         {
@@ -1098,7 +1153,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total simulation run volume; matches phrases like 'how many simulations ran each month' using simulation_runs_metrics total_simulation_runs measure."
     },
     {
       "question": "How has unique configs changed over time?",
@@ -1107,7 +1163,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of unique design configurations tested; matches 'how has config diversity changed' using simulation_runs_metrics unique_config_count measure."
     },
     {
       "question": "What is the monthly trend in unique configs?",
@@ -1116,7 +1173,8 @@
         "FROM {fqn}.parameter_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique parameter snapshot configurations; matches 'how many distinct configs were snapshotted over time' using parameter_snapshots_metrics unique_config_count."
     },
     {
       "question": "What is the trend of total impact speed in km/h over time?",
@@ -1124,7 +1182,8 @@
         "SELECT run_date, SUM(impact_speed_kmh) AS total_impact_speed_kmh",
         "FROM {fqn}.simulation_runs",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative impact speed trend over time; matches 'show total crash impact speeds by date' aggregating impact_speed_kmh from simulation_runs table."
     },
     {
       "question": "What is the trend of total average structural panel thickness in mm over time?",
@@ -1132,7 +1191,8 @@
         "SELECT snapshot_date, SUM(structural_thickness_mm) AS total_structural_thickness_mm",
         "FROM {fqn}.parameter_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of total structural panel thickness; matches 'how has structural thickness evolved' aggregating structural_thickness_mm from parameter_snapshots table."
     },
     {
       "question": "How has the average predicted composite safety score 0-100 changed over time?",
@@ -1140,7 +1200,8 @@
         "SELECT summary_month, AVG(forecasted_safety_score) AS avg_forecasted_safety_score",
         "FROM {fqn}.simulation_summary_monthly",
         "GROUP BY summary_month ORDER BY summary_month"
-      ]
+      ],
+      "usage_guidance": "Trend of average forecasted composite safety score over months; matches 'how is predicted safety score trending' using simulation_summary_monthly forecasted_safety_score."
     },
     {
       "question": "How has total cabin intrusion mm changed over time?",
@@ -1149,7 +1210,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total cabin intrusion distance; matches 'how has cabin deformation changed over time' using simulation_runs_metrics total_cabin_intrusion_mm measure."
     }
   ],
   "sql_snippets": {
@@ -1192,7 +1254,8 @@
         "display_name": "simulation month",
         "synonyms": [
           "month of simulation",
-          "run month"
+          "run month",
+          "simulation month"
         ]
       },
       {
@@ -1201,7 +1264,8 @@
         "display_name": "safety forecast gap",
         "synonyms": [
           "forecast vs actual safety",
-          "prediction error"
+          "prediction error",
+          "forecast deviation"
         ]
       },
       {
@@ -1210,7 +1274,8 @@
         "display_name": "weight to safety ratio",
         "synonyms": [
           "mass efficiency",
-          "weight per safety point"
+          "weight per safety point",
+          "mass per safety"
         ]
       }
     ],

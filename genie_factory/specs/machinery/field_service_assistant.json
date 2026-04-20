@@ -51,6 +51,11 @@
             "FF-PMP-200",
             "FF-PMP-300",
             "FF-PMP-400"
+          ],
+          "synonyms": [
+            "machine model",
+            "unit model",
+            "asset model"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Generator",
             "Compressor",
             "Pump System"
+          ],
+          "synonyms": [
+            "machine category",
+            "asset class",
+            "unit type"
           ]
         },
         {
@@ -297,6 +307,11 @@
             "FF-PMP-200",
             "FF-PMP-300",
             "FF-PMP-400"
+          ],
+          "synonyms": [
+            "machine model",
+            "unit model",
+            "asset model"
           ]
         },
         {
@@ -311,6 +326,11 @@
             "Generator",
             "Compressor",
             "Pump System"
+          ],
+          "synonyms": [
+            "machine category",
+            "asset class",
+            "unit type"
           ]
         },
         {
@@ -530,6 +550,11 @@
             "FF-PMP-200",
             "FF-PMP-300",
             "FF-PMP-400"
+          ],
+          "synonyms": [
+            "machine model",
+            "unit model",
+            "asset model"
           ]
         },
         {
@@ -544,6 +569,11 @@
             "Generator",
             "Compressor",
             "Pump System"
+          ],
+          "synonyms": [
+            "machine category",
+            "asset class",
+            "unit type"
           ]
         },
         {
@@ -839,7 +869,8 @@
         "FROM {fqn}.service_tickets_metrics",
         "GROUP BY ALL",
         "ORDER BY ticket_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time for peak or worst-case resolution hours; user mentions 'highest', 'maximum', or 'longest' repair durations across ticket dates."
     },
     {
       "question": "How has total service cost (parts + labor) changed over time?",
@@ -848,7 +879,8 @@
         "FROM {fqn}.service_tickets_metrics",
         "GROUP BY ALL",
         "ORDER BY ticket_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time for combined parts and labor spend; user mentions 'total service cost', 'spending over time', or 'cost trend' across ticket dates."
     },
     {
       "question": "What is the monthly trend in total repeat visit pct?",
@@ -857,7 +889,8 @@
         "FROM {fqn}.service_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend for repeat visit percentage from KPI data; user mentions 'repeat visits', 'callback rate', or 'revisit trend' aggregated by kpi_month."
     },
     {
       "question": "How has total repeat visit pct changed over time?",
@@ -866,7 +899,8 @@
         "FROM {fqn}.service_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series change in repeat visit percentage from KPI metrics; user asks how 'repeat visits evolved', 'changed over time', or 'callback rate shifted' by kpi_month."
     },
     {
       "question": "What is the trend of total time to resolution in hours over time?",
@@ -874,7 +908,8 @@
         "SELECT ticket_date, SUM(resolution_hours) AS total_resolution_hours",
         "FROM {fqn}.service_tickets",
         "GROUP BY ticket_date ORDER BY ticket_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative resolution hours trend from raw service tickets; user mentions 'total time to fix', 'resolution hours over time', or 'repair time trend' by ticket_date."
     },
     {
       "question": "What is the trend of total tickets closed in the period over time?",
@@ -882,7 +917,8 @@
         "SELECT snapshot_date, SUM(tickets_closed) AS total_tickets_closed",
         "FROM {fqn}.technician_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of technician productivity via tickets closed over time; user mentions 'tickets completed', 'closed tickets trend', or 'technician output' by snapshot_date."
     },
     {
       "question": "How has the average first-time fix rate percentage changed over time?",
@@ -890,7 +926,8 @@
         "SELECT kpi_month, AVG(first_time_fix_rate_pct) AS avg_first_time_fix_rate_pct",
         "FROM {fqn}.service_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of first-time fix rate from KPI monthly table; user mentions 'FTF rate over time', 'first-time fix trend', or 'fix success rate by month'."
     }
   ],
   "sql_snippets": {
@@ -900,7 +937,8 @@
         "display_name": "critical tickets",
         "synonyms": [
           "urgent",
-          "P1"
+          "P1",
+          "urgent jobs"
         ],
         "instruction": "Use when filtering for highest priority service tickets."
       },
@@ -909,7 +947,8 @@
         "display_name": "first-time fixes",
         "synonyms": [
           "FTF",
-          "one-visit resolution"
+          "one-visit resolution",
+          "one-visit repairs"
         ],
         "instruction": "Use when analyzing first-visit resolution effectiveness."
       },
@@ -918,7 +957,8 @@
         "display_name": "SLA breaches",
         "synonyms": [
           "missed SLA",
-          "non-compliant"
+          "non-compliant",
+          "missed sla"
         ],
         "instruction": "Use when identifying months below the 90% SLA target."
       }
@@ -929,7 +969,9 @@
         "sql": "DATE_TRUNC('month', service_tickets.ticket_date)",
         "display_name": "ticket month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "service month",
+          "work order month"
         ]
       },
       {
@@ -938,7 +980,8 @@
         "display_name": "total ticket cost",
         "synonyms": [
           "service cost",
-          "visit cost"
+          "visit cost",
+          "job cost"
         ]
       },
       {
@@ -947,7 +990,8 @@
         "display_name": "FTF miss rate",
         "synonyms": [
           "return visit rate",
-          "FTF failure"
+          "FTF failure",
+          "first-visit failure rate"
         ]
       }
     ],
@@ -957,7 +1001,9 @@
         "sql": "COUNT(DISTINCT service_tickets.ticket_id)",
         "display_name": "total tickets",
         "synonyms": [
-          "ticket count"
+          "ticket count",
+          "work order count",
+          "job count"
         ]
       },
       {
@@ -966,7 +1012,8 @@
         "display_name": "total service cost",
         "synonyms": [
           "cost",
-          "spend"
+          "spend",
+          "total repair spend"
         ]
       },
       {
@@ -975,7 +1022,8 @@
         "display_name": "average resolution time",
         "synonyms": [
           "resolution time",
-          "MTTR"
+          "MTTR",
+          "mean fix time"
         ]
       },
       {
@@ -984,7 +1032,8 @@
         "display_name": "average FTF rate",
         "synonyms": [
           "first-time fix",
-          "FTF"
+          "FTF",
+          "mean first-visit rate"
         ]
       }
     ]

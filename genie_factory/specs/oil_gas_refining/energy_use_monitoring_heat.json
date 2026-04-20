@@ -51,6 +51,11 @@
             "HT-PL-018",
             "HT-WH-019",
             "HT-ST-020"
+          ],
+          "synonyms": [
+            "hx id",
+            "unit tag",
+            "exchanger code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Lean Amine Cooler E-601",
             "H2 Plant WHB-701",
             "Debutanizer Reboiler E-801"
+          ],
+          "synonyms": [
+            "hx name",
+            "unit label",
+            "exchanger title"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Air Cooler",
             "Fired Heater",
             "Waste Heat Recovery"
+          ],
+          "synonyms": [
+            "hx type",
+            "equipment type",
+            "unit class"
           ]
         },
         {
@@ -115,6 +130,11 @@
             "Gas Treating",
             "Hydrogen Plant",
             "NGL Recovery"
+          ],
+          "synonyms": [
+            "refinery unit",
+            "plant section",
+            "process area"
           ]
         },
         {
@@ -344,6 +364,11 @@
             "HT-PL-018",
             "HT-WH-019",
             "HT-ST-020"
+          ],
+          "synonyms": [
+            "hx id",
+            "unit tag",
+            "exchanger code"
           ]
         },
         {
@@ -358,6 +383,11 @@
             "Air Cooler",
             "Fired Heater",
             "Waste Heat Recovery"
+          ],
+          "synonyms": [
+            "hx type",
+            "equipment type",
+            "unit class"
           ]
         },
         {
@@ -379,6 +409,11 @@
             "Gas Treating",
             "Hydrogen Plant",
             "NGL Recovery"
+          ],
+          "synonyms": [
+            "refinery unit",
+            "plant section",
+            "process area"
           ]
         },
         {
@@ -574,6 +609,11 @@
             "HT-PL-018",
             "HT-WH-019",
             "HT-ST-020"
+          ],
+          "synonyms": [
+            "hx id",
+            "unit tag",
+            "exchanger code"
           ]
         },
         {
@@ -588,6 +628,11 @@
             "Air Cooler",
             "Fired Heater",
             "Waste Heat Recovery"
+          ],
+          "synonyms": [
+            "hx type",
+            "equipment type",
+            "unit class"
           ]
         },
         {
@@ -609,6 +654,11 @@
             "Gas Treating",
             "Hydrogen Plant",
             "NGL Recovery"
+          ],
+          "synonyms": [
+            "refinery unit",
+            "plant section",
+            "process area"
           ]
         },
         {
@@ -881,7 +931,8 @@
         "FROM {fqn}.energy_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total inlet temperature across all heat exchangers; matches questions about inlet temp patterns or feed temperature over time."
     },
     {
       "question": "How has total outlet temp f changed over time?",
@@ -890,7 +941,8 @@
         "FROM {fqn}.energy_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total outlet temperature across exchangers; matches questions about outlet temp changes or product temperature history."
     },
     {
       "question": "What is the monthly trend in average heat transfer effectiveness?",
@@ -899,7 +951,8 @@
         "FROM {fqn}.thermal_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average heat transfer effectiveness percentage; matches questions about exchanger effectiveness or thermal performance over time."
     },
     {
       "question": "What is the trend of total energy consumption in mmbtu over time?",
@@ -907,7 +960,8 @@
         "SELECT reading_date, SUM(energy_consumption_mmbtu) AS total_energy_consumption_mmbtu",
         "FROM {fqn}.energy_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total energy consumption in MMBtu; matches questions about refinery-wide energy usage trends or consumption history."
     },
     {
       "question": "What is the trend of total clean ua value btu/hr/f over time?",
@@ -915,7 +969,8 @@
         "SELECT snapshot_date, SUM(clean_ua_btu_hr_f) AS total_clean_ua_btu_hr_f",
         "FROM {fqn}.thermal_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total clean UA heat transfer coefficient; matches questions about baseline heat transfer capacity or clean UA values over time."
     },
     {
       "question": "How has the average solomon energy efficiency index (lower=better) changed over time?",
@@ -923,7 +978,8 @@
         "SELECT kpi_month, AVG(energy_efficiency_index) AS avg_energy_efficiency_index",
         "FROM {fqn}.energy_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average Solomon Energy Efficiency Index; matches questions about refinery energy benchmarking, EEI performance, or efficiency index changes over time."
     },
     {
       "question": "How has total inlet temp f changed over time?",
@@ -932,7 +988,8 @@
         "FROM {fqn}.energy_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total inlet temperature using metric view; matches questions about feed temperature history or inlet temp fluctuations across the refinery."
     }
   ],
   "sql_snippets": {
@@ -942,7 +999,8 @@
         "display_name": "high fouling",
         "synonyms": [
           "fouled",
-          "degraded"
+          "degraded",
+          "dirty exchangers"
         ],
         "instruction": "Filter to exchangers with high fouling."
       },
@@ -951,7 +1009,8 @@
         "display_name": "fired heaters",
         "synonyms": [
           "furnaces",
-          "heaters"
+          "heaters",
+          "direct-fired units"
         ],
         "instruction": "Filter to fired heaters."
       },
@@ -960,7 +1019,8 @@
         "display_name": "low efficiency",
         "synonyms": [
           "poor performance",
-          "inefficient"
+          "inefficient",
+          "poor performers"
         ],
         "instruction": "Filter to low efficiency readings."
       }
@@ -972,7 +1032,8 @@
         "display_name": "temperature rise",
         "synonyms": [
           "delta T",
-          "temp gain"
+          "temp gain",
+          "temp rise"
         ]
       },
       {
@@ -981,7 +1042,8 @@
         "display_name": "UA degradation",
         "synonyms": [
           "fouling impact",
-          "performance loss"
+          "performance loss",
+          "fouling loss"
         ]
       },
       {
@@ -989,7 +1051,9 @@
         "sql": "DATE_TRUNC('month', energy_readings.reading_date)",
         "display_name": "reading month",
         "synonyms": [
-          "month"
+          "month",
+          "monthly period",
+          "report month"
         ]
       }
     ],
@@ -1000,7 +1064,8 @@
         "display_name": "total energy",
         "synonyms": [
           "energy consumption",
-          "MMBTU"
+          "MMBTU",
+          "energy consumed"
         ]
       },
       {
@@ -1008,7 +1073,9 @@
         "sql": "AVG(energy_readings.thermal_efficiency_pct)",
         "display_name": "average efficiency",
         "synonyms": [
-          "thermal efficiency"
+          "thermal efficiency",
+          "mean efficiency",
+          "thermal performance"
         ]
       },
       {
@@ -1017,7 +1084,8 @@
         "display_name": "total CO2",
         "synonyms": [
           "emissions",
-          "carbon"
+          "carbon",
+          "carbon output"
         ]
       },
       {
@@ -1026,7 +1094,8 @@
         "display_name": "total energy cost",
         "synonyms": [
           "energy spend",
-          "fuel cost"
+          "fuel cost",
+          "utility expense"
         ]
       }
     ]

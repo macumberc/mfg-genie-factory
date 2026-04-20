@@ -51,6 +51,11 @@
             "BU-CP-018",
             "BU-CP-019",
             "BU-CP-020"
+          ],
+          "synonyms": [
+            "cost center",
+            "unit code",
+            "division id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Corporate Treasury",
             "E-Commerce Division",
             "National Accounts"
+          ],
+          "synonyms": [
+            "division name",
+            "unit label",
+            "entity name"
           ]
         },
         {
@@ -96,6 +106,11 @@
             "Welding",
             "Corporate",
             "Digital"
+          ],
+          "synonyms": [
+            "vertical",
+            "product line",
+            "market segment"
           ]
         },
         {
@@ -114,6 +129,11 @@
             "Pacific NW",
             "Mid-Atlantic",
             "Corporate"
+          ],
+          "synonyms": [
+            "territory",
+            "geography",
+            "district"
           ]
         },
         {
@@ -343,6 +363,11 @@
             "BU-CP-018",
             "BU-CP-019",
             "BU-CP-020"
+          ],
+          "synonyms": [
+            "cost center",
+            "unit code",
+            "division id"
           ]
         },
         {
@@ -359,6 +384,11 @@
             "Welding",
             "Corporate",
             "Digital"
+          ],
+          "synonyms": [
+            "vertical",
+            "product line",
+            "market segment"
           ]
         },
         {
@@ -377,6 +407,11 @@
             "Pacific NW",
             "Mid-Atlantic",
             "Corporate"
+          ],
+          "synonyms": [
+            "territory",
+            "geography",
+            "district"
           ]
         },
         {
@@ -607,6 +642,11 @@
             "BU-CP-018",
             "BU-CP-019",
             "BU-CP-020"
+          ],
+          "synonyms": [
+            "cost center",
+            "unit code",
+            "division id"
           ]
         },
         {
@@ -623,6 +663,11 @@
             "Welding",
             "Corporate",
             "Digital"
+          ],
+          "synonyms": [
+            "vertical",
+            "product line",
+            "market segment"
           ]
         },
         {
@@ -641,6 +686,11 @@
             "Pacific NW",
             "Mid-Atlantic",
             "Corporate"
+          ],
+          "synonyms": [
+            "territory",
+            "geography",
+            "district"
           ]
         },
         {
@@ -971,7 +1021,8 @@
         "FROM {fqn}.cashflow_monthly",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak/highest single cash inflow; user asks about maximum or top cash inflow performance over time using cashflow_monthly metric view."
     },
     {
       "question": "How has total cash inflow usd changed over time?",
@@ -980,7 +1031,8 @@
         "FROM {fqn}.cashflow_monthly",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of aggregated total cash inflow dollars; user asks how overall cash receipts or inflows have grown or declined across all business units over time."
     },
     {
       "question": "How has critical count changed over time?",
@@ -989,7 +1041,8 @@
         "FROM {fqn}.working_capital_monthly",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of count of business units in critical liquidity status; user asks how many units are flagged critical or at-risk in working capital over time."
     },
     {
       "question": "What is the trend of total cash inflow in usd over time?",
@@ -997,7 +1050,8 @@
         "SELECT txn_date, SUM(cash_inflow_usd) AS total_cash_inflow_usd",
         "FROM {fqn}.business_units",
         "GROUP BY txn_date ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of summed cash inflow from raw business_units table; user asks about cash inflow over time without needing metric view aggregation or payment_type breakdown."
     },
     {
       "question": "What is the trend of total total ar balance usd over time?",
@@ -1005,7 +1059,8 @@
         "SELECT snapshot_date, SUM(ar_balance_usd) AS total_ar_balance_usd",
         "FROM {fqn}.cash_transactions",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total accounts receivable balance from cash_transactions snapshots; user asks how AR balances or outstanding receivables have changed over time."
     },
     {
       "question": "How has the average current ratio (assets/liabilities) changed over time?",
@@ -1013,7 +1068,8 @@
         "SELECT forecast_month, AVG(current_ratio) AS avg_current_ratio",
         "FROM {fqn}.working_capital_snapshots",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average current ratio from working_capital_snapshots; user asks about liquidity health, assets-to-liabilities ratio, or solvency trends over forecast periods."
     },
     {
       "question": "How has unique transactions changed over time?",
@@ -1022,7 +1078,8 @@
         "FROM {fqn}.cashflow_monthly",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of transaction volume count; user asks how transaction activity, deal frequency, or number of cash transactions has changed over time."
     }
   ],
   "sql_snippets": {
@@ -1031,7 +1088,9 @@
         "sql": "working_capital_snapshots.liquidity_status = 'Critical'",
         "display_name": "critical liquidity",
         "synonyms": [
-          "cash crisis"
+          "cash crisis",
+          "liquidity alert",
+          "distressed units"
         ],
         "instruction": "Filter to critical liquidity."
       },
@@ -1039,7 +1098,9 @@
         "sql": "business_units.payment_type = 'Customer Payment'",
         "display_name": "customer payments",
         "synonyms": [
-          "AR collections"
+          "AR collections",
+          "incoming receipts",
+          "client remittances"
         ],
         "instruction": "Filter to customer payments."
       },
@@ -1047,7 +1108,9 @@
         "sql": "cash_transactions.dso_days > 45",
         "display_name": "high DSO",
         "synonyms": [
-          "slow collections"
+          "slow collections",
+          "overdue receivables",
+          "extended payment terms"
         ],
         "instruction": "Filter to high DSO business units."
       }
@@ -1058,7 +1121,9 @@
         "sql": "DATE_TRUNC('month', business_units.txn_date)",
         "display_name": "transaction month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "billing month",
+          "activity month"
         ]
       },
       {
@@ -1066,7 +1131,9 @@
         "sql": "cash_transactions.ar_balance_usd + cash_transactions.inventory_investment_usd - cash_transactions.ap_balance_usd",
         "display_name": "net working capital USD",
         "synonyms": [
-          "NWC"
+          "NWC",
+          "net current assets",
+          "liquidity buffer"
         ]
       },
       {
@@ -1074,7 +1141,9 @@
         "sql": "working_capital_snapshots.actual_cash_flow_usd - working_capital_snapshots.forecasted_cash_flow_usd",
         "display_name": "cash flow variance",
         "synonyms": [
-          "forecast miss"
+          "forecast miss",
+          "budget deviation",
+          "cash gap"
         ]
       }
     ],
@@ -1084,7 +1153,9 @@
         "sql": "SUM(business_units.cash_inflow_usd) - SUM(business_units.cash_outflow_usd)",
         "display_name": "net cash flow",
         "synonyms": [
-          "cash position"
+          "cash position",
+          "cash surplus",
+          "net liquidity"
         ]
       },
       {
@@ -1092,7 +1163,9 @@
         "sql": "SUM(cash_transactions.ar_balance_usd)",
         "display_name": "total AR balance",
         "synonyms": [
-          "receivables"
+          "receivables",
+          "receivables balance",
+          "outstanding invoices"
         ]
       },
       {
@@ -1100,7 +1173,9 @@
         "sql": "AVG(cash_transactions.dso_days)",
         "display_name": "average DSO",
         "synonyms": [
-          "days sales outstanding"
+          "days sales outstanding",
+          "collection days",
+          "days to collect"
         ]
       },
       {
@@ -1108,7 +1183,9 @@
         "sql": "AVG(working_capital_snapshots.cash_conversion_cycle_days)",
         "display_name": "average CCC",
         "synonyms": [
-          "cash conversion cycle"
+          "cash conversion cycle",
+          "cash cycle",
+          "conversion cycle"
         ]
       }
     ]

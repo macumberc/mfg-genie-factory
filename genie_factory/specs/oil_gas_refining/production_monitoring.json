@@ -51,6 +51,11 @@
             "RO-UNS-18",
             "RO-MRX-19",
             "RO-WWT-20"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "plant code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Unsaturated Gas Plant",
             "Merox Unit",
             "Wastewater Treatment"
+          ],
+          "synonyms": [
+            "equipment name",
+            "asset name",
+            "plant name"
           ]
         },
         {
@@ -103,6 +113,11 @@
             "Jet Fuel",
             "LPG",
             "Propylene"
+          ],
+          "synonyms": [
+            "output stream",
+            "product line",
+            "commodity flow"
           ]
         },
         {
@@ -119,6 +134,11 @@
             "Utilities",
             "Blending",
             "Gas Processing"
+          ],
+          "synonyms": [
+            "plant area",
+            "processing zone",
+            "operational block"
           ]
         },
         {
@@ -346,6 +366,11 @@
             "RO-UNS-18",
             "RO-MRX-19",
             "RO-WWT-20"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "plant code"
           ]
         },
         {
@@ -375,6 +400,11 @@
             "Unsaturated Gas Plant",
             "Merox Unit",
             "Wastewater Treatment"
+          ],
+          "synonyms": [
+            "equipment name",
+            "asset name",
+            "plant name"
           ]
         },
         {
@@ -391,6 +421,11 @@
             "Utilities",
             "Blending",
             "Gas Processing"
+          ],
+          "synonyms": [
+            "plant area",
+            "processing zone",
+            "operational block"
           ]
         },
         {
@@ -588,6 +623,11 @@
             "RO-UNS-18",
             "RO-MRX-19",
             "RO-WWT-20"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "plant code"
           ]
         },
         {
@@ -604,6 +644,11 @@
             "Utilities",
             "Blending",
             "Gas Processing"
+          ],
+          "synonyms": [
+            "plant area",
+            "processing zone",
+            "operational block"
           ]
         },
         {
@@ -858,7 +903,8 @@
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of feed quality API gravity across all readings, matching phrases like 'feed quality over time' or 'API gravity trend'."
     },
     {
       "question": "How has average throughput bpd changed over time?",
@@ -867,7 +913,8 @@
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average throughput in barrels per day from throughput_readings_metrics, matching 'how has throughput changed' or 'BPD over time'."
     },
     {
       "question": "What is the monthly trend in total downtime hours?",
@@ -876,7 +923,8 @@
         "FROM {fqn}.production_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total downtime hours from production_snapshots_metrics, matching 'downtime trend' or 'how has downtime changed over time'."
     },
     {
       "question": "How does total throughput in barrels per day break down by process unit id for 'Running' records?",
@@ -884,7 +932,8 @@
         "SELECT unit_id, COUNT(*) AS record_count, SUM(throughput_bpd) AS total_throughput_bpd",
         "FROM {fqn}.throughput_readings",
         "WHERE status = 'Running' GROUP BY unit_id ORDER BY total_throughput_bpd DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total throughput BPD broken down by unit_id where status = 'Running', matching 'active unit throughput breakdown' or 'running units by volume'."
     },
     {
       "question": "What is the trend of total average throughput bpd over time?",
@@ -892,7 +941,8 @@
         "SELECT snapshot_date, SUM(avg_throughput_bpd) AS total_avg_throughput_bpd",
         "FROM {fqn}.production_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of summed average throughput BPD from production_snapshots table, matching 'snapshot throughput trend' or 'total average throughput over time'."
     },
     {
       "question": "How has the average unit availability pct changed over time?",
@@ -900,7 +950,8 @@
         "SELECT kpi_month, AVG(availability_pct) AS avg_availability_pct",
         "FROM {fqn}.throughput_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average unit availability percentage from throughput_kpi_monthly, matching 'availability trend' or 'how has unit availability changed'."
     },
     {
       "question": "How has unique total readingss changed over time?",
@@ -909,7 +960,8 @@
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series count of total readings from throughput_readings_metrics, matching 'reading volume over time' or 'how many readings recorded per period'."
     }
   ],
   "sql_snippets": {
@@ -919,7 +971,8 @@
         "display_name": "running units",
         "synonyms": [
           "active",
-          "online"
+          "online",
+          "active units"
         ],
         "instruction": "Filter to running units."
       },
@@ -927,7 +980,9 @@
         "sql": "utilization_pct < 70",
         "display_name": "low utilization",
         "synonyms": [
-          "underutilized"
+          "underutilized",
+          "underperforming units",
+          "idle capacity"
         ],
         "instruction": "Low utilization units."
       },
@@ -936,7 +991,8 @@
         "display_name": "conversion units",
         "synonyms": [
           "FCC",
-          "cracking"
+          "cracking",
+          "cracking section"
         ],
         "instruction": "Filter to conversion section."
       }
@@ -947,7 +1003,9 @@
         "sql": "throughput_readings.throughput_bpd",
         "display_name": "throughput BPD",
         "synonyms": [
-          "barrels per day"
+          "barrels per day",
+          "barrel output",
+          "daily barrels"
         ]
       },
       {
@@ -955,7 +1013,9 @@
         "sql": "throughput_kpi_monthly.gross_margin_per_bbl * throughput_kpi_monthly.monthly_throughput_bbl",
         "display_name": "total margin",
         "synonyms": [
-          "gross margin"
+          "gross margin",
+          "total profit",
+          "gross earnings"
         ]
       },
       {
@@ -963,7 +1023,9 @@
         "sql": "DATE_TRUNC('month', throughput_readings.reading_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "monthly period",
+          "calendar month"
         ]
       }
     ],
@@ -973,7 +1035,9 @@
         "sql": "AVG(throughput_readings.throughput_bpd)",
         "display_name": "avg throughput",
         "synonyms": [
-          "throughput"
+          "throughput",
+          "mean flow rate",
+          "average barrels"
         ]
       },
       {
@@ -981,7 +1045,9 @@
         "sql": "AVG(throughput_readings.utilization_pct)",
         "display_name": "avg utilization",
         "synonyms": [
-          "utilization"
+          "utilization",
+          "mean capacity use",
+          "average run rate"
         ]
       },
       {
@@ -989,7 +1055,9 @@
         "sql": "SUM(production_snapshots.total_product_bbl)",
         "display_name": "total output",
         "synonyms": [
-          "production"
+          "production",
+          "total barrels",
+          "cumulative production"
         ]
       },
       {
@@ -997,7 +1065,9 @@
         "sql": "SUM(production_snapshots.downtime_hours)",
         "display_name": "total downtime",
         "synonyms": [
-          "downtime"
+          "downtime",
+          "total outage",
+          "offline hours"
         ]
       }
     ]

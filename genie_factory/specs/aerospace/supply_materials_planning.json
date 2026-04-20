@@ -51,6 +51,11 @@
             "MAT-018",
             "MAT-019",
             "MAT-020"
+          ],
+          "synonyms": [
+            "part number",
+            "mat code",
+            "item id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Ti-6Al-4V Wire (AM)",
             "Inconel 718 Powder (AM)",
             "Al-Si10Mg Powder (AM)"
+          ],
+          "synonyms": [
+            "part description",
+            "alloy name",
+            "item label"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Aluminum",
             "Specialty Steel",
             "Ceramic Matrix"
+          ],
+          "synonyms": [
+            "alloy type",
+            "commodity group",
+            "raw material type"
           ]
         },
         {
@@ -366,6 +381,11 @@
             "MAT-018",
             "MAT-019",
             "MAT-020"
+          ],
+          "synonyms": [
+            "part number",
+            "mat code",
+            "item id"
           ]
         },
         {
@@ -381,6 +401,11 @@
             "Aluminum",
             "Specialty Steel",
             "Ceramic Matrix"
+          ],
+          "synonyms": [
+            "alloy type",
+            "commodity group",
+            "raw material type"
           ]
         },
         {
@@ -583,6 +608,11 @@
             "MAT-018",
             "MAT-019",
             "MAT-020"
+          ],
+          "synonyms": [
+            "part number",
+            "mat code",
+            "item id"
           ]
         },
         {
@@ -598,6 +628,11 @@
             "Aluminum",
             "Specialty Steel",
             "Ceramic Matrix"
+          ],
+          "synonyms": [
+            "alloy type",
+            "commodity group",
+            "raw material type"
           ]
         },
         {
@@ -888,7 +923,8 @@
         "FROM {fqn}.procurement_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct materials procured; matches phrases like 'how many unique materials ordered each month' using order_date and unique_material_count."
     },
     {
       "question": "How has highest order quantity kg changed over time?",
@@ -897,7 +933,8 @@
         "FROM {fqn}.procurement_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak single-order volume in kg; matches 'largest order quantity over time' using order_date and max_order_quantity_kg."
     },
     {
       "question": "What is the monthly trend in highest on hand kg?",
@@ -906,7 +943,8 @@
         "FROM {fqn}.supply_position_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak on-hand inventory in kg; matches 'highest stock level over time' using snapshot_date and max_on_hand_kg."
     },
     {
       "question": "How does total order quantity in kilograms break down by material for 'On Time' records?",
@@ -914,7 +952,8 @@
         "SELECT material_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.procurement_orders",
         "WHERE delivery_status = 'On Time' GROUP BY material_id ORDER BY total_order_quantity_kg DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate breaking down total order quantity by material for on-time deliveries only; matches 'which materials had the most kg delivered on time' filtering delivery_status = 'On Time'."
     },
     {
       "question": "What is the trend of total on-hand inventory in kg over time?",
@@ -922,7 +961,8 @@
         "SELECT snapshot_date, SUM(on_hand_kg) AS total_on_hand_kg",
         "FROM {fqn}.supply_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total inventory on hand across all materials over time; matches 'how has our total stock changed' using supply_snapshots and on_hand_kg."
     },
     {
       "question": "How has the average supplier on-time delivery rate changed over time?",
@@ -930,7 +970,8 @@
         "SELECT report_month, AVG(on_time_delivery_pct) AS avg_on_time_delivery_pct",
         "FROM {fqn}.supply_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average supplier on-time delivery rate; matches 'is supplier delivery performance improving' using supply_kpi_monthly and on_time_delivery_pct."
     },
     {
       "question": "How has late delivery count changed over time?",
@@ -939,7 +980,8 @@
         "FROM {fqn}.procurement_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of late delivery count; matches 'are late deliveries increasing or decreasing over time' using order_date and late_delivery_count."
     }
   ],
   "sql_snippets": {
@@ -949,7 +991,8 @@
         "display_name": "late deliveries",
         "synonyms": [
           "overdue POs",
-          "late orders"
+          "late orders",
+          "overdue orders"
         ],
         "instruction": "Filter for late delivery purchase orders."
       },
@@ -958,7 +1001,8 @@
         "display_name": "critical supply",
         "synonyms": [
           "at-risk materials",
-          "supply shortage"
+          "supply shortage",
+          "at-risk stock"
         ],
         "instruction": "Filter for materials in critical supply status."
       },
@@ -967,7 +1011,8 @@
         "display_name": "single-source materials",
         "synonyms": [
           "sole source",
-          "single supplier"
+          "single supplier",
+          "no alternate source"
         ],
         "instruction": "Filter for materials with single-source risk."
       }
@@ -978,7 +1023,9 @@
         "sql": "DATE_TRUNC('month', procurement_orders.order_date)",
         "display_name": "order month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "po month",
+          "purchase month"
         ]
       },
       {
@@ -987,7 +1034,8 @@
         "display_name": "available inventory kg",
         "synonyms": [
           "free stock",
-          "unallocated"
+          "unallocated",
+          "free stock kg"
         ]
       },
       {
@@ -996,7 +1044,8 @@
         "display_name": "PO value USD",
         "synonyms": [
           "order value",
-          "line value"
+          "line value",
+          "order cost"
         ]
       }
     ],
@@ -1007,7 +1056,8 @@
         "display_name": "total procurement value",
         "synonyms": [
           "spend",
-          "procurement cost"
+          "procurement cost",
+          "total spend"
         ]
       },
       {
@@ -1015,7 +1065,9 @@
         "sql": "AVG(procurement_orders.lead_time_weeks)",
         "display_name": "average lead time weeks",
         "synonyms": [
-          "delivery lead time"
+          "delivery lead time",
+          "mean lead time",
+          "typical lead time"
         ]
       },
       {
@@ -1024,7 +1076,8 @@
         "display_name": "average days of supply",
         "synonyms": [
           "DOS",
-          "inventory coverage"
+          "inventory coverage",
+          "mean supply days"
         ]
       },
       {
@@ -1033,7 +1086,8 @@
         "display_name": "total on-hand inventory kg",
         "synonyms": [
           "stock on hand",
-          "available inventory"
+          "available inventory",
+          "total stock kg"
         ]
       }
     ]

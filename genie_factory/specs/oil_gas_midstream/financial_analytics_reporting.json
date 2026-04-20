@@ -51,6 +51,11 @@
             "ML-18",
             "ML-19",
             "ML-20"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "IT & Cybersecurity",
             "HSE Division",
             "Human Resources"
+          ],
+          "synonyms": [
+            "cc label",
+            "department name",
+            "cost group"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Maintenance",
             "Commercial",
             "Corporate"
+          ],
+          "synonyms": [
+            "business unit",
+            "segment",
+            "line of business"
           ]
         },
         {
@@ -114,6 +129,11 @@
             "National",
             "Houston",
             "Washington"
+          ],
+          "synonyms": [
+            "territory",
+            "area",
+            "geography"
           ]
         },
         {
@@ -338,6 +358,11 @@
             "ML-18",
             "ML-19",
             "ML-20"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -367,6 +392,11 @@
             "IT & Cybersecurity",
             "HSE Division",
             "Human Resources"
+          ],
+          "synonyms": [
+            "cc label",
+            "department name",
+            "cost group"
           ]
         },
         {
@@ -382,6 +412,11 @@
             "Maintenance",
             "Commercial",
             "Corporate"
+          ],
+          "synonyms": [
+            "business unit",
+            "segment",
+            "line of business"
           ]
         },
         {
@@ -401,6 +436,11 @@
             "National",
             "Houston",
             "Washington"
+          ],
+          "synonyms": [
+            "territory",
+            "area",
+            "geography"
           ]
         },
         {
@@ -617,6 +657,11 @@
             "ML-18",
             "ML-19",
             "ML-20"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -632,6 +677,11 @@
             "Maintenance",
             "Commercial",
             "Corporate"
+          ],
+          "synonyms": [
+            "business unit",
+            "segment",
+            "line of business"
           ]
         },
         {
@@ -651,6 +701,11 @@
             "National",
             "Houston",
             "Washington"
+          ],
+          "synonyms": [
+            "territory",
+            "area",
+            "geography"
           ]
         },
         {
@@ -927,7 +982,8 @@
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend analysis of actual transaction spend in USD across all cost centers, divisions, or regions using the financial_transactions_metrics metric view."
     },
     {
       "question": "How has total budgeted amount usd changed over time?",
@@ -936,7 +992,8 @@
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total budgeted amounts in USD over transaction dates, useful for budget tracking and spend planning conversations."
     },
     {
       "question": "What is the monthly trend in total planned revenue usd?",
@@ -945,7 +1002,8 @@
         "FROM {fqn}.budget_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of planned revenue in USD from budget snapshots, suited for forward-looking revenue planning and snapshot-based forecasting questions."
     },
     {
       "question": "What is the trend of total transaction amount usd over time?",
@@ -953,7 +1011,8 @@
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregation of actual transaction amounts in USD directly from the financial_transactions table, for raw spend trend analysis."
     },
     {
       "question": "What is the trend of total planned monthly revenue usd over time?",
@@ -961,7 +1020,8 @@
         "SELECT snapshot_month, SUM(planned_revenue_usd) AS total_planned_revenue_usd",
         "FROM {fqn}.budget_snapshots",
         "GROUP BY snapshot_month ORDER BY snapshot_month"
-      ]
+      ],
+      "usage_guidance": "Monthly planned revenue trend sourced directly from budget_snapshots table, for pipeline or forecast revenue discussions referencing planned figures."
     },
     {
       "question": "How has the average operating margin percentage changed over time?",
@@ -969,7 +1029,8 @@
         "SELECT kpi_month, AVG(operating_margin_pct) AS avg_operating_margin_pct",
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Trend of average operating margin percentage over time from KPI data, for profitability performance and margin efficiency conversations."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -978,7 +1039,8 @@
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique transaction counts over time, useful for transaction volume, activity frequency, or operational throughput questions."
     }
   ],
   "sql_snippets": {
@@ -988,7 +1050,8 @@
         "display_name": "revenue only",
         "synonyms": [
           "revenue",
-          "sales"
+          "sales",
+          "income entries"
         ],
         "instruction": "Filter to revenue transactions."
       },
@@ -996,7 +1059,9 @@
         "sql": "division = 'Transportation'",
         "display_name": "transportation division",
         "synonyms": [
-          "transportation"
+          "transportation",
+          "pipeline segment",
+          "transport unit"
         ],
         "instruction": "Filter to Transportation division."
       },
@@ -1005,7 +1070,8 @@
         "display_name": "over budget OPEX",
         "synonyms": [
           "overrun",
-          "budget exceeded"
+          "budget exceeded",
+          "opex overage"
         ],
         "instruction": "Find cost centers over budget."
       }
@@ -1016,7 +1082,9 @@
         "sql": "financial_transactions.amount_usd - financial_transactions.budget_amount_usd",
         "display_name": "budget variance",
         "synonyms": [
-          "variance"
+          "variance",
+          "spend delta",
+          "vs budget"
         ]
       },
       {
@@ -1024,7 +1092,9 @@
         "sql": "ROUND(100.0 * (budget_snapshots.actual_revenue_usd - budget_snapshots.planned_revenue_usd) / NULLIF(budget_snapshots.planned_revenue_usd, 0), 2)",
         "display_name": "revenue variance pct",
         "synonyms": [
-          "plan vs actual"
+          "plan vs actual",
+          "revenue delta pct",
+          "top line variance"
         ]
       },
       {
@@ -1032,7 +1102,9 @@
         "sql": "DATE_TRUNC('month', financial_transactions.transaction_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "posting month",
+          "txn month"
         ]
       }
     ],
@@ -1042,7 +1114,9 @@
         "sql": "SUM(CASE WHEN financial_transactions.account_type = 'Revenue' THEN financial_transactions.amount_usd ELSE 0 END)",
         "display_name": "total revenue",
         "synonyms": [
-          "revenue"
+          "revenue",
+          "gross income",
+          "top line"
         ]
       },
       {
@@ -1050,7 +1124,9 @@
         "sql": "SUM(CASE WHEN financial_transactions.account_type = 'OPEX' THEN financial_transactions.amount_usd ELSE 0 END)",
         "display_name": "total OPEX",
         "synonyms": [
-          "costs"
+          "costs",
+          "operating costs",
+          "total expenses"
         ]
       },
       {
@@ -1058,7 +1134,9 @@
         "sql": "SUM(budget_snapshots.ebitda_usd)",
         "display_name": "total EBITDA",
         "synonyms": [
-          "earnings"
+          "earnings",
+          "earnings before interest",
+          "operating profit"
         ]
       },
       {
@@ -1066,7 +1144,9 @@
         "sql": "AVG(financial_kpi_monthly.operating_margin_pct)",
         "display_name": "avg operating margin",
         "synonyms": [
-          "margin"
+          "margin",
+          "mean margin",
+          "avg op margin"
         ]
       }
     ]

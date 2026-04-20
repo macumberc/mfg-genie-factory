@@ -51,6 +51,11 @@
             "QR-UTL-18",
             "QR-STR-19",
             "QR-LAB-20"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "plant unit code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Amine Treating Unit",
             "Storage & Loading",
             "Quality Lab Operations"
+          ],
+          "synonyms": [
+            "equipment name",
+            "asset name",
+            "plant unit"
           ]
         },
         {
@@ -95,6 +105,10 @@
             "Regular Gasoline",
             "Premium Gasoline",
             "Jet Fuel"
+          ],
+          "synonyms": [
+            "fuel type",
+            "product type"
           ]
         },
         {
@@ -325,6 +339,11 @@
             "QR-UTL-18",
             "QR-STR-19",
             "QR-LAB-20"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "plant unit code"
           ]
         },
         {
@@ -354,6 +373,11 @@
             "Amine Treating Unit",
             "Storage & Loading",
             "Quality Lab Operations"
+          ],
+          "synonyms": [
+            "equipment name",
+            "asset name",
+            "plant unit"
           ]
         },
         {
@@ -369,6 +393,10 @@
             "Regular Gasoline",
             "Premium Gasoline",
             "Jet Fuel"
+          ],
+          "synonyms": [
+            "fuel type",
+            "product type"
           ]
         },
         {
@@ -570,6 +598,11 @@
             "QR-UTL-18",
             "QR-STR-19",
             "QR-LAB-20"
+          ],
+          "synonyms": [
+            "equipment code",
+            "asset id",
+            "plant unit code"
           ]
         },
         {
@@ -585,6 +618,10 @@
             "Regular Gasoline",
             "Premium Gasoline",
             "Jet Fuel"
+          ],
+          "synonyms": [
+            "fuel type",
+            "product type"
           ]
         },
         {
@@ -848,7 +885,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of off-spec barrel volume using the quality_events_metrics metric view; triggered by phrases like 'off-spec volume over time' or 'monthly off-spec barrels'."
     },
     {
       "question": "How has total financial impact in usd changed over time?",
@@ -857,7 +895,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of cumulative financial impact in USD from quality events; triggered by phrases like 'financial impact over time' or 'quality cost trend'."
     },
     {
       "question": "What is the monthly trend in total batch volume in barrels?",
@@ -866,7 +905,8 @@
         "FROM {fqn}.batch_records_metrics",
         "GROUP BY ALL",
         "ORDER BY batch_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total batch throughput volume in barrels using batch_records_metrics; triggered by phrases like 'batch volume over time' or 'monthly production volume trend'."
     },
     {
       "question": "What is the trend of total off-spec product volume in barrels over time?",
@@ -874,7 +914,8 @@
         "SELECT event_date, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
         "FROM {fqn}.quality_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of off-spec product volume directly from quality_events table; use when user asks for historical off-spec barrel trend without metric view aggregation."
     },
     {
       "question": "What is the trend of total batch volume in barrels over time?",
@@ -882,7 +923,8 @@
         "SELECT batch_date, SUM(volume_bbl) AS total_volume_bbl",
         "FROM {fqn}.batch_records",
         "GROUP BY batch_date ORDER BY batch_date"
-      ]
+      ],
+      "usage_guidance": "Date-level trend of total batch volume from raw batch_records table; use when user asks for production volume history without metric view pre-aggregation."
     },
     {
       "question": "How has the average first-pass quality yield percentage changed over time?",
@@ -890,7 +932,8 @@
         "SELECT kpi_month, AVG(first_pass_yield_pct) AS avg_first_pass_yield_pct",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average first-pass yield percentage from quality_kpi_monthly; triggered by phrases like 'first-pass yield over time' or 'quality yield trend by month'."
     },
     {
       "question": "Which unit ids have the highest total off-spec volume in barrels?",
@@ -899,7 +942,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY total_off_spec_bbl DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of refinery units by highest total off-spec barrel volume; triggered by phrases like 'worst performing units' or 'which unit produces most off-spec product'."
     }
   ],
   "sql_snippets": {
@@ -909,7 +953,8 @@
         "display_name": "major quality events",
         "synonyms": [
           "critical quality",
-          "serious deviations"
+          "serious deviations",
+          "critical incidents"
         ],
         "instruction": "Filter to major and critical quality events."
       },
@@ -918,7 +963,8 @@
         "display_name": "failed batches",
         "synonyms": [
           "off-spec",
-          "rejected"
+          "rejected",
+          "rejected batches"
         ],
         "instruction": "Filter batch records to failed quality tests."
       },
@@ -927,7 +973,8 @@
         "display_name": "high sulfur",
         "synonyms": [
           "sulfur exceedance",
-          "high S content"
+          "high S content",
+          "elevated sulfur"
         ],
         "instruction": "Filter to batches with sulfur above 15 PPM."
       }
@@ -939,7 +986,8 @@
         "display_name": "fail rate",
         "synonyms": [
           "rejection rate",
-          "off-spec rate"
+          "off-spec rate",
+          "defect rate"
         ]
       },
       {
@@ -948,7 +996,8 @@
         "display_name": "average resolution time",
         "synonyms": [
           "MTTR",
-          "fix time"
+          "fix time",
+          "mean fix time"
         ]
       },
       {
@@ -956,7 +1005,9 @@
         "sql": "DATE_TRUNC('month', quality_events.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "month"
+          "month",
+          "incident month",
+          "quality month"
         ]
       }
     ],
@@ -967,7 +1018,8 @@
         "display_name": "total quality impact",
         "synonyms": [
           "quality cost",
-          "financial impact"
+          "financial impact",
+          "total cost of quality"
         ]
       },
       {
@@ -976,7 +1028,8 @@
         "display_name": "total off-spec volume",
         "synonyms": [
           "off-spec barrels",
-          "rejected volume"
+          "rejected volume",
+          "out-of-spec barrels"
         ]
       },
       {
@@ -985,7 +1038,8 @@
         "display_name": "total batch volume",
         "synonyms": [
           "production volume",
-          "throughput"
+          "throughput",
+          "total production"
         ]
       },
       {
@@ -994,7 +1048,8 @@
         "display_name": "average sulfur",
         "synonyms": [
           "sulfur content",
-          "S content"
+          "S content",
+          "mean sulfur"
         ]
       }
     ]

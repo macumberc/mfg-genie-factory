@@ -51,6 +51,11 @@
             "CC-CAP-018",
             "CC-CAP-019",
             "CC-CAP-020"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "charge code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Grid Modernization",
             "Plant Upgrades",
             "Battery Storage Projects"
+          ],
+          "synonyms": [
+            "cc label",
+            "charge group",
+            "budget unit"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Fuel",
             "Admin",
             "Capital Projects"
+          ],
+          "synonyms": [
+            "business unit",
+            "division",
+            "functional area"
           ]
         },
         {
@@ -108,6 +123,11 @@
             "Midwest",
             "West",
             "Corporate"
+          ],
+          "synonyms": [
+            "territory",
+            "operating zone",
+            "geographic area"
           ]
         },
         {
@@ -345,6 +365,11 @@
             "CC-CAP-018",
             "CC-CAP-019",
             "CC-CAP-020"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "charge code"
           ]
         },
         {
@@ -359,6 +384,11 @@
             "Fuel",
             "Admin",
             "Capital Projects"
+          ],
+          "synonyms": [
+            "business unit",
+            "division",
+            "functional area"
           ]
         },
         {
@@ -600,6 +630,11 @@
             "CC-CAP-018",
             "CC-CAP-019",
             "CC-CAP-020"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "charge code"
           ]
         },
         {
@@ -614,6 +649,11 @@
             "Fuel",
             "Admin",
             "Capital Projects"
+          ],
+          "synonyms": [
+            "business unit",
+            "division",
+            "functional area"
           ]
         },
         {
@@ -941,7 +981,8 @@
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly revenue trend over time using the financial_kpi_monthly metric view; matches phrases like 'revenue over time' or 'monthly revenue performance'."
     },
     {
       "question": "How has total actual cost in usd changed over time?",
@@ -950,7 +991,8 @@
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Month-over-month actual cost trend from financial_kpi_monthly; matches phrases like 'how costs changed' or 'actual spend over time' across all departments."
     },
     {
       "question": "What is the monthly trend in average operating margin pct?",
@@ -959,7 +1001,8 @@
         "FROM {fqn}.budget_status_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly operating margin trend from budget_status_monthly metric view; matches phrases like 'margin trend' or 'operating margin over time' at the snapshot level."
     },
     {
       "question": "Rank departments by total committed capex usd",
@@ -968,7 +1011,8 @@
         "FROM {fqn}.budget_status_monthly",
         "GROUP BY ALL",
         "ORDER BY total_capex_committed DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N department ranking by committed capital expenditure from budget_status_monthly; matches phrases like 'which departments have highest capex' or 'capex by department'."
     },
     {
       "question": "How does total transaction amount in usd break down by cost center for 'Pending' records?",
@@ -976,7 +1020,8 @@
         "SELECT cost_center_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cost_centers",
         "WHERE approval_status = 'Pending' GROUP BY cost_center_id ORDER BY total_amount_usd DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of transaction amounts by cost center where approval_status is Pending; matches phrases like 'pending transactions' or 'unapproved spend by cost center'."
     },
     {
       "question": "What is the trend of total revenue in usd (generation cost centers only) over time?",
@@ -984,7 +1029,8 @@
         "SELECT record_date, SUM(revenue_usd) AS total_revenue_usd",
         "FROM {fqn}.financial_transactions",
         "GROUP BY record_date ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Time-series revenue trend queried directly from financial_transactions table; matches phrases like 'generation revenue over time' or 'raw revenue trend by date'."
     },
     {
       "question": "How has the average operating margin percentage changed over time?",
@@ -992,7 +1038,8 @@
         "SELECT snapshot_date, AVG(operating_margin_pct) AS avg_operating_margin_pct",
         "FROM {fqn}.budget_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Historical average operating margin trend from budget_snapshots table; matches phrases like 'margin performance over time' or 'how operating margin changed by snapshot date'."
     }
   ],
   "sql_snippets": {
@@ -1002,7 +1049,8 @@
         "display_name": "approved transactions",
         "synonyms": [
           "approved spend",
-          "authorized"
+          "authorized",
+          "cleared spend"
         ],
         "instruction": "Use when filtering to approved financial transactions."
       },
@@ -1011,7 +1059,8 @@
         "display_name": "over budget centers",
         "synonyms": [
           "exceeded budget",
-          "overspend"
+          "overspend",
+          "budget breached"
         ],
         "instruction": "Use when filtering to cost centers exceeding their budget."
       },
@@ -1020,7 +1069,8 @@
         "display_name": "capital expenditures",
         "synonyms": [
           "CapEx",
-          "capital projects"
+          "capital projects",
+          "capex spend"
         ],
         "instruction": "Use when filtering to capital expenditure transactions."
       }
@@ -1031,7 +1081,9 @@
         "sql": "DATE_TRUNC('month', cost_centers.transaction_date)",
         "display_name": "transaction month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "spend month",
+          "billing month"
         ]
       },
       {
@@ -1040,7 +1092,8 @@
         "display_name": "budget utilization pct",
         "synonyms": [
           "burn rate",
-          "spend rate"
+          "spend rate",
+          "budget consumed"
         ]
       },
       {
@@ -1049,7 +1102,8 @@
         "display_name": "cost per revenue dollar",
         "synonyms": [
           "cost ratio",
-          "efficiency ratio"
+          "efficiency ratio",
+          "expense ratio"
         ]
       }
     ],
@@ -1060,7 +1114,8 @@
         "display_name": "total spend USD",
         "synonyms": [
           "total expenses",
-          "expenditure"
+          "expenditure",
+          "total charges"
         ]
       },
       {
@@ -1069,7 +1124,8 @@
         "display_name": "total budget variance",
         "synonyms": [
           "budget gap",
-          "over/under"
+          "over/under",
+          "spend deviation"
         ]
       },
       {
@@ -1078,7 +1134,8 @@
         "display_name": "total CapEx committed",
         "synonyms": [
           "capital committed",
-          "CapEx"
+          "CapEx",
+          "capex total"
         ]
       },
       {
@@ -1087,7 +1144,8 @@
         "display_name": "average operating margin",
         "synonyms": [
           "margin",
-          "profitability"
+          "profitability",
+          "mean margin"
         ]
       }
     ]

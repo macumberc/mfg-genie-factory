@@ -51,6 +51,11 @@
             "CFG-018",
             "CFG-019",
             "CFG-020"
+          ],
+          "synonyms": [
+            "design id",
+            "variant code",
+            "setup id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Next-Gen Narrowbody",
             "Widebody Efficiency",
             "Widebody Open Rotor"
+          ],
+          "synonyms": [
+            "design label",
+            "variant name",
+            "setup title"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Folding Wingtip",
             "Truss-Braced",
             "Blended Wing Body"
+          ],
+          "synonyms": [
+            "airfoil category",
+            "wing geometry",
+            "wing design"
           ]
         },
         {
@@ -106,6 +121,11 @@
             "Geared Turbofan",
             "Open Rotor",
             "Hybrid Electric"
+          ],
+          "synonyms": [
+            "propulsion type",
+            "motor category",
+            "powerplant type"
           ]
         },
         {
@@ -331,6 +351,11 @@
             "CFG-018",
             "CFG-019",
             "CFG-020"
+          ],
+          "synonyms": [
+            "design id",
+            "variant code",
+            "setup id"
           ]
         },
         {
@@ -344,6 +369,11 @@
             "Folding Wingtip",
             "Truss-Braced",
             "Blended Wing Body"
+          ],
+          "synonyms": [
+            "airfoil category",
+            "wing geometry",
+            "wing design"
           ]
         },
         {
@@ -357,6 +387,11 @@
             "Geared Turbofan",
             "Open Rotor",
             "Hybrid Electric"
+          ],
+          "synonyms": [
+            "propulsion type",
+            "motor category",
+            "powerplant type"
           ]
         },
         {
@@ -578,6 +613,11 @@
             "CFG-018",
             "CFG-019",
             "CFG-020"
+          ],
+          "synonyms": [
+            "design id",
+            "variant code",
+            "setup id"
           ]
         },
         {
@@ -591,6 +631,11 @@
             "Folding Wingtip",
             "Truss-Braced",
             "Blended Wing Body"
+          ],
+          "synonyms": [
+            "airfoil category",
+            "wing geometry",
+            "wing design"
           ]
         },
         {
@@ -604,6 +649,11 @@
             "Geared Turbofan",
             "Open Rotor",
             "Hybrid Electric"
+          ],
+          "synonyms": [
+            "propulsion type",
+            "motor category",
+            "powerplant type"
           ]
         },
         {
@@ -928,7 +978,8 @@
         "FROM {fqn}.simulation_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique design configurations tracked over time using simulation run dates from the simulation_metrics view."
     },
     {
       "question": "How has highest drag coefficient changed over time?",
@@ -937,7 +988,8 @@
         "FROM {fqn}.simulation_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak drag coefficient values across simulation runs, useful for aerodynamic performance degradation analysis."
     },
     {
       "question": "What is the monthly trend in highest wing span m?",
@@ -946,7 +998,8 @@
         "FROM {fqn}.parameter_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly progression of maximum wing span measurements over time, sourced from parameter_metrics snapshot dates."
     },
     {
       "question": "How has total empty weight kg changed over time?",
@@ -955,7 +1008,8 @@
         "FROM {fqn}.parameter_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative empty weight trajectory over time across parameter snapshots, relevant for structural weight budget monitoring."
     },
     {
       "question": "What is the trend of total total drag coefficient cd over time?",
@@ -963,7 +1017,8 @@
         "SELECT run_date, SUM(drag_coefficient) AS total_drag_coefficient",
         "FROM {fqn}.simulation_runs",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Aggregate drag coefficient summed per simulation run date directly from simulation_runs, for raw aerodynamic load trending."
     },
     {
       "question": "What is the trend of total wing span in meters over time?",
@@ -971,7 +1026,8 @@
         "SELECT snapshot_date, SUM(wing_span_m) AS total_wing_span_m",
         "FROM {fqn}.parameter_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Total wing span summed across parameter snapshot dates from parameter_snapshots, for geometric design evolution tracking."
     },
     {
       "question": "How many distinct unique monthly record are there per engine type?",
@@ -979,7 +1035,8 @@
         "SELECT engine_type, COUNT(DISTINCT record_id) AS distinct_count",
         "FROM {fqn}.optimization_monthly",
         "GROUP BY engine_type ORDER BY distinct_count DESC"
-      ]
+      ],
+      "usage_guidance": "Count of distinct monthly optimization records broken down by engine type category, for engine configuration coverage analysis."
     }
   ],
   "sql_snippets": {
@@ -989,7 +1046,8 @@
         "display_name": "Pareto-optimal designs",
         "synonyms": [
           "best trade-off",
-          "Pareto front"
+          "Pareto front",
+          "best tradeoff runs"
         ],
         "instruction": "Use when filtering for Pareto-optimal simulation runs."
       },
@@ -998,7 +1056,8 @@
         "display_name": "deployment-ready TRL",
         "synonyms": [
           "mature technology",
-          "TRL 6+"
+          "TRL 6+",
+          "production-ready"
         ],
         "instruction": "Use when filtering for configurations at TRL 6 or above."
       },
@@ -1007,7 +1066,8 @@
         "display_name": "converged simulations",
         "synonyms": [
           "valid runs",
-          "converged CFD"
+          "converged CFD",
+          "stable runs"
         ],
         "instruction": "Use when filtering for well-converged simulation results."
       }
@@ -1019,7 +1079,8 @@
         "display_name": "simulation month",
         "synonyms": [
           "month of simulation",
-          "monthly"
+          "monthly",
+          "run month"
         ]
       },
       {
@@ -1028,7 +1089,8 @@
         "display_name": "fuel burn improvement vs baseline",
         "synonyms": [
           "fuel savings",
-          "efficiency gain"
+          "efficiency gain",
+          "fuel savings pct"
         ]
       },
       {
@@ -1036,7 +1098,9 @@
         "sql": "simulation_runs.mtow_kg / NULLIF(simulation_runs.lift_to_drag_ratio, 0)",
         "display_name": "weight per unit L/D",
         "synonyms": [
-          "weight efficiency metric"
+          "weight efficiency metric",
+          "mass per ld",
+          "weight per lift drag"
         ]
       }
     ],
@@ -1047,7 +1111,8 @@
         "display_name": "average fuel burn kg/nm",
         "synonyms": [
           "fuel consumption",
-          "burn rate"
+          "burn rate",
+          "mean fuel use"
         ]
       },
       {
@@ -1056,7 +1121,8 @@
         "display_name": "average L/D ratio",
         "synonyms": [
           "aerodynamic efficiency",
-          "L/D"
+          "L/D",
+          "mean ld ratio"
         ]
       },
       {
@@ -1065,7 +1131,8 @@
         "display_name": "total compute hours",
         "synonyms": [
           "HPC hours",
-          "compute budget"
+          "compute budget",
+          "total cpu time"
         ]
       },
       {
@@ -1074,7 +1141,8 @@
         "display_name": "average fuel efficiency improvement",
         "synonyms": [
           "efficiency gain",
-          "fuel savings vs baseline"
+          "fuel savings vs baseline",
+          "mean efficiency gain"
         ]
       }
     ]

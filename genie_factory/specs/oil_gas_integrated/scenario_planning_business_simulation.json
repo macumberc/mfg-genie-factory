@@ -51,6 +51,11 @@
             "SC-TRANS-04",
             "SC-TRANS-05",
             "SC-BASE-03"
+          ],
+          "synonyms": [
+            "case code",
+            "plan id",
+            "strategy code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Hydrogen Production Launch",
             "Net Zero 2050 Pathway",
             "Baseline - Optimistic Outlook"
+          ],
+          "synonyms": [
+            "case label",
+            "plan title",
+            "strategy name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Production Upside",
             "Capital Realloc",
             "Transition"
+          ],
+          "synonyms": [
+            "plan type",
+            "case bucket",
+            "strategy group"
           ]
         },
         {
@@ -296,6 +311,11 @@
             "SC-TRANS-04",
             "SC-TRANS-05",
             "SC-BASE-03"
+          ],
+          "synonyms": [
+            "case code",
+            "plan id",
+            "strategy code"
           ]
         },
         {
@@ -325,6 +345,11 @@
             "Hydrogen Production Launch",
             "Net Zero 2050 Pathway",
             "Baseline - Optimistic Outlook"
+          ],
+          "synonyms": [
+            "case label",
+            "plan title",
+            "strategy name"
           ]
         },
         {
@@ -339,6 +364,11 @@
             "Production Upside",
             "Capital Realloc",
             "Transition"
+          ],
+          "synonyms": [
+            "plan type",
+            "case bucket",
+            "strategy group"
           ]
         },
         {
@@ -546,6 +576,11 @@
             "SC-TRANS-04",
             "SC-TRANS-05",
             "SC-BASE-03"
+          ],
+          "synonyms": [
+            "case code",
+            "plan id",
+            "strategy code"
           ]
         },
         {
@@ -560,6 +595,11 @@
             "Production Upside",
             "Capital Realloc",
             "Transition"
+          ],
+          "synonyms": [
+            "plan type",
+            "case bucket",
+            "strategy group"
           ]
         },
         {
@@ -825,7 +865,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of capital expenditure allocation in millions; matches phrases like 'capex over time' or 'spending trend' using total_capex_mm from simulation_runs_metrics."
     },
     {
       "question": "How has total production growth pct changed over time?",
@@ -834,7 +875,8 @@
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of production growth percentage; matches phrases like 'production growth over time' or 'how has output growth changed' using total_production_growth_percent."
     },
     {
       "question": "What is the monthly trend in average projected ebitda in millions usd?",
@@ -843,7 +885,8 @@
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average projected EBITDA in USD millions; matches phrases like 'earnings trend' or 'EBITDA outlook over time' using avg_projected_ebitda_mm from outcome_snapshots_metrics."
     },
     {
       "question": "What is the monthly trend in average co2 intensity kg per boe?",
@@ -852,7 +895,8 @@
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average CO2 intensity per barrel of oil equivalent; matches phrases like 'emissions intensity trend' or 'carbon footprint over time' using avg_co2_intensity."
     },
     {
       "question": "What is the trend of total assumed wti oil price usd per barrel over time?",
@@ -860,7 +904,8 @@
         "SELECT run_date, SUM(oil_price_assumption) AS total_oil_price_assumption",
         "FROM {fqn}.simulation_runs",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of total assumed WTI oil price per barrel; matches phrases like 'oil price assumption trend' or 'price deck over time' using oil_price_assumption from simulation_runs."
     },
     {
       "question": "What is the trend of total projected revenue in millions usd over time?",
@@ -868,7 +913,8 @@
         "SELECT snapshot_date, SUM(projected_revenue_mm) AS total_projected_revenue_mm",
         "FROM {fqn}.outcome_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total projected revenue in USD millions; matches phrases like 'revenue forecast over time' or 'projected income trend' using projected_revenue_mm from outcome_snapshots."
     },
     {
       "question": "How has the average probability-weighted irr percentage changed over time?",
@@ -876,7 +922,8 @@
         "SELECT kpi_month, AVG(weighted_irr_pct) AS avg_weighted_irr_pct",
         "FROM {fqn}.scenario_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series of average probability-weighted IRR percentage; matches phrases like 'risk-adjusted returns over time' or 'weighted IRR trend' using weighted_irr_pct from scenario_kpi_monthly."
     }
   ],
   "sql_snippets": {
@@ -896,7 +943,8 @@
         "display_name": "attractive IRR",
         "synonyms": [
           "high return",
-          "above threshold"
+          "above threshold",
+          "strong returns"
         ],
         "instruction": "Use to filter to simulation runs with IRR above 10%."
       },
@@ -905,7 +953,8 @@
         "display_name": "high confidence",
         "synonyms": [
           "reliable",
-          "strong confidence"
+          "strong confidence",
+          "high certainty"
         ],
         "instruction": "Use to filter outcome snapshots to high confidence projections."
       }
@@ -917,7 +966,8 @@
         "display_name": "NPV per capex dollar",
         "synonyms": [
           "capital efficiency",
-          "NPV ratio"
+          "NPV ratio",
+          "value per dollar"
         ]
       },
       {
@@ -926,7 +976,8 @@
         "display_name": "EBITDA margin percent",
         "synonyms": [
           "margin",
-          "profitability"
+          "profitability",
+          "margin percent"
         ]
       },
       {
@@ -935,7 +986,8 @@
         "display_name": "simulation month",
         "synonyms": [
           "month",
-          "period"
+          "period",
+          "simulation month"
         ]
       }
     ],
@@ -946,7 +998,8 @@
         "display_name": "average NPV",
         "synonyms": [
           "NPV",
-          "net present value"
+          "net present value",
+          "mean value"
         ]
       },
       {
@@ -955,7 +1008,8 @@
         "display_name": "average IRR",
         "synonyms": [
           "IRR",
-          "internal rate of return"
+          "internal rate of return",
+          "mean return"
         ]
       },
       {
@@ -964,7 +1018,8 @@
         "display_name": "total capex",
         "synonyms": [
           "capital expenditure",
-          "investment"
+          "investment",
+          "total spend"
         ]
       },
       {
@@ -973,7 +1028,8 @@
         "display_name": "average breakeven price",
         "synonyms": [
           "breakeven",
-          "floor price"
+          "floor price",
+          "mean breakeven"
         ]
       }
     ]

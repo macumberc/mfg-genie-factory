@@ -51,6 +51,11 @@
             "FLT-018",
             "FLT-019",
             "FLT-020"
+          ],
+          "synonyms": [
+            "asset code",
+            "truck id",
+            "unit number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Sprint III",
             "Sprint IV",
             "Sprint V"
+          ],
+          "synonyms": [
+            "truck name",
+            "asset label",
+            "fleet unit"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Medium Duty",
             "Light Duty",
             "Sprinter"
+          ],
+          "synonyms": [
+            "truck type",
+            "asset category",
+            "size class"
           ]
         },
         {
@@ -325,6 +340,11 @@
             "FLT-018",
             "FLT-019",
             "FLT-020"
+          ],
+          "synonyms": [
+            "asset code",
+            "truck id",
+            "unit number"
           ]
         },
         {
@@ -354,6 +374,11 @@
             "Sprint III",
             "Sprint IV",
             "Sprint V"
+          ],
+          "synonyms": [
+            "truck name",
+            "asset label",
+            "fleet unit"
           ]
         },
         {
@@ -367,6 +392,11 @@
             "Medium Duty",
             "Light Duty",
             "Sprinter"
+          ],
+          "synonyms": [
+            "truck type",
+            "asset category",
+            "size class"
           ]
         },
         {
@@ -568,6 +598,11 @@
             "FLT-018",
             "FLT-019",
             "FLT-020"
+          ],
+          "synonyms": [
+            "asset code",
+            "truck id",
+            "unit number"
           ]
         },
         {
@@ -597,6 +632,11 @@
             "Sprint III",
             "Sprint IV",
             "Sprint V"
+          ],
+          "synonyms": [
+            "truck name",
+            "asset label",
+            "fleet unit"
           ]
         },
         {
@@ -610,6 +650,11 @@
             "Medium Duty",
             "Light Duty",
             "Sprinter"
+          ],
+          "synonyms": [
+            "truck type",
+            "asset category",
+            "size class"
           ]
         },
         {
@@ -919,7 +964,8 @@
         "FROM {fqn}.fleet_operations_metrics",
         "GROUP BY ALL",
         "ORDER BY operation_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of active vehicle count; matches questions about fleet size changes, vehicle deployment frequency, or unique vehicles dispatched over time."
     },
     {
       "question": "How has highest route distance km changed over time?",
@@ -928,7 +974,8 @@
         "FROM {fqn}.fleet_operations_metrics",
         "GROUP BY ALL",
         "ORDER BY operation_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of maximum single-route distance; matches questions about longest haul evolution, peak route stretch, or how far vehicles have traveled on their longest runs."
     },
     {
       "question": "What is the monthly trend in total monthly fuel cost in usd?",
@@ -937,7 +984,8 @@
         "FROM {fqn}.fleet_kpi_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total fuel expenditure in USD; matches questions about fuel cost trajectory, spending on fuel over months, or fleet-wide fuel budget trends."
     },
     {
       "question": "How has average on-time delivery percentage changed over time?",
@@ -946,7 +994,8 @@
         "FROM {fqn}.fleet_kpi_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average on-time delivery rate; matches questions about delivery punctuality improvement, on-time performance over months, or service reliability trends."
     },
     {
       "question": "How does total total route distance in kilometers break down by vehicle asset for 'Failed' records?",
@@ -954,7 +1003,8 @@
         "SELECT vehicle_id, COUNT(*) AS record_count, SUM(route_distance_km) AS total_route_distance_km",
         "FROM {fqn}.fleet_operations",
         "WHERE delivery_status = 'Failed' GROUP BY vehicle_id ORDER BY total_route_distance_km DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total route distance broken down by individual vehicle asset, restricted to Failed delivery status; matches questions about which vehicles accumulate distance on failed deliveries."
     },
     {
       "question": "What is the trend of total hours vehicle was available for dispatch over time?",
@@ -962,7 +1012,8 @@
         "SELECT snapshot_date, SUM(available_hours) AS total_available_hours",
         "FROM {fqn}.vehicle_utilization_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total available dispatch hours across the fleet; matches questions about fleet readiness, schedulable capacity over time, or how available hours fluctuate by snapshot date."
     },
     {
       "question": "How has the average average utilization rate for the month changed over time?",
@@ -970,7 +1021,8 @@
         "SELECT report_month, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
         "FROM {fqn}.fleet_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average vehicle utilization rate from KPI data; matches questions about fleet efficiency over time, utilization rate changes month-over-month, or underutilization patterns."
     }
   ],
   "sql_snippets": {
@@ -980,7 +1032,8 @@
         "display_name": "on-time deliveries",
         "synonyms": [
           "successful deliveries",
-          "completed on time"
+          "completed on time",
+          "punctual drops"
         ],
         "instruction": "Use when calculating on-time delivery rates or filtering to successful operations."
       },
@@ -1012,7 +1065,8 @@
         "display_name": "operation month",
         "synonyms": [
           "month",
-          "reporting month"
+          "reporting month",
+          "trip month"
         ]
       },
       {
@@ -1021,7 +1075,8 @@
         "display_name": "profit margin",
         "synonyms": [
           "net margin",
-          "operating profit"
+          "operating profit",
+          "net profit"
         ]
       },
       {
@@ -1030,7 +1085,8 @@
         "display_name": "cost per km",
         "synonyms": [
           "unit cost",
-          "km cost"
+          "km cost",
+          "cost per mile"
         ]
       }
     ],
@@ -1051,7 +1107,8 @@
         "display_name": "on-time delivery rate",
         "synonyms": [
           "OTD rate",
-          "delivery success rate"
+          "delivery success rate",
+          "punctuality rate"
         ]
       },
       {
@@ -1070,7 +1127,8 @@
         "display_name": "total maintenance cost",
         "synonyms": [
           "maintenance spend",
-          "repair cost"
+          "repair cost",
+          "repair spend"
         ]
       }
     ]

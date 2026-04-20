@@ -51,6 +51,11 @@
             "RC-XB-018",
             "RC-NW-019",
             "RC-NW-020"
+          ],
+          "synonyms": [
+            "route code",
+            "lane id",
+            "path identifier"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "El Paso International",
             "Pacific NW Export Route",
             "Columbia River Corridor"
+          ],
+          "synonyms": [
+            "route name",
+            "lane name",
+            "path name"
           ]
         },
         {
@@ -92,6 +102,11 @@
             "Intermodal",
             "Bulk",
             "Manifest"
+          ],
+          "synonyms": [
+            "route category",
+            "lane type",
+            "freight type"
           ]
         },
         {
@@ -110,6 +125,11 @@
             "Central",
             "Cross-Border",
             "Northwest"
+          ],
+          "synonyms": [
+            "territory",
+            "operating zone",
+            "service area"
           ]
         },
         {
@@ -326,6 +346,11 @@
             "RC-XB-018",
             "RC-NW-019",
             "RC-NW-020"
+          ],
+          "synonyms": [
+            "route code",
+            "lane id",
+            "path identifier"
           ]
         },
         {
@@ -338,6 +363,11 @@
             "Intermodal",
             "Bulk",
             "Manifest"
+          ],
+          "synonyms": [
+            "route category",
+            "lane type",
+            "freight type"
           ]
         },
         {
@@ -356,6 +386,11 @@
             "Central",
             "Cross-Border",
             "Northwest"
+          ],
+          "synonyms": [
+            "territory",
+            "operating zone",
+            "service area"
           ]
         },
         {
@@ -585,6 +620,11 @@
             "RC-XB-018",
             "RC-NW-019",
             "RC-NW-020"
+          ],
+          "synonyms": [
+            "route code",
+            "lane id",
+            "path identifier"
           ]
         },
         {
@@ -597,6 +637,11 @@
             "Intermodal",
             "Bulk",
             "Manifest"
+          ],
+          "synonyms": [
+            "route category",
+            "lane type",
+            "freight type"
           ]
         },
         {
@@ -615,6 +660,11 @@
             "Central",
             "Cross-Border",
             "Northwest"
+          ],
+          "synonyms": [
+            "territory",
+            "operating zone",
+            "service area"
           ]
         },
         {
@@ -934,7 +984,8 @@
         "FROM {fqn}.route_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY movement_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend aggregate of gross ton miles (GTM) volume; matches phrases like 'GTM over time' or 'freight tonnage trend' using route_kpi_monthly total_gross_ton_miles."
     },
     {
       "question": "How has total train movements changed over time?",
@@ -943,7 +994,8 @@
         "FROM {fqn}.route_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY movement_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total train movement counts; matches 'train volume over time' or 'how many trains ran each month' using route_kpi_monthly total_trains."
     },
     {
       "question": "How does the number of unique plans vary by corridor type?",
@@ -952,7 +1004,8 @@
         "FROM {fqn}.capacity_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY plan_count DESC"
-      ]
+      ],
+      "usage_guidance": "Category breakdown of planning record counts by corridor type; matches 'plans per corridor type' or 'which corridor type has most plans' using capacity_kpi_monthly plan_count."
     },
     {
       "question": "What is the trend of total number of trains on corridor over time?",
@@ -960,7 +1013,8 @@
         "SELECT movement_date, SUM(trains_count) AS total_trains_count",
         "FROM {fqn}.rail_corridors",
         "GROUP BY movement_date ORDER BY movement_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of raw train counts on corridors; matches 'trains on corridor over time' or 'corridor traffic trend' directly from rail_corridors trains_count."
     },
     {
       "question": "What is the trend of total total congestion delay hours over time?",
@@ -968,7 +1022,8 @@
         "SELECT snapshot_date, SUM(congestion_hours) AS total_congestion_hours",
         "FROM {fqn}.train_movements",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total congestion delay hours; matches 'congestion over time' or 'how have delays changed' using train_movements congestion_hours by snapshot_date."
     },
     {
       "question": "How many distinct unique planning record are there per region?",
@@ -976,7 +1031,8 @@
         "SELECT region, COUNT(DISTINCT plan_id) AS distinct_count",
         "FROM {fqn}.corridor_snapshots",
         "GROUP BY region ORDER BY distinct_count DESC"
-      ]
+      ],
+      "usage_guidance": "Distinct planning record count grouped by region; matches 'planning records per region' or 'how many plans exist in each region' using corridor_snapshots plan_id."
     },
     {
       "question": "How has average terminal dwell hours changed over time?",
@@ -985,7 +1041,8 @@
         "FROM {fqn}.route_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY movement_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average terminal dwell hours; matches 'dwell time over time' or 'how long trains sit at terminals each month' using route_kpi_monthly avg_dwell_hours."
     }
   ],
   "sql_snippets": {
@@ -994,7 +1051,9 @@
         "sql": "train_movements.corridor_status IN ('Congested', 'Blocked')",
         "display_name": "congested corridors",
         "synonyms": [
-          "bottlenecks"
+          "bottlenecks",
+          "bottleneck routes",
+          "blocked lanes"
         ],
         "instruction": "Filter to congested/blocked corridors."
       },
@@ -1002,7 +1061,9 @@
         "sql": "corridor_snapshots.capacity_risk IN ('High', 'Critical')",
         "display_name": "high risk corridors",
         "synonyms": [
-          "at risk"
+          "at risk",
+          "critical routes",
+          "at-risk lanes"
         ],
         "instruction": "Filter to high capacity risk."
       },
@@ -1011,7 +1072,8 @@
         "display_name": "intermodal",
         "synonyms": [
           "container",
-          "COFC/TOFC"
+          "COFC/TOFC",
+          "intermodal routes"
         ],
         "instruction": "Filter to intermodal corridors."
       }
@@ -1022,7 +1084,9 @@
         "sql": "DATE_TRUNC('month', rail_corridors.movement_date)",
         "display_name": "movement month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "traffic month",
+          "reporting month"
         ]
       },
       {
@@ -1030,7 +1094,9 @@
         "sql": "rail_corridors.gross_ton_miles / NULLIF(rail_corridors.trains_count, 0)",
         "display_name": "GTM per train",
         "synonyms": [
-          "train efficiency"
+          "train efficiency",
+          "tonnage per train",
+          "load efficiency"
         ]
       },
       {
@@ -1038,7 +1104,9 @@
         "sql": "train_movements.congestion_hours / 168.0 * 100",
         "display_name": "congestion rate pct",
         "synonyms": [
-          "delay rate"
+          "delay rate",
+          "blockage percentage",
+          "congestion percentage"
         ]
       }
     ],
@@ -1048,7 +1116,9 @@
         "sql": "SUM(rail_corridors.gross_ton_miles)",
         "display_name": "total GTM millions",
         "synonyms": [
-          "ton-miles"
+          "ton-miles",
+          "total tonnage",
+          "gross ton miles"
         ]
       },
       {
@@ -1056,7 +1126,9 @@
         "sql": "AVG(rail_corridors.avg_velocity_mph)",
         "display_name": "average velocity",
         "synonyms": [
-          "train speed"
+          "train speed",
+          "average speed",
+          "mean train speed"
         ]
       },
       {
@@ -1064,7 +1136,9 @@
         "sql": "SUM(train_movements.congestion_hours)",
         "display_name": "total congestion hours",
         "synonyms": [
-          "delay hours"
+          "delay hours",
+          "total delay hours",
+          "total blockage hours"
         ]
       },
       {
@@ -1072,7 +1146,9 @@
         "sql": "SUM(corridor_snapshots.capex_needed_usd)",
         "display_name": "total CapEx needed",
         "synonyms": [
-          "capital investment"
+          "capital investment",
+          "total investment needed",
+          "capital expenditure"
         ]
       }
     ]

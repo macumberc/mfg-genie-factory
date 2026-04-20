@@ -51,6 +51,11 @@
             "PC-018",
             "PC-019",
             "PC-020"
+          ],
+          "synonyms": [
+            "product code",
+            "sku group id",
+            "cat code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Family Frozen Pizza",
             "Kids Snack Packs",
             "Trail Mix Variety"
+          ],
+          "synonyms": [
+            "product line",
+            "food category",
+            "item group"
           ]
         },
         {
@@ -98,6 +108,11 @@
             "Seafood",
             "Frozen",
             "Snacks"
+          ],
+          "synonyms": [
+            "customer group",
+            "market tier",
+            "consumer segment"
           ]
         },
         {
@@ -111,6 +126,11 @@
             "Specialty",
             "Premium",
             "Value"
+          ],
+          "synonyms": [
+            "sales channel",
+            "distribution path",
+            "trade channel"
           ]
         },
         {
@@ -342,6 +362,11 @@
             "PC-018",
             "PC-019",
             "PC-020"
+          ],
+          "synonyms": [
+            "product code",
+            "sku group id",
+            "cat code"
           ]
         },
         {
@@ -360,6 +385,11 @@
             "Seafood",
             "Frozen",
             "Snacks"
+          ],
+          "synonyms": [
+            "customer group",
+            "market tier",
+            "consumer segment"
           ]
         },
         {
@@ -373,6 +403,11 @@
             "Specialty",
             "Premium",
             "Value"
+          ],
+          "synonyms": [
+            "sales channel",
+            "distribution path",
+            "trade channel"
           ]
         },
         {
@@ -611,6 +646,11 @@
             "PC-018",
             "PC-019",
             "PC-020"
+          ],
+          "synonyms": [
+            "product code",
+            "sku group id",
+            "cat code"
           ]
         },
         {
@@ -629,6 +669,11 @@
             "Seafood",
             "Frozen",
             "Snacks"
+          ],
+          "synonyms": [
+            "customer group",
+            "market tier",
+            "consumer segment"
           ]
         },
         {
@@ -642,6 +687,11 @@
             "Specialty",
             "Premium",
             "Value"
+          ],
+          "synonyms": [
+            "sales channel",
+            "distribution path",
+            "trade channel"
           ]
         },
         {
@@ -979,7 +1029,8 @@
         "FROM {fqn}.scenario_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique product categories tracked across scenario simulation runs, matching phrases like 'how many categories per month' or 'category count over time'."
     },
     {
       "question": "How has highest simulated revenue changed over time?",
@@ -988,7 +1039,8 @@
         "FROM {fqn}.scenario_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak simulated revenue across scenario runs, matching phrases like 'best-case revenue over time' or 'highest simulated revenue by month'."
     },
     {
       "question": "What is the monthly trend in highest expected revenue?",
@@ -997,7 +1049,8 @@
         "FROM {fqn}.portfolio_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY outcome_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of maximum expected portfolio revenue from market outcome snapshots, matching phrases like 'top expected revenue over time' or 'peak portfolio revenue by month'."
     },
     {
       "question": "How has invest count changed over time?",
@@ -1006,7 +1059,8 @@
         "FROM {fqn}.portfolio_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY outcome_month"
-      ]
+      ],
+      "usage_guidance": "Time-series count of investment-priority outcomes flagged as 'invest', matching phrases like 'how many invest decisions per month' or 'invest count trend'."
     },
     {
       "question": "What is the trend of total simulated revenue usd over time?",
@@ -1014,7 +1068,8 @@
         "SELECT run_date, SUM(simulated_revenue_usd) AS total_simulated_revenue_usd",
         "FROM {fqn}.product_categories",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Aggregate simulated revenue trend over time from product_categories raw table, matching phrases like 'total simulated revenue by date' or 'revenue simulation trend'."
     },
     {
       "question": "What is the trend of total price elasticity of demand over time?",
@@ -1022,7 +1077,8 @@
         "SELECT snapshot_date, SUM(demand_elasticity) AS total_demand_elasticity",
         "FROM {fqn}.scenario_runs",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of cumulative demand elasticity across scenario run snapshots over time, matching phrases like 'price sensitivity trend' or 'elasticity over time' using scenario_runs."
     },
     {
       "question": "How has the average recommended price change pct changed over time?",
@@ -1030,7 +1086,8 @@
         "SELECT outcome_month, AVG(optimal_price_change_pct) AS avg_optimal_price_change_pct",
         "FROM {fqn}.market_snapshots",
         "GROUP BY outcome_month ORDER BY outcome_month"
-      ]
+      ],
+      "usage_guidance": "Time-series of average optimal price change recommendations from market_snapshots, matching phrases like 'recommended price adjustment trend' or 'optimal pricing change over time'."
     }
   ],
   "sql_snippets": {
@@ -1039,7 +1096,9 @@
         "sql": "product_categories.scenario_type = 'Disruption'",
         "display_name": "disruption scenarios",
         "synonyms": [
-          "worst case"
+          "worst case",
+          "shock events",
+          "disruption runs"
         ],
         "instruction": "Filter disruption."
       },
@@ -1047,7 +1106,9 @@
         "sql": "market_snapshots.investment_priority = 'Invest'",
         "display_name": "invest priorities",
         "synonyms": [
-          "growth"
+          "growth",
+          "growth bets",
+          "priority investments"
         ],
         "instruction": "Filter invest."
       },
@@ -1055,7 +1116,9 @@
         "sql": "scenario_runs.competitive_pressure IN ('High', 'Intense')",
         "display_name": "high competition",
         "synonyms": [
-          "competitive"
+          "competitive",
+          "fierce rivalry",
+          "intense competition"
         ],
         "instruction": "Filter high competition."
       }
@@ -1066,7 +1129,9 @@
         "sql": "DATE_TRUNC('month', product_categories.run_date)",
         "display_name": "run month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "simulation month",
+          "forecast period"
         ]
       },
       {
@@ -1074,7 +1139,9 @@
         "sql": "market_snapshots.revenue_at_risk_usd / NULLIF(market_snapshots.expected_revenue_usd, 0) * 100",
         "display_name": "risk ratio pct",
         "synonyms": [
-          "VaR ratio"
+          "VaR ratio",
+          "exposure rate",
+          "risk percentage"
         ]
       },
       {
@@ -1082,7 +1149,9 @@
         "sql": "product_categories.simulated_revenue_usd * product_categories.simulated_margin_pct / 100",
         "display_name": "margin dollars",
         "synonyms": [
-          "profit"
+          "profit",
+          "profit dollars",
+          "gross profit"
         ]
       }
     ],
@@ -1092,7 +1161,9 @@
         "sql": "SUM(product_categories.simulated_revenue_usd)",
         "display_name": "total simulated revenue",
         "synonyms": [
-          "scenario revenue"
+          "scenario revenue",
+          "total sales",
+          "gross revenue"
         ]
       },
       {
@@ -1100,7 +1171,9 @@
         "sql": "AVG(product_categories.simulated_margin_pct)",
         "display_name": "avg margin",
         "synonyms": [
-          "profitability"
+          "profitability",
+          "mean margin",
+          "average profitability"
         ]
       },
       {
@@ -1108,7 +1181,9 @@
         "sql": "SUM(market_snapshots.revenue_at_risk_usd)",
         "display_name": "total revenue at risk",
         "synonyms": [
-          "downside risk"
+          "downside risk",
+          "total exposure",
+          "revenue exposure"
         ]
       },
       {
@@ -1116,7 +1191,9 @@
         "sql": "AVG(scenario_runs.demand_elasticity)",
         "display_name": "avg price elasticity",
         "synonyms": [
-          "demand sensitivity"
+          "demand sensitivity",
+          "price sensitivity",
+          "elasticity score"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "AP-1018",
             "AP-1019",
             "AP-1020"
+          ],
+          "synonyms": [
+            "pn",
+            "item code",
+            "sku"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Pneumatic Valve",
             "APU Starter Motor",
             "Cabin Pressure Controller"
+          ],
+          "synonyms": [
+            "component name",
+            "item description",
+            "part description"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Repairable",
             "Expendable",
             "Consumable"
+          ],
+          "synonyms": [
+            "component type",
+            "item class",
+            "part type"
           ]
         },
         {
@@ -349,6 +364,11 @@
             "AP-1018",
             "AP-1019",
             "AP-1020"
+          ],
+          "synonyms": [
+            "pn",
+            "item code",
+            "sku"
           ]
         },
         {
@@ -362,6 +382,11 @@
             "Repairable",
             "Expendable",
             "Consumable"
+          ],
+          "synonyms": [
+            "component type",
+            "item class",
+            "part type"
           ]
         },
         {
@@ -568,6 +593,11 @@
             "AP-1018",
             "AP-1019",
             "AP-1020"
+          ],
+          "synonyms": [
+            "pn",
+            "item code",
+            "sku"
           ]
         },
         {
@@ -581,6 +611,11 @@
             "Repairable",
             "Expendable",
             "Consumable"
+          ],
+          "synonyms": [
+            "component type",
+            "item class",
+            "part type"
           ]
         },
         {
@@ -855,7 +890,8 @@
         "FROM {fqn}.order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total order volume; triggered by phrases like 'order count over time' or 'how many orders per month' using order_metrics."
     },
     {
       "question": "How has highest order quantity changed over time?",
@@ -864,7 +900,8 @@
         "FROM {fqn}.order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of peak single-order quantity; triggered by 'largest order size over time' or 'max order quantity trend' using order_metrics."
     },
     {
       "question": "What is the monthly trend in highest forecasted units?",
@@ -873,7 +910,8 @@
         "FROM {fqn}.forecast_metrics",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of highest forecasted demand units; triggered by 'peak forecast over time' or 'max forecasted units by month' using forecast_metrics."
     },
     {
       "question": "How does total units ordered break down by part number for 'Backlog' records?",
@@ -881,7 +919,8 @@
         "SELECT part_number, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.aftermarket_orders",
         "WHERE order_status = 'Backlog' GROUP BY part_number ORDER BY total_order_quantity DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered top-N breakdown of backlogged part quantities; triggered by 'which parts have the most backlog units' filtering order_status = 'Backlog'."
     },
     {
       "question": "What is the trend of total forecasted demand units over time?",
@@ -889,7 +928,8 @@
         "SELECT forecast_month, SUM(forecasted_units) AS total_forecasted_units",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Aggregate monthly demand forecast trend; triggered by 'total forecasted units over time' or 'demand forecast volume by month' from demand_forecasts table."
     },
     {
       "question": "How has the average order fill rate percentage changed over time?",
@@ -897,7 +937,8 @@
         "SELECT report_month, AVG(fill_rate_pct) AS avg_fill_rate_pct",
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of order fill rate KPI; triggered by 'fill rate over time' or 'how is our fill rate changing' from demand_kpi_monthly."
     },
     {
       "question": "How has average quoted lead time changed over time?",
@@ -906,7 +947,8 @@
         "FROM {fqn}.order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average quoted lead time; triggered by 'lead time over time' or 'how has lead time changed' using order_metrics avg_lead_time_days."
     }
   ],
   "sql_snippets": {
@@ -916,7 +958,8 @@
         "display_name": "backlog orders",
         "synonyms": [
           "open orders",
-          "unfulfilled"
+          "unfulfilled",
+          "pending orders"
         ],
         "instruction": "Filter for orders in backlog status."
       },
@@ -925,7 +968,8 @@
         "display_name": "latest forecast model",
         "synonyms": [
           "v4.2",
-          "newest model"
+          "newest model",
+          "current model"
         ],
         "instruction": "Filter for latest forecast model version."
       },
@@ -934,7 +978,8 @@
         "display_name": "military orders",
         "synonyms": [
           "defense orders",
-          "government"
+          "government",
+          "dod orders"
         ],
         "instruction": "Filter for military customer segment."
       }
@@ -945,7 +990,9 @@
         "sql": "DATE_TRUNC('month', aftermarket_orders.order_date)",
         "display_name": "order month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "booking month",
+          "sales month"
         ]
       },
       {
@@ -954,7 +1001,8 @@
         "display_name": "order value USD",
         "synonyms": [
           "line value",
-          "revenue"
+          "revenue",
+          "order amount"
         ]
       },
       {
@@ -962,7 +1010,9 @@
         "sql": "demand_forecasts.forecasted_units - demand_forecasts.actual_units",
         "display_name": "forecast bias",
         "synonyms": [
-          "over/under forecast"
+          "over/under forecast",
+          "demand bias",
+          "forecast gap"
         ]
       }
     ],
@@ -973,7 +1023,8 @@
         "display_name": "total order revenue",
         "synonyms": [
           "revenue",
-          "sales"
+          "sales",
+          "total sales"
         ]
       },
       {
@@ -982,7 +1033,8 @@
         "display_name": "average forecast error",
         "synonyms": [
           "MAPE",
-          "forecast accuracy"
+          "forecast accuracy",
+          "mean forecast error"
         ]
       },
       {
@@ -991,7 +1043,8 @@
         "display_name": "average fill rate",
         "synonyms": [
           "service level",
-          "fulfillment rate"
+          "fulfillment rate",
+          "avg availability"
         ]
       },
       {
@@ -1000,7 +1053,8 @@
         "display_name": "total backlog value",
         "synonyms": [
           "open backlog",
-          "backlog dollars"
+          "backlog dollars",
+          "unfulfilled value"
         ]
       }
     ]

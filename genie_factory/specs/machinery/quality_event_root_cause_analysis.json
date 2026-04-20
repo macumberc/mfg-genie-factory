@@ -51,6 +51,11 @@
             "QF-PLN-018",
             "QF-PLN-019",
             "QF-PLN-020"
+          ],
+          "synonyms": [
+            "product family",
+            "manufacturing line",
+            "product series"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Bearings",
             "Pumps",
             "Valves"
+          ],
+          "synonyms": [
+            "item type",
+            "product group",
+            "part category"
           ]
         },
         {
@@ -312,6 +322,11 @@
             "QF-PLN-018",
             "QF-PLN-019",
             "QF-PLN-020"
+          ],
+          "synonyms": [
+            "product family",
+            "manufacturing line",
+            "product series"
           ]
         },
         {
@@ -326,6 +341,11 @@
             "Bearings",
             "Pumps",
             "Valves"
+          ],
+          "synonyms": [
+            "item type",
+            "product group",
+            "part category"
           ]
         },
         {
@@ -555,6 +575,11 @@
             "QF-PLN-018",
             "QF-PLN-019",
             "QF-PLN-020"
+          ],
+          "synonyms": [
+            "product family",
+            "manufacturing line",
+            "product series"
           ]
         },
         {
@@ -569,6 +594,11 @@
             "Bearings",
             "Pumps",
             "Valves"
+          ],
+          "synonyms": [
+            "item type",
+            "product group",
+            "part category"
           ]
         },
         {
@@ -872,7 +902,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total quality event counts; matches phrases like 'event volume over time' using event_date from quality_events_metrics."
     },
     {
       "question": "How has highest units affected changed over time?",
@@ -881,7 +912,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of peak units affected per period; matches 'worst-case batch impact over time' using max_units_affected from quality_events_metrics."
     },
     {
       "question": "What is the monthly trend in total customer complaints?",
@@ -890,7 +922,8 @@
         "FROM {fqn}.quality_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of aggregated customer complaints; matches 'complaint volume over time' using total_customer_complaints from quality_kpi_metrics."
     },
     {
       "question": "How does total number of units affected break down by product line for 'Open' records?",
@@ -898,7 +931,8 @@
         "SELECT product_line, COUNT(*) AS record_count, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.quality_events",
         "WHERE capa_status = 'Open' GROUP BY product_line ORDER BY total_units_affected DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of units affected broken down by product line; matches 'open CAPA exposure by product line' filtering capa_status='Open' in quality_events."
     },
     {
       "question": "What is the trend of total units inspected in this batch over time?",
@@ -906,7 +940,8 @@
         "SELECT inspection_date, SUM(units_inspected) AS total_units_inspected",
         "FROM {fqn}.inspection_records",
         "GROUP BY inspection_date ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of total inspection volume; matches 'inspection throughput over time' using units_inspected from inspection_records."
     },
     {
       "question": "How has the average capa closure rate percentage changed over time?",
@@ -914,7 +949,8 @@
         "SELECT kpi_month, AVG(capa_closure_rate_pct) AS avg_capa_closure_rate_pct",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average CAPA closure rate percentage; matches 'corrective action closure performance over time' using capa_closure_rate_pct from quality_kpi_monthly."
     },
     {
       "question": "How has critical event count changed over time?",
@@ -923,7 +959,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of critical-severity event counts; matches 'critical quality incidents over time' using critical_event_count from quality_events_metrics."
     }
   ],
   "sql_snippets": {
@@ -933,7 +970,8 @@
         "display_name": "critical events",
         "synonyms": [
           "critical quality",
-          "severe"
+          "severe",
+          "high severity issues"
         ],
         "instruction": "Use for highest-severity quality events."
       },
@@ -942,7 +980,8 @@
         "display_name": "open CAPAs",
         "synonyms": [
           "pending actions",
-          "unresolved"
+          "unresolved",
+          "pending corrective actions"
         ],
         "instruction": "Use when identifying quality events without closed corrective actions."
       },
@@ -951,7 +990,8 @@
         "display_name": "failed inspections",
         "synonyms": [
           "rejects",
-          "non-conformances"
+          "non-conformances",
+          "inspection failures"
         ],
         "instruction": "Use when analyzing inspection failures."
       }
@@ -962,7 +1002,9 @@
         "sql": "DATE_TRUNC('month', quality_events.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "quality month",
+          "defect month"
         ]
       },
       {
@@ -970,7 +1012,9 @@
         "sql": "100.0 * inspection_records.units_rejected / NULLIF(inspection_records.units_inspected, 0)",
         "display_name": "rejection rate",
         "synonyms": [
-          "fail rate"
+          "fail rate",
+          "reject ratio",
+          "failure rate"
         ]
       },
       {
@@ -978,7 +1022,9 @@
         "sql": "quality_events.cost_impact_usd / NULLIF(quality_events.units_affected, 0)",
         "display_name": "cost per affected unit",
         "synonyms": [
-          "unit impact cost"
+          "unit impact cost",
+          "unit defect cost",
+          "cost per unit"
         ]
       }
     ],
@@ -989,7 +1035,8 @@
         "display_name": "total cost impact",
         "synonyms": [
           "quality cost",
-          "impact"
+          "impact",
+          "total quality cost"
         ]
       },
       {
@@ -997,7 +1044,9 @@
         "sql": "SUM(quality_kpi_monthly.copq_usd)",
         "display_name": "total COPQ",
         "synonyms": [
-          "cost of poor quality"
+          "cost of poor quality",
+          "quality failure cost",
+          "nonconformance cost"
         ]
       },
       {
@@ -1006,7 +1055,8 @@
         "display_name": "average defect PPM",
         "synonyms": [
           "defect rate",
-          "PPM"
+          "PPM",
+          "parts per million"
         ]
       },
       {
@@ -1015,7 +1065,8 @@
         "display_name": "total quality events",
         "synonyms": [
           "event count",
-          "incidents"
+          "incidents",
+          "incident count"
         ]
       }
     ]

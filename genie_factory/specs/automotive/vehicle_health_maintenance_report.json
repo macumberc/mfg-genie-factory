@@ -51,6 +51,11 @@
             "DW-V018",
             "DW-V019",
             "DW-V020"
+          ],
+          "synonyms": [
+            "vin",
+            "car id",
+            "unit number"
           ]
         },
         {
@@ -71,6 +76,11 @@
             "Horizon SUV Hybrid",
             "Apex Sedan Hybrid",
             "Ranger Pickup"
+          ],
+          "synonyms": [
+            "car model",
+            "make model",
+            "vehicle type"
           ]
         },
         {
@@ -88,6 +98,11 @@
             "Wagon",
             "Coupe",
             "Van"
+          ],
+          "synonyms": [
+            "car category",
+            "segment",
+            "fleet tier"
           ]
         },
         {
@@ -100,6 +115,11 @@
             "Premium",
             "Elite",
             "Standard"
+          ],
+          "synonyms": [
+            "connected plan",
+            "telematics level",
+            "service tier"
           ]
         },
         {
@@ -384,6 +404,11 @@
             "DW-V018",
             "DW-V019",
             "DW-V020"
+          ],
+          "synonyms": [
+            "vin",
+            "car id",
+            "unit number"
           ]
         },
         {
@@ -404,6 +429,11 @@
             "Horizon SUV Hybrid",
             "Apex Sedan Hybrid",
             "Ranger Pickup"
+          ],
+          "synonyms": [
+            "car model",
+            "make model",
+            "vehicle type"
           ]
         },
         {
@@ -421,6 +451,11 @@
             "Wagon",
             "Coupe",
             "Van"
+          ],
+          "synonyms": [
+            "car category",
+            "segment",
+            "fleet tier"
           ]
         },
         {
@@ -727,6 +762,11 @@
             "DW-V018",
             "DW-V019",
             "DW-V020"
+          ],
+          "synonyms": [
+            "vin",
+            "car id",
+            "unit number"
           ]
         },
         {
@@ -747,6 +787,11 @@
             "Horizon SUV Hybrid",
             "Apex Sedan Hybrid",
             "Ranger Pickup"
+          ],
+          "synonyms": [
+            "car model",
+            "make model",
+            "vehicle type"
           ]
         },
         {
@@ -764,6 +809,11 @@
             "Wagon",
             "Coupe",
             "Van"
+          ],
+          "synonyms": [
+            "car category",
+            "segment",
+            "fleet tier"
           ]
         },
         {
@@ -1159,7 +1209,8 @@
         "FROM {fqn}.vehicle_telemetry_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique connected vehicles tracked across the DriveWell fleet, using reading_date and unique_vehicle_count from telemetry metrics."
     },
     {
       "question": "How has highest engine temp celsius changed over time?",
@@ -1168,7 +1219,8 @@
         "FROM {fqn}.vehicle_telemetry_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak engine temperature recorded across the fleet, referencing max_engine_temp_celsius from vehicle telemetry metrics."
     },
     {
       "question": "How has total tire pressure psi changed over time?",
@@ -1177,7 +1229,8 @@
         "FROM {fqn}.vehicle_telemetry_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of aggregated tire pressure PSI across all vehicles, using total_tire_pressure_psi from vehicle telemetry metrics."
     },
     {
       "question": "Which models have the highest total battery voltage?",
@@ -1186,7 +1239,8 @@
         "FROM {fqn}.vehicle_telemetry_metrics",
         "GROUP BY ALL",
         "ORDER BY total_battery_voltage DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of vehicle models by cumulative battery voltage, grouping total_battery_voltage by model from telemetry metrics."
     },
     {
       "question": "What is the trend of total engine coolant temperature in celsius over time?",
@@ -1194,7 +1248,8 @@
         "SELECT reading_date, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
         "FROM {fqn}.vehicle_telemetry",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of summed engine coolant temperature in Celsius, querying raw engine_temp_celsius directly from vehicle_telemetry table."
     },
     {
       "question": "What is the trend of total number of parts replaced during service over time?",
@@ -1202,7 +1257,8 @@
         "SELECT service_date, SUM(parts_replaced_count) AS total_parts_replaced_count",
         "FROM {fqn}.maintenance_records",
         "GROUP BY service_date ORDER BY service_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total parts replaced during maintenance services, querying parts_replaced_count directly from maintenance_records table."
     },
     {
       "question": "How has the average model-predicted health score 0-100 changed over time?",
@@ -1210,7 +1266,8 @@
         "SELECT forecast_month, AVG(forecasted_health_score) AS avg_forecasted_health_score",
         "FROM {fqn}.vehicle_health_monthly",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average AI-forecasted vehicle health scores 0–100, using forecasted_health_score from vehicle_health_monthly predictive model."
     }
   ],
   "sql_snippets": {
@@ -1253,7 +1310,8 @@
         "display_name": "reading month",
         "synonyms": [
           "telemetry month",
-          "month of reading"
+          "month of reading",
+          "data month"
         ]
       },
       {
@@ -1262,7 +1320,8 @@
         "display_name": "health forecast gap",
         "synonyms": [
           "prediction error",
-          "forecast vs actual health"
+          "forecast vs actual health",
+          "forecast error"
         ]
       },
       {
@@ -1271,7 +1330,8 @@
         "display_name": "cost per labor hour",
         "synonyms": [
           "hourly repair cost",
-          "cost efficiency"
+          "cost efficiency",
+          "hourly repair rate"
         ]
       }
     ],
@@ -1302,7 +1362,8 @@
         "display_name": "critical alert count",
         "synonyms": [
           "critical alerts",
-          "severe alert count"
+          "severe alert count",
+          "urgent alerts"
         ]
       },
       {

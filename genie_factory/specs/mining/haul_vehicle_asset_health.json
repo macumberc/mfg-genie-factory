@@ -51,6 +51,11 @@
             "HV-018",
             "HV-019",
             "HV-020"
+          ],
+          "synonyms": [
+            "truck id",
+            "asset id",
+            "unit number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "CAT 794AC Unit 601",
             "CAT 794AC Unit 602",
             "CAT 794AC Unit 603"
+          ],
+          "synonyms": [
+            "truck name",
+            "asset name",
+            "rig name"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Hitachi EH5000",
             "BelAZ 75710",
             "CAT 794AC"
+          ],
+          "synonyms": [
+            "truck type",
+            "asset type",
+            "make"
           ]
         },
         {
@@ -108,6 +123,11 @@
             "South Pit",
             "East Pit",
             "West Pit"
+          ],
+          "synonyms": [
+            "mine site",
+            "dig zone",
+            "excavation area"
           ]
         },
         {
@@ -327,6 +347,11 @@
             "HV-018",
             "HV-019",
             "HV-020"
+          ],
+          "synonyms": [
+            "truck id",
+            "asset id",
+            "unit number"
           ]
         },
         {
@@ -342,6 +367,11 @@
             "Hitachi EH5000",
             "BelAZ 75710",
             "CAT 794AC"
+          ],
+          "synonyms": [
+            "truck type",
+            "asset type",
+            "make"
           ]
         },
         {
@@ -355,6 +385,11 @@
             "South Pit",
             "East Pit",
             "West Pit"
+          ],
+          "synonyms": [
+            "mine site",
+            "dig zone",
+            "excavation area"
           ]
         },
         {
@@ -587,6 +622,11 @@
             "HV-018",
             "HV-019",
             "HV-020"
+          ],
+          "synonyms": [
+            "truck id",
+            "asset id",
+            "unit number"
           ]
         },
         {
@@ -602,6 +642,11 @@
             "Hitachi EH5000",
             "BelAZ 75710",
             "CAT 794AC"
+          ],
+          "synonyms": [
+            "truck type",
+            "asset type",
+            "make"
           ]
         },
         {
@@ -615,6 +660,11 @@
             "South Pit",
             "East Pit",
             "West Pit"
+          ],
+          "synonyms": [
+            "mine site",
+            "dig zone",
+            "excavation area"
           ]
         },
         {
@@ -948,7 +998,8 @@
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of sensor reading volume; matches phrases like 'how many readings per month' or 'reading count over time' using health_monthly.reading_count."
     },
     {
       "question": "How has highest engine temp celsius changed over time?",
@@ -957,7 +1008,8 @@
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak engine temperature; matches 'hottest engine recorded each month' or 'max engine temp over time' using health_monthly.max_engine_temp_celsius."
     },
     {
       "question": "What is the monthly trend in unique vehicles?",
@@ -966,7 +1018,8 @@
         "FROM {fqn}.failure_monthly",
         "GROUP BY ALL",
         "ORDER BY event_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct haul vehicles experiencing failures; matches 'how many unique trucks had failures per month' using failure_monthly.unique_vehicle_count."
     },
     {
       "question": "How has high risk count changed over time?",
@@ -975,7 +1028,8 @@
         "FROM {fqn}.failure_monthly",
         "GROUP BY ALL",
         "ORDER BY event_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of high-risk vehicle count; matches 'how many trucks were high risk each month' or 'high risk count trend' using failure_monthly.high_risk_count."
     },
     {
       "question": "What is the trend of total loads completed over time?",
@@ -983,7 +1037,8 @@
         "SELECT record_date, SUM(loads_completed) AS total_loads_completed",
         "FROM {fqn}.haul_vehicles",
         "GROUP BY record_date ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total loads completed across the fleet; matches 'loads completed over time' or 'productivity trend by date' using haul_vehicles.loads_completed."
     },
     {
       "question": "What is the trend of total engine temperature c over time?",
@@ -991,7 +1046,8 @@
         "SELECT reading_date, SUM(engine_temp_celsius) AS total_engine_temp_celsius",
         "FROM {fqn}.sensor_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of cumulative engine temperature readings; matches 'total engine heat over time' or 'engine temp trend' using sensor_readings.engine_temp_celsius."
     },
     {
       "question": "How has the average 30-day failure probability changed over time?",
@@ -999,7 +1055,8 @@
         "SELECT event_month, AVG(failure_probability_pct) AS avg_failure_probability_pct",
         "FROM {fqn}.failure_events",
         "GROUP BY event_month ORDER BY event_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average 30-day failure probability across the fleet; matches 'failure risk trend over time' or 'how has breakdown probability changed' using failure_events.failure_probability_pct."
     }
   ],
   "sql_snippets": {
@@ -1008,7 +1065,9 @@
         "sql": "sensor_readings.alert_level = 'Critical'",
         "display_name": "critical alerts",
         "synonyms": [
-          "red alerts"
+          "red alerts",
+          "urgent warnings",
+          "high severity"
         ],
         "instruction": "Filter critical."
       },
@@ -1016,7 +1075,9 @@
         "sql": "failure_events.failure_probability_pct > 25",
         "display_name": "high risk",
         "synonyms": [
-          "at risk"
+          "at risk",
+          "at-risk units",
+          "failure prone"
         ],
         "instruction": "Filter high risk."
       },
@@ -1024,7 +1085,9 @@
         "sql": "sensor_readings.engine_temp_celsius > 100",
         "display_name": "overheating",
         "synonyms": [
-          "hot engine"
+          "hot engine",
+          "thermal warning",
+          "engine overheat"
         ],
         "instruction": "Filter overheating."
       }
@@ -1035,7 +1098,9 @@
         "sql": "DATE_TRUNC('month', sensor_readings.reading_date)",
         "display_name": "reading month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "sensor month",
+          "monthly period"
         ]
       },
       {
@@ -1043,7 +1108,9 @@
         "sql": "haul_vehicles.fuel_liters / NULLIF(haul_vehicles.payload_tons, 0)",
         "display_name": "fuel per ton",
         "synonyms": [
-          "fuel efficiency"
+          "fuel efficiency",
+          "liters per ton",
+          "consumption rate"
         ]
       },
       {
@@ -1051,7 +1118,9 @@
         "sql": "failure_events.repair_cost_usd / NULLIF(failure_events.downtime_hours, 0)",
         "display_name": "cost per downtime hour",
         "synonyms": [
-          "hourly repair cost"
+          "hourly repair cost",
+          "hourly repair rate",
+          "downtime cost rate"
         ]
       }
     ],
@@ -1061,7 +1130,9 @@
         "sql": "AVG(sensor_readings.health_score)",
         "display_name": "avg health",
         "synonyms": [
-          "fleet health"
+          "fleet health",
+          "mean health",
+          "fleet condition"
         ]
       },
       {
@@ -1069,7 +1140,9 @@
         "sql": "SUM(failure_events.repair_cost_usd)",
         "display_name": "total repair cost",
         "synonyms": [
-          "maintenance cost"
+          "maintenance cost",
+          "maintenance spend",
+          "fix costs"
         ]
       },
       {
@@ -1077,7 +1150,9 @@
         "sql": "SUM(haul_vehicles.payload_tons)",
         "display_name": "total payload tons",
         "synonyms": [
-          "hauled tonnage"
+          "hauled tonnage",
+          "tonnes hauled",
+          "total tonnage"
         ]
       },
       {
@@ -1085,7 +1160,9 @@
         "sql": "AVG(failure_events.rul_days)",
         "display_name": "avg RUL",
         "synonyms": [
-          "remaining life"
+          "remaining life",
+          "days to failure",
+          "useful life left"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "product code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Shrimp 21-25ct 1lb",
             "Frozen Pizza Pepperoni 12in",
             "Ice Cream Vanilla 48oz"
+          ],
+          "synonyms": [
+            "item name",
+            "product title",
+            "food item"
           ]
         },
         {
@@ -97,6 +107,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "food type",
+            "product group",
+            "item class"
           ]
         },
         {
@@ -118,6 +133,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "plant line",
+            "processing line"
           ]
         },
         {
@@ -355,6 +375,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "product code"
           ]
         },
         {
@@ -372,6 +397,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "food type",
+            "product group",
+            "item class"
           ]
         },
         {
@@ -393,6 +423,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "plant line",
+            "processing line"
           ]
         },
         {
@@ -636,6 +671,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "product code"
           ]
         },
         {
@@ -653,6 +693,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "food type",
+            "product group",
+            "item class"
           ]
         },
         {
@@ -674,6 +719,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "plant line",
+            "processing line"
           ]
         },
         {
@@ -1001,7 +1051,8 @@
         "FROM {fqn}.traceability_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total lot counts; matches questions about lot volume over time using the traceability_monthly metric view."
     },
     {
       "question": "How has unique events changed over time?",
@@ -1010,7 +1061,8 @@
         "FROM {fqn}.traceability_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of traceability event counts; matches questions about event activity or event frequency changes across months."
     },
     {
       "question": "What is the monthly trend in highest lots traced?",
@@ -1019,7 +1071,8 @@
         "FROM {fqn}.recall_readiness_monthly",
         "GROUP BY ALL",
         "ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak lots traced in recall readiness; matches questions about maximum lot tracing capacity or highest recall throughput over time."
     },
     {
       "question": "Rank product categories by avg fda compliance",
@@ -1028,7 +1081,8 @@
         "FROM {fqn}.recall_readiness_monthly",
         "GROUP BY ALL",
         "ORDER BY avg_fda_compliance DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of product categories by FDA compliance percentage; matches questions about which categories lead or lag in regulatory compliance scores."
     },
     {
       "question": "How does total units in lot break down by product id for 'Gap' records?",
@@ -1036,7 +1090,8 @@
         "SELECT product_id, COUNT(*) AS record_count, SUM(units_in_lot) AS total_units_in_lot",
         "FROM {fqn}.products",
         "WHERE traceability_status = 'Gap' GROUP BY product_id ORDER BY total_units_in_lot DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of units in lot broken down by product for Gap-status records only; matches questions about traceability gaps or missing trace coverage by product."
     },
     {
       "question": "What is the trend of total recorded temperature f over time?",
@@ -1044,7 +1099,8 @@
         "SELECT snapshot_date, SUM(temp_recorded_f) AS total_temp_recorded_f",
         "FROM {fqn}.lot_tracking_events",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of recorded temperature readings across lot tracking snapshots; matches questions about cold-chain temperature monitoring or temperature compliance over time."
     },
     {
       "question": "How has the average trace success rate 0-100 changed over time?",
@@ -1052,7 +1108,8 @@
         "SELECT perf_month, AVG(trace_success_rate_pct) AS avg_trace_success_rate_pct",
         "FROM {fqn}.chain_of_custody_snapshots",
         "GROUP BY perf_month ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average trace success rate percentage from chain-of-custody snapshots; matches questions about traceability performance or recall readiness success rates over time."
     }
   ],
   "sql_snippets": {
@@ -1061,7 +1118,9 @@
         "sql": "products.traceability_status = 'Gap'",
         "display_name": "traceability gaps",
         "synonyms": [
-          "missing trace"
+          "missing trace",
+          "untraceable lots",
+          "trace failures"
         ],
         "instruction": "Filter gaps."
       },
@@ -1069,7 +1128,9 @@
         "sql": "lot_tracking_events.temp_compliant = 'No'",
         "display_name": "temp violations",
         "synonyms": [
-          "cold chain break"
+          "cold chain break",
+          "cold chain breach",
+          "temperature exceedance"
         ],
         "instruction": "Filter temp non-compliant."
       },
@@ -1077,7 +1138,9 @@
         "sql": "chain_of_custody_snapshots.recall_sim_result = 'Fail'",
         "display_name": "failed recalls",
         "synonyms": [
-          "recall failure"
+          "recall failure",
+          "recall failures",
+          "unsuccessful recalls"
         ],
         "instruction": "Filter failed recall sims."
       }
@@ -1088,7 +1151,9 @@
         "sql": "DATE_TRUNC('month', products.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "reporting month",
+          "activity month"
         ]
       },
       {
@@ -1096,7 +1161,9 @@
         "sql": "ABS(lot_tracking_events.temp_recorded_f - 38.0)",
         "display_name": "temp deviation from target",
         "synonyms": [
-          "temp variance"
+          "temp variance",
+          "cold chain variance",
+          "temperature drift"
         ]
       },
       {
@@ -1104,7 +1171,9 @@
         "sql": "100.0 - chain_of_custody_snapshots.trace_success_rate_pct",
         "display_name": "trace gap rate",
         "synonyms": [
-          "failure rate"
+          "failure rate",
+          "untraceable rate",
+          "traceability failure rate"
         ]
       }
     ],
@@ -1114,7 +1183,9 @@
         "sql": "COUNT(DISTINCT products.lot_number)",
         "display_name": "total lots",
         "synonyms": [
-          "batches"
+          "batches",
+          "lot count",
+          "batch count"
         ]
       },
       {
@@ -1122,7 +1193,9 @@
         "sql": "AVG(chain_of_custody_snapshots.trace_success_rate_pct)",
         "display_name": "avg trace success",
         "synonyms": [
-          "traceability rate"
+          "traceability rate",
+          "trace pass rate",
+          "traceability score"
         ]
       },
       {
@@ -1130,7 +1203,9 @@
         "sql": "AVG(lot_tracking_events.recall_readiness_hours)",
         "display_name": "avg recall time",
         "synonyms": [
-          "mock recall time"
+          "mock recall time",
+          "mean recall hours",
+          "recall response time"
         ]
       },
       {
@@ -1138,7 +1213,9 @@
         "sql": "AVG(chain_of_custody_snapshots.fda_compliance_pct)",
         "display_name": "avg FDA compliance",
         "synonyms": [
-          "FSMA score"
+          "FSMA score",
+          "fda score",
+          "regulatory compliance"
         ]
       }
     ]

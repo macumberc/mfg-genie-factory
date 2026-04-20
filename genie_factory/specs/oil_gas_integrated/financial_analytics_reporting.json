@@ -51,6 +51,11 @@
             "PL-CO-018",
             "PL-UP-019",
             "PL-DS-020"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Human Resources",
             "LNG Trading & Marketing",
             "Renewable Fuels Division"
+          ],
+          "synonyms": [
+            "cc label",
+            "cost unit",
+            "department name"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Downstream",
             "Midstream",
             "Corporate"
+          ],
+          "synonyms": [
+            "business unit",
+            "segment",
+            "line of business"
           ]
         },
         {
@@ -106,6 +121,11 @@
             "Europe",
             "Africa",
             "Global"
+          ],
+          "synonyms": [
+            "geography",
+            "territory",
+            "area"
           ]
         },
         {
@@ -335,6 +355,11 @@
             "PL-CO-018",
             "PL-UP-019",
             "PL-DS-020"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -364,6 +389,11 @@
             "Human Resources",
             "LNG Trading & Marketing",
             "Renewable Fuels Division"
+          ],
+          "synonyms": [
+            "cc label",
+            "cost unit",
+            "department name"
           ]
         },
         {
@@ -377,6 +407,11 @@
             "Downstream",
             "Midstream",
             "Corporate"
+          ],
+          "synonyms": [
+            "business unit",
+            "segment",
+            "line of business"
           ]
         },
         {
@@ -390,6 +425,11 @@
             "Europe",
             "Africa",
             "Global"
+          ],
+          "synonyms": [
+            "geography",
+            "territory",
+            "area"
           ]
         },
         {
@@ -604,6 +644,11 @@
             "PL-CO-018",
             "PL-UP-019",
             "PL-DS-020"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -617,6 +662,11 @@
             "Downstream",
             "Midstream",
             "Corporate"
+          ],
+          "synonyms": [
+            "business unit",
+            "segment",
+            "line of business"
           ]
         },
         {
@@ -630,6 +680,11 @@
             "Europe",
             "Africa",
             "Global"
+          ],
+          "synonyms": [
+            "geography",
+            "territory",
+            "area"
           ]
         },
         {
@@ -904,7 +959,8 @@
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about actual transaction spend or total amount USD using the financial_transactions_metrics metric view."
     },
     {
       "question": "How has total budgeted amount in usd changed over time?",
@@ -913,7 +969,8 @@
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about budgeted spend, planned transaction amounts, or budget tracking across transaction dates."
     },
     {
       "question": "What is the monthly trend in total planned revenue in usd?",
@@ -922,7 +979,8 @@
         "FROM {fqn}.budget_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_month"
-      ]
+      ],
+      "usage_guidance": "Route monthly trend questions about planned revenue using the budget_snapshots_metrics metric view with snapshot_month as the time axis."
     },
     {
       "question": "What is the trend of total transaction amount in usd over time?",
@@ -930,7 +988,8 @@
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about actual transaction spend when querying the raw financial_transactions table directly rather than the metric view."
     },
     {
       "question": "What is the trend of total planned monthly revenue in usd over time?",
@@ -938,7 +997,8 @@
         "SELECT snapshot_month, SUM(planned_revenue_usd) AS total_planned_revenue_usd",
         "FROM {fqn}.budget_snapshots",
         "GROUP BY snapshot_month ORDER BY snapshot_month"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about planned monthly revenue when querying the raw budget_snapshots table for upstream revenue planning trends."
     },
     {
       "question": "How has the average operating margin percentage changed over time?",
@@ -946,7 +1006,8 @@
         "SELECT kpi_month, AVG(operating_margin_pct) AS avg_operating_margin_pct",
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Route trend questions about operating margin percentage, profitability efficiency, or how margins have shifted month-over-month across KPI periods."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -955,7 +1016,8 @@
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about transaction volume, transaction counts, or how the number of financial transactions has changed over time."
     }
   ],
   "sql_snippets": {
@@ -985,7 +1047,8 @@
         "display_name": "over budget OPEX",
         "synonyms": [
           "overrun",
-          "budget exceeded"
+          "budget exceeded",
+          "opex overrun"
         ],
         "instruction": "Use to find cost centers where actual OPEX exceeds planned."
       }
@@ -997,7 +1060,8 @@
         "display_name": "budget variance",
         "synonyms": [
           "variance",
-          "over/under budget"
+          "over/under budget",
+          "spend gap"
         ]
       },
       {
@@ -1006,7 +1070,8 @@
         "display_name": "revenue variance percent",
         "synonyms": [
           "revenue gap",
-          "plan vs actual"
+          "plan vs actual",
+          "revenue gap pct"
         ]
       },
       {
@@ -1015,7 +1080,8 @@
         "display_name": "transaction month",
         "synonyms": [
           "month",
-          "period"
+          "period",
+          "posting month"
         ]
       }
     ],
@@ -1026,7 +1092,8 @@
         "display_name": "total revenue",
         "synonyms": [
           "revenue",
-          "income"
+          "income",
+          "total sales"
         ]
       },
       {
@@ -1035,7 +1102,8 @@
         "display_name": "total OPEX",
         "synonyms": [
           "operating expense",
-          "costs"
+          "costs",
+          "total operating costs"
         ]
       },
       {
@@ -1044,7 +1112,8 @@
         "display_name": "total EBITDA",
         "synonyms": [
           "EBITDA",
-          "earnings"
+          "earnings",
+          "ebitda total"
         ]
       },
       {
@@ -1053,7 +1122,8 @@
         "display_name": "average operating margin",
         "synonyms": [
           "margin",
-          "profitability"
+          "profitability",
+          "mean margin"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "RS-018",
             "RS-019",
             "RS-020"
+          ],
+          "synonyms": [
+            "field code",
+            "zone id",
+            "res code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Permian San Andres",
             "Anadarko Woodford",
             "SCOOP Springer"
+          ],
+          "synonyms": [
+            "field name",
+            "zone name",
+            "asset name"
           ]
         },
         {
@@ -105,6 +115,11 @@
             "San Andres",
             "Woodford",
             "Springer"
+          ],
+          "synonyms": [
+            "rock unit",
+            "pay zone",
+            "geologic layer"
           ]
         },
         {
@@ -121,6 +136,11 @@
             "Haynesville",
             "DJ Basin",
             "Anadarko Basin"
+          ],
+          "synonyms": [
+            "play area",
+            "producing region",
+            "sedimentary basin"
           ]
         },
         {
@@ -356,6 +376,11 @@
             "RS-018",
             "RS-019",
             "RS-020"
+          ],
+          "synonyms": [
+            "field code",
+            "zone id",
+            "res code"
           ]
         },
         {
@@ -385,6 +410,11 @@
             "Permian San Andres",
             "Anadarko Woodford",
             "SCOOP Springer"
+          ],
+          "synonyms": [
+            "field name",
+            "zone name",
+            "asset name"
           ]
         },
         {
@@ -410,6 +440,11 @@
             "San Andres",
             "Woodford",
             "Springer"
+          ],
+          "synonyms": [
+            "rock unit",
+            "pay zone",
+            "geologic layer"
           ]
         },
         {
@@ -426,6 +461,11 @@
             "Haynesville",
             "DJ Basin",
             "Anadarko Basin"
+          ],
+          "synonyms": [
+            "play area",
+            "producing region",
+            "sedimentary basin"
           ]
         },
         {
@@ -643,6 +683,11 @@
             "RS-018",
             "RS-019",
             "RS-020"
+          ],
+          "synonyms": [
+            "field code",
+            "zone id",
+            "res code"
           ]
         },
         {
@@ -668,6 +713,11 @@
             "San Andres",
             "Woodford",
             "Springer"
+          ],
+          "synonyms": [
+            "rock unit",
+            "pay zone",
+            "geologic layer"
           ]
         },
         {
@@ -684,6 +734,11 @@
             "Haynesville",
             "DJ Basin",
             "Anadarko Basin"
+          ],
+          "synonyms": [
+            "play area",
+            "producing region",
+            "sedimentary basin"
           ]
         },
         {
@@ -958,7 +1013,8 @@
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about average daily oil production rate (bpd) using the production_readings_metrics metric view."
     },
     {
       "question": "How has avg gas mcfpd changed over time?",
@@ -967,7 +1023,8 @@
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about average daily gas production volume (mcfpd) trending across reading dates via the metric view."
     },
     {
       "question": "What is the monthly trend in total estimated eur bbl?",
@@ -976,7 +1033,8 @@
         "FROM {fqn}.reservoir_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route temporal trend questions about total estimated ultimate recovery (EUR in barrels) across snapshot dates using reservoir_snapshots_metrics."
     },
     {
       "question": "What is the trend of total oil bpd over time?",
@@ -984,7 +1042,8 @@
         "SELECT reading_date, SUM(oil_bpd) AS total_oil_bpd",
         "FROM {fqn}.production_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route requests for summed total oil bpd production trend over time querying raw production_readings table rather than the metric view."
     },
     {
       "question": "What is the trend of total cumulative oil bbl over time?",
@@ -992,7 +1051,8 @@
         "SELECT snapshot_date, SUM(cumulative_oil_bbl) AS total_cumulative_oil_bbl",
         "FROM {fqn}.reservoir_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route questions about how total cumulative oil barrels have grown over time using raw reservoir_snapshots table aggregated by snapshot date."
     },
     {
       "question": "How many distinct kpi id are there per basin?",
@@ -1000,7 +1060,8 @@
         "SELECT basin, COUNT(DISTINCT kpi_id) AS distinct_count",
         "FROM {fqn}.reservoir_kpi_monthly",
         "GROUP BY basin ORDER BY distinct_count DESC"
-      ]
+      ],
+      "usage_guidance": "Route count-distinct or distribution questions about KPI records segmented by basin using reservoir_kpi_monthly."
     },
     {
       "question": "How has avg reservoir pressure changed over time?",
@@ -1009,7 +1070,8 @@
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about average reservoir pressure (psi) declining or building across production dates via the metric view."
     }
   ],
   "sql_snippets": {
@@ -1018,7 +1080,9 @@
         "sql": "water_cut_pct > 50",
         "display_name": "high water cut",
         "synonyms": [
-          "watered out"
+          "watered out",
+          "wet wells",
+          "high bsw"
         ],
         "instruction": "High water cut reservoirs."
       },
@@ -1026,7 +1090,9 @@
         "sql": "decline_rate_pct > 30",
         "display_name": "steep decline",
         "synonyms": [
-          "fast decline"
+          "fast decline",
+          "fast depleting",
+          "rapid falloff"
         ],
         "instruction": "Steep decline reservoirs."
       },
@@ -1034,7 +1100,9 @@
         "sql": "basin = 'Permian Basin'",
         "display_name": "Permian wells",
         "synonyms": [
-          "Permian"
+          "Permian",
+          "permian assets",
+          "west texas wells"
         ],
         "instruction": "Permian Basin."
       }
@@ -1045,7 +1113,9 @@
         "sql": "ROUND(production_readings.gas_mcfpd / NULLIF(production_readings.oil_bpd, 0), 0)",
         "display_name": "GOR",
         "synonyms": [
-          "gas-oil ratio"
+          "gas-oil ratio",
+          "gas oil ratio",
+          "gas ratio"
         ]
       },
       {
@@ -1053,7 +1123,9 @@
         "sql": "ROUND(100.0 * production_readings.water_bpd / NULLIF(production_readings.oil_bpd + production_readings.water_bpd, 0), 1)",
         "display_name": "water cut",
         "synonyms": [
-          "BSW"
+          "BSW",
+          "bsw",
+          "water fraction"
         ]
       },
       {
@@ -1061,7 +1133,9 @@
         "sql": "DATE_TRUNC('month', production_readings.reading_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "production month",
+          "reporting month"
         ]
       }
     ],
@@ -1071,7 +1145,9 @@
         "sql": "AVG(production_readings.oil_bpd)",
         "display_name": "avg oil rate",
         "synonyms": [
-          "oil production"
+          "oil production",
+          "mean oil rate",
+          "avg bopd"
         ]
       },
       {
@@ -1079,7 +1155,9 @@
         "sql": "AVG(production_readings.gas_mcfpd)",
         "display_name": "avg gas rate",
         "synonyms": [
-          "gas production"
+          "gas production",
+          "mean gas rate",
+          "avg mcfpd"
         ]
       },
       {
@@ -1087,7 +1165,9 @@
         "sql": "AVG(reservoir_snapshots.recovery_factor_pct)",
         "display_name": "avg recovery factor",
         "synonyms": [
-          "recovery"
+          "recovery",
+          "mean recovery",
+          "avg rf"
         ]
       },
       {
@@ -1095,7 +1175,9 @@
         "sql": "SUM(reservoir_snapshots.cumulative_oil_bbl)",
         "display_name": "cumulative oil",
         "synonyms": [
-          "total production"
+          "total production",
+          "total oil produced",
+          "gross oil volume"
         ]
       }
     ]

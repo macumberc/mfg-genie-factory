@@ -51,6 +51,11 @@
             "FRM-018",
             "FRM-019",
             "FRM-020"
+          ],
+          "synonyms": [
+            "recipe code",
+            "compound id",
+            "mixture id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Silver Nanoparticle Ink",
             "Quantum Dot CdSe/ZnS",
             "Carbon Nanotube Composite"
+          ],
+          "synonyms": [
+            "recipe title",
+            "compound label",
+            "mixture label"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Polymers",
             "Pharmaceuticals",
             "Nanomaterials"
+          ],
+          "synonyms": [
+            "material type",
+            "compound class",
+            "product group"
           ]
         },
         {
@@ -330,6 +345,11 @@
             "FRM-018",
             "FRM-019",
             "FRM-020"
+          ],
+          "synonyms": [
+            "recipe code",
+            "compound id",
+            "mixture id"
           ]
         },
         {
@@ -359,6 +379,11 @@
             "Silver Nanoparticle Ink",
             "Quantum Dot CdSe/ZnS",
             "Carbon Nanotube Composite"
+          ],
+          "synonyms": [
+            "recipe title",
+            "compound label",
+            "mixture label"
           ]
         },
         {
@@ -373,6 +398,11 @@
             "Polymers",
             "Pharmaceuticals",
             "Nanomaterials"
+          ],
+          "synonyms": [
+            "material type",
+            "compound class",
+            "product group"
           ]
         },
         {
@@ -575,6 +605,11 @@
             "FRM-018",
             "FRM-019",
             "FRM-020"
+          ],
+          "synonyms": [
+            "recipe code",
+            "compound id",
+            "mixture id"
           ]
         },
         {
@@ -604,6 +639,11 @@
             "Silver Nanoparticle Ink",
             "Quantum Dot CdSe/ZnS",
             "Carbon Nanotube Composite"
+          ],
+          "synonyms": [
+            "recipe title",
+            "compound label",
+            "mixture label"
           ]
         },
         {
@@ -618,6 +658,11 @@
             "Polymers",
             "Pharmaceuticals",
             "Nanomaterials"
+          ],
+          "synonyms": [
+            "material type",
+            "compound class",
+            "product group"
           ]
         },
         {
@@ -941,7 +986,8 @@
         "FROM {fqn}.experiment_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct formulations tested; matches phrases like 'how many unique formulations per month' using unique_formulation_count from experiment_runs_metrics."
     },
     {
       "question": "How has highest yield pct changed over time?",
@@ -950,7 +996,8 @@
         "FROM {fqn}.experiment_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak yield percentage achieved; matches phrases like 'best yield over time' using max_yield_pct from experiment_runs_metrics."
     },
     {
       "question": "What is the monthly trend in total best yield pct?",
@@ -959,7 +1006,8 @@
         "FROM {fqn}.optimization_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly cumulative best-yield trend across optimization cycles; matches phrases like 'total best yield per month' using total_best_yield_percent from optimization_monthly_metrics."
     },
     {
       "question": "How has average model prediction accuracy changed over time?",
@@ -968,7 +1016,8 @@
         "FROM {fqn}.optimization_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of ML model prediction accuracy; matches phrases like 'how accurate are predictions over time' using avg_model_accuracy_pct from optimization_monthly_metrics."
     },
     {
       "question": "What is the trend of total reaction temperature in celsius over time?",
@@ -976,7 +1025,8 @@
         "SELECT run_date, SUM(temperature_c) AS total_temperature_c",
         "FROM {fqn}.experiment_runs",
         "GROUP BY run_date ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of summed reaction temperatures across experiment runs; matches phrases like 'total temperature used in experiments over time' from experiment_runs table."
     },
     {
       "question": "What is the trend of total model-recommended optimal temperature in celsius over time?",
@@ -984,7 +1034,8 @@
         "SELECT snapshot_date, SUM(optimal_temp_c) AS total_optimal_temp_c",
         "FROM {fqn}.parameter_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of model-recommended optimal temperatures; matches phrases like 'how have suggested optimal temperatures changed' using optimal_temp_c from parameter_snapshots."
     },
     {
       "question": "How has the average percentage of experiments that passed changed over time?",
@@ -992,7 +1043,8 @@
         "SELECT report_month, AVG(pass_rate_pct) AS avg_pass_rate_pct",
         "FROM {fqn}.optimization_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average experiment pass rate percentage; matches phrases like 'how often do experiments pass over time' using pass_rate_pct from optimization_monthly table."
     }
   ],
   "sql_snippets": {
@@ -1002,7 +1054,8 @@
         "display_name": "passed experiments",
         "synonyms": [
           "successful runs",
-          "passing experiments"
+          "passing experiments",
+          "passing trials"
         ],
         "instruction": "Use when filtering to successful experiment runs only."
       },
@@ -1011,7 +1064,8 @@
         "display_name": "catalyst formulations",
         "synonyms": [
           "catalysts",
-          "catalyst experiments"
+          "catalyst experiments",
+          "catalyst recipes"
         ],
         "instruction": "Use when filtering to catalyst formulation experiments."
       },
@@ -1020,7 +1074,8 @@
         "display_name": "high confidence predictions",
         "synonyms": [
           "confident model",
-          "reliable predictions"
+          "reliable predictions",
+          "reliable forecasts"
         ],
         "instruction": "Use when filtering to formulations with high model confidence."
       }
@@ -1032,7 +1087,8 @@
         "display_name": "experiment month",
         "synonyms": [
           "month",
-          "run month"
+          "run month",
+          "experiment month"
         ]
       },
       {
@@ -1041,7 +1097,8 @@
         "display_name": "yield improvement gap",
         "synonyms": [
           "yield headroom",
-          "optimization potential"
+          "optimization potential",
+          "improvement gap"
         ]
       },
       {
@@ -1050,7 +1107,8 @@
         "display_name": "total experiment cost",
         "synonyms": [
           "R&D spend",
-          "lab cost"
+          "lab cost",
+          "total spend"
         ]
       }
     ],
@@ -1061,7 +1119,8 @@
         "display_name": "experiment pass rate",
         "synonyms": [
           "pass rate",
-          "success rate"
+          "success rate",
+          "pass ratio"
         ]
       },
       {
@@ -1070,7 +1129,8 @@
         "display_name": "average yield",
         "synonyms": [
           "mean yield",
-          "avg yield percentage"
+          "avg yield percentage",
+          "typical output"
         ]
       },
       {
@@ -1079,7 +1139,8 @@
         "display_name": "total experiments",
         "synonyms": [
           "experiment count",
-          "runs completed"
+          "runs completed",
+          "run count"
         ]
       },
       {
@@ -1088,7 +1149,8 @@
         "display_name": "average cost per experiment",
         "synonyms": [
           "unit cost",
-          "experiment cost"
+          "experiment cost",
+          "cost per trial"
         ]
       }
     ]

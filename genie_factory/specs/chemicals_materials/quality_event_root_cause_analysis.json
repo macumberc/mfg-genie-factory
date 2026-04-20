@@ -51,6 +51,11 @@
             "PC-018",
             "PC-019",
             "PC-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "material number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Silica Gel Desiccant",
             "Activated Carbon Pellets",
             "Zinc Oxide Nano Powder"
+          ],
+          "synonyms": [
+            "chemical name",
+            "material name",
+            "compound name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Solvents",
             "Polymers",
             "Specialty"
+          ],
+          "synonyms": [
+            "chemical family",
+            "material type",
+            "substance class"
           ]
         },
         {
@@ -351,6 +366,11 @@
             "PC-018",
             "PC-019",
             "PC-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "material number"
           ]
         },
         {
@@ -380,6 +400,11 @@
             "Silica Gel Desiccant",
             "Activated Carbon Pellets",
             "Zinc Oxide Nano Powder"
+          ],
+          "synonyms": [
+            "chemical name",
+            "material name",
+            "compound name"
           ]
         },
         {
@@ -394,6 +419,11 @@
             "Solvents",
             "Polymers",
             "Specialty"
+          ],
+          "synonyms": [
+            "chemical family",
+            "material type",
+            "substance class"
           ]
         },
         {
@@ -609,6 +639,11 @@
             "PC-018",
             "PC-019",
             "PC-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "material number"
           ]
         },
         {
@@ -638,6 +673,11 @@
             "Silica Gel Desiccant",
             "Activated Carbon Pellets",
             "Zinc Oxide Nano Powder"
+          ],
+          "synonyms": [
+            "chemical name",
+            "material name",
+            "compound name"
           ]
         },
         {
@@ -652,6 +692,11 @@
             "Solvents",
             "Polymers",
             "Specialty"
+          ],
+          "synonyms": [
+            "chemical family",
+            "material type",
+            "substance class"
           ]
         },
         {
@@ -973,7 +1018,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about unresolved or open quality events using the quality_events_metrics metric view with open_event_count measure."
     },
     {
       "question": "How has unique total quality eventss changed over time?",
@@ -982,7 +1028,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about total volume of quality events across all types using the quality_events_metrics metric view with total_quality_events measure."
     },
     {
       "question": "What is the monthly trend in total critical events per month?",
@@ -991,7 +1038,8 @@
         "FROM {fqn}.quality_kpi_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Route monthly trend questions about critical-severity event counts using the quality_kpi_monthly_metrics metric view with total_critical_events measure."
     },
     {
       "question": "How does total estimated cost of the quality event in usd break down by chemical product for 'Open' records?",
@@ -999,7 +1047,8 @@
         "SELECT product_id, COUNT(*) AS record_count, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",
         "WHERE capa_status = 'Open' GROUP BY product_id ORDER BY total_cost_of_quality_usd DESC"
-      ]
+      ],
+      "usage_guidance": "Route cost-breakdown-by-product questions filtered to Open CAPA status records, aggregating cost_of_quality_usd from the quality_events table."
     },
     {
       "question": "What is the trend of total batch size in kilograms over time?",
@@ -1007,7 +1056,8 @@
         "SELECT batch_date, SUM(batch_size_kg) AS total_batch_size_kg",
         "FROM {fqn}.batch_records",
         "GROUP BY batch_date ORDER BY batch_date"
-      ]
+      ],
+      "usage_guidance": "Route trend questions about batch production volume in kilograms over time using batch_records with batch_size_kg summed by batch_date."
     },
     {
       "question": "How has the average capa closure rate for the month changed over time?",
@@ -1015,7 +1065,8 @@
         "SELECT report_month, AVG(capa_closure_rate_pct) AS avg_capa_closure_rate_pct",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about CAPA closure rate percentage trends using the quality_kpi_monthly table with avg_capa_closure_rate_pct by report_month."
     },
     {
       "question": "How has open event count changed over time?",
@@ -1024,7 +1075,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route questions about how open, unresolved quality event counts have changed over time using quality_events_metrics open_event_count measure."
     }
   ],
   "sql_snippets": {
@@ -1067,7 +1119,8 @@
         "display_name": "event month",
         "synonyms": [
           "month",
-          "reporting month"
+          "reporting month",
+          "incident month"
         ]
       },
       {
@@ -1076,7 +1129,8 @@
         "display_name": "quality cost per event",
         "synonyms": [
           "cost per deviation",
-          "unit quality cost"
+          "unit quality cost",
+          "cost per incident"
         ]
       },
       {
@@ -1085,7 +1139,8 @@
         "display_name": "absolute temperature deviation",
         "synonyms": [
           "temp offset",
-          "deviation magnitude"
+          "deviation magnitude",
+          "temperature variance"
         ]
       }
     ],
@@ -1106,7 +1161,8 @@
         "display_name": "CAPA effectiveness rate",
         "synonyms": [
           "closure rate",
-          "resolution effectiveness"
+          "resolution effectiveness",
+          "corrective action rate"
         ]
       },
       {
@@ -1115,7 +1171,8 @@
         "display_name": "batch pass rate",
         "synonyms": [
           "quality rate",
-          "first-pass yield"
+          "first-pass yield",
+          "lot acceptance rate"
         ]
       },
       {

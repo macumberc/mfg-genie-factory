@@ -51,6 +51,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "item number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Shrimp 21-25ct 1lb",
             "Frozen Pizza Pepperoni 12in",
             "Ice Cream Vanilla 48oz"
+          ],
+          "synonyms": [
+            "item name",
+            "product title",
+            "item description"
           ]
         },
         {
@@ -97,6 +107,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "product type",
+            "food group",
+            "item class"
           ]
         },
         {
@@ -118,6 +133,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "facility line",
+            "plant line"
           ]
         },
         {
@@ -354,6 +374,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "item number"
           ]
         },
         {
@@ -371,6 +396,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "product type",
+            "food group",
+            "item class"
           ]
         },
         {
@@ -392,6 +422,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "facility line",
+            "plant line"
           ]
         },
         {
@@ -623,6 +658,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "item number"
           ]
         },
         {
@@ -640,6 +680,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "product type",
+            "food group",
+            "item class"
           ]
         },
         {
@@ -661,6 +706,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "facility line",
+            "plant line"
           ]
         },
         {
@@ -979,7 +1029,8 @@
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of near-expiry units; matches phrases like 'expiring soon inventory over time' using total_near_expiry from inventory_kpi_monthly."
     },
     {
       "question": "How has avg units on hand changed over time?",
@@ -988,7 +1039,8 @@
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average on-hand stock levels; matches phrases like 'how inventory levels changed' using avg_on_hand from inventory_kpi_monthly."
     },
     {
       "question": "What is the monthly trend in total units spoiled?",
@@ -997,7 +1049,8 @@
         "FROM {fqn}.waste_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total spoiled units; matches phrases like 'spoilage volume over time' or 'how much product we wasted' using total_spoiled from waste_kpi_monthly."
     },
     {
       "question": "What is the monthly trend in avg shelf life remaining days?",
@@ -1006,7 +1059,8 @@
         "FROM {fqn}.waste_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average remaining shelf life days; matches phrases like 'freshness window over time' using avg_shelf_remaining from waste_kpi_monthly."
     },
     {
       "question": "What is the trend of total units moved over time?",
@@ -1014,7 +1068,8 @@
         "SELECT movement_date, SUM(quantity_units) AS total_quantity_units",
         "FROM {fqn}.perishable_products",
         "GROUP BY movement_date ORDER BY movement_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of total units moved across all movement types; matches phrases like 'product movement volume over time' using quantity_units from perishable_products."
     },
     {
       "question": "What is the trend of total units on hand over time?",
@@ -1022,7 +1077,8 @@
         "SELECT snapshot_date, SUM(on_hand_units) AS total_on_hand_units",
         "FROM {fqn}.inventory_transactions",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of total on-hand units from raw snapshots; matches phrases like 'stock levels day by day' using on_hand_units from inventory_transactions."
     },
     {
       "question": "How has the average inventory turnover ratio changed over time?",
@@ -1030,7 +1086,8 @@
         "SELECT perf_month, AVG(turnover_ratio) AS avg_turnover_ratio",
         "FROM {fqn}.shelf_life_snapshots",
         "GROUP BY perf_month ORDER BY perf_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average inventory turnover ratio; matches phrases like 'how fast products are selling through' using turnover_ratio from shelf_life_snapshots."
     }
   ],
   "sql_snippets": {
@@ -1039,7 +1096,9 @@
         "sql": "perishable_products.movement_type = 'Spoiled'",
         "display_name": "spoiled items",
         "synonyms": [
-          "waste"
+          "waste",
+          "wasted goods",
+          "discarded stock"
         ],
         "instruction": "Filter spoiled."
       },
@@ -1047,7 +1106,9 @@
         "sql": "inventory_transactions.spoilage_rate_pct > 5",
         "display_name": "high spoilage",
         "synonyms": [
-          "wasteful"
+          "wasteful",
+          "excessive waste",
+          "elevated loss"
         ],
         "instruction": "Filter high spoilage."
       },
@@ -1055,7 +1116,9 @@
         "sql": "perishable_products.days_to_expiry <= 3",
         "display_name": "near expiry",
         "synonyms": [
-          "about to expire"
+          "about to expire",
+          "expiring soon",
+          "short dated"
         ],
         "instruction": "Filter near expiry."
       }
@@ -1066,7 +1129,9 @@
         "sql": "DATE_TRUNC('month', perishable_products.movement_date)",
         "display_name": "movement month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "transaction month",
+          "activity month"
         ]
       },
       {
@@ -1074,7 +1139,9 @@
         "sql": "perishable_products.quantity_units * 5.0",
         "display_name": "est spoilage value",
         "synonyms": [
-          "waste value"
+          "waste value",
+          "waste cost",
+          "loss value"
         ]
       },
       {
@@ -1082,7 +1149,9 @@
         "sql": "shelf_life_snapshots.avg_shelf_remaining_days / 14.0 * 100",
         "display_name": "shelf life remaining pct",
         "synonyms": [
-          "freshness pct"
+          "freshness pct",
+          "freshness percent",
+          "shelf life left"
         ]
       }
     ],
@@ -1092,7 +1161,9 @@
         "sql": "SUM(shelf_life_snapshots.total_spoiled_units)",
         "display_name": "total spoiled",
         "synonyms": [
-          "waste units"
+          "waste units",
+          "units wasted",
+          "spoiled count"
         ]
       },
       {
@@ -1100,7 +1171,9 @@
         "sql": "SUM(shelf_life_snapshots.spoilage_cost_usd)",
         "display_name": "total spoilage cost",
         "synonyms": [
-          "waste cost"
+          "waste cost",
+          "waste dollars",
+          "spoilage expense"
         ]
       },
       {
@@ -1108,7 +1181,9 @@
         "sql": "AVG(inventory_transactions.spoilage_rate_pct)",
         "display_name": "avg spoilage rate",
         "synonyms": [
-          "waste rate"
+          "waste rate",
+          "average loss rate",
+          "mean spoilage"
         ]
       },
       {
@@ -1116,7 +1191,9 @@
         "sql": "AVG(inventory_transactions.fill_rate_pct)",
         "display_name": "avg fill rate",
         "synonyms": [
-          "service level"
+          "service level",
+          "stock fill",
+          "average fulfillment"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "LV-CC-018",
             "LV-CC-019",
             "LV-CC-020"
+          ],
+          "synonyms": [
+            "dept code",
+            "cc number",
+            "org unit id"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Sales & Marketing",
             "G&A",
             "IT"
+          ],
+          "synonyms": [
+            "department category",
+            "cc classification",
+            "org type"
           ]
         },
         {
@@ -302,6 +312,11 @@
             "LV-CC-018",
             "LV-CC-019",
             "LV-CC-020"
+          ],
+          "synonyms": [
+            "dept code",
+            "cc number",
+            "org unit id"
           ]
         },
         {
@@ -316,6 +331,11 @@
             "Sales & Marketing",
             "G&A",
             "IT"
+          ],
+          "synonyms": [
+            "department category",
+            "cc classification",
+            "org type"
           ]
         },
         {
@@ -537,6 +557,11 @@
             "LV-CC-018",
             "LV-CC-019",
             "LV-CC-020"
+          ],
+          "synonyms": [
+            "dept code",
+            "cc number",
+            "org unit id"
           ]
         },
         {
@@ -551,6 +576,11 @@
             "Sales & Marketing",
             "G&A",
             "IT"
+          ],
+          "synonyms": [
+            "department category",
+            "cc classification",
+            "org type"
           ]
         },
         {
@@ -859,7 +889,8 @@
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of open/unposted transaction counts; matches phrases like 'pending postings over time' using open_financial_transaction_count from financial_txn_metrics."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -868,7 +899,8 @@
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total transaction volume; matches phrases like 'how transaction counts changed over time' using total_transactions from financial_txn_metrics."
     },
     {
       "question": "What is the monthly trend in total budget utilization pct?",
@@ -877,7 +909,8 @@
         "FROM {fqn}.financial_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of budget utilization percentage; matches phrases like 'budget consumption over time' using total_budget_utilization_percent from financial_kpi_metrics."
     },
     {
       "question": "Rank cost center types by total cost per headcount usd",
@@ -886,7 +919,8 @@
         "FROM {fqn}.financial_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY total_cost_per_headcount DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N ranking of cost center types by cost-per-headcount spend; matches phrases like 'most expensive departments per employee' using total_cost_per_headcount from financial_kpi_metrics."
     },
     {
       "question": "How does total transaction amount in usd break down by cost center for 'Posted' records?",
@@ -894,7 +928,8 @@
         "SELECT cost_center_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
         "WHERE posting_status = 'Posted' GROUP BY cost_center_id ORDER BY total_amount_usd DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of transaction amounts by cost center restricted to Posted status; matches phrases like 'posted spend breakdown by cost center' filtering posting_status = 'Posted'."
     },
     {
       "question": "What is the trend of total budgeted amount in usd over time?",
@@ -902,7 +937,8 @@
         "SELECT snapshot_date, SUM(budget_amount_usd) AS total_budget_amount_usd",
         "FROM {fqn}.budget_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total budgeted dollars; matches phrases like 'how our budget has grown over time' using budget_amount_usd from budget_snapshots."
     },
     {
       "question": "How has the average gross margin percentage changed over time?",
@@ -910,7 +946,8 @@
         "SELECT kpi_month, AVG(gross_margin_pct) AS avg_gross_margin_pct",
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average gross margin percentage; matches phrases like 'gross margin performance over time' using gross_margin_pct from financial_kpi_monthly."
     }
   ],
   "sql_snippets": {
@@ -920,7 +957,8 @@
         "display_name": "over budget",
         "synonyms": [
           "budget overrun",
-          "negative variance"
+          "negative variance",
+          "budget exceeded"
         ],
         "instruction": "Use when identifying cost centers exceeding budget."
       },
@@ -929,7 +967,8 @@
         "display_name": "revenue transactions",
         "synonyms": [
           "sales",
-          "income"
+          "income",
+          "sales entries"
         ],
         "instruction": "Use when analyzing revenue line items."
       },
@@ -938,7 +977,8 @@
         "display_name": "posted transactions",
         "synonyms": [
           "confirmed",
-          "final"
+          "final",
+          "confirmed entries"
         ],
         "instruction": "Use when filtering to finalized GL entries."
       }
@@ -949,7 +989,9 @@
         "sql": "DATE_TRUNC('month', financial_transactions.txn_date)",
         "display_name": "transaction month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "posting month",
+          "entry month"
         ]
       },
       {
@@ -957,7 +999,9 @@
         "sql": "100.0 * budget_snapshots.variance_usd / NULLIF(budget_snapshots.budget_amount_usd, 0)",
         "display_name": "variance percentage",
         "synonyms": [
-          "budget deviation"
+          "budget deviation",
+          "budget gap percent",
+          "spend deviation rate"
         ]
       },
       {
@@ -966,7 +1010,8 @@
         "display_name": "margin spread",
         "synonyms": [
           "opex drag",
-          "overhead impact"
+          "overhead impact",
+          "margin gap"
         ]
       }
     ],
@@ -977,7 +1022,8 @@
         "display_name": "total revenue",
         "synonyms": [
           "sales",
-          "income"
+          "income",
+          "gross sales"
         ]
       },
       {
@@ -986,7 +1032,8 @@
         "display_name": "total expenses",
         "synonyms": [
           "spend",
-          "cost"
+          "cost",
+          "total spend"
         ]
       },
       {
@@ -995,7 +1042,8 @@
         "display_name": "average gross margin",
         "synonyms": [
           "margin",
-          "GM"
+          "GM",
+          "mean gross margin"
         ]
       },
       {
@@ -1004,7 +1052,8 @@
         "display_name": "total budget variance",
         "synonyms": [
           "variance",
-          "over/under"
+          "over/under",
+          "total over under"
         ]
       }
     ]

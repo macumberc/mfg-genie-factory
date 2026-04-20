@@ -51,6 +51,11 @@
             "SL-018",
             "SL-019",
             "SL-020"
+          ],
+          "synonyms": [
+            "vendor",
+            "vendor code",
+            "supplier number"
           ]
         },
         {
@@ -68,6 +73,11 @@
             "MRO Distribution",
             "Cutting Tools",
             "OEM Parts"
+          ],
+          "synonyms": [
+            "commodity",
+            "purchase category",
+            "cost bucket"
           ]
         },
         {
@@ -325,6 +335,11 @@
             "SL-018",
             "SL-019",
             "SL-020"
+          ],
+          "synonyms": [
+            "vendor",
+            "vendor code",
+            "supplier number"
           ]
         },
         {
@@ -342,6 +357,11 @@
             "MRO Distribution",
             "Cutting Tools",
             "OEM Parts"
+          ],
+          "synonyms": [
+            "commodity",
+            "purchase category",
+            "cost bucket"
           ]
         },
         {
@@ -594,6 +614,11 @@
             "SL-018",
             "SL-019",
             "SL-020"
+          ],
+          "synonyms": [
+            "vendor",
+            "vendor code",
+            "supplier number"
           ]
         },
         {
@@ -611,6 +636,11 @@
             "MRO Distribution",
             "Cutting Tools",
             "OEM Parts"
+          ],
+          "synonyms": [
+            "commodity",
+            "purchase category",
+            "cost bucket"
           ]
         },
         {
@@ -955,7 +985,8 @@
         "FROM {fqn}.procurement_metrics",
         "GROUP BY ALL",
         "ORDER BY po_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of purchase order volume; user asks about PO count, order frequency, or procurement activity over time using procurement_metrics."
     },
     {
       "question": "How has unique suppliers changed over time?",
@@ -964,7 +995,8 @@
         "FROM {fqn}.procurement_metrics",
         "GROUP BY ALL",
         "ORDER BY po_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of supplier base size; user asks how supplier count or vendor diversity evolved over time using procurement_metrics."
     },
     {
       "question": "What is the monthly trend in total procurement spend?",
@@ -973,7 +1005,8 @@
         "FROM {fqn}.spend_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly procurement spend trend; user asks about total spend, expenditure over time, or budget consumption trends using spend_kpi_metrics."
     },
     {
       "question": "What is the monthly trend in total supplier diversity pct?",
@@ -982,7 +1015,8 @@
         "FROM {fqn}.spend_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly supplier diversity percentage trend; user asks how diverse or minority supplier spend share changed over time using spend_kpi_metrics."
     },
     {
       "question": "How does total purchase order amount in usd break down by supplier for 'On Time' records?",
@@ -990,7 +1024,8 @@
         "SELECT supplier_id, COUNT(*) AS record_count, SUM(po_amount_usd) AS total_po_amount_usd",
         "FROM {fqn}.procurement_transactions",
         "WHERE delivery_status = 'On Time' GROUP BY supplier_id ORDER BY total_po_amount_usd DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered spend breakdown by supplier for on-time deliveries; user asks which suppliers received the most PO spend among punctual vendors."
     },
     {
       "question": "What is the trend of total average lead time in days over time?",
@@ -998,7 +1033,8 @@
         "SELECT snapshot_date, SUM(lead_time_days) AS total_lead_time_days",
         "FROM {fqn}.supplier_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of average supplier lead time over snapshot dates; user asks how fulfillment speed or lead time days changed across suppliers over time."
     },
     {
       "question": "How has the average maverick (off-contract) spend percentage changed over time?",
@@ -1006,7 +1042,8 @@
         "SELECT kpi_month, AVG(maverick_spend_pct) AS avg_maverick_spend_pct",
         "FROM {fqn}.spend_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly maverick (off-contract) spend percentage trend; user asks how rogue or non-compliant purchasing behavior shifted over time using spend_kpi_monthly."
     }
   ],
   "sql_snippets": {
@@ -1016,7 +1053,8 @@
         "display_name": "maverick spend",
         "synonyms": [
           "off-contract",
-          "rogue spend"
+          "rogue spend",
+          "off-contract buying"
         ],
         "instruction": "Use when analyzing unauthorized or off-contract purchases."
       },
@@ -1025,7 +1063,8 @@
         "display_name": "late deliveries",
         "synonyms": [
           "delayed",
-          "overdue"
+          "overdue",
+          "overdue shipments"
         ],
         "instruction": "Use when analyzing supplier delivery failures."
       },
@@ -1034,7 +1073,8 @@
         "display_name": "underperforming suppliers",
         "synonyms": [
           "low score",
-          "poor performers"
+          "poor performers",
+          "low-scoring vendors"
         ],
         "instruction": "Use when identifying suppliers below acceptable performance thresholds."
       }
@@ -1045,7 +1085,9 @@
         "sql": "DATE_TRUNC('month', procurement_transactions.po_date)",
         "display_name": "PO month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "order month",
+          "purchase month"
         ]
       },
       {
@@ -1054,7 +1096,8 @@
         "display_name": "invoice variance",
         "synonyms": [
           "price difference",
-          "cost overrun"
+          "cost overrun",
+          "billing gap"
         ]
       },
       {
@@ -1063,7 +1106,8 @@
         "display_name": "savings rate",
         "synonyms": [
           "savings percentage",
-          "cost reduction rate"
+          "cost reduction rate",
+          "discount rate"
         ]
       }
     ],
@@ -1074,7 +1118,8 @@
         "display_name": "total PO spend",
         "synonyms": [
           "procurement spend",
-          "purchasing volume"
+          "purchasing volume",
+          "total purchasing"
         ]
       },
       {
@@ -1083,7 +1128,8 @@
         "display_name": "total savings",
         "synonyms": [
           "cost savings",
-          "negotiated savings"
+          "negotiated savings",
+          "total cost savings"
         ]
       },
       {
@@ -1092,7 +1138,8 @@
         "display_name": "average supplier score",
         "synonyms": [
           "supplier rating",
-          "performance score"
+          "performance score",
+          "mean vendor rating"
         ]
       },
       {
@@ -1101,7 +1148,8 @@
         "display_name": "average on-time delivery",
         "synonyms": [
           "OTD",
-          "delivery rate"
+          "delivery rate",
+          "on-time rate"
         ]
       }
     ]

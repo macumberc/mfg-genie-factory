@@ -51,6 +51,11 @@
             "MS-SAF-018",
             "MS-IT-019",
             "MS-IT-020"
+          ],
+          "synonyms": [
+            "vendor code",
+            "seller id",
+            "counterparty id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Honeywell Safety",
             "Aveva SCADA Software",
             "OSIsoft PI Systems"
+          ],
+          "synonyms": [
+            "vendor name",
+            "seller name",
+            "counterparty"
           ]
         },
         {
@@ -99,6 +109,11 @@
             "Logistics & Fleet",
             "Safety Equipment",
             "IT & Software"
+          ],
+          "synonyms": [
+            "commodity type",
+            "procurement bucket",
+            "cost category"
           ]
         },
         {
@@ -111,6 +126,11 @@
             "Low",
             "Medium",
             "High"
+          ],
+          "synonyms": [
+            "vendor risk level",
+            "supplier rating",
+            "risk band"
           ]
         },
         {
@@ -330,6 +350,11 @@
             "MS-SAF-018",
             "MS-IT-019",
             "MS-IT-020"
+          ],
+          "synonyms": [
+            "vendor code",
+            "seller id",
+            "counterparty id"
           ]
         },
         {
@@ -359,6 +384,11 @@
             "Honeywell Safety",
             "Aveva SCADA Software",
             "OSIsoft PI Systems"
+          ],
+          "synonyms": [
+            "vendor name",
+            "seller name",
+            "counterparty"
           ]
         },
         {
@@ -378,6 +408,11 @@
             "Logistics & Fleet",
             "Safety Equipment",
             "IT & Software"
+          ],
+          "synonyms": [
+            "commodity type",
+            "procurement bucket",
+            "cost category"
           ]
         },
         {
@@ -390,6 +425,11 @@
             "Low",
             "Medium",
             "High"
+          ],
+          "synonyms": [
+            "vendor risk level",
+            "supplier rating",
+            "risk band"
           ]
         },
         {
@@ -596,6 +636,11 @@
             "MS-SAF-018",
             "MS-IT-019",
             "MS-IT-020"
+          ],
+          "synonyms": [
+            "vendor code",
+            "seller id",
+            "counterparty id"
           ]
         },
         {
@@ -615,6 +660,11 @@
             "Logistics & Fleet",
             "Safety Equipment",
             "IT & Software"
+          ],
+          "synonyms": [
+            "commodity type",
+            "procurement bucket",
+            "cost category"
           ]
         },
         {
@@ -858,7 +908,8 @@
         "FROM {fqn}.procurement_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total procurement spend in USD; matches phrases like 'spend over time' or 'how much are we spending each month' using transaction_date."
     },
     {
       "question": "How has avg contract compliance changed over time?",
@@ -867,7 +918,8 @@
         "FROM {fqn}.procurement_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average contract compliance percentage; matches phrases like 'compliance rate over time' or 'are suppliers meeting contract terms' using avg_compliance_pct."
     },
     {
       "question": "What is the monthly trend in avg on-time delivery?",
@@ -876,7 +928,8 @@
         "FROM {fqn}.supplier_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average supplier on-time delivery percentage; matches phrases like 'delivery performance over time' or 'are suppliers delivering on schedule' using snapshot_date."
     },
     {
       "question": "What is the trend of total transaction amount usd over time?",
@@ -884,7 +937,8 @@
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.procurement_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of raw transaction amounts from procurement_transactions table; matches phrases like 'total invoice value over time' or 'transaction dollar trend' using amount_usd."
     },
     {
       "question": "What is the trend of total avg lead time days over time?",
@@ -892,7 +946,8 @@
         "SELECT snapshot_date, SUM(avg_lead_time_days) AS total_avg_lead_time_days",
         "FROM {fqn}.supplier_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of cumulative average supplier lead time days; matches phrases like 'how lead times are changing' or 'supplier fulfillment speed over time' using avg_lead_time_days."
     },
     {
       "question": "How has the average off-contract spend pct changed over time?",
@@ -900,7 +955,8 @@
         "SELECT kpi_month, AVG(maverick_spend_pct) AS avg_maverick_spend_pct",
         "FROM {fqn}.spend_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of off-contract or maverick spend percentage; matches phrases like 'uncontrolled spend over time' or 'how much spend is outside contract' using maverick_spend_pct."
     },
     {
       "question": "How does the number of unique total transactionss vary by supplier id?",
@@ -909,7 +965,8 @@
         "FROM {fqn}.procurement_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY total_transactions DESC"
-      ]
+      ],
+      "usage_guidance": "Ranked breakdown of transaction volume by supplier; matches phrases like 'which suppliers have the most transactions' or 'busiest suppliers by deal count' using total_transactions descending."
     }
   ],
   "sql_snippets": {
@@ -918,7 +975,9 @@
         "sql": "risk_tier = 'High'",
         "display_name": "high risk suppliers",
         "synonyms": [
-          "risky"
+          "risky",
+          "critical vendors",
+          "tier 1 risk"
         ],
         "instruction": "High risk suppliers."
       },
@@ -926,7 +985,9 @@
         "sql": "document_type = 'Invoice'",
         "display_name": "invoices only",
         "synonyms": [
-          "invoiced"
+          "invoiced",
+          "bills only",
+          "invoice records"
         ],
         "instruction": "Invoice transactions."
       },
@@ -934,7 +995,9 @@
         "sql": "contract_compliance_pct < 80",
         "display_name": "low compliance",
         "synonyms": [
-          "non-compliant"
+          "non-compliant",
+          "compliance breach",
+          "below threshold"
         ],
         "instruction": "Low compliance transactions."
       }
@@ -945,7 +1008,9 @@
         "sql": "ROUND(procurement_transactions.amount_usd / NULLIF(procurement_transactions.delivery_days, 0), 2)",
         "display_name": "cost per lead day",
         "synonyms": [
-          "daily cost"
+          "daily cost",
+          "daily cost rate",
+          "spend per day"
         ]
       },
       {
@@ -953,7 +1018,9 @@
         "sql": "ROUND(supplier_snapshots.quality_score / NULLIF(supplier_snapshots.defect_rate_pct, 0), 2)",
         "display_name": "quality-defect ratio",
         "synonyms": [
-          "quality efficiency"
+          "quality efficiency",
+          "quality index",
+          "defect-adjusted score"
         ]
       },
       {
@@ -961,7 +1028,9 @@
         "sql": "DATE_TRUNC('month', procurement_transactions.transaction_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "billing month",
+          "purchase month"
         ]
       }
     ],
@@ -971,7 +1040,9 @@
         "sql": "SUM(procurement_transactions.amount_usd)",
         "display_name": "total spend",
         "synonyms": [
-          "procurement cost"
+          "procurement cost",
+          "total expenditure",
+          "total outlay"
         ]
       },
       {
@@ -979,7 +1050,9 @@
         "sql": "AVG(supplier_snapshots.quality_score)",
         "display_name": "avg quality",
         "synonyms": [
-          "quality"
+          "quality",
+          "mean quality",
+          "quality rating"
         ]
       },
       {
@@ -987,7 +1060,9 @@
         "sql": "SUM(spend_kpi_monthly.savings_usd)",
         "display_name": "total savings",
         "synonyms": [
-          "cost savings"
+          "cost savings",
+          "total reduction",
+          "procurement savings"
         ]
       },
       {
@@ -995,7 +1070,9 @@
         "sql": "AVG(supplier_snapshots.on_time_delivery_pct)",
         "display_name": "avg on-time",
         "synonyms": [
-          "delivery performance"
+          "delivery performance",
+          "on-time rate",
+          "fulfillment rate"
         ]
       }
     ]

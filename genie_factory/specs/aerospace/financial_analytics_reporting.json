@@ -51,6 +51,11 @@
             "CC-504",
             "CC-105",
             "CC-205"
+          ],
+          "synonyms": [
+            "dept code",
+            "cc number",
+            "org unit id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Training & Simulation",
             "Composites Center",
             "Missile Systems"
+          ],
+          "synonyms": [
+            "department",
+            "org unit",
+            "cost group"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Space",
             "Business Jets",
             "Services"
+          ],
+          "synonyms": [
+            "division",
+            "line of business",
+            "vertical"
           ]
         },
         {
@@ -326,6 +341,11 @@
             "CC-504",
             "CC-105",
             "CC-205"
+          ],
+          "synonyms": [
+            "dept code",
+            "cc number",
+            "org unit id"
           ]
         },
         {
@@ -340,6 +360,11 @@
             "Space",
             "Business Jets",
             "Services"
+          ],
+          "synonyms": [
+            "division",
+            "line of business",
+            "vertical"
           ]
         },
         {
@@ -542,6 +567,11 @@
             "CC-504",
             "CC-105",
             "CC-205"
+          ],
+          "synonyms": [
+            "dept code",
+            "cc number",
+            "org unit id"
           ]
         },
         {
@@ -556,6 +586,11 @@
             "Space",
             "Business Jets",
             "Services"
+          ],
+          "synonyms": [
+            "division",
+            "line of business",
+            "vertical"
           ]
         },
         {
@@ -849,7 +884,8 @@
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about monthly operating expenditure totals, such as 'show me opex spending by month' using the financial_txn_metrics measure."
     },
     {
       "question": "How has total rd spend count changed over time?",
@@ -858,7 +894,8 @@
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about R&D investment levels, such as 'how is our research spend trending quarterly' using the financial_txn_metrics total_rd_spend measure."
     },
     {
       "question": "What is the monthly trend in total budgeted revenue usd?",
@@ -867,7 +904,8 @@
         "FROM {fqn}.budget_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about planned revenue targets, such as 'show budgeted revenue by snapshot period' using the budget_metrics total_budgeted_revenue measure."
     },
     {
       "question": "How has total revenue variance pct changed over time?",
@@ -876,7 +914,8 @@
         "FROM {fqn}.budget_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about revenue forecast accuracy or variance drift, such as 'how is our revenue variance percentage changing' using budget_metrics over snapshot_date."
     },
     {
       "question": "What is the trend of total transaction amount in usd (revenue positive, expenses negative) over time?",
@@ -884,7 +923,8 @@
         "SELECT txn_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
         "GROUP BY txn_date ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about net transaction cash flow, such as 'show total transaction amounts month by month' directly from the financial_transactions table using amount_usd."
     },
     {
       "question": "What is the trend of total budgeted revenue in usd over time?",
@@ -892,7 +932,8 @@
         "SELECT snapshot_date, SUM(budgeted_revenue_usd) AS total_budgeted_revenue_usd",
         "FROM {fqn}.budget_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about planned revenue from raw budget data, such as 'what were our budgeted revenue targets each period' using budget_snapshots budgeted_revenue_usd."
     },
     {
       "question": "How has the average gross margin percentage changed over time?",
@@ -900,7 +941,8 @@
         "SELECT report_month, AVG(gross_margin_pct) AS avg_gross_margin_pct",
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about profitability health, such as 'how has gross margin percentage trended over recent months' using financial_kpi_monthly gross_margin_pct."
     }
   ],
   "sql_snippets": {
@@ -910,7 +952,8 @@
         "display_name": "revenue transactions",
         "synonyms": [
           "sales",
-          "top line"
+          "top line",
+          "sales entries"
         ],
         "instruction": "Filter for revenue GL entries."
       },
@@ -919,7 +962,8 @@
         "display_name": "low margin cost centers",
         "synonyms": [
           "margin risk",
-          "unprofitable"
+          "unprofitable",
+          "underperforming depts"
         ],
         "instruction": "Filter for cost centers with below-target gross margins."
       },
@@ -928,7 +972,8 @@
         "display_name": "unfavorable budget variance",
         "synonyms": [
           "budget miss",
-          "underperformance"
+          "underperformance",
+          "missed revenue target"
         ],
         "instruction": "Filter for cost centers significantly behind budget."
       }
@@ -939,7 +984,9 @@
         "sql": "DATE_TRUNC('month', financial_transactions.txn_date)",
         "display_name": "transaction month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "billing month",
+          "posting period"
         ]
       },
       {
@@ -948,7 +995,8 @@
         "display_name": "gross profit USD",
         "synonyms": [
           "profit",
-          "margin dollars"
+          "margin dollars",
+          "gross earnings"
         ]
       },
       {
@@ -957,7 +1005,8 @@
         "display_name": "revenue per headcount",
         "synonyms": [
           "productivity",
-          "rev per FTE"
+          "rev per FTE",
+          "sales per employee"
         ]
       }
     ],
@@ -968,7 +1017,8 @@
         "display_name": "total revenue",
         "synonyms": [
           "top line",
-          "sales"
+          "sales",
+          "total sales"
         ]
       },
       {
@@ -977,7 +1027,8 @@
         "display_name": "total COGS",
         "synonyms": [
           "cost of goods sold",
-          "production cost"
+          "production cost",
+          "total cost of sales"
         ]
       },
       {
@@ -986,7 +1037,8 @@
         "display_name": "average gross margin",
         "synonyms": [
           "margin",
-          "gross margin"
+          "gross margin",
+          "mean gross margin"
         ]
       },
       {
@@ -995,7 +1047,8 @@
         "display_name": "total EBITDA",
         "synonyms": [
           "earnings",
-          "operating profit"
+          "operating profit",
+          "earnings total"
         ]
       }
     ]

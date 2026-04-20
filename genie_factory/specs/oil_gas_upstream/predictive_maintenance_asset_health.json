@@ -51,6 +51,11 @@
             "WG-SRP-018",
             "WG-HYD-019",
             "WG-SCR-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "unit id",
+            "tag number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Sucker Rod Pump W-412",
             "Hydraulic Power Unit",
             "SCR Drive System"
+          ],
+          "synonyms": [
+            "asset name",
+            "unit name",
+            "machine name"
           ]
         },
         {
@@ -100,6 +110,11 @@
             "Rod Pump",
             "Hydraulic",
             "Electrical"
+          ],
+          "synonyms": [
+            "asset class",
+            "machine type",
+            "unit category"
           ]
         },
         {
@@ -114,6 +129,11 @@
             "Bakken",
             "Haynesville",
             "Marcellus"
+          ],
+          "synonyms": [
+            "well site",
+            "oilfield",
+            "production area"
           ]
         },
         {
@@ -356,6 +376,11 @@
             "WG-SRP-018",
             "WG-HYD-019",
             "WG-SCR-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "unit id",
+            "tag number"
           ]
         },
         {
@@ -385,6 +410,11 @@
             "Sucker Rod Pump W-412",
             "Hydraulic Power Unit",
             "SCR Drive System"
+          ],
+          "synonyms": [
+            "asset name",
+            "unit name",
+            "machine name"
           ]
         },
         {
@@ -405,6 +435,11 @@
             "Rod Pump",
             "Hydraulic",
             "Electrical"
+          ],
+          "synonyms": [
+            "asset class",
+            "machine type",
+            "unit category"
           ]
         },
         {
@@ -419,6 +454,11 @@
             "Bakken",
             "Haynesville",
             "Marcellus"
+          ],
+          "synonyms": [
+            "well site",
+            "oilfield",
+            "production area"
           ]
         },
         {
@@ -644,6 +684,11 @@
             "WG-SRP-018",
             "WG-HYD-019",
             "WG-SCR-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "unit id",
+            "tag number"
           ]
         },
         {
@@ -664,6 +709,11 @@
             "Rod Pump",
             "Hydraulic",
             "Electrical"
+          ],
+          "synonyms": [
+            "asset class",
+            "machine type",
+            "unit category"
           ]
         },
         {
@@ -678,6 +728,11 @@
             "Bakken",
             "Haynesville",
             "Marcellus"
+          ],
+          "synonyms": [
+            "well site",
+            "oilfield",
+            "production area"
           ]
         },
         {
@@ -950,7 +1005,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak sensor readings; matches questions about highest or maximum sensor values spiking over time using the sensor_readings_metrics metric view."
     },
     {
       "question": "How has total sensor value changed over time?",
@@ -959,7 +1015,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative sensor activity trend over time; matches questions about total or aggregate sensor output volume changing across reading dates via metric view."
     },
     {
       "question": "What is the monthly trend in total downtime hours?",
@@ -968,7 +1025,8 @@
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly downtime hours trend; matches questions about equipment outage duration patterns over time using the maintenance_events_metrics metric view."
     },
     {
       "question": "What is the trend of total sensor value over time?",
@@ -976,7 +1034,8 @@
         "SELECT reading_date, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of summed sensor values; matches questions about total sensor output over time querying the raw sensor_readings table directly."
     },
     {
       "question": "What is the trend of total downtime hours over time?",
@@ -984,7 +1043,8 @@
         "SELECT event_date, SUM(downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.maintenance_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total downtime hours; matches questions about cumulative equipment downtime over time querying the raw maintenance_events table directly."
     },
     {
       "question": "How has the average avg health score changed over time?",
@@ -992,7 +1052,8 @@
         "SELECT kpi_month, AVG(avg_health_score) AS avg_avg_health_score",
         "FROM {fqn}.equipment_health_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly average health score trend across all equipment; matches questions about fleet-wide health degradation or improvement over time from equipment_health_monthly."
     },
     {
       "question": "How does alarm trip count vary across equipment ids?",
@@ -1001,7 +1062,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY alarm_trip_count DESC"
-      ]
+      ],
+      "usage_guidance": "Ranked breakdown of alarm trip counts by equipment ID; matches questions identifying which specific pieces of equipment trigger the most alarms."
     }
   ],
   "sql_snippets": {
@@ -1010,7 +1072,9 @@
         "sql": "alert_level IN ('Alarm', 'Trip')",
         "display_name": "critical alerts",
         "synonyms": [
-          "alarms"
+          "alarms",
+          "high priority alarms",
+          "trip alarms"
         ],
         "instruction": "Critical alerts."
       },
@@ -1018,7 +1082,9 @@
         "sql": "event_type = 'Emergency'",
         "display_name": "emergency events",
         "synonyms": [
-          "unplanned"
+          "unplanned",
+          "unplanned failures",
+          "urgent breakdowns"
         ],
         "instruction": "Emergency maintenance."
       },
@@ -1026,7 +1092,9 @@
         "sql": "predicted_rul_days < 30",
         "display_name": "near failure",
         "synonyms": [
-          "low RUL"
+          "low RUL",
+          "imminent breakdown",
+          "end of life"
         ],
         "instruction": "Near-failure assets."
       }
@@ -1037,7 +1105,9 @@
         "sql": "ROUND(maintenance_events.repair_cost_usd / NULLIF(maintenance_events.downtime_hours, 0), 2)",
         "display_name": "cost per downtime hr",
         "synonyms": [
-          "hourly cost"
+          "hourly cost",
+          "hourly repair rate",
+          "downtime cost rate"
         ]
       },
       {
@@ -1045,7 +1115,9 @@
         "sql": "ROUND(100.0 * COUNT(DISTINCT CASE WHEN maintenance_events.was_predicted = TRUE THEN maintenance_events.event_id END) / NULLIF(COUNT(DISTINCT maintenance_events.event_id), 0), 2)",
         "display_name": "prediction rate",
         "synonyms": [
-          "ML accuracy"
+          "ML accuracy",
+          "forecast accuracy",
+          "predicted failure rate"
         ]
       },
       {
@@ -1053,7 +1125,9 @@
         "sql": "DATE_TRUNC('month', maintenance_events.event_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "failure month",
+          "incident month"
         ]
       }
     ],
@@ -1063,7 +1137,9 @@
         "sql": "SUM(maintenance_events.repair_cost_usd)",
         "display_name": "total repair cost",
         "synonyms": [
-          "cost"
+          "cost",
+          "repair spend",
+          "maintenance spend"
         ]
       },
       {
@@ -1071,7 +1147,9 @@
         "sql": "SUM(maintenance_events.downtime_hours)",
         "display_name": "total downtime",
         "synonyms": [
-          "downtime"
+          "downtime",
+          "offline hours",
+          "lost hours"
         ]
       },
       {
@@ -1079,7 +1157,9 @@
         "sql": "AVG(sensor_readings.health_score)",
         "display_name": "avg health",
         "synonyms": [
-          "health"
+          "health",
+          "mean health",
+          "average condition"
         ]
       },
       {
@@ -1087,7 +1167,9 @@
         "sql": "SUM(maintenance_events.production_loss_bbl)",
         "display_name": "production loss",
         "synonyms": [
-          "lost barrels"
+          "lost barrels",
+          "deferred production",
+          "output loss"
         ]
       }
     ]

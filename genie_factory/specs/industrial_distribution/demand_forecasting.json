@@ -51,6 +51,11 @@
             "DF-SAF-018",
             "DF-SAF-019",
             "DF-SAF-020"
+          ],
+          "synonyms": [
+            "part number",
+            "item code",
+            "stock code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Hard Hat Class E Vented",
             "Nitrile Gloves Box/100",
             "Fall Protection Harness"
+          ],
+          "synonyms": [
+            "item name",
+            "part description",
+            "article name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Valves",
             "Electrical",
             "Safety"
+          ],
+          "synonyms": [
+            "product line",
+            "item family",
+            "commodity group"
           ]
         },
         {
@@ -361,6 +376,11 @@
             "DF-SAF-018",
             "DF-SAF-019",
             "DF-SAF-020"
+          ],
+          "synonyms": [
+            "part number",
+            "item code",
+            "stock code"
           ]
         },
         {
@@ -375,6 +395,11 @@
             "Valves",
             "Electrical",
             "Safety"
+          ],
+          "synonyms": [
+            "product line",
+            "item family",
+            "commodity group"
           ]
         },
         {
@@ -618,6 +643,11 @@
             "DF-SAF-018",
             "DF-SAF-019",
             "DF-SAF-020"
+          ],
+          "synonyms": [
+            "part number",
+            "item code",
+            "stock code"
           ]
         },
         {
@@ -632,6 +662,11 @@
             "Valves",
             "Electrical",
             "Safety"
+          ],
+          "synonyms": [
+            "product line",
+            "item family",
+            "commodity group"
           ]
         },
         {
@@ -965,7 +1000,8 @@
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak/highest order quantity over time; user mentions 'max order quantity', 'highest orders', or 'order volume spikes' across periods."
     },
     {
       "question": "How has total order revenue usd changed over time?",
@@ -974,7 +1010,8 @@
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total order revenue; user asks how revenue or sales dollars have grown, declined, or changed month over month."
     },
     {
       "question": "What is the monthly trend in highest forecasted units?",
@@ -983,7 +1020,8 @@
         "FROM {fqn}.forecast_accuracy_monthly",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak forecasted units; user asks about 'highest forecast', 'max forecasted demand', or 'forecast volume spikes' over time."
     },
     {
       "question": "How has highest forecasted units changed over time?",
@@ -992,7 +1030,8 @@
         "FROM {fqn}.forecast_accuracy_monthly",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Time-series change in maximum forecasted units; user asks how top-end demand forecasts have evolved or shifted across forecast months."
     },
     {
       "question": "How does total units ordered break down by product sku code for 'Backordered' records?",
@@ -1000,7 +1039,8 @@
         "SELECT sku, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.product_skus",
         "WHERE order_status = 'Backordered' GROUP BY sku ORDER BY total_order_quantity DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total order quantity broken down by SKU, specifically for Backordered order_status; user asks which SKUs have the most backordered units."
     },
     {
       "question": "What is the trend of total total open order value in usd over time?",
@@ -1008,7 +1048,8 @@
         "SELECT snapshot_date, SUM(open_order_value_usd) AS total_open_order_value_usd",
         "FROM {fqn}.sales_orders",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total open order value in USD over snapshot dates; user asks about backlog value, open pipeline dollars, or unfulfilled order value over time."
     },
     {
       "question": "How has the average absolute forecast error percent changed over time?",
@@ -1016,7 +1057,8 @@
         "SELECT forecast_month, AVG(forecast_error_pct) AS avg_forecast_error_pct",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average forecast error percentage; user asks how forecast accuracy, forecast deviation, or MAPE has improved or worsened over forecast months."
     }
   ],
   "sql_snippets": {
@@ -1026,7 +1068,8 @@
         "display_name": "backordered",
         "synonyms": [
           "backorders",
-          "out of stock"
+          "out of stock",
+          "on backorder"
         ],
         "instruction": "Use when filtering to backordered items."
       },
@@ -1035,7 +1078,8 @@
         "display_name": "shipped orders",
         "synonyms": [
           "fulfilled",
-          "completed"
+          "completed",
+          "fulfilled orders"
         ],
         "instruction": "Use when filtering to shipped orders for revenue calculation."
       },
@@ -1044,7 +1088,8 @@
         "display_name": "latest model",
         "synonyms": [
           "current model",
-          "v2.2"
+          "v2.2",
+          "newest version"
         ],
         "instruction": "Use to filter forecasts to the latest model."
       }
@@ -1055,7 +1100,9 @@
         "sql": "DATE_TRUNC('month', product_skus.order_date)",
         "display_name": "order month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "monthly period",
+          "billing month"
         ]
       },
       {
@@ -1064,7 +1111,8 @@
         "display_name": "order value USD",
         "synonyms": [
           "line total",
-          "order total"
+          "order total",
+          "line value"
         ]
       },
       {
@@ -1073,7 +1121,8 @@
         "display_name": "forecast bias units",
         "synonyms": [
           "forecast miss",
-          "demand gap"
+          "demand gap",
+          "forecast deviation"
         ]
       }
     ],
@@ -1084,7 +1133,8 @@
         "display_name": "total revenue",
         "synonyms": [
           "sales",
-          "order revenue"
+          "order revenue",
+          "gross sales"
         ]
       },
       {
@@ -1092,7 +1142,9 @@
         "sql": "SUM(sales_orders.backorder_units)",
         "display_name": "total backorder units",
         "synonyms": [
-          "backlog volume"
+          "backlog volume",
+          "backlog units",
+          "unfilled units"
         ]
       },
       {
@@ -1101,7 +1153,8 @@
         "display_name": "average forecast error",
         "synonyms": [
           "MAPE",
-          "accuracy"
+          "accuracy",
+          "mean forecast error"
         ]
       },
       {
@@ -1110,7 +1163,8 @@
         "display_name": "average fill rate",
         "synonyms": [
           "service level",
-          "availability"
+          "availability",
+          "fulfillment rate"
         ]
       }
     ]

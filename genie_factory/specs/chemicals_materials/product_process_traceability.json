@@ -51,6 +51,11 @@
             "TC-018",
             "TC-019",
             "TC-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "material number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Propylene Oxide PO-720",
             "Adipic Acid AA-730",
             "Caprolactam CL-740"
+          ],
+          "synonyms": [
+            "item description",
+            "material name",
+            "chemical name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Catalysts",
             "Surfactants",
             "Intermediates"
+          ],
+          "synonyms": [
+            "material type",
+            "chemical family",
+            "substance class"
           ]
         },
         {
@@ -348,6 +363,11 @@
             "TC-018",
             "TC-019",
             "TC-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "material number"
           ]
         },
         {
@@ -377,6 +397,11 @@
             "Propylene Oxide PO-720",
             "Adipic Acid AA-730",
             "Caprolactam CL-740"
+          ],
+          "synonyms": [
+            "item description",
+            "material name",
+            "chemical name"
           ]
         },
         {
@@ -391,6 +416,11 @@
             "Catalysts",
             "Surfactants",
             "Intermediates"
+          ],
+          "synonyms": [
+            "material type",
+            "chemical family",
+            "substance class"
           ]
         },
         {
@@ -600,6 +630,11 @@
             "TC-018",
             "TC-019",
             "TC-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "material number"
           ]
         },
         {
@@ -629,6 +664,11 @@
             "Propylene Oxide PO-720",
             "Adipic Acid AA-730",
             "Caprolactam CL-740"
+          ],
+          "synonyms": [
+            "item description",
+            "material name",
+            "chemical name"
           ]
         },
         {
@@ -643,6 +683,11 @@
             "Catalysts",
             "Surfactants",
             "Intermediates"
+          ],
+          "synonyms": [
+            "material type",
+            "chemical family",
+            "substance class"
           ]
         },
         {
@@ -964,7 +1009,8 @@
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total production event counts; matches phrases like 'production volume over time' or 'how many events per month' using event_date."
     },
     {
       "question": "How has unique lots changed over time?",
@@ -973,7 +1019,8 @@
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of unique lot counts; matches 'how many distinct lots were active' or 'lot diversity over time' grouped by event_date."
     },
     {
       "question": "What is the monthly trend in lots with complete genealogy?",
@@ -982,7 +1029,8 @@
         "FROM {fqn}.traceability_monthly_metrics",
         "GROUP BY ALL",
         "ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of lots achieving full genealogy documentation; matches 'genealogy completeness over time' or 'fully traced lots per month' using report_month."
     },
     {
       "question": "What is the trend of total input material quantity in kg over time?",
@@ -990,7 +1038,8 @@
         "SELECT event_date, SUM(input_quantity_kg) AS total_input_quantity_kg",
         "FROM {fqn}.production_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of raw input material consumption in kg; matches 'how much material was consumed' or 'input quantity trend' from production_events."
     },
     {
       "question": "What is the trend of total quantity remaining in lot in kg over time?",
@@ -998,7 +1047,8 @@
         "SELECT snapshot_date, SUM(quantity_on_hand_kg) AS total_quantity_on_hand_kg",
         "FROM {fqn}.lot_tracking_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Snapshot-based trend of on-hand lot inventory in kg; matches 'how much material remains in lots' or 'inventory quantity over time' from lot_tracking_snapshots."
     },
     {
       "question": "How has the average traceability completeness score (0-100) changed over time?",
@@ -1006,7 +1056,8 @@
         "SELECT report_month, AVG(traceability_score_pct) AS avg_traceability_score_pct",
         "FROM {fqn}.traceability_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average traceability completeness score (0–100); matches 'traceability score over time' or 'are we improving genealogy coverage' from traceability_monthly."
     },
     {
       "question": "How does failed quality checks count vary across product categories?",
@@ -1015,7 +1066,8 @@
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
         "ORDER BY failed_quality_checks DESC"
-      ]
+      ],
+      "usage_guidance": "Cross-category comparison of failed quality check counts; matches 'which product categories fail QC most' or 'quality failures by category' ranked descending."
     }
   ],
   "sql_snippets": {
@@ -1045,7 +1097,8 @@
         "display_name": "reaction step events",
         "synonyms": [
           "chemical reaction",
-          "synthesis step"
+          "synthesis step",
+          "reactor runs"
         ],
         "instruction": "Use when filtering to the reaction process step only."
       }
@@ -1057,7 +1110,8 @@
         "display_name": "event month",
         "synonyms": [
           "month",
-          "production month"
+          "production month",
+          "batch month"
         ]
       },
       {
@@ -1076,7 +1130,8 @@
         "display_name": "genealogy completeness rate",
         "synonyms": [
           "genealogy rate",
-          "traceability completeness"
+          "traceability completeness",
+          "lineage coverage"
         ]
       }
     ],
@@ -1097,7 +1152,8 @@
         "display_name": "quality pass rate",
         "synonyms": [
           "QC pass rate",
-          "inspection pass rate"
+          "inspection pass rate",
+          "pass rate"
         ]
       },
       {
@@ -1106,7 +1162,8 @@
         "display_name": "average traceability score",
         "synonyms": [
           "trace score",
-          "genealogy score"
+          "genealogy score",
+          "traceability rating"
         ]
       },
       {
@@ -1115,7 +1172,8 @@
         "display_name": "average recall readiness time",
         "synonyms": [
           "recall time",
-          "mock recall hours"
+          "mock recall hours",
+          "recall response time"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "CV-SH-018",
             "CV-INF-019",
             "CV-LNG-020"
+          ],
+          "synonyms": [
+            "asset code",
+            "venture id",
+            "deal number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "DJ Basin Wattenberg",
             "Carbon Capture Hub Texas",
             "Cameron LNG Debottleneck"
+          ],
+          "synonyms": [
+            "asset name",
+            "venture title",
+            "deal name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Shale",
             "LNG",
             "Infrastructure"
+          ],
+          "synonyms": [
+            "asset class",
+            "investment category",
+            "venture type"
           ]
         },
         {
@@ -112,6 +127,11 @@
             "Texas Gulf Coast",
             "Louisiana Gulf Coast",
             "Colorado"
+          ],
+          "synonyms": [
+            "geography",
+            "operating area",
+            "play region"
           ]
         },
         {
@@ -355,6 +375,11 @@
             "CV-SH-018",
             "CV-INF-019",
             "CV-LNG-020"
+          ],
+          "synonyms": [
+            "asset code",
+            "venture id",
+            "deal number"
           ]
         },
         {
@@ -384,6 +409,11 @@
             "DJ Basin Wattenberg",
             "Carbon Capture Hub Texas",
             "Cameron LNG Debottleneck"
+          ],
+          "synonyms": [
+            "asset name",
+            "venture title",
+            "deal name"
           ]
         },
         {
@@ -398,6 +428,11 @@
             "Shale",
             "LNG",
             "Infrastructure"
+          ],
+          "synonyms": [
+            "asset class",
+            "investment category",
+            "venture type"
           ]
         },
         {
@@ -416,6 +451,11 @@
             "Texas Gulf Coast",
             "Louisiana Gulf Coast",
             "Colorado"
+          ],
+          "synonyms": [
+            "geography",
+            "operating area",
+            "play region"
           ]
         },
         {
@@ -637,6 +677,11 @@
             "CV-SH-018",
             "CV-INF-019",
             "CV-LNG-020"
+          ],
+          "synonyms": [
+            "asset code",
+            "venture id",
+            "deal number"
           ]
         },
         {
@@ -651,6 +696,11 @@
             "Shale",
             "LNG",
             "Infrastructure"
+          ],
+          "synonyms": [
+            "asset class",
+            "investment category",
+            "venture type"
           ]
         },
         {
@@ -669,6 +719,11 @@
             "Texas Gulf Coast",
             "Louisiana Gulf Coast",
             "Colorado"
+          ],
+          "synonyms": [
+            "geography",
+            "operating area",
+            "play region"
           ]
         },
         {
@@ -947,7 +1002,8 @@
         "FROM {fqn}.investment_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total investment spend in USD across CapVenture's capital transactions, using the investment_transactions_metrics metric view."
     },
     {
       "question": "How has total budgeted amount in usd changed over time?",
@@ -956,7 +1012,8 @@
         "FROM {fqn}.investment_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total budgeted capital amounts in USD, tracking how approved budgets evolve across transaction dates."
     },
     {
       "question": "What is the monthly trend in average irr percentage?",
@@ -965,7 +1022,8 @@
         "FROM {fqn}.project_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average IRR percentage across exploration and development projects, sourced from project_snapshots_metrics."
     },
     {
       "question": "How does total transaction amount in usd break down by project for 'Approved' records?",
@@ -973,7 +1031,8 @@
         "SELECT project_id, COUNT(*) AS record_count, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.investment_transactions",
         "WHERE approval_status = 'Approved' GROUP BY project_id ORDER BY total_amount_usd DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate breaking down total transaction spend by project for Approved records only, using approval_status filter on investment_transactions."
     },
     {
       "question": "What is the trend of total net present value in millions usd over time?",
@@ -981,7 +1040,8 @@
         "SELECT snapshot_date, SUM(npv_mm) AS total_npv_mm",
         "FROM {fqn}.project_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative or periodic trend of total Net Present Value in millions USD over snapshot dates across the project portfolio."
     },
     {
       "question": "How has the average budget remaining percentage changed over time?",
@@ -989,7 +1049,8 @@
         "SELECT kpi_month, AVG(budget_remaining_pct) AS avg_budget_remaining_pct",
         "FROM {fqn}.investment_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average budget remaining percentage by month, indicating portfolio-level capital consumption pace from investment_kpi_monthly."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -998,7 +1059,8 @@
         "FROM {fqn}.investment_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique or total transaction counts over time, measuring deal activity volume using investment_transactions_metrics."
     }
   ],
   "sql_snippets": {
@@ -1008,7 +1070,8 @@
         "display_name": "approved investments",
         "synonyms": [
           "committed capital",
-          "approved projects"
+          "approved projects",
+          "sanctioned deals"
         ],
         "instruction": "Use to filter to approved investment transactions."
       },
@@ -1017,7 +1080,8 @@
         "display_name": "high risk projects",
         "synonyms": [
           "risky projects",
-          "at risk"
+          "at risk",
+          "risky assets"
         ],
         "instruction": "Use to filter project snapshots to high and critical risk."
       },
@@ -1026,7 +1090,8 @@
         "display_name": "development phase",
         "synonyms": [
           "in development",
-          "active development"
+          "active development",
+          "dev stage"
         ],
         "instruction": "Use to filter to projects in the development phase."
       }
@@ -1038,7 +1103,8 @@
         "display_name": "budget variance USD",
         "synonyms": [
           "overspend",
-          "underspend"
+          "underspend",
+          "cost overrun"
         ]
       },
       {
@@ -1047,7 +1113,8 @@
         "display_name": "NPV per capex million",
         "synonyms": [
           "capital efficiency",
-          "return ratio"
+          "return ratio",
+          "value per dollar"
         ]
       },
       {
@@ -1056,7 +1123,8 @@
         "display_name": "transaction month",
         "synonyms": [
           "month",
-          "period"
+          "period",
+          "spend month"
         ]
       }
     ],
@@ -1067,7 +1135,8 @@
         "display_name": "total capital spend",
         "synonyms": [
           "capex",
-          "investment spend"
+          "investment spend",
+          "capex deployed"
         ]
       },
       {
@@ -1076,7 +1145,8 @@
         "display_name": "total budget",
         "synonyms": [
           "budgeted amount",
-          "planned spend"
+          "planned spend",
+          "approved budget"
         ]
       },
       {
@@ -1085,7 +1155,8 @@
         "display_name": "average NPV",
         "synonyms": [
           "NPV",
-          "net present value"
+          "net present value",
+          "mean value"
         ]
       },
       {
@@ -1094,7 +1165,8 @@
         "display_name": "average IRR",
         "synonyms": [
           "IRR",
-          "return rate"
+          "return rate",
+          "mean return"
         ]
       }
     ]

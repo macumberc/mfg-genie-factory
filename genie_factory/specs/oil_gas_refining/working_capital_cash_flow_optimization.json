@@ -51,6 +51,11 @@
             "RC-PRO-18",
             "RC-COK-19",
             "RC-PET-20"
+          ],
+          "synonyms": [
+            "bu code",
+            "unit code",
+            "bu identifier"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Strategic Sourcing",
             "Coker Division",
             "Specialty Chemicals"
+          ],
+          "synonyms": [
+            "bu name",
+            "unit label",
+            "division name"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Supply Chain",
             "Support",
             "Corporate"
+          ],
+          "synonyms": [
+            "business line",
+            "operating group",
+            "division type"
           ]
         },
         {
@@ -105,6 +120,11 @@
             "Gulf Coast",
             "Midwest",
             "National"
+          ],
+          "synonyms": [
+            "geography",
+            "area",
+            "territory"
           ]
         },
         {
@@ -326,6 +346,11 @@
             "RC-PRO-18",
             "RC-COK-19",
             "RC-PET-20"
+          ],
+          "synonyms": [
+            "bu code",
+            "unit code",
+            "bu identifier"
           ]
         },
         {
@@ -355,6 +380,11 @@
             "Strategic Sourcing",
             "Coker Division",
             "Specialty Chemicals"
+          ],
+          "synonyms": [
+            "bu name",
+            "unit label",
+            "division name"
           ]
         },
         {
@@ -368,6 +398,11 @@
             "Supply Chain",
             "Support",
             "Corporate"
+          ],
+          "synonyms": [
+            "business line",
+            "operating group",
+            "division type"
           ]
         },
         {
@@ -380,6 +415,11 @@
             "Gulf Coast",
             "Midwest",
             "National"
+          ],
+          "synonyms": [
+            "geography",
+            "area",
+            "territory"
           ]
         },
         {
@@ -601,6 +641,11 @@
             "RC-PRO-18",
             "RC-COK-19",
             "RC-PET-20"
+          ],
+          "synonyms": [
+            "bu code",
+            "unit code",
+            "bu identifier"
           ]
         },
         {
@@ -614,6 +659,11 @@
             "Supply Chain",
             "Support",
             "Corporate"
+          ],
+          "synonyms": [
+            "business line",
+            "operating group",
+            "division type"
           ]
         },
         {
@@ -626,6 +676,11 @@
             "Gulf Coast",
             "Midwest",
             "National"
+          ],
+          "synonyms": [
+            "geography",
+            "area",
+            "territory"
           ]
         },
         {
@@ -906,7 +961,8 @@
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of transaction count volume; matches phrases like 'how many cash transactions per month' using total_transactions measure from cash_transactions_metrics."
     },
     {
       "question": "How has highest amount changed over time?",
@@ -915,7 +971,8 @@
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of single largest transaction amount; matches 'peak transaction size over time' using max_amount measure from cash_transactions_metrics."
     },
     {
       "question": "What is the monthly trend in total ap usd?",
@@ -924,7 +981,8 @@
         "FROM {fqn}.working_capital_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total accounts payable balance; matches 'how are payables changing over time' using total_payables_usd from working_capital_snapshots_metrics."
     },
     {
       "question": "What is the trend of total cash flow amount usd (positive=inflow) over time?",
@@ -932,7 +990,8 @@
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of net cash flow amounts (inflows positive, outflows negative); matches 'cash movement trend' using raw amount_usd from cash_transactions table."
     },
     {
       "question": "What is the trend of total ar balance usd over time?",
@@ -940,7 +999,8 @@
         "SELECT snapshot_date, SUM(accounts_receivable_usd) AS total_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total accounts receivable balance; matches 'AR balance over time' using accounts_receivable_usd directly from working_capital_snapshots table."
     },
     {
       "question": "How has the average current ratio changed over time?",
@@ -948,7 +1008,8 @@
         "SELECT kpi_month, AVG(current_ratio) AS avg_current_ratio",
         "FROM {fqn}.cashflow_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average liquidity ratio; matches 'how is current ratio trending' using current_ratio from cashflow_monthly KPI table."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -957,7 +1018,8 @@
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Duplicate of index 0 — monthly transaction count trend; matches 'how has transaction volume evolved' using total_transactions measure from cash_transactions_metrics."
     }
   ],
   "sql_snippets": {
@@ -966,7 +1028,9 @@
         "sql": "flow_type = 'Collection'",
         "display_name": "collections",
         "synonyms": [
-          "inflows"
+          "inflows",
+          "cash receipts",
+          "inbound payments"
         ],
         "instruction": "Filter to collections."
       },
@@ -974,7 +1038,9 @@
         "sql": "dso_days > 45",
         "display_name": "high DSO",
         "synonyms": [
-          "slow collections"
+          "slow collections",
+          "slow payers",
+          "overdue receivables"
         ],
         "instruction": "High DSO units."
       },
@@ -982,7 +1048,9 @@
         "sql": "free_cash_flow_usd < 0",
         "display_name": "negative FCF",
         "synonyms": [
-          "cash burn"
+          "cash burn",
+          "fcf deficit",
+          "cash shortfall"
         ],
         "instruction": "Cash-negative units."
       }
@@ -993,7 +1061,9 @@
         "sql": "working_capital_snapshots.accounts_receivable_usd + working_capital_snapshots.inventory_usd - working_capital_snapshots.accounts_payable_usd",
         "display_name": "net working capital",
         "synonyms": [
-          "NWC"
+          "NWC",
+          "net working capital",
+          "working capital"
         ]
       },
       {
@@ -1001,7 +1071,9 @@
         "sql": "ROUND(working_capital_snapshots.dso_days - working_capital_snapshots.dpo_days, 1)",
         "display_name": "cash conversion cycle",
         "synonyms": [
-          "CCC"
+          "CCC",
+          "cash cycle",
+          "conversion cycle"
         ]
       },
       {
@@ -1009,7 +1081,9 @@
         "sql": "DATE_TRUNC('month', cash_transactions.transaction_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "transaction month",
+          "payment month"
         ]
       }
     ],
@@ -1019,7 +1093,9 @@
         "sql": "SUM(CASE WHEN cash_transactions.amount_usd > 0 THEN cash_transactions.amount_usd ELSE 0 END)",
         "display_name": "total inflows",
         "synonyms": [
-          "collections"
+          "collections",
+          "cash received",
+          "total receipts"
         ]
       },
       {
@@ -1027,7 +1103,9 @@
         "sql": "SUM(CASE WHEN cash_transactions.amount_usd < 0 THEN ABS(cash_transactions.amount_usd) ELSE 0 END)",
         "display_name": "total outflows",
         "synonyms": [
-          "disbursements"
+          "disbursements",
+          "cash paid out",
+          "total disbursements"
         ]
       },
       {
@@ -1035,7 +1113,9 @@
         "sql": "SUM(cashflow_monthly.free_cash_flow_usd)",
         "display_name": "total FCF",
         "synonyms": [
-          "free cash"
+          "free cash",
+          "free cash flow",
+          "total fcf"
         ]
       },
       {
@@ -1043,7 +1123,9 @@
         "sql": "AVG(cashflow_monthly.current_ratio)",
         "display_name": "avg current ratio",
         "synonyms": [
-          "liquidity"
+          "liquidity",
+          "average liquidity ratio",
+          "mean current ratio"
         ]
       }
     ]

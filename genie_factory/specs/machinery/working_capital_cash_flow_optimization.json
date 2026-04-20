@@ -51,6 +51,11 @@
             "CF-BU-018",
             "CF-BU-019",
             "CF-BU-020"
+          ],
+          "synonyms": [
+            "division code",
+            "unit code",
+            "dept id"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Engineering",
             "Supply Chain",
             "Corporate"
+          ],
+          "synonyms": [
+            "division category",
+            "unit category",
+            "org segment"
           ]
         },
         {
@@ -300,6 +310,11 @@
             "CF-BU-018",
             "CF-BU-019",
             "CF-BU-020"
+          ],
+          "synonyms": [
+            "division code",
+            "unit code",
+            "dept id"
           ]
         },
         {
@@ -314,6 +329,11 @@
             "Engineering",
             "Supply Chain",
             "Corporate"
+          ],
+          "synonyms": [
+            "division category",
+            "unit category",
+            "org segment"
           ]
         },
         {
@@ -532,6 +552,11 @@
             "CF-BU-018",
             "CF-BU-019",
             "CF-BU-020"
+          ],
+          "synonyms": [
+            "division code",
+            "unit code",
+            "dept id"
           ]
         },
         {
@@ -546,6 +571,11 @@
             "Engineering",
             "Supply Chain",
             "Corporate"
+          ],
+          "synonyms": [
+            "division category",
+            "unit category",
+            "org segment"
           ]
         },
         {
@@ -855,7 +885,8 @@
         "FROM {fqn}.cash_flow_txn_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total transaction volume; matches phrases like 'transaction count over time' using cash_flow_txn_metrics total_transactions measure."
     },
     {
       "question": "How has unique business units changed over time?",
@@ -864,7 +895,8 @@
         "FROM {fqn}.cash_flow_txn_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of active business unit count; matches 'how many units transacting each month' using unique_business_unit_count from cash_flow_txn_metrics."
     },
     {
       "question": "What is the monthly trend in total net cash flow?",
@@ -873,7 +905,8 @@
         "FROM {fqn}.cash_flow_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly net cash flow trend across CapitalFlow business units; matches 'net cash flow over time' using total_net_cash_flow from cash_flow_kpi_metrics."
     },
     {
       "question": "How has total forecast variance pct changed over time?",
@@ -882,7 +915,8 @@
         "FROM {fqn}.cash_flow_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of forecast accuracy deviation; matches 'forecast variance over time' or 'how accurate were cash flow forecasts' using total_forecast_variance_percent."
     },
     {
       "question": "What is the trend of total transaction amount in usd over time?",
@@ -890,7 +924,8 @@
         "SELECT txn_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_flow_transactions",
         "GROUP BY txn_date ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of raw transaction dollar volume; matches 'transaction amounts over time' or 'cash movement trends' directly from cash_flow_transactions.amount_usd."
     },
     {
       "question": "What is the trend of total total ar balance in usd over time?",
@@ -898,7 +933,8 @@
         "SELECT snapshot_date, SUM(accounts_receivable_usd) AS total_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total accounts receivable balance; matches 'AR balance over time' or 'receivables trend' from working_capital_snapshots.accounts_receivable_usd."
     },
     {
       "question": "How has the average ar collection rate percentage changed over time?",
@@ -906,7 +942,8 @@
         "SELECT kpi_month, AVG(collection_rate_pct) AS avg_collection_rate_pct",
         "FROM {fqn}.cash_flow_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of invoice collection efficiency; matches 'collection rate over time' or 'how well are we collecting payments' from cash_flow_monthly.collection_rate_pct."
     }
   ],
   "sql_snippets": {
@@ -916,7 +953,8 @@
         "display_name": "cash inflows",
         "synonyms": [
           "collections",
-          "receipts"
+          "receipts",
+          "money received"
         ],
         "instruction": "Use when analyzing cash received."
       },
@@ -925,7 +963,8 @@
         "display_name": "cash outflows",
         "synonyms": [
           "payments",
-          "disbursements"
+          "disbursements",
+          "money paid"
         ],
         "instruction": "Use when analyzing cash spent."
       },
@@ -934,7 +973,8 @@
         "display_name": "long CCC",
         "synonyms": [
           "slow cash cycle",
-          "extended CCC"
+          "extended CCC",
+          "extended conversion"
         ],
         "instruction": "Use when identifying BUs with slow cash conversion."
       }
@@ -945,7 +985,9 @@
         "sql": "DATE_TRUNC('month', cash_flow_transactions.txn_date)",
         "display_name": "transaction month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "payment month",
+          "transaction period"
         ]
       },
       {
@@ -953,7 +995,9 @@
         "sql": "working_capital_snapshots.accounts_receivable_usd + working_capital_snapshots.inventory_value_usd - working_capital_snapshots.accounts_payable_usd",
         "display_name": "net working capital",
         "synonyms": [
-          "NWC"
+          "NWC",
+          "net liquidity",
+          "operating buffer"
         ]
       },
       {
@@ -961,7 +1005,9 @@
         "sql": "working_capital_snapshots.accounts_receivable_usd / NULLIF(working_capital_snapshots.accounts_payable_usd, 0)",
         "display_name": "AR to AP ratio",
         "synonyms": [
-          "receivables to payables"
+          "receivables to payables",
+          "receivables payables ratio",
+          "collection leverage"
         ]
       }
     ],
@@ -972,7 +1018,8 @@
         "display_name": "total inflows",
         "synonyms": [
           "cash in",
-          "collections"
+          "collections",
+          "total receipts"
         ]
       },
       {
@@ -981,7 +1028,8 @@
         "display_name": "total outflows",
         "synonyms": [
           "cash out",
-          "payments"
+          "payments",
+          "total payments"
         ]
       },
       {
@@ -989,7 +1037,9 @@
         "sql": "AVG(working_capital_snapshots.dso_days)",
         "display_name": "average DSO",
         "synonyms": [
-          "days sales outstanding"
+          "days sales outstanding",
+          "average collection days",
+          "days to collect"
         ]
       },
       {
@@ -998,7 +1048,8 @@
         "display_name": "total net cash flow",
         "synonyms": [
           "net cash",
-          "cash position"
+          "cash position",
+          "total cash generated"
         ]
       }
     ]

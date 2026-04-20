@@ -51,6 +51,11 @@
             "SL-SC-002",
             "SL-SC-003",
             "SL-SC-004"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Supply Chain - Logistics",
             "Supply Chain - Planning",
             "Supply Chain - Warehousing"
+          ],
+          "synonyms": [
+            "cost group",
+            "spending unit",
+            "cc label"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Sales & Marketing",
             "Quality & Test",
             "Supply Chain"
+          ],
+          "synonyms": [
+            "business unit",
+            "org group",
+            "division"
           ]
         },
         {
@@ -331,6 +346,11 @@
             "SL-SC-002",
             "SL-SC-003",
             "SL-SC-004"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -360,6 +380,11 @@
             "Supply Chain - Logistics",
             "Supply Chain - Planning",
             "Supply Chain - Warehousing"
+          ],
+          "synonyms": [
+            "cost group",
+            "spending unit",
+            "cc label"
           ]
         },
         {
@@ -374,6 +399,11 @@
             "Sales & Marketing",
             "Quality & Test",
             "Supply Chain"
+          ],
+          "synonyms": [
+            "business unit",
+            "org group",
+            "division"
           ]
         },
         {
@@ -593,6 +623,11 @@
             "SL-SC-002",
             "SL-SC-003",
             "SL-SC-004"
+          ],
+          "synonyms": [
+            "cc code",
+            "cost code",
+            "cc number"
           ]
         },
         {
@@ -622,6 +657,11 @@
             "Supply Chain - Logistics",
             "Supply Chain - Planning",
             "Supply Chain - Warehousing"
+          ],
+          "synonyms": [
+            "cost group",
+            "spending unit",
+            "cc label"
           ]
         },
         {
@@ -636,6 +676,11 @@
             "Sales & Marketing",
             "Quality & Test",
             "Supply Chain"
+          ],
+          "synonyms": [
+            "business unit",
+            "org group",
+            "division"
           ]
         },
         {
@@ -942,7 +987,8 @@
         "FROM {fqn}.financial_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of semiconductor operating expenditure; matches phrases like 'opex over time' or 'monthly opex spend' using financial_transaction_metrics."
     },
     {
       "question": "How has total capex usd count changed over time?",
@@ -951,7 +997,8 @@
         "FROM {fqn}.financial_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of capital expenditure; matches 'capex changes over time' or 'quarterly capex evolution' using financial_transaction_metrics."
     },
     {
       "question": "What is the monthly trend in highest budgeted amount?",
@@ -960,7 +1007,8 @@
         "FROM {fqn}.budget_variance_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak budgeted amounts; matches 'highest budget over time' or 'max planned spend trend' using budget_variance_metrics."
     },
     {
       "question": "What is the trend of total transaction amount in usd (positive = credit/revenue, negative = debit/expense) over time?",
@@ -968,7 +1016,8 @@
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of net transaction amounts (credits vs debits); matches 'total spend trend' or 'revenue vs expense over time' from raw financial_transactions."
     },
     {
       "question": "What is the trend of total planned budget amount in usd over time?",
@@ -976,7 +1025,8 @@
         "SELECT snapshot_date, SUM(budgeted_amount_usd) AS total_budgeted_amount_usd",
         "FROM {fqn}.budget_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total planned budget dollars over time; matches 'budget forecast trend' or 'how planned spend changed' from raw budget_snapshots."
     },
     {
       "question": "How has the average gross margin percentage changed over time?",
@@ -984,7 +1034,8 @@
         "SELECT kpi_month, AVG(gross_margin_pct) AS avg_gross_margin_pct",
         "FROM {fqn}.financial_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average gross margin percentage; matches 'gross margin over time' or 'margin improvement trend' from financial_kpi_monthly."
     },
     {
       "question": "How does total capex usd count vary across departments?",
@@ -993,7 +1044,8 @@
         "FROM {fqn}.financial_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY total_capex_usd DESC"
-      ]
+      ],
+      "usage_guidance": "Cross-department comparison of capital expenditure; matches 'which department spends most on capex' or 'capex by department' using financial_transaction_metrics."
     }
   ],
   "sql_snippets": {
@@ -1036,7 +1088,8 @@
         "display_name": "transaction month",
         "synonyms": [
           "financial period",
-          "GL month"
+          "GL month",
+          "monthly period"
         ]
       },
       {
@@ -1045,7 +1098,8 @@
         "display_name": "budget gap",
         "synonyms": [
           "budget remaining",
-          "spend gap"
+          "spend gap",
+          "remaining budget"
         ]
       },
       {
@@ -1054,7 +1108,8 @@
         "display_name": "margin spread",
         "synonyms": [
           "opex spread",
-          "gross to operating gap"
+          "gross to operating gap",
+          "margin gap"
         ]
       }
     ],
@@ -1075,7 +1130,8 @@
         "display_name": "total actual spend",
         "synonyms": [
           "actual cost",
-          "spend total"
+          "spend total",
+          "actual outlays"
         ]
       },
       {
@@ -1084,7 +1140,8 @@
         "display_name": "average gross margin",
         "synonyms": [
           "mean gross margin",
-          "GM %"
+          "GM %",
+          "typical gm"
         ]
       },
       {
@@ -1093,7 +1150,8 @@
         "display_name": "average cost per wafer",
         "synonyms": [
           "mean wafer cost",
-          "wafer cost"
+          "wafer cost",
+          "wafer unit cost"
         ]
       }
     ]

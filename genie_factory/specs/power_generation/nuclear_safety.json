@@ -51,6 +51,11 @@
             "RC-CT-018",
             "RC-CT-019",
             "RC-CT-020"
+          ],
+          "synonyms": [
+            "part number",
+            "asset id",
+            "unit tag"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Containment Liner Unit 1",
             "Containment Vessel Unit 2",
             "Containment Liner Unit 2"
+          ],
+          "synonyms": [
+            "part label",
+            "asset title",
+            "equipment name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Coolant Pump",
             "Steam Generator",
             "Containment"
+          ],
+          "synonyms": [
+            "part category",
+            "equipment class",
+            "asset group"
           ]
         },
         {
@@ -105,6 +120,11 @@
           "entity_values": [
             "Unit 1",
             "Unit 2"
+          ],
+          "synonyms": [
+            "reactor block",
+            "plant unit",
+            "generating unit"
           ]
         },
         {
@@ -330,6 +350,11 @@
             "RC-CT-018",
             "RC-CT-019",
             "RC-CT-020"
+          ],
+          "synonyms": [
+            "part number",
+            "asset id",
+            "unit tag"
           ]
         },
         {
@@ -344,6 +369,11 @@
             "Coolant Pump",
             "Steam Generator",
             "Containment"
+          ],
+          "synonyms": [
+            "part category",
+            "equipment class",
+            "asset group"
           ]
         },
         {
@@ -355,6 +385,11 @@
           "entity_values": [
             "Unit 1",
             "Unit 2"
+          ],
+          "synonyms": [
+            "reactor block",
+            "plant unit",
+            "generating unit"
           ]
         },
         {
@@ -581,6 +616,11 @@
             "RC-CT-018",
             "RC-CT-019",
             "RC-CT-020"
+          ],
+          "synonyms": [
+            "part number",
+            "asset id",
+            "unit tag"
           ]
         },
         {
@@ -595,6 +635,11 @@
             "Coolant Pump",
             "Steam Generator",
             "Containment"
+          ],
+          "synonyms": [
+            "part category",
+            "equipment class",
+            "asset group"
           ]
         },
         {
@@ -606,6 +651,11 @@
           "entity_values": [
             "Unit 1",
             "Unit 2"
+          ],
+          "synonyms": [
+            "reactor block",
+            "plant unit",
+            "generating unit"
           ]
         },
         {
@@ -938,7 +988,8 @@
         "FROM {fqn}.safety_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak neutron flux percentage; matches questions about highest or maximum neutron flux levels over time using safety_kpi_monthly."
     },
     {
       "question": "How has total safety alarms triggered changed over time?",
@@ -947,7 +998,8 @@
         "FROM {fqn}.safety_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total safety alarms triggered; matches questions about alarm frequency or safety alert trends across all reactor units."
     },
     {
       "question": "What is the monthly trend in unique components?",
@@ -956,7 +1008,8 @@
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct inspected components; matches questions about inspection coverage or how many unique components were evaluated over time."
     },
     {
       "question": "How does fail count vary across component types?",
@@ -965,7 +1018,8 @@
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY fail_count DESC"
-      ]
+      ],
+      "usage_guidance": "Ranked breakdown of inspection failures by component type; matches questions comparing which component categories fail inspections most frequently."
     },
     {
       "question": "How does total component temperature in celsius break down by reactor component for 'Critical' records?",
@@ -973,7 +1027,8 @@
         "SELECT component_id, COUNT(*) AS record_count, SUM(temperature_celsius) AS total_temperature_celsius",
         "FROM {fqn}.reactor_components",
         "WHERE health_status = 'Critical' GROUP BY component_id ORDER BY total_temperature_celsius DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total temperature by component for Critical health status; matches questions about overheating or thermal risk among Critical-status reactor components."
     },
     {
       "question": "What is the trend of total containment pressure in kilopascals over time?",
@@ -981,7 +1036,8 @@
         "SELECT reading_date, SUM(containment_pressure_kpa) AS total_containment_pressure_kpa",
         "FROM {fqn}.safety_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series sum of containment pressure in kilopascals from raw safety_readings; matches questions about containment pressure trends or reactor boundary integrity over time."
     },
     {
       "question": "How has the average nrc compliance score 0-100 changed over time?",
@@ -989,7 +1045,8 @@
         "SELECT inspection_date, AVG(compliance_score) AS avg_compliance_score",
         "FROM {fqn}.inspection_snapshots",
         "GROUP BY inspection_date ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Time-series average of NRC compliance scores from inspection_snapshots; matches questions about regulatory compliance trends or how inspection pass rates change over time."
     }
   ],
   "sql_snippets": {
@@ -999,7 +1056,8 @@
         "display_name": "at-risk components",
         "synonyms": [
           "unhealthy components",
-          "flagged components"
+          "flagged components",
+          "flagged assets"
         ],
         "instruction": "Use when filtering to components with elevated health concerns."
       },
@@ -1008,7 +1066,8 @@
         "display_name": "failed inspections",
         "synonyms": [
           "non-compliant",
-          "failed audits"
+          "failed audits",
+          "inspection failures"
         ],
         "instruction": "Use when analyzing failed NRC inspections."
       },
@@ -1017,7 +1076,8 @@
         "display_name": "alarm events",
         "synonyms": [
           "triggered alarms",
-          "safety alerts"
+          "safety alerts",
+          "triggered alerts"
         ],
         "instruction": "Use when filtering to readings with at least one alarm."
       }
@@ -1028,7 +1088,9 @@
         "sql": "DATE_TRUNC('month', safety_readings.reading_date)",
         "display_name": "reading month",
         "synonyms": [
-          "month of reading"
+          "month of reading",
+          "measurement period",
+          "monitoring month"
         ]
       },
       {
@@ -1037,7 +1099,8 @@
         "display_name": "compliance gap",
         "synonyms": [
           "compliance shortfall",
-          "gap to 100"
+          "gap to 100",
+          "shortfall score"
         ]
       },
       {
@@ -1045,7 +1108,9 @@
         "sql": "CASE WHEN safety_readings.safety_margin_pct < 20 THEN 'Below Target' ELSE 'Acceptable' END",
         "display_name": "safety margin status",
         "synonyms": [
-          "margin classification"
+          "margin classification",
+          "margin health",
+          "buffer condition"
         ]
       }
     ],
@@ -1056,7 +1121,8 @@
         "display_name": "total safety alarms",
         "synonyms": [
           "alarm count",
-          "alerts"
+          "alerts",
+          "alarm tally"
         ]
       },
       {
@@ -1065,7 +1131,8 @@
         "display_name": "average compliance score",
         "synonyms": [
           "NRC score",
-          "compliance rating"
+          "compliance rating",
+          "mean audit score"
         ]
       },
       {
@@ -1074,7 +1141,8 @@
         "display_name": "total deficiencies",
         "synonyms": [
           "deficiency count",
-          "findings"
+          "findings",
+          "defect tally"
         ]
       },
       {
@@ -1083,7 +1151,8 @@
         "display_name": "average safety margin",
         "synonyms": [
           "safety buffer",
-          "margin to limit"
+          "margin to limit",
+          "typical buffer"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "NV-MV-003",
             "NV-SE-001",
             "NV-SE-002"
+          ],
+          "synonyms": [
+            "part number",
+            "sku",
+            "item code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "MemVault MV-NAND 512Gb",
             "SenseEdge SE-IMU 9-Axis",
             "SenseEdge SE-LiDAR ToF"
+          ],
+          "synonyms": [
+            "part name",
+            "chip name",
+            "device name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "ConnectRF",
             "MemVault",
             "SenseEdge"
+          ],
+          "synonyms": [
+            "product line",
+            "chip family",
+            "device group"
           ]
         },
         {
@@ -371,6 +386,11 @@
             "NV-MV-003",
             "NV-SE-001",
             "NV-SE-002"
+          ],
+          "synonyms": [
+            "part number",
+            "sku",
+            "item code"
           ]
         },
         {
@@ -400,6 +420,11 @@
             "MemVault MV-NAND 512Gb",
             "SenseEdge SE-IMU 9-Axis",
             "SenseEdge SE-LiDAR ToF"
+          ],
+          "synonyms": [
+            "part name",
+            "chip name",
+            "device name"
           ]
         },
         {
@@ -414,6 +439,11 @@
             "ConnectRF",
             "MemVault",
             "SenseEdge"
+          ],
+          "synonyms": [
+            "product line",
+            "chip family",
+            "device group"
           ]
         },
         {
@@ -645,6 +675,11 @@
             "NV-MV-003",
             "NV-SE-001",
             "NV-SE-002"
+          ],
+          "synonyms": [
+            "part number",
+            "sku",
+            "item code"
           ]
         },
         {
@@ -674,6 +709,11 @@
             "MemVault MV-NAND 512Gb",
             "SenseEdge SE-IMU 9-Axis",
             "SenseEdge SE-LiDAR ToF"
+          ],
+          "synonyms": [
+            "part name",
+            "chip name",
+            "device name"
           ]
         },
         {
@@ -688,6 +728,11 @@
             "ConnectRF",
             "MemVault",
             "SenseEdge"
+          ],
+          "synonyms": [
+            "product line",
+            "chip family",
+            "device group"
           ]
         },
         {
@@ -1014,7 +1059,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route for time-series trend of open (unresolved) quality events count using the quality_events_metrics metric view."
     },
     {
       "question": "How has unique total quality eventss changed over time?",
@@ -1023,7 +1069,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route for time-series trend of total quality event volume across all products and fabs using quality_events_metrics."
     },
     {
       "question": "What is the monthly trend in unique products?",
@@ -1032,7 +1079,8 @@
         "FROM {fqn}.lot_yield_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route for monthly trend of unique product count tracked in manufacturing lots using lot_yield_metrics snapshot dates."
     },
     {
       "question": "How does total number of wafers affected by the event break down by product for 'Closed' records?",
@@ -1040,7 +1088,8 @@
         "SELECT product_id, COUNT(*) AS record_count, SUM(affected_wafer_count) AS total_affected_wafer_count",
         "FROM {fqn}.quality_events",
         "WHERE status = 'Closed' GROUP BY product_id ORDER BY total_affected_wafer_count DESC"
-      ]
+      ],
+      "usage_guidance": "Route for per-product breakdown of total wafers affected, filtered specifically to 'Closed' status quality events."
     },
     {
       "question": "What is the trend of total number of wafers in the lot over time?",
@@ -1048,7 +1097,8 @@
         "SELECT snapshot_date, SUM(wafers_in_lot) AS total_wafers_in_lot",
         "FROM {fqn}.manufacturing_lots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route for time-series trend of total wafer volume in manufacturing lots using manufacturing_lots wafers_in_lot aggregation."
     },
     {
       "question": "How has the average first pass yield percentage changed over time?",
@@ -1056,7 +1106,8 @@
         "SELECT kpi_month, AVG(first_pass_yield_pct) AS avg_first_pass_yield_pct",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Route for monthly trend of first pass yield percentage from quality KPI data in quality_kpi_monthly."
     },
     {
       "question": "How has open event count changed over time?",
@@ -1065,7 +1116,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Route for time-series trend of open quality event count when user asks how unresolved events change over time."
     }
   ],
   "sql_snippets": {
@@ -1108,7 +1160,8 @@
         "display_name": "event month",
         "synonyms": [
           "month of event",
-          "quality event month"
+          "quality event month",
+          "incident month"
         ]
       },
       {
@@ -1117,7 +1170,8 @@
         "display_name": "yield grade",
         "synonyms": [
           "lot grade",
-          "yield bucket"
+          "yield bucket",
+          "lot rating"
         ]
       },
       {
@@ -1126,7 +1180,8 @@
         "display_name": "closure flag",
         "synonyms": [
           "resolved flag",
-          "closed indicator"
+          "closed indicator",
+          "fix status"
         ]
       }
     ],
@@ -1157,7 +1212,8 @@
         "display_name": "total wafers affected",
         "synonyms": [
           "impacted wafers",
-          "affected wafer count"
+          "affected wafer count",
+          "wafer impact"
         ]
       },
       {
@@ -1166,7 +1222,8 @@
         "display_name": "average DPPM",
         "synonyms": [
           "mean DPPM",
-          "defective parts per million"
+          "defective parts per million",
+          "defect rate"
         ]
       }
     ]

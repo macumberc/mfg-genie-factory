@@ -51,6 +51,11 @@
             "ST-018",
             "ST-019",
             "ST-020"
+          ],
+          "synonyms": [
+            "region code",
+            "zone id",
+            "area code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Forest Hills",
             "Refinery Row",
             "Data Center Corridor"
+          ],
+          "synonyms": [
+            "region name",
+            "zone name",
+            "area label"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Industrial",
             "Commercial",
             "Rural"
+          ],
+          "synonyms": [
+            "area category",
+            "zone class",
+            "region segment"
           ]
         },
         {
@@ -108,6 +123,11 @@
             "Hot-Humid",
             "Mixed",
             "Hot-Dry"
+          ],
+          "synonyms": [
+            "weather zone",
+            "climate region",
+            "climate band"
           ]
         },
         {
@@ -341,6 +361,11 @@
             "ST-018",
             "ST-019",
             "ST-020"
+          ],
+          "synonyms": [
+            "region code",
+            "zone id",
+            "area code"
           ]
         },
         {
@@ -370,6 +395,11 @@
             "Forest Hills",
             "Refinery Row",
             "Data Center Corridor"
+          ],
+          "synonyms": [
+            "region name",
+            "zone name",
+            "area label"
           ]
         },
         {
@@ -384,6 +414,11 @@
             "Industrial",
             "Commercial",
             "Rural"
+          ],
+          "synonyms": [
+            "area category",
+            "zone class",
+            "region segment"
           ]
         },
         {
@@ -611,6 +646,11 @@
             "ST-018",
             "ST-019",
             "ST-020"
+          ],
+          "synonyms": [
+            "region code",
+            "zone id",
+            "area code"
           ]
         },
         {
@@ -625,6 +665,11 @@
             "Industrial",
             "Commercial",
             "Rural"
+          ],
+          "synonyms": [
+            "area category",
+            "zone class",
+            "region segment"
           ]
         },
         {
@@ -639,6 +684,11 @@
             "Hot-Humid",
             "Mixed",
             "Hot-Dry"
+          ],
+          "synonyms": [
+            "weather zone",
+            "climate region",
+            "climate band"
           ]
         },
         {
@@ -949,7 +999,8 @@
         "FROM {fqn}.demand_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about highest or maximum peak demand MW across all territories using the demand_readings_metrics metric view."
     },
     {
       "question": "How has highest avg demand mw changed over time?",
@@ -958,7 +1009,8 @@
         "FROM {fqn}.demand_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about highest or maximum average demand MW across all territories using the demand_readings_metrics metric view."
     },
     {
       "question": "How has unique forecasts changed over time?",
@@ -967,7 +1019,8 @@
         "FROM {fqn}.demand_forecast_metrics",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about forecast count or number of unique forecasts issued monthly using the demand_forecast_metrics metric view."
     },
     {
       "question": "What is the trend of total daily peak demand in mw over time?",
@@ -975,7 +1028,8 @@
         "SELECT reading_date, SUM(peak_demand_mw) AS total_peak_demand_mw",
         "FROM {fqn}.demand_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about total daily peak demand MW summed across territories from raw demand_readings transaction data."
     },
     {
       "question": "What is the trend of total forecasted peak demand in mw over time?",
@@ -983,7 +1037,8 @@
         "SELECT forecast_month, SUM(forecasted_peak_mw) AS total_forecasted_peak_mw",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about total monthly forecasted peak demand MW summed across territories from raw demand_forecasts transaction data."
     },
     {
       "question": "How has the average load factor as percentage (avg demand / peak demand * 100) changed over time?",
@@ -991,7 +1046,8 @@
         "SELECT report_month, AVG(load_factor_pct) AS avg_load_factor_pct",
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about load factor percentage (avg-to-peak demand ratio) averaged monthly from demand_kpi_monthly KPI data."
     },
     {
       "question": "How has total avg temp fahrenheit changed over time?",
@@ -1000,7 +1056,8 @@
         "FROM {fqn}.demand_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about cumulative or total average temperature in Fahrenheit across territories using the demand_readings_metrics metric view."
     }
   ],
   "sql_snippets": {
@@ -1010,7 +1067,8 @@
         "display_name": "weekday demand",
         "synonyms": [
           "business days",
-          "work days"
+          "work days",
+          "business day load"
         ],
         "instruction": "Use when filtering for weekday-only demand patterns."
       },
@@ -1019,7 +1077,8 @@
         "display_name": "latest forecast model",
         "synonyms": [
           "v2.2 model",
-          "newest model"
+          "newest model",
+          "current model"
         ],
         "instruction": "Use when filtering forecasts to the latest model version."
       },
@@ -1028,7 +1087,8 @@
         "display_name": "low reserve margin",
         "synonyms": [
           "capacity risk",
-          "tight capacity"
+          "tight capacity",
+          "constrained margin"
         ],
         "instruction": "Use when identifying territories at risk of capacity shortfall."
       }
@@ -1040,7 +1100,8 @@
         "display_name": "demand month",
         "synonyms": [
           "month of demand",
-          "monthly"
+          "monthly",
+          "billing month"
         ]
       },
       {
@@ -1049,7 +1110,8 @@
         "display_name": "peak-to-average ratio",
         "synonyms": [
           "load shape",
-          "peak ratio"
+          "peak ratio",
+          "load variability"
         ]
       },
       {
@@ -1058,7 +1120,8 @@
         "display_name": "net DER impact MW",
         "synonyms": [
           "net distributed resource impact",
-          "net DER"
+          "net DER",
+          "der net impact"
         ]
       }
     ],
@@ -1069,7 +1132,8 @@
         "display_name": "average peak demand MW",
         "synonyms": [
           "peak load",
-          "max load"
+          "max load",
+          "mean peak load"
         ]
       },
       {
@@ -1078,7 +1142,8 @@
         "display_name": "average forecast error percentage",
         "synonyms": [
           "MAPE",
-          "forecast accuracy error"
+          "forecast accuracy error",
+          "forecast accuracy"
         ]
       },
       {
@@ -1087,7 +1152,8 @@
         "display_name": "average reserve margin percentage",
         "synonyms": [
           "capacity margin",
-          "reserve"
+          "reserve",
+          "typical headroom"
         ]
       },
       {
@@ -1096,7 +1162,8 @@
         "display_name": "total EV charging load MW",
         "synonyms": [
           "EV demand",
-          "electric vehicle load"
+          "electric vehicle load",
+          "ev charging demand"
         ]
       }
     ]

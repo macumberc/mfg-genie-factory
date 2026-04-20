@@ -51,6 +51,11 @@
             "FP-GEN-018",
             "FP-PMP-019",
             "FP-VLV-020"
+          ],
+          "synonyms": [
+            "machine type",
+            "unit model",
+            "asset model"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "Industrial Generators",
             "Centrifugal Pumps",
             "Control Valves"
+          ],
+          "synonyms": [
+            "product line",
+            "product category",
+            "product group"
           ]
         },
         {
@@ -296,6 +306,11 @@
             "FP-GEN-018",
             "FP-PMP-019",
             "FP-VLV-020"
+          ],
+          "synonyms": [
+            "machine type",
+            "unit model",
+            "asset model"
           ]
         },
         {
@@ -310,6 +325,11 @@
             "Industrial Generators",
             "Centrifugal Pumps",
             "Control Valves"
+          ],
+          "synonyms": [
+            "product line",
+            "product category",
+            "product group"
           ]
         },
         {
@@ -534,6 +554,11 @@
             "FP-GEN-018",
             "FP-PMP-019",
             "FP-VLV-020"
+          ],
+          "synonyms": [
+            "machine type",
+            "unit model",
+            "asset model"
           ]
         },
         {
@@ -548,6 +573,11 @@
             "Industrial Generators",
             "Centrifugal Pumps",
             "Control Valves"
+          ],
+          "synonyms": [
+            "product line",
+            "product category",
+            "product group"
           ]
         },
         {
@@ -848,7 +878,8 @@
         "FROM {fqn}.customer_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly revenue trend from customer_orders_metrics when users ask about order revenue over time, billing trends, or sales performance by period."
     },
     {
       "question": "How has total units ordered changed over time?",
@@ -857,7 +888,8 @@
         "FROM {fqn}.customer_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of units ordered from customer_orders_metrics when users ask about order volume, quantity shipped, or demand fulfillment over time."
     },
     {
       "question": "What is the monthly trend in total monthly revenue?",
@@ -866,7 +898,8 @@
         "FROM {fqn}.demand_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly revenue trend from demand_kpi_metrics when users ask about KPI-level revenue, monthly performance targets, or product family revenue over time."
     },
     {
       "question": "How has highest forecast accuracy percent changed over time?",
@@ -875,7 +908,8 @@
         "FROM {fqn}.demand_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak forecast accuracy from demand_kpi_metrics when users ask about best-case forecasting performance or accuracy ceiling over time."
     },
     {
       "question": "How does total units ordered break down by equipment model ordered for 'Backlog' records?",
@@ -883,7 +917,8 @@
         "SELECT equipment_model, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.customer_orders",
         "WHERE order_status = 'Backlog' GROUP BY equipment_model ORDER BY total_order_quantity DESC"
-      ]
+      ],
+      "usage_guidance": "Top-N breakdown of order quantity by equipment model filtered to Backlog status when users ask about backordered equipment, pending fulfillment, or backlog composition."
     },
     {
       "question": "What is the trend of total forecasted demand units over time?",
@@ -891,7 +926,8 @@
         "SELECT forecast_date, SUM(forecasted_units) AS total_forecasted_units",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_date ORDER BY forecast_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of forecasted demand units from demand_forecasts when users ask about projected demand, forecast volume trends, or future unit expectations."
     },
     {
       "question": "How has the average forecast accuracy percentage changed over time?",
@@ -899,7 +935,8 @@
         "SELECT kpi_month, AVG(forecast_accuracy_pct) AS avg_forecast_accuracy_pct",
         "FROM {fqn}.demand_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average forecast accuracy percentage from demand_kpi_monthly when users ask about forecasting model performance, accuracy improvement, or planning reliability over time."
     }
   ],
   "sql_snippets": {
@@ -909,7 +946,8 @@
         "display_name": "backlog orders",
         "synonyms": [
           "unfulfilled",
-          "pending"
+          "pending",
+          "pending orders"
         ],
         "instruction": "Use when analyzing order backlog."
       },
@@ -918,7 +956,8 @@
         "display_name": "latest forecast model",
         "synonyms": [
           "v4.2",
-          "newest model"
+          "newest model",
+          "current model"
         ],
         "instruction": "Use for latest model version forecasts."
       },
@@ -927,7 +966,8 @@
         "display_name": "below target fill rate",
         "synonyms": [
           "low fill rate",
-          "underperforming"
+          "underperforming",
+          "underperforming fulfillment"
         ],
         "instruction": "Use when identifying products below the 95% fill rate target."
       }
@@ -938,7 +978,9 @@
         "sql": "DATE_TRUNC('month', customer_orders.order_date)",
         "display_name": "order month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "booking month",
+          "purchase month"
         ]
       },
       {
@@ -947,7 +989,8 @@
         "display_name": "order value",
         "synonyms": [
           "revenue",
-          "order revenue"
+          "order revenue",
+          "line value"
         ]
       },
       {
@@ -956,7 +999,8 @@
         "display_name": "forecast error units",
         "synonyms": [
           "miss",
-          "deviation"
+          "deviation",
+          "prediction gap"
         ]
       }
     ],
@@ -967,7 +1011,8 @@
         "display_name": "total revenue",
         "synonyms": [
           "sales",
-          "order value"
+          "order value",
+          "total sales"
         ]
       },
       {
@@ -975,7 +1020,9 @@
         "sql": "SUM(demand_kpi_monthly.backlog_units)",
         "display_name": "total backlog",
         "synonyms": [
-          "backlog volume"
+          "backlog volume",
+          "pending units",
+          "open order units"
         ]
       },
       {
@@ -984,7 +1031,8 @@
         "display_name": "average forecast accuracy",
         "synonyms": [
           "accuracy",
-          "forecast performance"
+          "forecast performance",
+          "mean accuracy"
         ]
       },
       {
@@ -993,7 +1041,8 @@
         "display_name": "average MAPE",
         "synonyms": [
           "forecast error",
-          "MAPE"
+          "MAPE",
+          "mean error rate"
         ]
       }
     ]

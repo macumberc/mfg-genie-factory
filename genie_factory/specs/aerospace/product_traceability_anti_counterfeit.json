@@ -51,6 +51,11 @@
             "SN-F6003",
             "SN-A1004",
             "SN-B2004"
+          ],
+          "synonyms": [
+            "s/n",
+            "unit id",
+            "asset id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "PN-HYD-602",
             "PN-ENG-103",
             "PN-AFR-203"
+          ],
+          "synonyms": [
+            "p/n",
+            "item number",
+            "ata part"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Landing Gear",
             "APU",
             "Hydraulic"
+          ],
+          "synonyms": [
+            "asset class",
+            "hardware type",
+            "ata category"
           ]
         },
         {
@@ -108,6 +123,11 @@
             "Safety Critical",
             "Mission Critical",
             "Standard"
+          ],
+          "synonyms": [
+            "safety tier",
+            "risk level",
+            "flight priority"
           ]
         },
         {
@@ -352,6 +372,11 @@
             "SN-F6003",
             "SN-A1004",
             "SN-B2004"
+          ],
+          "synonyms": [
+            "s/n",
+            "unit id",
+            "asset id"
           ]
         },
         {
@@ -367,6 +392,11 @@
             "Landing Gear",
             "APU",
             "Hydraulic"
+          ],
+          "synonyms": [
+            "asset class",
+            "hardware type",
+            "ata category"
           ]
         },
         {
@@ -380,6 +410,11 @@
             "Safety Critical",
             "Mission Critical",
             "Standard"
+          ],
+          "synonyms": [
+            "safety tier",
+            "risk level",
+            "flight priority"
           ]
         },
         {
@@ -607,6 +642,11 @@
             "SN-F6003",
             "SN-A1004",
             "SN-B2004"
+          ],
+          "synonyms": [
+            "s/n",
+            "unit id",
+            "asset id"
           ]
         },
         {
@@ -622,6 +662,11 @@
             "Landing Gear",
             "APU",
             "Hydraulic"
+          ],
+          "synonyms": [
+            "asset class",
+            "hardware type",
+            "ata category"
           ]
         },
         {
@@ -635,6 +680,11 @@
             "Safety Critical",
             "Mission Critical",
             "Standard"
+          ],
+          "synonyms": [
+            "safety tier",
+            "risk level",
+            "flight priority"
           ]
         },
         {
@@ -922,7 +972,8 @@
         "FROM {fqn}.lifecycle_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of scrapped component counts; user asks about disposal or scrap rates over time using lifecycle_metrics scrapped_count."
     },
     {
       "question": "How has unique total eventss changed over time?",
@@ -931,7 +982,8 @@
         "FROM {fqn}.lifecycle_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total lifecycle event volume; user asks how event activity or throughput has changed across dates in lifecycle_metrics."
     },
     {
       "question": "What is the monthly trend in unique snapshots?",
@@ -940,7 +992,8 @@
         "FROM {fqn}.certification_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of certification snapshot counts; user asks how frequently airworthiness snapshots are captured over time in certification_metrics."
     },
     {
       "question": "How has the average ai-computed counterfeit risk score 0-100 (higher = riskier) changed over time?",
@@ -948,7 +1001,8 @@
         "SELECT event_date, AVG(counterfeit_risk_score) AS avg_counterfeit_risk_score",
         "FROM {fqn}.lifecycle_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average AI-computed counterfeit risk scores 0-100; user asks whether counterfeit risk is rising or falling across event dates."
     },
     {
       "question": "What is the trend of total days until certification expires over time?",
@@ -956,7 +1010,8 @@
         "SELECT snapshot_date, SUM(days_until_cert_expiry) AS total_days_until_cert_expiry",
         "FROM {fqn}.certification_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total days remaining until certification expiry; user asks about certification runway or expiry urgency aggregated over snapshot dates."
     },
     {
       "question": "How has the average documentation completeness percentage changed over time?",
@@ -964,7 +1019,8 @@
         "SELECT report_month, AVG(documentation_completeness_pct) AS avg_documentation_completeness_pct",
         "FROM {fqn}.traceability_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Trend of average documentation completeness percentage over reporting months; user asks whether traceability paperwork quality is improving or degrading."
     },
     {
       "question": "How has scrapped count changed over time?",
@@ -973,7 +1029,8 @@
         "FROM {fqn}.lifecycle_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series change in scrapped component counts; user asks how scrap volume or component disposal frequency has evolved over lifecycle event dates."
     }
   ],
   "sql_snippets": {
@@ -983,7 +1040,8 @@
         "display_name": "high counterfeit risk",
         "synonyms": [
           "suspected counterfeit",
-          "risk flagged"
+          "risk flagged",
+          "suspect parts"
         ],
         "instruction": "Filter for events with high counterfeit risk."
       },
@@ -992,7 +1050,8 @@
         "display_name": "overdue ADs",
         "synonyms": [
           "non-compliant ADs",
-          "AD overdue"
+          "AD overdue",
+          "missed airworthiness"
         ],
         "instruction": "Filter for components with overdue Airworthiness Directives."
       },
@@ -1001,7 +1060,8 @@
         "display_name": "custody gaps",
         "synonyms": [
           "chain gaps",
-          "traceability gaps"
+          "traceability gaps",
+          "chain break"
         ],
         "instruction": "Filter for lifecycle events where custody gaps were detected."
       }
@@ -1012,7 +1072,9 @@
         "sql": "DATE_TRUNC('month', lifecycle_events.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "activity month",
+          "log period"
         ]
       },
       {
@@ -1020,7 +1082,9 @@
         "sql": "CASE WHEN certification_snapshots.days_until_cert_expiry < 30 THEN 'Urgent' WHEN certification_snapshots.days_until_cert_expiry < 90 THEN 'Soon' ELSE 'OK' END",
         "display_name": "certification urgency",
         "synonyms": [
-          "expiry urgency"
+          "expiry urgency",
+          "renewal priority",
+          "cert deadline"
         ]
       },
       {
@@ -1028,7 +1092,9 @@
         "sql": "CASE WHEN lifecycle_events.counterfeit_risk_score > 70 THEN 'Critical' WHEN lifecycle_events.counterfeit_risk_score > 50 THEN 'High' WHEN lifecycle_events.counterfeit_risk_score > 25 THEN 'Medium' ELSE 'Low' END",
         "display_name": "counterfeit risk tier",
         "synonyms": [
-          "risk level"
+          "risk level",
+          "fraud tier",
+          "suspect level"
         ]
       }
     ],
@@ -1039,7 +1105,8 @@
         "display_name": "average counterfeit risk",
         "synonyms": [
           "risk score",
-          "counterfeit score"
+          "counterfeit score",
+          "mean fraud score"
         ]
       },
       {
@@ -1048,7 +1115,8 @@
         "display_name": "total custody gaps",
         "synonyms": [
           "chain breaks",
-          "traceability gaps"
+          "traceability gaps",
+          "gap count"
         ]
       },
       {
@@ -1057,7 +1125,8 @@
         "display_name": "average documentation completeness",
         "synonyms": [
           "doc completeness",
-          "record accuracy"
+          "record accuracy",
+          "doc coverage"
         ]
       },
       {
@@ -1066,7 +1135,8 @@
         "display_name": "average AD compliance",
         "synonyms": [
           "directive compliance",
-          "regulatory compliance"
+          "regulatory compliance",
+          "ad adherence"
         ]
       }
     ]

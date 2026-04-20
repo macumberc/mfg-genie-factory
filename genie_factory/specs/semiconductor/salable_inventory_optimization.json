@@ -51,6 +51,11 @@
             "WV-IF-002",
             "WV-IF-003",
             "WV-IF-004"
+          ],
+          "synonyms": [
+            "part number",
+            "sku",
+            "item code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "VaultLink USB4 Retimer",
             "VaultLink HDMI 2.1 Mux",
             "VaultLink I3C Hub Controller"
+          ],
+          "synonyms": [
+            "part description",
+            "item label",
+            "chip name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Analog Products",
             "Power Products",
             "Interface Products"
+          ],
+          "synonyms": [
+            "product family",
+            "device family",
+            "chip series"
           ]
         },
         {
@@ -328,6 +343,11 @@
             "WV-IF-002",
             "WV-IF-003",
             "WV-IF-004"
+          ],
+          "synonyms": [
+            "part number",
+            "sku",
+            "item code"
           ]
         },
         {
@@ -357,6 +377,11 @@
             "VaultLink USB4 Retimer",
             "VaultLink HDMI 2.1 Mux",
             "VaultLink I3C Hub Controller"
+          ],
+          "synonyms": [
+            "part description",
+            "item label",
+            "chip name"
           ]
         },
         {
@@ -371,6 +396,11 @@
             "Analog Products",
             "Power Products",
             "Interface Products"
+          ],
+          "synonyms": [
+            "product family",
+            "device family",
+            "chip series"
           ]
         },
         {
@@ -598,6 +628,11 @@
             "WV-IF-002",
             "WV-IF-003",
             "WV-IF-004"
+          ],
+          "synonyms": [
+            "part number",
+            "sku",
+            "item code"
           ]
         },
         {
@@ -627,6 +662,11 @@
             "VaultLink USB4 Retimer",
             "VaultLink HDMI 2.1 Mux",
             "VaultLink I3C Hub Controller"
+          ],
+          "synonyms": [
+            "part description",
+            "item label",
+            "chip name"
           ]
         },
         {
@@ -641,6 +681,11 @@
             "Analog Products",
             "Power Products",
             "Interface Products"
+          ],
+          "synonyms": [
+            "product family",
+            "device family",
+            "chip series"
           ]
         },
         {
@@ -939,7 +984,8 @@
         "FROM {fqn}.inventory_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct SKUs or product variety across wafer, die, or finished goods transactions using unique_product_count."
     },
     {
       "question": "How has highest quantity units changed over time?",
@@ -948,7 +994,8 @@
         "FROM {fqn}.inventory_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak single-transaction quantity units, surfacing shipment or receipt spikes across stock stages."
     },
     {
       "question": "How has average unit cost in usd changed over time?",
@@ -957,7 +1004,8 @@
         "FROM {fqn}.inventory_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of average unit cost in USD, useful for tracking wafer or die cost fluctuations across transaction dates."
     },
     {
       "question": "How does scrap transaction count vary across product lines?",
@@ -966,7 +1014,8 @@
         "FROM {fqn}.inventory_transaction_metrics",
         "GROUP BY ALL",
         "ORDER BY scrap_transaction_count DESC"
-      ]
+      ],
+      "usage_guidance": "Cross-product-line comparison (top-N by category) of scrap transaction counts to identify yield loss or write-off hotspots."
     },
     {
       "question": "What is the trend of total transaction quantity in units over time?",
@@ -974,7 +1023,8 @@
         "SELECT transaction_date, SUM(quantity_units) AS total_quantity_units",
         "FROM {fqn}.inventory_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of total physical units moved per transaction date, covering receipts, shipments, and adjustments in inventory_transactions."
     },
     {
       "question": "What is the trend of total total units on hand over time?",
@@ -982,7 +1032,8 @@
         "SELECT snapshot_date, SUM(on_hand_units) AS total_on_hand_units",
         "FROM {fqn}.inventory_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of total on-hand unit inventory levels from snapshot data, tracking stock build or depletion across snapshot dates."
     },
     {
       "question": "How has the average order fill rate percentage changed over time?",
@@ -990,7 +1041,8 @@
         "SELECT kpi_month, AVG(fill_rate_pct) AS avg_fill_rate_pct",
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average order fill rate percentage from KPI data, measuring service-level performance across product lines over time."
     }
   ],
   "sql_snippets": {
@@ -1020,7 +1072,8 @@
         "display_name": "low fill rate",
         "synonyms": [
           "poor fill rate",
-          "service level miss"
+          "service level miss",
+          "poor fulfillment"
         ],
         "instruction": "Use when identifying products with service level issues."
       }
@@ -1032,7 +1085,8 @@
         "display_name": "transaction month",
         "synonyms": [
           "month of transaction",
-          "inventory movement month"
+          "inventory movement month",
+          "move month"
         ]
       },
       {
@@ -1041,7 +1095,8 @@
         "display_name": "total E&O exposure",
         "synonyms": [
           "excess and obsolete total",
-          "E&O value"
+          "E&O value",
+          "excess obsolete usd"
         ]
       },
       {
@@ -1050,7 +1105,8 @@
         "display_name": "committed percentage",
         "synonyms": [
           "allocation rate",
-          "pct allocated"
+          "pct allocated",
+          "reserved ratio"
         ]
       }
     ],
@@ -1061,7 +1117,8 @@
         "display_name": "total inventory value",
         "synonyms": [
           "stock value",
-          "inventory dollars"
+          "inventory dollars",
+          "on-hand dollars"
         ]
       },
       {
@@ -1070,7 +1127,8 @@
         "display_name": "average inventory turns",
         "synonyms": [
           "mean turns",
-          "turn rate"
+          "turn rate",
+          "stock rotation"
         ]
       },
       {
@@ -1079,7 +1137,8 @@
         "display_name": "total units transacted",
         "synonyms": [
           "unit volume",
-          "transaction quantity"
+          "transaction quantity",
+          "units transacted"
         ]
       },
       {
@@ -1088,7 +1147,8 @@
         "display_name": "average fill rate",
         "synonyms": [
           "mean fill rate",
-          "service level"
+          "service level",
+          "fulfillment rate"
         ]
       }
     ]

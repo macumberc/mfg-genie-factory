@@ -51,6 +51,11 @@
             "HT-BL-018",
             "HT-BL-019",
             "HT-BL-020"
+          ],
+          "synonyms": [
+            "unit code",
+            "machine id",
+            "generator id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Bayshore Bulb 2",
             "Tidewater Bulb A",
             "Tidewater Bulb B"
+          ],
+          "synonyms": [
+            "unit label",
+            "machine name",
+            "generator name"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Kaplan",
             "Pelton",
             "Bulb"
+          ],
+          "synonyms": [
+            "runner type",
+            "wheel type",
+            "machine class"
           ]
         },
         {
@@ -112,6 +127,11 @@
             "Highland Dam",
             "Bayshore Dam",
             "Tidewater Dam"
+          ],
+          "synonyms": [
+            "facility name",
+            "site name",
+            "plant name"
           ]
         },
         {
@@ -340,6 +360,11 @@
             "HT-BL-018",
             "HT-BL-019",
             "HT-BL-020"
+          ],
+          "synonyms": [
+            "unit code",
+            "machine id",
+            "generator id"
           ]
         },
         {
@@ -359,6 +384,11 @@
             "Highland Dam",
             "Bayshore Dam",
             "Tidewater Dam"
+          ],
+          "synonyms": [
+            "facility name",
+            "site name",
+            "plant name"
           ]
         },
         {
@@ -598,6 +628,11 @@
             "HT-BL-018",
             "HT-BL-019",
             "HT-BL-020"
+          ],
+          "synonyms": [
+            "unit code",
+            "machine id",
+            "generator id"
           ]
         },
         {
@@ -617,6 +652,11 @@
             "Highland Dam",
             "Bayshore Dam",
             "Tidewater Dam"
+          ],
+          "synonyms": [
+            "facility name",
+            "site name",
+            "plant name"
           ]
         },
         {
@@ -948,7 +988,8 @@
         "FROM {fqn}.generation_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak/highest single-turbine generation MWh, matching phrases like 'best performing month' or 'maximum output over time'."
     },
     {
       "question": "How has total hydro generation in mwh changed over time?",
@@ -957,7 +998,8 @@
         "FROM {fqn}.generation_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of fleet-wide total hydro generation MWh, matching phrases like 'overall output over time' or 'how much power generated each month'."
     },
     {
       "question": "What is the monthly trend in highest water level m?",
@@ -966,7 +1008,8 @@
         "FROM {fqn}.reservoir_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak reservoir water level in meters, matching phrases like 'highest water level over time' or 'maximum reservoir height by month'."
     },
     {
       "question": "How has total water level m changed over time?",
@@ -975,7 +1018,8 @@
         "FROM {fqn}.reservoir_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of summed water level meters across all reservoirs, matching phrases like 'total water level over time' or 'combined reservoir levels by month'."
     },
     {
       "question": "How does total water flow rate in cubic meters per second break down by turbine unit for 'Maintenance' records?",
@@ -983,7 +1027,8 @@
         "SELECT turbine_id, COUNT(*) AS record_count, SUM(water_flow_m3s) AS total_water_flow_m3s",
         "FROM {fqn}.turbine_units",
         "WHERE operating_status = 'Maintenance' GROUP BY turbine_id ORDER BY total_water_flow_m3s DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total water flow rate grouped by turbine unit, specifically when operating_status is 'Maintenance' and user asks about flow during downtime."
     },
     {
       "question": "What is the trend of total water inflow rate in m3/s over time?",
@@ -991,7 +1036,8 @@
         "SELECT reading_date, SUM(inflow_m3s) AS total_inflow_m3s",
         "FROM {fqn}.flow_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total inflow rate in m³/s across all dams, matching phrases like 'water inflow over time' or 'how has river inflow changed'."
     },
     {
       "question": "How has the average reservoir storage as percentage of capacity changed over time?",
@@ -999,7 +1045,8 @@
         "SELECT snapshot_date, AVG(storage_pct) AS avg_storage_pct",
         "FROM {fqn}.reservoir_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average reservoir storage percentage, matching phrases like 'how full are reservoirs over time' or 'storage capacity trend'."
     }
   ],
   "sql_snippets": {
@@ -1009,7 +1056,8 @@
         "display_name": "generating turbines",
         "synonyms": [
           "active turbines",
-          "online turbines"
+          "online turbines",
+          "active units"
         ],
         "instruction": "Use when filtering to actively generating turbines."
       },
@@ -1018,7 +1066,8 @@
         "display_name": "high drought risk",
         "synonyms": [
           "drought warning",
-          "water shortage"
+          "water shortage",
+          "water stress"
         ],
         "instruction": "Use when filtering to reservoirs with elevated drought risk."
       },
@@ -1026,7 +1075,9 @@
         "sql": "flow_readings.env_flow_compliance = 'Non-Compliant'",
         "display_name": "non-compliant flows",
         "synonyms": [
-          "env flow violation"
+          "env flow violation",
+          "flow violations",
+          "env breach"
         ],
         "instruction": "Use when filtering to environmental flow violations."
       }
@@ -1037,7 +1088,9 @@
         "sql": "DATE_TRUNC('month', turbine_units.record_date)",
         "display_name": "generation month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "output month",
+          "production month"
         ]
       },
       {
@@ -1046,7 +1099,8 @@
         "display_name": "net water flow m3/s",
         "synonyms": [
           "flow balance",
-          "net inflow"
+          "net inflow",
+          "net discharge"
         ]
       },
       {
@@ -1055,7 +1109,8 @@
         "display_name": "MWh per m3/s flow",
         "synonyms": [
           "water productivity",
-          "flow efficiency"
+          "flow efficiency",
+          "water efficiency"
         ]
       }
     ],
@@ -1066,7 +1121,8 @@
         "display_name": "total generation MWh",
         "synonyms": [
           "hydro output",
-          "energy generated"
+          "energy generated",
+          "total output"
         ]
       },
       {
@@ -1075,7 +1131,8 @@
         "display_name": "average turbine efficiency",
         "synonyms": [
           "efficiency",
-          "conversion rate"
+          "conversion rate",
+          "mean efficiency"
         ]
       },
       {
@@ -1084,7 +1141,8 @@
         "display_name": "average storage percent",
         "synonyms": [
           "reservoir level",
-          "water storage"
+          "water storage",
+          "mean reservoir level"
         ]
       },
       {
@@ -1093,7 +1151,8 @@
         "display_name": "total spill volume",
         "synonyms": [
           "water spilled",
-          "spillway volume"
+          "spillway volume",
+          "spill total"
         ]
       }
     ]

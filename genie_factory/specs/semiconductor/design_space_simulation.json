@@ -51,6 +51,11 @@
             "SP-PM-002",
             "SP-PM-003",
             "SP-PM-004"
+          ],
+          "synonyms": [
+            "chip id",
+            "silicon id",
+            "part number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "VoltEdge SiC Gate Driver",
             "VoltEdge Multi-Rail PMIC",
             "VoltEdge USB-PD Controller"
+          ],
+          "synonyms": [
+            "chip name",
+            "part name",
+            "circuit name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "RF Modem",
             "IoT Controller",
             "Power Management"
+          ],
+          "synonyms": [
+            "chip family",
+            "product family",
+            "silicon family"
           ]
         },
         {
@@ -320,6 +335,11 @@
             "SP-PM-002",
             "SP-PM-003",
             "SP-PM-004"
+          ],
+          "synonyms": [
+            "chip id",
+            "silicon id",
+            "part number"
           ]
         },
         {
@@ -349,6 +369,11 @@
             "VoltEdge SiC Gate Driver",
             "VoltEdge Multi-Rail PMIC",
             "VoltEdge USB-PD Controller"
+          ],
+          "synonyms": [
+            "chip name",
+            "part name",
+            "circuit name"
           ]
         },
         {
@@ -363,6 +388,11 @@
             "RF Modem",
             "IoT Controller",
             "Power Management"
+          ],
+          "synonyms": [
+            "chip family",
+            "product family",
+            "silicon family"
           ]
         },
         {
@@ -580,6 +610,11 @@
             "SP-PM-002",
             "SP-PM-003",
             "SP-PM-004"
+          ],
+          "synonyms": [
+            "chip id",
+            "silicon id",
+            "part number"
           ]
         },
         {
@@ -609,6 +644,11 @@
             "VoltEdge SiC Gate Driver",
             "VoltEdge Multi-Rail PMIC",
             "VoltEdge USB-PD Controller"
+          ],
+          "synonyms": [
+            "chip name",
+            "part name",
+            "circuit name"
           ]
         },
         {
@@ -623,6 +663,11 @@
             "RF Modem",
             "IoT Controller",
             "Power Management"
+          ],
+          "synonyms": [
+            "chip family",
+            "product family",
+            "silicon family"
           ]
         },
         {
@@ -951,7 +996,8 @@
         "FROM {fqn}.simulation_run_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique design count across simulation runs, matching phrases like 'how many distinct designs were simulated each month'."
     },
     {
       "question": "How has highest timing slack ns changed over time?",
@@ -960,7 +1006,8 @@
         "FROM {fqn}.simulation_run_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of maximum timing slack in nanoseconds, matching phrases like 'best timing slack over time' or 'peak timing margin trend'."
     },
     {
       "question": "How has unique designs changed over time?",
@@ -969,7 +1016,8 @@
         "FROM {fqn}.optimization_result_metrics",
         "GROUP BY ALL",
         "ORDER BY result_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique design count from optimization results, matching phrases like 'how many designs were optimized each month' using optimization_result_metrics."
     },
     {
       "question": "How does total target process node in nanometers break down by chip design for 'Completed' records?",
@@ -977,7 +1025,8 @@
         "SELECT design_id, COUNT(*) AS record_count, SUM(target_node_nm) AS total_target_node_nm",
         "FROM {fqn}.simulation_runs",
         "WHERE run_status = 'Completed' GROUP BY design_id ORDER BY total_target_node_nm DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total target process node (nm) broken down by design_id, restricted to run_status = 'Completed' simulation runs."
     },
     {
       "question": "What is the trend of total target clock frequency in ghz over time?",
@@ -985,7 +1034,8 @@
         "SELECT snapshot_date, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
         "FROM {fqn}.parameter_explorations",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total clock frequency (GHz) summed across parameter exploration snapshots, matching phrases like 'clock frequency trend over time'."
     },
     {
       "question": "How has the average best performance score achieved (0-100) changed over time?",
@@ -993,7 +1043,8 @@
         "SELECT result_month, AVG(best_performance_score) AS avg_best_performance_score",
         "FROM {fqn}.optimization_results",
         "GROUP BY result_month ORDER BY result_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average best performance score (0–100) from optimization results, matching phrases like 'how has optimization performance improved over time'."
     },
     {
       "question": "How has total leakage power mw changed over time?",
@@ -1002,7 +1053,8 @@
         "FROM {fqn}.simulation_run_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total leakage power (mW) across simulation runs, matching phrases like 'leakage power trend' or 'how leakage power changed over time'."
     }
   ],
   "sql_snippets": {
@@ -1012,7 +1064,8 @@
         "display_name": "completed simulations",
         "synonyms": [
           "successful runs",
-          "passing simulations"
+          "passing simulations",
+          "finished runs"
         ],
         "instruction": "Use when analyzing only successfully completed simulation runs."
       },
@@ -1031,7 +1084,8 @@
         "display_name": "blocked designs",
         "synonyms": [
           "stalled designs",
-          "blocked closure"
+          "blocked closure",
+          "stalled chips"
         ],
         "instruction": "Use when identifying designs that cannot proceed to tapeout."
       }
@@ -1043,7 +1097,8 @@
         "display_name": "total power",
         "synonyms": [
           "combined power",
-          "dynamic plus leakage"
+          "dynamic plus leakage",
+          "full power draw"
         ]
       },
       {
@@ -1052,7 +1107,8 @@
         "display_name": "power efficiency",
         "synonyms": [
           "performance per watt",
-          "perf/power ratio"
+          "perf/power ratio",
+          "perf per watt"
         ]
       },
       {
@@ -1061,7 +1117,8 @@
         "display_name": "run month",
         "synonyms": [
           "simulation month",
-          "month of run"
+          "month of run",
+          "monthly bucket"
         ]
       }
     ],
@@ -1072,7 +1129,8 @@
         "display_name": "total simulation runs",
         "synonyms": [
           "run count",
-          "number of simulations"
+          "number of simulations",
+          "sim count"
         ]
       },
       {
@@ -1081,7 +1139,8 @@
         "display_name": "average dynamic power",
         "synonyms": [
           "mean power",
-          "avg power mW"
+          "avg power mW",
+          "typical power"
         ]
       },
       {
@@ -1090,7 +1149,8 @@
         "display_name": "average die area",
         "synonyms": [
           "mean area",
-          "avg die size"
+          "avg die size",
+          "mean die size"
         ]
       },
       {
@@ -1099,7 +1159,8 @@
         "display_name": "average convergence",
         "synonyms": [
           "mean convergence",
-          "optimization progress"
+          "optimization progress",
+          "typical convergence"
         ]
       }
     ]

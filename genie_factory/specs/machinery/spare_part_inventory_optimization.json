@@ -51,6 +51,11 @@
             "PV-018",
             "PV-019",
             "PV-020"
+          ],
+          "synonyms": [
+            "sku",
+            "item code",
+            "part id"
           ]
         },
         {
@@ -71,6 +76,11 @@
             "Gears",
             "Cylinder Parts",
             "Sensors"
+          ],
+          "synonyms": [
+            "item type",
+            "parts family",
+            "component group"
           ]
         },
         {
@@ -373,6 +383,11 @@
             "PV-018",
             "PV-019",
             "PV-020"
+          ],
+          "synonyms": [
+            "sku",
+            "item code",
+            "part id"
           ]
         },
         {
@@ -393,6 +408,11 @@
             "Gears",
             "Cylinder Parts",
             "Sensors"
+          ],
+          "synonyms": [
+            "item type",
+            "parts family",
+            "component group"
           ]
         },
         {
@@ -662,6 +682,11 @@
             "PV-018",
             "PV-019",
             "PV-020"
+          ],
+          "synonyms": [
+            "sku",
+            "item code",
+            "part id"
           ]
         },
         {
@@ -682,6 +707,11 @@
             "Gears",
             "Cylinder Parts",
             "Sensors"
+          ],
+          "synonyms": [
+            "item type",
+            "parts family",
+            "component group"
           ]
         },
         {
@@ -1027,7 +1057,8 @@
         "FROM {fqn}.parts_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend analysis of emergency parts issues count; triggered by phrases like 'urgent issue spikes' or 'emergency demand over time' using emergency_issues measure."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -1036,7 +1067,8 @@
         "FROM {fqn}.parts_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total transaction volume across all types; triggered by 'transaction activity over time' or 'how busy is parts movement' using total_transactions measure."
     },
     {
       "question": "What is the monthly trend in total carrying cost in usd?",
@@ -1045,7 +1077,8 @@
         "FROM {fqn}.inventory_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of inventory carrying cost in USD; triggered by 'storage cost trends' or 'how much are we spending to hold inventory' using total_carrying_cost measure."
     },
     {
       "question": "How has total avg lead time days changed over time?",
@@ -1054,7 +1087,8 @@
         "FROM {fqn}.inventory_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average supplier lead times in days; triggered by 'lead time changes over time' or 'are suppliers getting faster' using total_avg_lead_time_days measure."
     },
     {
       "question": "What is the trend of total transaction quantity over time?",
@@ -1062,7 +1096,8 @@
         "SELECT txn_date, SUM(quantity) AS total_quantity",
         "FROM {fqn}.parts_transactions",
         "GROUP BY txn_date ORDER BY txn_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of raw transaction quantities from parts_transactions table; triggered by 'parts movement volume' or 'how many units were transacted each day'."
     },
     {
       "question": "What is the trend of total quantity on hand over time?",
@@ -1070,7 +1105,8 @@
         "SELECT snapshot_date, SUM(on_hand_qty) AS total_on_hand_qty",
         "FROM {fqn}.inventory_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total on-hand inventory quantity from snapshots; triggered by 'stock levels over time' or 'how has our physical inventory changed' using on_hand_qty."
     },
     {
       "question": "How has the average inventory turnover ratio changed over time?",
@@ -1078,7 +1114,8 @@
         "SELECT kpi_month, AVG(turnover_ratio) AS avg_turnover_ratio",
         "FROM {fqn}.inventory_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average inventory turnover ratio from KPI table; triggered by 'how efficiently are we cycling inventory' or 'turnover rate changes over time'."
     }
   ],
   "sql_snippets": {
@@ -1088,7 +1125,8 @@
         "display_name": "high stockout risk",
         "synonyms": [
           "at risk",
-          "critical stock"
+          "critical stock",
+          "critical shortage"
         ],
         "instruction": "Use when identifying parts at risk of stockout."
       },
@@ -1097,7 +1135,8 @@
         "display_name": "emergency transactions",
         "synonyms": [
           "emergency orders",
-          "rush orders"
+          "rush orders",
+          "urgent issues"
         ],
         "instruction": "Use when analyzing emergency part requests."
       },
@@ -1106,7 +1145,8 @@
         "display_name": "parts issued",
         "synonyms": [
           "consumption",
-          "usage"
+          "usage",
+          "consumed parts"
         ],
         "instruction": "Use when analyzing parts consumed from inventory."
       }
@@ -1117,7 +1157,9 @@
         "sql": "DATE_TRUNC('month', parts_transactions.txn_date)",
         "display_name": "transaction month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "issue month",
+          "activity month"
         ]
       },
       {
@@ -1126,7 +1168,8 @@
         "display_name": "stock above reorder point",
         "synonyms": [
           "buffer",
-          "safety stock"
+          "safety stock",
+          "buffer above reorder"
         ]
       },
       {
@@ -1135,7 +1178,8 @@
         "display_name": "transaction value",
         "synonyms": [
           "cost",
-          "value"
+          "value",
+          "line value"
         ]
       }
     ],
@@ -1146,7 +1190,8 @@
         "display_name": "total parts issued",
         "synonyms": [
           "consumption",
-          "usage"
+          "usage",
+          "total consumed"
         ]
       },
       {
@@ -1154,7 +1199,9 @@
         "sql": "SUM(inventory_kpi_monthly.carrying_cost_usd)",
         "display_name": "total carrying cost",
         "synonyms": [
-          "holding cost"
+          "holding cost",
+          "storage expense",
+          "inventory overhead"
         ]
       },
       {
@@ -1163,7 +1210,8 @@
         "display_name": "average fill rate",
         "synonyms": [
           "fill rate",
-          "service level"
+          "service level",
+          "demand satisfaction"
         ]
       },
       {
@@ -1171,7 +1219,9 @@
         "sql": "SUM(inventory_kpi_monthly.stockout_events)",
         "display_name": "total stockouts",
         "synonyms": [
-          "stockout count"
+          "stockout count",
+          "shortage events",
+          "out-of-stock count"
         ]
       }
     ]

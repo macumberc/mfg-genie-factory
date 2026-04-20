@@ -51,6 +51,11 @@
             "CA-PKG-002",
             "CA-PKG-003",
             "CA-PKG-004"
+          ],
+          "synonyms": [
+            "part number",
+            "component code",
+            "item id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "BGA Substrate FC-CSP",
             "Epoxy Mold Compound",
             "Gold Bonding Wire 25um"
+          ],
+          "synonyms": [
+            "part description",
+            "component label",
+            "item title"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Specialty Gases",
             "Targets & Precursors",
             "Packaging Materials"
+          ],
+          "synonyms": [
+            "part type",
+            "component class",
+            "supply group"
           ]
         },
         {
@@ -329,6 +344,11 @@
             "CA-PKG-002",
             "CA-PKG-003",
             "CA-PKG-004"
+          ],
+          "synonyms": [
+            "part number",
+            "component code",
+            "item id"
           ]
         },
         {
@@ -358,6 +378,11 @@
             "BGA Substrate FC-CSP",
             "Epoxy Mold Compound",
             "Gold Bonding Wire 25um"
+          ],
+          "synonyms": [
+            "part description",
+            "component label",
+            "item title"
           ]
         },
         {
@@ -372,6 +397,11 @@
             "Specialty Gases",
             "Targets & Precursors",
             "Packaging Materials"
+          ],
+          "synonyms": [
+            "part type",
+            "component class",
+            "supply group"
           ]
         },
         {
@@ -592,6 +622,11 @@
             "CA-PKG-002",
             "CA-PKG-003",
             "CA-PKG-004"
+          ],
+          "synonyms": [
+            "part number",
+            "component code",
+            "item id"
           ]
         },
         {
@@ -621,6 +656,11 @@
             "BGA Substrate FC-CSP",
             "Epoxy Mold Compound",
             "Gold Bonding Wire 25um"
+          ],
+          "synonyms": [
+            "part description",
+            "component label",
+            "item title"
           ]
         },
         {
@@ -635,6 +675,11 @@
             "Specialty Gases",
             "Targets & Precursors",
             "Packaging Materials"
+          ],
+          "synonyms": [
+            "part type",
+            "component class",
+            "supply group"
           ]
         },
         {
@@ -959,7 +1004,8 @@
         "FROM {fqn}.material_order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total material orders volume; matches phrases like 'order count over time' or 'how many orders per month' using order_date dimension."
     },
     {
       "question": "How has unique materials changed over time?",
@@ -968,7 +1014,8 @@
         "FROM {fqn}.material_order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of distinct materials ordered; matches 'unique materials over time' or 'material variety by date' using unique_material_count across order_date."
     },
     {
       "question": "How does rejected order count vary across material categories?",
@@ -977,7 +1024,8 @@
         "FROM {fqn}.material_order_metrics",
         "GROUP BY ALL",
         "ORDER BY rejected_order_count DESC"
-      ]
+      ],
+      "usage_guidance": "Category-level breakdown of rejected orders; matches 'which material categories have most rejections' ranked descending by rejected_order_count."
     },
     {
       "question": "What is the delayed order count by supplier name?",
@@ -986,7 +1034,8 @@
         "FROM {fqn}.material_order_metrics",
         "GROUP BY ALL",
         "ORDER BY delayed_order_count DESC"
-      ]
+      ],
+      "usage_guidance": "Supplier-ranked delayed order count; matches 'which suppliers are causing delays' or 'late deliveries by vendor' ordered by delayed_order_count descending."
     },
     {
       "question": "How does total quantity ordered (units vary by material) break down by material or component for 'Delivered' records?",
@@ -994,7 +1043,8 @@
         "SELECT material_id, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.material_orders",
         "WHERE delivery_status = 'Delivered' GROUP BY material_id ORDER BY total_order_quantity DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total order quantity per material for Delivered status only; matches 'how much was delivered per component' with delivery_status = 'Delivered' filter."
     },
     {
       "question": "What is the trend of total available wafer start slots for the week over time?",
@@ -1002,7 +1052,8 @@
         "SELECT snapshot_date, SUM(available_wafer_starts) AS total_available_wafer_starts",
         "FROM {fqn}.capacity_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Weekly or date-level trend of total available wafer start capacity; matches 'fab capacity availability over time' or 'wafer starts trend' from capacity_snapshots."
     },
     {
       "question": "How has the average percentage adherence to allocation plan changed over time?",
@@ -1010,7 +1061,8 @@
         "SELECT allocation_month, AVG(plan_adherence_pct) AS avg_plan_adherence_pct",
         "FROM {fqn}.allocation_monthly",
         "GROUP BY allocation_month ORDER BY allocation_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average plan adherence percentage; matches 'how well are we following allocation plans' or 'plan adherence over time' from allocation_monthly."
     }
   ],
   "sql_snippets": {
@@ -1053,7 +1105,8 @@
         "display_name": "order month",
         "synonyms": [
           "procurement month",
-          "material order month"
+          "material order month",
+          "purchase month"
         ]
       },
       {
@@ -1062,7 +1115,8 @@
         "display_name": "spare capacity",
         "synonyms": [
           "available capacity",
-          "headroom"
+          "headroom",
+          "idle capacity"
         ]
       },
       {
@@ -1071,7 +1125,8 @@
         "display_name": "capacity gap",
         "synonyms": [
           "unused allocation",
-          "capacity slack"
+          "capacity slack",
+          "unmet capacity"
         ]
       }
     ],
@@ -1082,7 +1137,8 @@
         "display_name": "total procurement spend",
         "synonyms": [
           "procurement value",
-          "material cost"
+          "material cost",
+          "total cost"
         ]
       },
       {
@@ -1091,7 +1147,8 @@
         "display_name": "average utilization",
         "synonyms": [
           "mean utilization",
-          "fab usage rate"
+          "fab usage rate",
+          "typical loading"
         ]
       },
       {
@@ -1100,7 +1157,8 @@
         "display_name": "total material orders",
         "synonyms": [
           "order count",
-          "procurement orders"
+          "procurement orders",
+          "purchase orders"
         ]
       },
       {
@@ -1109,7 +1167,8 @@
         "display_name": "average plan adherence",
         "synonyms": [
           "mean adherence",
-          "plan accuracy"
+          "plan accuracy",
+          "schedule compliance"
         ]
       }
     ]

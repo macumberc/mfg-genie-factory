@@ -51,6 +51,11 @@
             "ENG-018",
             "ENG-019",
             "ENG-020"
+          ],
+          "synonyms": [
+            "serial number",
+            "esn",
+            "unit identifier"
           ]
         },
         {
@@ -70,6 +75,11 @@
             "LEAP-1B",
             "Trent-700",
             "PW4000"
+          ],
+          "synonyms": [
+            "powerplant type",
+            "engine variant",
+            "propulsion model"
           ]
         },
         {
@@ -81,6 +91,11 @@
           "entity_values": [
             "Narrowbody",
             "Widebody"
+          ],
+          "synonyms": [
+            "airframe type",
+            "plane type",
+            "fleet type"
           ]
         },
         {
@@ -95,6 +110,11 @@
             "Horizon Pacific",
             "Atlas Cargo",
             "Pinnacle Express"
+          ],
+          "synonyms": [
+            "operator",
+            "carrier",
+            "customer"
           ]
         },
         {
@@ -367,6 +387,11 @@
             "ENG-018",
             "ENG-019",
             "ENG-020"
+          ],
+          "synonyms": [
+            "serial number",
+            "esn",
+            "unit identifier"
           ]
         },
         {
@@ -386,6 +411,11 @@
             "LEAP-1B",
             "Trent-700",
             "PW4000"
+          ],
+          "synonyms": [
+            "powerplant type",
+            "engine variant",
+            "propulsion model"
           ]
         },
         {
@@ -397,6 +427,11 @@
           "entity_values": [
             "Narrowbody",
             "Widebody"
+          ],
+          "synonyms": [
+            "airframe type",
+            "plane type",
+            "fleet type"
           ]
         },
         {
@@ -411,6 +446,11 @@
             "Horizon Pacific",
             "Atlas Cargo",
             "Pinnacle Express"
+          ],
+          "synonyms": [
+            "operator",
+            "carrier",
+            "customer"
           ]
         },
         {
@@ -640,6 +680,11 @@
             "ENG-018",
             "ENG-019",
             "ENG-020"
+          ],
+          "synonyms": [
+            "serial number",
+            "esn",
+            "unit identifier"
           ]
         },
         {
@@ -659,6 +704,11 @@
             "LEAP-1B",
             "Trent-700",
             "PW4000"
+          ],
+          "synonyms": [
+            "powerplant type",
+            "engine variant",
+            "propulsion model"
           ]
         },
         {
@@ -673,6 +723,11 @@
             "Horizon Pacific",
             "Atlas Cargo",
             "Pinnacle Express"
+          ],
+          "synonyms": [
+            "operator",
+            "carrier",
+            "customer"
           ]
         },
         {
@@ -979,7 +1034,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of fleet size; triggered by phrases like 'how many engines monitored monthly' using unique_engine_count from sensor_readings_metrics."
     },
     {
       "question": "How has highest egt celsius changed over time?",
@@ -988,7 +1044,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of peak exhaust gas temperature; triggered by phrases like 'worst-case EGT over time' using max_egt_celsius from sensor_readings_metrics."
     },
     {
       "question": "How has total parts replaced changed over time?",
@@ -997,7 +1054,8 @@
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of parts consumption; triggered by phrases like 'parts replaced per period' or 'component turnover trend' using total_parts_replaced from maintenance_events_metrics."
     },
     {
       "question": "What is the trend of total exhaust gas temperature in celsius over time?",
@@ -1005,7 +1063,8 @@
         "SELECT reading_date, SUM(egt_celsius) AS total_egt_celsius",
         "FROM {fqn}.sensor_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of cumulative EGT celsius; triggered by phrases like 'total exhaust heat output over time' aggregating egt_celsius directly from sensor_readings."
     },
     {
       "question": "What is the trend of total aircraft downtime in hours over time?",
@@ -1013,7 +1072,8 @@
         "SELECT event_date, SUM(downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.maintenance_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of cumulative aircraft downtime hours; triggered by phrases like 'total grounding time' or 'fleet downtime trend' aggregating downtime_hours from maintenance_events."
     },
     {
       "question": "How has the average average health score for the month (0-100) changed over time?",
@@ -1021,7 +1081,8 @@
         "SELECT report_month, AVG(avg_health_score) AS avg_avg_health_score",
         "FROM {fqn}.health_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Trend over time of fleet-wide average monthly health score (0-100); triggered by phrases like 'overall engine health trend' aggregating avg_health_score from health_monthly."
     },
     {
       "question": "How has total fuel flow kg hr changed over time?",
@@ -1030,7 +1091,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Trend over time of total fuel consumption rate; triggered by phrases like 'fleet fuel flow over time' or 'fuel burn trend' using total_fuel_flow_kg_hr from sensor_readings_metrics."
     }
   ],
   "sql_snippets": {
@@ -1040,7 +1102,8 @@
         "display_name": "critical anomalies",
         "synonyms": [
           "critical alerts",
-          "critical sensors"
+          "critical sensors",
+          "red alerts"
         ],
         "instruction": "Use when filtering for critical engine anomaly readings."
       },
@@ -1049,7 +1112,8 @@
         "display_name": "unscheduled removals",
         "synonyms": [
           "URs",
-          "unplanned removals"
+          "unplanned removals",
+          "aog removals"
         ],
         "instruction": "Use when analyzing only unscheduled engine removals."
       },
@@ -1058,7 +1122,8 @@
         "display_name": "critical risk engines",
         "synonyms": [
           "highest risk",
-          "critical engines"
+          "critical engines",
+          "high risk units"
         ],
         "instruction": "Use when filtering for engines in the critical risk category."
       }
@@ -1070,7 +1135,8 @@
         "display_name": "reading month",
         "synonyms": [
           "month of reading",
-          "monthly"
+          "monthly",
+          "sensor month"
         ]
       },
       {
@@ -1079,7 +1145,8 @@
         "display_name": "EGT severity level",
         "synonyms": [
           "temperature severity",
-          "EGT category"
+          "EGT category",
+          "egt level"
         ]
       },
       {
@@ -1088,7 +1155,8 @@
         "display_name": "maintenance cost category",
         "synonyms": [
           "cost tier",
-          "expense level"
+          "expense level",
+          "repair tier"
         ]
       }
     ],
@@ -1099,7 +1167,8 @@
         "display_name": "average health score",
         "synonyms": [
           "engine health",
-          "health index"
+          "health index",
+          "mean health"
         ]
       },
       {
@@ -1108,7 +1177,8 @@
         "display_name": "total maintenance cost",
         "synonyms": [
           "MRO spend",
-          "repair cost"
+          "repair cost",
+          "repair spend"
         ]
       },
       {
@@ -1117,7 +1187,8 @@
         "display_name": "total downtime hours",
         "synonyms": [
           "AOG hours",
-          "aircraft on ground"
+          "aircraft on ground",
+          "ground time"
         ]
       },
       {
@@ -1126,7 +1197,8 @@
         "display_name": "average remaining useful life hours",
         "synonyms": [
           "RUL",
-          "remaining life"
+          "remaining life",
+          "mean rul"
         ]
       }
     ]

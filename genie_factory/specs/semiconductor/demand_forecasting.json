@@ -51,6 +51,11 @@
             "CF-COM-002",
             "CF-COM-003",
             "CF-COM-004"
+          ],
+          "synonyms": [
+            "part number",
+            "item code",
+            "chip code"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "FlowLink Ethernet PHY 1G",
             "FlowLink CAN-FD Transceiver",
             "FlowLink BLE 5.3 SoC"
+          ],
+          "synonyms": [
+            "part name",
+            "chip name",
+            "item description"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Analog IC",
             "Power IC",
             "Connectivity"
+          ],
+          "synonyms": [
+            "chip family",
+            "product line",
+            "device type"
           ]
         },
         {
@@ -336,6 +351,11 @@
             "CF-COM-002",
             "CF-COM-003",
             "CF-COM-004"
+          ],
+          "synonyms": [
+            "part number",
+            "item code",
+            "chip code"
           ]
         },
         {
@@ -365,6 +385,11 @@
             "FlowLink Ethernet PHY 1G",
             "FlowLink CAN-FD Transceiver",
             "FlowLink BLE 5.3 SoC"
+          ],
+          "synonyms": [
+            "part name",
+            "chip name",
+            "item description"
           ]
         },
         {
@@ -379,6 +404,11 @@
             "Analog IC",
             "Power IC",
             "Connectivity"
+          ],
+          "synonyms": [
+            "chip family",
+            "product line",
+            "device type"
           ]
         },
         {
@@ -595,6 +625,11 @@
             "CF-COM-002",
             "CF-COM-003",
             "CF-COM-004"
+          ],
+          "synonyms": [
+            "part number",
+            "item code",
+            "chip code"
           ]
         },
         {
@@ -624,6 +659,11 @@
             "FlowLink Ethernet PHY 1G",
             "FlowLink CAN-FD Transceiver",
             "FlowLink BLE 5.3 SoC"
+          ],
+          "synonyms": [
+            "part name",
+            "chip name",
+            "item description"
           ]
         },
         {
@@ -638,6 +678,11 @@
             "Analog IC",
             "Power IC",
             "Connectivity"
+          ],
+          "synonyms": [
+            "chip family",
+            "product line",
+            "device type"
           ]
         },
         {
@@ -947,7 +992,8 @@
         "FROM {fqn}.customer_order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct SKU variety in the order book; user asks about SKU diversity or product breadth over time using order_date."
     },
     {
       "question": "How has highest order quantity changed over time?",
@@ -956,7 +1002,8 @@
         "FROM {fqn}.customer_order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of peak single-order quantity; user asks how largest or highest order volumes have shifted across order dates."
     },
     {
       "question": "What is the monthly trend in highest forecasted units?",
@@ -965,7 +1012,8 @@
         "FROM {fqn}.forecast_accuracy_metrics",
         "GROUP BY ALL",
         "ORDER BY forecast_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak forecasted demand volume; user asks how maximum predicted units or top forecast figures changed over forecast periods."
     },
     {
       "question": "How does total number of units ordered break down by product sku for 'Shipped' records?",
@@ -973,7 +1021,8 @@
         "SELECT sku_id, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.customer_orders",
         "WHERE fulfillment_status = 'Shipped' GROUP BY sku_id ORDER BY total_order_quantity DESC"
-      ]
+      ],
+      "usage_guidance": "Per-SKU breakdown of units ordered filtered to Shipped status; user asks which SKUs drove fulfilled demand or shipped order quantities."
     },
     {
       "question": "What is the trend of total predicted demand in units over time?",
@@ -981,7 +1030,8 @@
         "SELECT forecast_date, SUM(forecasted_units) AS total_forecasted_units",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_date ORDER BY forecast_date"
-      ]
+      ],
+      "usage_guidance": "Aggregate predicted demand trend over forecast dates; user asks about total forecasted units, future demand outlook, or demand planning trends."
     },
     {
       "question": "How many distinct unique inventory position record are there per product category grouping?",
@@ -989,7 +1039,8 @@
         "SELECT product_category, COUNT(DISTINCT position_id) AS distinct_count",
         "FROM {fqn}.inventory_positions",
         "GROUP BY product_category ORDER BY distinct_count DESC"
-      ]
+      ],
+      "usage_guidance": "Count of distinct inventory position records grouped by product category; user asks about inventory record coverage or category-level position distribution."
     },
     {
       "question": "How has total unit price usd changed over time?",
@@ -998,7 +1049,8 @@
         "FROM {fqn}.customer_order_metrics",
         "GROUP BY ALL",
         "ORDER BY order_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of cumulative unit price totals across order dates; user asks how aggregate pricing or total unit price revenue trended over time."
     }
   ],
   "sql_snippets": {
@@ -1041,7 +1093,8 @@
         "display_name": "order month",
         "synonyms": [
           "month of order",
-          "order period"
+          "order period",
+          "booking month"
         ]
       },
       {
@@ -1050,7 +1103,8 @@
         "display_name": "forecast gap",
         "synonyms": [
           "demand gap",
-          "forecast vs actual delta"
+          "forecast vs actual delta",
+          "forecast miss"
         ]
       },
       {
@@ -1059,7 +1113,8 @@
         "display_name": "committed percentage",
         "synonyms": [
           "allocation rate",
-          "pct committed"
+          "pct committed",
+          "reserved percentage"
         ]
       }
     ],
@@ -1080,7 +1135,8 @@
         "display_name": "total units ordered",
         "synonyms": [
           "order volume",
-          "unit count"
+          "unit count",
+          "units booked"
         ]
       },
       {
@@ -1089,7 +1145,8 @@
         "display_name": "average forecast accuracy",
         "synonyms": [
           "mean accuracy",
-          "forecast precision"
+          "forecast precision",
+          "forecast hit rate"
         ]
       },
       {
@@ -1098,7 +1155,8 @@
         "display_name": "average weeks of supply",
         "synonyms": [
           "mean WOS",
-          "inventory coverage"
+          "inventory coverage",
+          "inventory runway"
         ]
       }
     ]

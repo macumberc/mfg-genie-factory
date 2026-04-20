@@ -51,6 +51,11 @@
             "AG-SMT-018",
             "AG-SMT-019",
             "AG-SMT-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "asset number",
+            "unit id"
           ]
         },
         {
@@ -64,6 +69,11 @@
             "Reflow Oven",
             "Wave Solder",
             "SMT Printer"
+          ],
+          "synonyms": [
+            "equipment category",
+            "asset class",
+            "device type"
           ]
         },
         {
@@ -78,6 +88,11 @@
             "Line-C",
             "Line-D",
             "Line-E"
+          ],
+          "synonyms": [
+            "production line",
+            "line number",
+            "manufacturing line"
           ]
         },
         {
@@ -292,6 +307,11 @@
             "AG-SMT-018",
             "AG-SMT-019",
             "AG-SMT-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "asset number",
+            "unit id"
           ]
         },
         {
@@ -305,6 +325,11 @@
             "Reflow Oven",
             "Wave Solder",
             "SMT Printer"
+          ],
+          "synonyms": [
+            "equipment category",
+            "asset class",
+            "device type"
           ]
         },
         {
@@ -319,6 +344,11 @@
             "Line-C",
             "Line-D",
             "Line-E"
+          ],
+          "synonyms": [
+            "production line",
+            "line number",
+            "manufacturing line"
           ]
         },
         {
@@ -549,6 +579,11 @@
             "AG-SMT-018",
             "AG-SMT-019",
             "AG-SMT-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "asset number",
+            "unit id"
           ]
         },
         {
@@ -562,6 +597,11 @@
             "Reflow Oven",
             "Wave Solder",
             "SMT Printer"
+          ],
+          "synonyms": [
+            "equipment category",
+            "asset class",
+            "device type"
           ]
         },
         {
@@ -576,6 +616,11 @@
             "Line-C",
             "Line-D",
             "Line-E"
+          ],
+          "synonyms": [
+            "production line",
+            "line number",
+            "manufacturing line"
           ]
         },
         {
@@ -892,7 +937,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about active machine counts or fleet size across sensor reading dates on assembly lines."
     },
     {
       "question": "How has highest vibration mm s changed over time?",
@@ -901,7 +947,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route peak-vibration trend questions tracking highest vibration mm/s spikes over time to catch mechanical wear escalation."
     },
     {
       "question": "How has total prediction accuracy pct changed over time?",
@@ -910,7 +957,8 @@
         "FROM {fqn}.equipment_health_metrics",
         "GROUP BY ALL",
         "ORDER BY health_month"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about predictive model accuracy percentage or how well failure predictions have improved month-over-month."
     },
     {
       "question": "What is the trend of total operating temperature in celsius over time?",
@@ -918,7 +966,8 @@
         "SELECT reading_date, SUM(temperature_c) AS total_temperature_c",
         "FROM {fqn}.sensor_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route cumulative or total operating temperature trend questions across sensor reading dates for thermal load analysis on assembly lines."
     },
     {
       "question": "What is the trend of total total downtime in hours for this event over time?",
@@ -926,7 +975,8 @@
         "SELECT maintenance_date, SUM(downtime_hours) AS total_downtime_hours",
         "FROM {fqn}.maintenance_records",
         "GROUP BY maintenance_date ORDER BY maintenance_date"
-      ]
+      ],
+      "usage_guidance": "Route downtime accumulation trend questions tracking total unplanned or maintenance-related downtime hours per maintenance event date."
     },
     {
       "question": "How has the average equipment availability percentage 0-100 changed over time?",
@@ -934,7 +984,8 @@
         "SELECT health_month, AVG(availability_pct) AS avg_availability_pct",
         "FROM {fqn}.equipment_health_monthly",
         "GROUP BY health_month ORDER BY health_month"
-      ]
+      ],
+      "usage_guidance": "Route average equipment availability percentage trend questions month-over-month from equipment_health_monthly for uptime performance monitoring."
     },
     {
       "question": "How has total anomaly score changed over time?",
@@ -943,7 +994,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route anomaly score trend questions tracking cumulative sensor anomaly signals over time to identify deteriorating equipment health patterns."
     }
   ],
   "sql_snippets": {
@@ -953,7 +1005,8 @@
         "display_name": "critical alerts",
         "synonyms": [
           "critical readings",
-          "critical anomalies"
+          "critical anomalies",
+          "high priority alarms"
         ],
         "instruction": "Use when filtering for critical-severity sensor readings."
       },
@@ -962,7 +1015,8 @@
         "display_name": "corrective maintenance",
         "synonyms": [
           "unplanned maintenance",
-          "breakdown repairs"
+          "breakdown repairs",
+          "breakdown repair"
         ],
         "instruction": "Use when analyzing unplanned failure-driven maintenance events."
       },
@@ -971,7 +1025,8 @@
         "display_name": "predicted failures",
         "synonyms": [
           "ML predicted",
-          "anticipated failures"
+          "anticipated failures",
+          "forecasted breakdowns"
         ],
         "instruction": "Use when analyzing the effectiveness of predictive maintenance models."
       }
@@ -983,7 +1038,8 @@
         "display_name": "reading month",
         "synonyms": [
           "month of reading",
-          "monthly"
+          "monthly",
+          "sensor month"
         ]
       },
       {
@@ -992,7 +1048,8 @@
         "display_name": "maintenance month",
         "synonyms": [
           "month of maintenance",
-          "monthly maintenance"
+          "monthly maintenance",
+          "repair month"
         ]
       },
       {
@@ -1001,7 +1058,8 @@
         "display_name": "cost per downtime hour",
         "synonyms": [
           "hourly repair cost",
-          "downtime unit cost"
+          "downtime unit cost",
+          "hourly repair rate"
         ]
       }
     ],
@@ -1012,7 +1070,8 @@
         "display_name": "total maintenance cost",
         "synonyms": [
           "repair cost",
-          "maintenance spend"
+          "maintenance spend",
+          "total repair spend"
         ]
       },
       {
@@ -1021,7 +1080,8 @@
         "display_name": "total downtime hours",
         "synonyms": [
           "downtime",
-          "hours lost"
+          "hours lost",
+          "total outage hours"
         ]
       },
       {
@@ -1030,7 +1090,8 @@
         "display_name": "average anomaly score",
         "synonyms": [
           "anomaly score",
-          "avg anomaly"
+          "avg anomaly",
+          "mean anomaly score"
         ]
       },
       {
@@ -1039,7 +1100,8 @@
         "display_name": "average availability",
         "synonyms": [
           "uptime",
-          "availability rate"
+          "availability rate",
+          "mean uptime rate"
         ]
       }
     ]

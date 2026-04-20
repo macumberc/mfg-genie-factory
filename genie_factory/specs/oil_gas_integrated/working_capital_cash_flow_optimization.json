@@ -51,6 +51,11 @@
             "CF-UP-018",
             "CF-DS-019",
             "CF-MS-020"
+          ],
+          "synonyms": [
+            "bu code",
+            "unit code",
+            "division id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Alaska Operations",
             "Biofuels Division",
             "Permian Gathering"
+          ],
+          "synonyms": [
+            "division name",
+            "bu name",
+            "unit label"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Downstream",
             "Midstream",
             "Corporate"
+          ],
+          "synonyms": [
+            "operating division",
+            "business line",
+            "vertical"
           ]
         },
         {
@@ -105,6 +120,11 @@
             "North America",
             "Europe",
             "Global"
+          ],
+          "synonyms": [
+            "geography",
+            "territory",
+            "area"
           ]
         },
         {
@@ -333,6 +353,11 @@
             "CF-UP-018",
             "CF-DS-019",
             "CF-MS-020"
+          ],
+          "synonyms": [
+            "bu code",
+            "unit code",
+            "division id"
           ]
         },
         {
@@ -362,6 +387,11 @@
             "Alaska Operations",
             "Biofuels Division",
             "Permian Gathering"
+          ],
+          "synonyms": [
+            "division name",
+            "bu name",
+            "unit label"
           ]
         },
         {
@@ -375,6 +405,11 @@
             "Downstream",
             "Midstream",
             "Corporate"
+          ],
+          "synonyms": [
+            "operating division",
+            "business line",
+            "vertical"
           ]
         },
         {
@@ -387,6 +422,11 @@
             "North America",
             "Europe",
             "Global"
+          ],
+          "synonyms": [
+            "geography",
+            "territory",
+            "area"
           ]
         },
         {
@@ -608,6 +648,11 @@
             "CF-UP-018",
             "CF-DS-019",
             "CF-MS-020"
+          ],
+          "synonyms": [
+            "bu code",
+            "unit code",
+            "division id"
           ]
         },
         {
@@ -621,6 +666,11 @@
             "Downstream",
             "Midstream",
             "Corporate"
+          ],
+          "synonyms": [
+            "operating division",
+            "business line",
+            "vertical"
           ]
         },
         {
@@ -633,6 +683,11 @@
             "North America",
             "Europe",
             "Global"
+          ],
+          "synonyms": [
+            "geography",
+            "territory",
+            "area"
           ]
         },
         {
@@ -917,7 +972,8 @@
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of transaction count volume; matches phrases like 'how many transactions per month' using total_transactions measure from cash_transactions_metrics."
     },
     {
       "question": "How has highest amount changed over time?",
@@ -926,7 +982,8 @@
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of single largest transaction amount; matches 'peak transaction size over time' using max_amount measure from cash_transactions_metrics."
     },
     {
       "question": "What is the monthly trend in total accounts payable in usd?",
@@ -935,7 +992,8 @@
         "FROM {fqn}.working_capital_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total accounts payable balance; matches 'how are payables changing over time' using total_payables_usd from working_capital_snapshots_metrics."
     },
     {
       "question": "What is the trend of total cash flow amount in usd (positive = inflow) over time?",
@@ -943,7 +1001,8 @@
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",
         "GROUP BY transaction_date ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Time-series aggregate of net cash flow amounts (inflows positive, outflows negative); matches 'cash movement trends' using amount_usd from cash_transactions table."
     },
     {
       "question": "What is the trend of total accounts receivable balance in usd over time?",
@@ -951,7 +1010,8 @@
         "SELECT snapshot_date, SUM(accounts_receivable_usd) AS total_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total accounts receivable balance; matches 'how are receivables growing over time' using accounts_receivable_usd from working_capital_snapshots table."
     },
     {
       "question": "How has the average current ratio (current assets / current liabilities) changed over time?",
@@ -959,7 +1019,8 @@
         "SELECT kpi_month, AVG(current_ratio) AS avg_current_ratio",
         "FROM {fqn}.cashflow_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of liquidity ratio; matches 'is our short-term financial health improving' using current_ratio from cashflow_kpi_monthly table."
     },
     {
       "question": "How has unique total transactionss changed over time?",
@@ -968,7 +1029,8 @@
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY transaction_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of transaction count over time; matches 'transaction activity volume trends' using total_transactions measure from cash_transactions_metrics."
     }
   ],
   "sql_snippets": {
@@ -978,7 +1040,8 @@
         "display_name": "collections only",
         "synonyms": [
           "customer payments",
-          "inflows"
+          "inflows",
+          "receipts only"
         ],
         "instruction": "Use to filter cash transactions to customer collections."
       },
@@ -987,7 +1050,8 @@
         "display_name": "high DSO",
         "synonyms": [
           "slow collections",
-          "overdue receivables"
+          "overdue receivables",
+          "slow receivables"
         ],
         "instruction": "Use to find business units with DSO above 45 days."
       },
@@ -996,7 +1060,8 @@
         "display_name": "negative free cash flow",
         "synonyms": [
           "cash burn",
-          "cash negative"
+          "cash negative",
+          "fcf deficit"
         ],
         "instruction": "Use to identify business units burning cash."
       }
@@ -1008,7 +1073,8 @@
         "display_name": "net working capital",
         "synonyms": [
           "NWC",
-          "working capital"
+          "working capital",
+          "nwc"
         ]
       },
       {
@@ -1017,7 +1083,8 @@
         "display_name": "cash conversion cycle",
         "synonyms": [
           "CCC",
-          "cash cycle"
+          "cash cycle",
+          "ccc"
         ]
       },
       {
@@ -1026,7 +1093,8 @@
         "display_name": "transaction month",
         "synonyms": [
           "month",
-          "period"
+          "period",
+          "monthly period"
         ]
       }
     ],
@@ -1037,7 +1105,8 @@
         "display_name": "total cash inflows",
         "synonyms": [
           "collections",
-          "inflows"
+          "inflows",
+          "cash receipts"
         ]
       },
       {
@@ -1046,7 +1115,8 @@
         "display_name": "total cash outflows",
         "synonyms": [
           "disbursements",
-          "outflows"
+          "outflows",
+          "cash payments"
         ]
       },
       {
@@ -1055,7 +1125,8 @@
         "display_name": "total free cash flow",
         "synonyms": [
           "FCF",
-          "free cash"
+          "free cash",
+          "total fcf"
         ]
       },
       {
@@ -1064,7 +1135,8 @@
         "display_name": "average current ratio",
         "synonyms": [
           "liquidity",
-          "current ratio"
+          "current ratio",
+          "mean liquidity ratio"
         ]
       }
     ]

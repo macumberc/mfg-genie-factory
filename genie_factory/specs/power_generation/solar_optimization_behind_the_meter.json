@@ -51,6 +51,11 @@
             "SS-CAM-018",
             "SS-CAM-019",
             "SS-CAM-020"
+          ],
+          "synonyms": [
+            "property code",
+            "location id",
+            "asset id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Medical Center Campus",
             "Research Park Solar",
             "Community College Array"
+          ],
+          "synonyms": [
+            "property name",
+            "location name",
+            "asset name"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Industrial",
             "Municipal",
             "Campus"
+          ],
+          "synonyms": [
+            "customer segment",
+            "facility category",
+            "installation class"
           ]
         },
         {
@@ -107,6 +122,11 @@
             "West",
             "Northeast",
             "Midwest"
+          ],
+          "synonyms": [
+            "territory",
+            "geography",
+            "area"
           ]
         },
         {
@@ -335,6 +355,11 @@
             "SS-CAM-018",
             "SS-CAM-019",
             "SS-CAM-020"
+          ],
+          "synonyms": [
+            "property code",
+            "location id",
+            "asset id"
           ]
         },
         {
@@ -348,6 +373,11 @@
             "Industrial",
             "Municipal",
             "Campus"
+          ],
+          "synonyms": [
+            "customer segment",
+            "facility category",
+            "installation class"
           ]
         },
         {
@@ -583,6 +613,11 @@
             "SS-CAM-018",
             "SS-CAM-019",
             "SS-CAM-020"
+          ],
+          "synonyms": [
+            "property code",
+            "location id",
+            "asset id"
           ]
         },
         {
@@ -596,6 +631,11 @@
             "Industrial",
             "Municipal",
             "Campus"
+          ],
+          "synonyms": [
+            "customer segment",
+            "facility category",
+            "installation class"
           ]
         },
         {
@@ -926,7 +966,8 @@
         "FROM {fqn}.solar_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak/highest solar generation KWh, spotting record-output months across all sites using max_solar_generation_kwh."
     },
     {
       "question": "How has total solar generation in kwh changed over time?",
@@ -935,7 +976,8 @@
         "FROM {fqn}.solar_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of aggregated solar energy produced in KWh fleet-wide, tracking total_solar_generation_kwh growth or decline by month."
     },
     {
       "question": "What is the monthly trend in highest state of charge percent?",
@@ -944,7 +986,8 @@
         "FROM {fqn}.battery_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak battery state-of-charge percent, identifying months where storage reached maximum charge levels across the fleet."
     },
     {
       "question": "How does total solar irradiance in kwh/m2 break down by solar+storage site for 'Offline' records?",
@@ -952,7 +995,8 @@
         "SELECT site_id, COUNT(*) AS record_count, SUM(irradiance_kwh_m2) AS total_irradiance_kwh_m2",
         "FROM {fqn}.solar_installations",
         "WHERE inverter_status = 'Offline' GROUP BY site_id ORDER BY total_irradiance_kwh_m2 DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered site-level breakdown of cumulative irradiance KWh/m2 for Solar+Storage sites where inverter_status is Offline, ranking underperforming sites."
     },
     {
       "question": "What is the trend of total energy exported to grid in kwh over time?",
@@ -960,7 +1004,8 @@
         "SELECT reading_date, SUM(grid_export_kwh) AS total_grid_export_kwh",
         "FROM {fqn}.generation_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total energy exported to the grid in KWh, monitoring net-metering and grid-export volumes by reading date."
     },
     {
       "question": "How has the average battery state of charge 0-100 changed over time?",
@@ -968,7 +1013,8 @@
         "SELECT snapshot_date, AVG(state_of_charge_pct) AS avg_state_of_charge_pct",
         "FROM {fqn}.battery_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Daily or periodic trend of average battery state-of-charge percent (0–100), tracking fleet-wide storage health and charge levels over time."
     },
     {
       "question": "How has online site count changed over time?",
@@ -977,7 +1023,8 @@
         "FROM {fqn}.solar_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY record_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of how many inverter-online sites are active, monitoring fleet availability and operational site count over time."
     }
   ],
   "sql_snippets": {
@@ -987,7 +1034,8 @@
         "display_name": "online inverters",
         "synonyms": [
           "active sites",
-          "generating sites"
+          "generating sites",
+          "active inverters"
         ],
         "instruction": "Use when filtering to sites with fully operational inverters."
       },
@@ -996,7 +1044,8 @@
         "display_name": "battery faults",
         "synonyms": [
           "failed batteries",
-          "battery errors"
+          "battery errors",
+          "battery alarms"
         ],
         "instruction": "Use when filtering to batteries with fault status."
       },
@@ -1005,7 +1054,8 @@
         "display_name": "degraded batteries",
         "synonyms": [
           "aging batteries",
-          "low health"
+          "low health",
+          "worn batteries"
         ],
         "instruction": "Use when filtering to batteries below 85% health."
       }
@@ -1016,7 +1066,9 @@
         "sql": "DATE_TRUNC('month', solar_installations.record_date)",
         "display_name": "generation month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "billing month",
+          "production month"
         ]
       },
       {
@@ -1024,7 +1076,9 @@
         "sql": "generation_readings.self_consumption_kwh / NULLIF(generation_readings.self_consumption_kwh + generation_readings.grid_export_kwh, 0)",
         "display_name": "self-consumption ratio",
         "synonyms": [
-          "on-site usage ratio"
+          "on-site usage ratio",
+          "on-site usage rate",
+          "behind-meter ratio"
         ]
       },
       {
@@ -1032,7 +1086,9 @@
         "sql": "battery_snapshots.discharge_kwh / NULLIF(battery_snapshots.charge_kwh, 0)",
         "display_name": "battery round-trip efficiency",
         "synonyms": [
-          "storage efficiency"
+          "storage efficiency",
+          "battery efficiency",
+          "charge-discharge ratio"
         ]
       }
     ],
@@ -1043,7 +1099,8 @@
         "display_name": "total solar generation kWh",
         "synonyms": [
           "solar output",
-          "PV generation"
+          "PV generation",
+          "total production"
         ]
       },
       {
@@ -1052,7 +1109,8 @@
         "display_name": "total demand charges USD",
         "synonyms": [
           "demand costs",
-          "peak charges"
+          "peak charges",
+          "demand fees"
         ]
       },
       {
@@ -1061,7 +1119,8 @@
         "display_name": "average battery health",
         "synonyms": [
           "battery degradation",
-          "storage health"
+          "storage health",
+          "battery condition"
         ]
       },
       {
@@ -1070,7 +1129,8 @@
         "display_name": "total grid export kWh",
         "synonyms": [
           "energy exported",
-          "net metering"
+          "net metering",
+          "total exported energy"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "PE-DRL-018",
             "PE-DRL-019",
             "PE-DRL-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "asset number",
+            "unit code"
           ]
         },
         {
@@ -65,6 +70,11 @@
             "CNC Mill",
             "Surface Grinder",
             "CNC Drill"
+          ],
+          "synonyms": [
+            "equipment type",
+            "cnc series",
+            "machine type"
           ]
         },
         {
@@ -300,6 +310,11 @@
             "PE-DRL-018",
             "PE-DRL-019",
             "PE-DRL-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "asset number",
+            "unit code"
           ]
         },
         {
@@ -314,6 +329,11 @@
             "CNC Mill",
             "Surface Grinder",
             "CNC Drill"
+          ],
+          "synonyms": [
+            "equipment type",
+            "cnc series",
+            "machine type"
           ]
         },
         {
@@ -539,6 +559,11 @@
             "PE-DRL-018",
             "PE-DRL-019",
             "PE-DRL-020"
+          ],
+          "synonyms": [
+            "equipment id",
+            "asset number",
+            "unit code"
           ]
         },
         {
@@ -553,6 +578,11 @@
             "CNC Mill",
             "Surface Grinder",
             "CNC Drill"
+          ],
+          "synonyms": [
+            "equipment type",
+            "cnc series",
+            "machine type"
           ]
         },
         {
@@ -864,7 +894,8 @@
         "FROM {fqn}.machining_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique active machines from machining_events_metrics; matches questions about machine count over time by event date."
     },
     {
       "question": "How has highest surface finish um changed over time?",
@@ -873,7 +904,8 @@
         "FROM {fqn}.machining_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak surface finish (µm) from machining_events_metrics; matches questions about worst or highest surface roughness over time."
     },
     {
       "question": "How has unique machines changed over time?",
@@ -882,7 +914,8 @@
         "FROM {fqn}.defect_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique active machines from defect_kpi_metrics; matches questions about machine count over time by KPI month."
     },
     {
       "question": "What is the trend of total surface roughness ra in micrometers over time?",
@@ -890,7 +923,8 @@
         "SELECT event_date, SUM(surface_finish_um) AS total_surface_finish_um",
         "FROM {fqn}.machining_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative surface roughness Ra (µm) trend over time from raw machining_events; matches questions about total surface finish values by event date."
     },
     {
       "question": "What is the trend of total flank wear measurement in mm over time?",
@@ -898,7 +932,8 @@
         "SELECT snapshot_date, SUM(flank_wear_mm) AS total_flank_wear_mm",
         "FROM {fqn}.tool_wear_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total flank wear (mm) from tool_wear_snapshots; matches questions about cumulative or total tool flank wear progression over time."
     },
     {
       "question": "How has the average defect rate percentage changed over time?",
@@ -906,7 +941,8 @@
         "SELECT kpi_month, AVG(defect_rate_pct) AS avg_defect_rate_pct",
         "FROM {fqn}.defect_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly average defect rate (%) trend from defect_kpi_monthly; matches questions about how defect rates or quality percentages change over time."
     },
     {
       "question": "How has total dimensional deviation mm changed over time?",
@@ -915,7 +951,8 @@
         "FROM {fqn}.machining_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total dimensional deviation (mm) from machining_events_metrics; matches questions about cumulative part dimensional accuracy or deviation over time."
     }
   ],
   "sql_snippets": {
@@ -925,7 +962,8 @@
         "display_name": "defective parts",
         "synonyms": [
           "defects",
-          "failures"
+          "failures",
+          "bad parts"
         ],
         "instruction": "Use when analyzing defective parts only."
       },
@@ -934,7 +972,8 @@
         "display_name": "tools needing replacement",
         "synonyms": [
           "worn tools",
-          "end of life tools"
+          "end of life tools",
+          "worn-out tools"
         ],
         "instruction": "Use when identifying tools that need immediate replacement."
       },
@@ -943,7 +982,8 @@
         "display_name": "defect events only",
         "synonyms": [
           "non-conformances",
-          "quality issues"
+          "quality issues",
+          "fault occurrences"
         ],
         "instruction": "Use when filtering to only events with detected defects."
       }
@@ -955,7 +995,8 @@
         "display_name": "event month",
         "synonyms": [
           "monthly",
-          "month"
+          "month",
+          "production month"
         ]
       },
       {
@@ -964,7 +1005,8 @@
         "display_name": "cost of quality",
         "synonyms": [
           "COQ",
-          "quality cost"
+          "quality cost",
+          "quality losses"
         ]
       },
       {
@@ -973,7 +1015,8 @@
         "display_name": "tool wear percentage",
         "synonyms": [
           "wear level",
-          "tool usage"
+          "tool usage",
+          "tool degradation"
         ]
       }
     ],
@@ -983,7 +1026,9 @@
         "sql": "COUNT(DISTINCT CASE WHEN machining_events.defect_detected = true THEN machining_events.event_id END)",
         "display_name": "total defects",
         "synonyms": [
-          "defect count"
+          "defect count",
+          "bad part count",
+          "failure tally"
         ]
       },
       {
@@ -991,7 +1036,9 @@
         "sql": "SUM(defect_kpi_monthly.scrap_cost_usd)",
         "display_name": "total scrap cost",
         "synonyms": [
-          "scrap expense"
+          "scrap expense",
+          "scrap spend",
+          "scrapped value"
         ]
       },
       {
@@ -1000,7 +1047,8 @@
         "display_name": "average surface finish",
         "synonyms": [
           "roughness",
-          "Ra"
+          "Ra",
+          "mean roughness"
         ]
       },
       {
@@ -1009,7 +1057,8 @@
         "display_name": "average FPY",
         "synonyms": [
           "yield",
-          "first-pass yield"
+          "first-pass yield",
+          "avg fpy"
         ]
       }
     ]

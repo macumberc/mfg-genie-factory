@@ -51,6 +51,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "part number"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Shrimp 21-25ct 1lb",
             "Frozen Pizza Pepperoni 12in",
             "Ice Cream Vanilla 48oz"
+          ],
+          "synonyms": [
+            "item name",
+            "product label",
+            "sku name"
           ]
         },
         {
@@ -97,6 +107,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "product type",
+            "product group",
+            "segment"
           ]
         },
         {
@@ -118,6 +133,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "plant line",
+            "facility line"
           ]
         },
         {
@@ -355,6 +375,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "part number"
           ]
         },
         {
@@ -372,6 +397,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "product type",
+            "product group",
+            "segment"
           ]
         },
         {
@@ -393,6 +423,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "plant line",
+            "facility line"
           ]
         },
         {
@@ -635,6 +670,11 @@
             "FP-018",
             "FP-019",
             "FP-020"
+          ],
+          "synonyms": [
+            "item code",
+            "sku",
+            "part number"
           ]
         },
         {
@@ -652,6 +692,11 @@
             "Protein",
             "Seafood",
             "Frozen"
+          ],
+          "synonyms": [
+            "product type",
+            "product group",
+            "segment"
           ]
         },
         {
@@ -673,6 +718,11 @@
             "Line J",
             "Line K",
             "Line L"
+          ],
+          "synonyms": [
+            "manufacturing line",
+            "plant line",
+            "facility line"
           ]
         },
         {
@@ -1003,7 +1053,8 @@
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct products with quality events; matches phrases like 'unique product count over time' using quality_kpi_monthly.unique_product_count."
     },
     {
       "question": "How has highest units affected changed over time?",
@@ -1012,7 +1063,8 @@
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series of peak units affected per period; matches 'worst single batch impact over time' using quality_kpi_monthly.max_units_affected."
     },
     {
       "question": "What is the monthly trend in highest events count?",
@@ -1021,7 +1073,8 @@
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of highest single-line event counts; matches 'peak inspection events per month' using inspection_kpi_monthly.max_events_count."
     },
     {
       "question": "How has nc count changed over time?",
@@ -1030,7 +1083,8 @@
         "FROM {fqn}.inspection_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series of non-conformance counts; matches 'how are NC rates trending' using inspection_kpi_monthly.nc_count."
     },
     {
       "question": "What is the trend of total units affected over time?",
@@ -1038,7 +1092,8 @@
         "SELECT event_date, SUM(units_affected) AS total_units_affected",
         "FROM {fqn}.product_lines",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Date-level trend of total production units affected by quality events; matches 'units impacted over time' from product_lines.units_affected."
     },
     {
       "question": "What is the trend of total microbial count cfu/g over time?",
@@ -1046,7 +1101,8 @@
         "SELECT inspection_date, SUM(microbe_count_cfu) AS total_microbe_count_cfu",
         "FROM {fqn}.quality_events",
         "GROUP BY inspection_date ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Daily trend of cumulative microbial load across inspections; matches 'microbial count CFU trend' from quality_events.microbe_count_cfu."
     },
     {
       "question": "How has the average regulatory audit score 0-100 changed over time?",
@@ -1054,7 +1110,8 @@
         "SELECT kpi_month, AVG(audit_score) AS avg_audit_score",
         "FROM {fqn}.inspection_records",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average regulatory audit scores; matches 'how are audit scores changing' from inspection_records.audit_score."
     }
   ],
   "sql_snippets": {
@@ -1063,7 +1120,9 @@
         "sql": "product_lines.severity = 'Critical'",
         "display_name": "critical events",
         "synonyms": [
-          "severe"
+          "severe",
+          "high severity",
+          "major incidents"
         ],
         "instruction": "Filter critical."
       },
@@ -1071,7 +1130,9 @@
         "sql": "quality_events.disposition = 'Rejected'",
         "display_name": "rejected",
         "synonyms": [
-          "failed"
+          "failed",
+          "failed batches",
+          "disposition failed"
         ],
         "instruction": "Filter rejected."
       },
@@ -1079,7 +1140,9 @@
         "sql": "inspection_records.compliance_status = 'Non-Conformance'",
         "display_name": "non-conformances",
         "synonyms": [
-          "NC"
+          "NC",
+          "compliance failures",
+          "nc items"
         ],
         "instruction": "Filter NCs."
       }
@@ -1090,7 +1153,9 @@
         "sql": "DATE_TRUNC('month', product_lines.event_date)",
         "display_name": "event month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "incident month",
+          "failure month"
         ]
       },
       {
@@ -1098,7 +1163,9 @@
         "sql": "inspection_records.capa_closed * 100.0 / NULLIF(inspection_records.capa_open + inspection_records.capa_closed, 0)",
         "display_name": "CAPA closure rate",
         "synonyms": [
-          "closure pct"
+          "closure pct",
+          "capa completion rate",
+          "corrective action rate"
         ]
       },
       {
@@ -1106,7 +1173,9 @@
         "sql": "product_lines.units_affected * 1.0 / 5000",
         "display_name": "defect rate",
         "synonyms": [
-          "quality rate"
+          "quality rate",
+          "failure rate",
+          "defect percentage"
         ]
       }
     ],
@@ -1116,7 +1185,9 @@
         "sql": "COUNT(DISTINCT product_lines.event_id)",
         "display_name": "total events",
         "synonyms": [
-          "quality events"
+          "quality events",
+          "incident count",
+          "failure count"
         ]
       },
       {
@@ -1124,7 +1195,9 @@
         "sql": "SUM(product_lines.cost_impact_usd)",
         "display_name": "total cost impact",
         "synonyms": [
-          "quality cost"
+          "quality cost",
+          "financial impact",
+          "loss amount"
         ]
       },
       {
@@ -1132,7 +1205,9 @@
         "sql": "AVG(inspection_records.audit_score)",
         "display_name": "avg audit score",
         "synonyms": [
-          "compliance score"
+          "compliance score",
+          "mean audit score",
+          "average compliance score"
         ]
       },
       {
@@ -1140,7 +1215,9 @@
         "sql": "SUM(inspection_records.capa_open)",
         "display_name": "total open CAPAs",
         "synonyms": [
-          "open actions"
+          "open actions",
+          "pending capas",
+          "open corrective actions"
         ]
       }
     ]

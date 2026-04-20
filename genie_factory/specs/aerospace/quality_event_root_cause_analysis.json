@@ -51,6 +51,11 @@
             "PN-4018",
             "PN-4019",
             "PN-4020"
+          ],
+          "synonyms": [
+            "part number",
+            "part no",
+            "pn"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Pressure Regulator Valve",
             "Wing Skin Panel",
             "Engine Nacelle Cowl"
+          ],
+          "synonyms": [
+            "part description",
+            "part label",
+            "item name"
           ]
         },
         {
@@ -95,6 +105,11 @@
             "Landing Gear",
             "Interior",
             "Hydraulic"
+          ],
+          "synonyms": [
+            "part category",
+            "assembly type",
+            "part family"
           ]
         },
         {
@@ -335,6 +350,11 @@
             "PN-4018",
             "PN-4019",
             "PN-4020"
+          ],
+          "synonyms": [
+            "part number",
+            "part no",
+            "pn"
           ]
         },
         {
@@ -350,6 +370,11 @@
             "Landing Gear",
             "Interior",
             "Hydraulic"
+          ],
+          "synonyms": [
+            "part category",
+            "assembly type",
+            "part family"
           ]
         },
         {
@@ -573,6 +598,11 @@
             "PN-4018",
             "PN-4019",
             "PN-4020"
+          ],
+          "synonyms": [
+            "part number",
+            "part no",
+            "pn"
           ]
         },
         {
@@ -588,6 +618,11 @@
             "Landing Gear",
             "Interior",
             "Hydraulic"
+          ],
+          "synonyms": [
+            "part category",
+            "assembly type",
+            "part family"
           ]
         },
         {
@@ -882,7 +917,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total quality event counts over time; matches phrases like 'event volume trend' or 'how many quality events per month'."
     },
     {
       "question": "How has unique components changed over time?",
@@ -891,7 +927,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of distinct components affected by quality events; matches 'unique components over time' using quality_events_metrics unique_component_count."
     },
     {
       "question": "What is the monthly trend in unique components?",
@@ -900,7 +937,8 @@
         "FROM {fqn}.inspection_metrics",
         "GROUP BY ALL",
         "ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of distinct components appearing in inspection records; matches 'unique components inspected over time' using inspection_metrics unique_component_count."
     },
     {
       "question": "What is the trend of total cost of quality (rework, scrap, warranty) in usd over time?",
@@ -908,7 +946,8 @@
         "SELECT event_date, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative cost-of-quality trend (rework, scrap, warranty) over time; matches 'cost of quality trend' aggregating cost_of_quality_usd from quality_events."
     },
     {
       "question": "What is the trend of total number of units inspected over time?",
@@ -916,7 +955,8 @@
         "SELECT inspection_date, SUM(units_inspected) AS total_units_inspected",
         "FROM {fqn}.inspection_records",
         "GROUP BY inspection_date ORDER BY inspection_date"
-      ]
+      ],
+      "usage_guidance": "Trend of total units inspected over time; matches 'inspection volume over time' or 'how many units inspected per period' from inspection_records."
     },
     {
       "question": "How has the average defect rate in parts per million changed over time?",
@@ -924,7 +964,8 @@
         "SELECT report_month, AVG(defect_rate_ppm) AS avg_defect_rate_ppm",
         "FROM {fqn}.quality_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average defect rate in PPM; matches 'defect rate trend' or 'parts per million over time' from quality_kpi_monthly."
     },
     {
       "question": "How does critical event count vary across component classes?",
@@ -933,7 +974,8 @@
         "FROM {fqn}.quality_events_metrics",
         "GROUP BY ALL",
         "ORDER BY critical_event_count DESC"
-      ]
+      ],
+      "usage_guidance": "Cross-category comparison ranking component classes by critical event count; matches 'which component class has most critical events' or 'critical events by component class'."
     }
   ],
   "sql_snippets": {
@@ -943,7 +985,8 @@
         "display_name": "critical severity",
         "synonyms": [
           "critical events",
-          "highest severity"
+          "highest severity",
+          "high priority"
         ],
         "instruction": "Use when filtering for critical-severity quality events."
       },
@@ -952,7 +995,8 @@
         "display_name": "quality escapes",
         "synonyms": [
           "escaped defects",
-          "customer escapes"
+          "customer escapes",
+          "field escapes"
         ],
         "instruction": "Use when analyzing defects that escaped to the customer."
       },
@@ -961,7 +1005,8 @@
         "display_name": "failed inspections",
         "synonyms": [
           "inspection failures",
-          "rejected lots"
+          "rejected lots",
+          "rejected units"
         ],
         "instruction": "Use when filtering for failed inspection results."
       }
@@ -973,7 +1018,8 @@
         "display_name": "event month",
         "synonyms": [
           "month of event",
-          "monthly"
+          "monthly",
+          "monthly period"
         ]
       },
       {
@@ -982,7 +1028,8 @@
         "display_name": "defect rate per unit",
         "synonyms": [
           "defect density",
-          "defects per unit"
+          "defects per unit",
+          "unit defect ratio"
         ]
       },
       {
@@ -991,7 +1038,8 @@
         "display_name": "cost severity",
         "synonyms": [
           "cost tier",
-          "expense level"
+          "expense level",
+          "spend bucket"
         ]
       }
     ],
@@ -1002,7 +1050,8 @@
         "display_name": "total quality events",
         "synonyms": [
           "NCR count",
-          "non-conformance count"
+          "non-conformance count",
+          "issue count"
         ]
       },
       {
@@ -1011,7 +1060,8 @@
         "display_name": "total cost of quality",
         "synonyms": [
           "COQ",
-          "quality cost"
+          "quality cost",
+          "total coq"
         ]
       },
       {
@@ -1020,7 +1070,8 @@
         "display_name": "total defects found",
         "synonyms": [
           "defect count",
-          "findings"
+          "findings",
+          "total flaws"
         ]
       },
       {
@@ -1029,7 +1080,8 @@
         "display_name": "average first pass yield",
         "synonyms": [
           "FPY",
-          "yield rate"
+          "yield rate",
+          "avg fpy"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "TF-018",
             "TF-019",
             "TF-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "unit number",
+            "equipment id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Harbor Point Marine",
             "Fairfield Residential",
             "Fairfield Commercial"
+          ],
+          "synonyms": [
+            "asset name",
+            "unit label",
+            "equipment name"
           ]
         },
         {
@@ -100,6 +110,10 @@
             "Cedarville",
             "Harbor Point",
             "Fairfield"
+          ],
+          "synonyms": [
+            "grid location",
+            "facility"
           ]
         },
         {
@@ -113,6 +127,11 @@
             "230kV",
             "138kV",
             "69kV"
+          ],
+          "synonyms": [
+            "kv rating",
+            "voltage level",
+            "voltage tier"
           ]
         },
         {
@@ -411,6 +430,11 @@
             "TF-018",
             "TF-019",
             "TF-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "unit number",
+            "equipment id"
           ]
         },
         {
@@ -431,6 +455,10 @@
             "Cedarville",
             "Harbor Point",
             "Fairfield"
+          ],
+          "synonyms": [
+            "grid location",
+            "facility"
           ]
         },
         {
@@ -444,6 +472,11 @@
             "230kV",
             "138kV",
             "69kV"
+          ],
+          "synonyms": [
+            "kv rating",
+            "voltage level",
+            "voltage tier"
           ]
         },
         {
@@ -682,6 +715,11 @@
             "TF-018",
             "TF-019",
             "TF-020"
+          ],
+          "synonyms": [
+            "asset id",
+            "unit number",
+            "equipment id"
           ]
         },
         {
@@ -702,6 +740,10 @@
             "Cedarville",
             "Harbor Point",
             "Fairfield"
+          ],
+          "synonyms": [
+            "grid location",
+            "facility"
           ]
         },
         {
@@ -715,6 +757,11 @@
             "230kV",
             "138kV",
             "69kV"
+          ],
+          "synonyms": [
+            "kv rating",
+            "voltage level",
+            "voltage tier"
           ]
         },
         {
@@ -1043,7 +1090,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique transformer count across the fleet; matches questions about transformer population changes or fleet size over time using reading_date."
     },
     {
       "question": "How has highest dissolved gas ppm changed over time?",
@@ -1052,7 +1100,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak dissolved gas PPM; matches questions about worst-case gas levels or DGA deterioration trends across all substations over time."
     },
     {
       "question": "How has total vibration mm s changed over time?",
@@ -1061,7 +1110,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative vibration intensity trend over time; matches questions about overall mechanical stress, vibration buildup, or fleet-wide vibration patterns by reading_date."
     },
     {
       "question": "How does the number of unique readings vary by substation?",
@@ -1070,7 +1120,8 @@
         "FROM {fqn}.sensor_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_count DESC"
-      ]
+      ],
+      "usage_guidance": "Bar/rank breakdown of sensor reading volume by substation; matches questions comparing data coverage, monitoring density, or activity levels across substations."
     },
     {
       "question": "What is the trend of total top oil temperature in celsius over time?",
@@ -1078,7 +1129,8 @@
         "SELECT reading_date, SUM(oil_temp_celsius) AS total_oil_temp_celsius",
         "FROM {fqn}.sensor_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Summed oil temperature trend over time from raw sensor_readings; matches questions about thermal load buildup or total oil temperature exposure across the fleet by date."
     },
     {
       "question": "What is the trend of total duration of outage in hours over time?",
@@ -1086,7 +1138,8 @@
         "SELECT event_date, SUM(outage_hours) AS total_outage_hours",
         "FROM {fqn}.failure_events",
         "GROUP BY event_date ORDER BY event_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative outage duration trend over time from failure_events; matches questions about total downtime, outage hours accumulation, or service interruption patterns by event date."
     },
     {
       "question": "How has the average average health index for the month (0-100) changed over time?",
@@ -1094,7 +1147,8 @@
         "SELECT report_month, AVG(avg_health_index) AS avg_avg_health_index",
         "FROM {fqn}.health_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Rolling average of monthly health index scores over time from health_monthly; matches questions about fleet health trajectory, degradation trends, or average asset condition by report month."
     }
   ],
   "sql_snippets": {
@@ -1104,7 +1158,8 @@
         "display_name": "critical alerts",
         "synonyms": [
           "critical readings",
-          "critical sensors"
+          "critical sensors",
+          "urgent alarms"
         ],
         "instruction": "Use when filtering for critical-level transformer alerts."
       },
@@ -1113,7 +1168,8 @@
         "display_name": "failure events only",
         "synonyms": [
           "actual failures",
-          "transformer failures"
+          "transformer failures",
+          "breakdowns only"
         ],
         "instruction": "Use when analyzing only actual failures, not preventive/corrective maintenance."
       },
@@ -1122,7 +1178,8 @@
         "display_name": "critical risk tier",
         "synonyms": [
           "critical transformers",
-          "highest risk"
+          "highest risk",
+          "high risk assets"
         ],
         "instruction": "Use when filtering for transformers in the critical risk category."
       }
@@ -1134,7 +1191,8 @@
         "display_name": "reading month",
         "synonyms": [
           "month of reading",
-          "monthly"
+          "monthly",
+          "sensor month"
         ]
       },
       {
@@ -1143,7 +1201,8 @@
         "display_name": "dissolved gas severity",
         "synonyms": [
           "gas level category",
-          "DGA severity"
+          "DGA severity",
+          "gas level"
         ]
       },
       {
@@ -1152,7 +1211,8 @@
         "display_name": "overload status",
         "synonyms": [
           "load status",
-          "overloading flag"
+          "overloading flag",
+          "overload flag"
         ]
       }
     ],
@@ -1163,7 +1223,8 @@
         "display_name": "average health index",
         "synonyms": [
           "health score",
-          "transformer health"
+          "transformer health",
+          "mean health score"
         ]
       },
       {
@@ -1172,7 +1233,8 @@
         "display_name": "total repair cost",
         "synonyms": [
           "repair spend",
-          "maintenance cost"
+          "maintenance cost",
+          "fix cost"
         ]
       },
       {
@@ -1181,7 +1243,8 @@
         "display_name": "total outage hours",
         "synonyms": [
           "outage duration",
-          "downtime hours"
+          "downtime hours",
+          "offline hours"
         ]
       },
       {
@@ -1190,7 +1253,8 @@
         "display_name": "total customers affected",
         "synonyms": [
           "customer impact",
-          "affected customers"
+          "affected customers",
+          "impacted customers"
         ]
       }
     ]

@@ -51,6 +51,11 @@
             "WC-PNT-18",
             "WC-TST-19",
             "WC-TST-20"
+          ],
+          "synonyms": [
+            "station code",
+            "cell number",
+            "resource id"
           ]
         },
         {
@@ -66,6 +71,11 @@
             "Assembly",
             "Painting",
             "Testing"
+          ],
+          "synonyms": [
+            "cell category",
+            "station kind",
+            "resource class"
           ]
         },
         {
@@ -302,6 +312,11 @@
             "WC-PNT-18",
             "WC-TST-19",
             "WC-TST-20"
+          ],
+          "synonyms": [
+            "station code",
+            "cell number",
+            "resource id"
           ]
         },
         {
@@ -317,6 +332,11 @@
             "Assembly",
             "Painting",
             "Testing"
+          ],
+          "synonyms": [
+            "cell category",
+            "station kind",
+            "resource class"
           ]
         },
         {
@@ -541,6 +561,11 @@
             "WC-PNT-18",
             "WC-TST-19",
             "WC-TST-20"
+          ],
+          "synonyms": [
+            "station code",
+            "cell number",
+            "resource id"
           ]
         },
         {
@@ -556,6 +581,11 @@
             "Assembly",
             "Painting",
             "Testing"
+          ],
+          "synonyms": [
+            "cell category",
+            "station kind",
+            "resource class"
           ]
         },
         {
@@ -871,7 +901,8 @@
         "FROM {fqn}.work_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY wo_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak planned production quantity; matches phrases like 'highest planned qty over time' using max_planned_qty from work_orders_metrics."
     },
     {
       "question": "How has total planned hours changed over time?",
@@ -880,7 +911,8 @@
         "FROM {fqn}.work_orders_metrics",
         "GROUP BY ALL",
         "ORDER BY wo_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total planned hours across all work orders; matches phrases like 'planned hours over time' using total_planned_hours from work_orders_metrics."
     },
     {
       "question": "What is the monthly trend in total throughput units?",
@@ -889,7 +921,8 @@
         "FROM {fqn}.planning_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of total throughput units produced; matches phrases like 'production output over time' using total_throughput from planning_kpi_metrics."
     },
     {
       "question": "How has total changeover hours changed over time?",
@@ -898,7 +931,8 @@
         "FROM {fqn}.planning_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total changeover hours; matches phrases like 'changeover time over time' or 'setup hours trend' using total_changeover_hours from planning_kpi_metrics."
     },
     {
       "question": "How does total planned production quantity break down by work center for 'Released' records?",
@@ -906,7 +940,8 @@
         "SELECT work_center_id, COUNT(*) AS record_count, SUM(planned_qty) AS total_planned_qty",
         "FROM {fqn}.work_orders",
         "WHERE wo_status = 'Released' GROUP BY work_center_id ORDER BY total_planned_qty DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of planned production quantity ranked by work center for Released work orders; matches phrases like 'planned qty by work center' with wo_status = 'Released' filter."
     },
     {
       "question": "What is the trend of total available capacity in hours over time?",
@@ -914,7 +949,8 @@
         "SELECT snapshot_date, SUM(available_hours) AS total_available_hours",
         "FROM {fqn}.capacity_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of total available capacity hours across all work centers; matches phrases like 'available capacity over time' using available_hours from capacity_snapshots."
     },
     {
       "question": "How has the average schedule adherence percentage changed over time?",
@@ -922,7 +958,8 @@
         "SELECT kpi_month, AVG(schedule_adherence_pct) AS avg_schedule_adherence_pct",
         "FROM {fqn}.planning_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average schedule adherence percentage; matches phrases like 'schedule adherence over time' or 'on-schedule performance trend' using schedule_adherence_pct from planning_kpi_monthly."
     }
   ],
   "sql_snippets": {
@@ -932,7 +969,8 @@
         "display_name": "on hold work orders",
         "synonyms": [
           "blocked",
-          "held"
+          "held",
+          "paused jobs"
         ],
         "instruction": "Use when analyzing blocked or delayed work orders."
       },
@@ -941,7 +979,8 @@
         "display_name": "rush orders",
         "synonyms": [
           "urgent",
-          "expedited"
+          "expedited",
+          "urgent jobs"
         ],
         "instruction": "Use when filtering for highest-priority rush work orders."
       },
@@ -950,7 +989,8 @@
         "display_name": "overloaded work centers",
         "synonyms": [
           "bottleneck",
-          "at capacity"
+          "at capacity",
+          "bottleneck stations"
         ],
         "instruction": "Use when identifying capacity bottlenecks."
       }
@@ -961,7 +1001,9 @@
         "sql": "DATE_TRUNC('month', work_orders.wo_date)",
         "display_name": "work order month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "order month",
+          "job month"
         ]
       },
       {
@@ -970,7 +1012,8 @@
         "display_name": "hours variance",
         "synonyms": [
           "schedule variance",
-          "plan deviation"
+          "plan deviation",
+          "time overrun"
         ]
       },
       {
@@ -979,7 +1022,8 @@
         "display_name": "completion rate",
         "synonyms": [
           "yield",
-          "plan attainment"
+          "plan attainment",
+          "fill rate"
         ]
       }
     ],
@@ -989,7 +1033,9 @@
         "sql": "COUNT(DISTINCT work_orders.wo_id)",
         "display_name": "total work orders",
         "synonyms": [
-          "WO count"
+          "WO count",
+          "job count",
+          "order volume"
         ]
       },
       {
@@ -998,7 +1044,8 @@
         "display_name": "total throughput",
         "synonyms": [
           "output",
-          "production volume"
+          "production volume",
+          "units produced"
         ]
       },
       {
@@ -1006,7 +1053,9 @@
         "sql": "AVG(planning_kpi_monthly.schedule_adherence_pct)",
         "display_name": "average schedule adherence",
         "synonyms": [
-          "on-schedule rate"
+          "on-schedule rate",
+          "plan conformance",
+          "schedule compliance"
         ]
       },
       {
@@ -1014,7 +1063,9 @@
         "sql": "AVG(capacity_snapshots.utilization_pct)",
         "display_name": "average utilization",
         "synonyms": [
-          "capacity usage"
+          "capacity usage",
+          "load factor",
+          "resource utilization"
         ]
       }
     ]

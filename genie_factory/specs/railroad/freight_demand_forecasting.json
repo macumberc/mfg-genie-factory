@@ -51,6 +51,11 @@
             "FL-018",
             "FL-019",
             "FL-020"
+          ],
+          "synonyms": [
+            "route code",
+            "corridor id",
+            "track segment"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Northeast-Midwest Metals",
             "Texas-Florida Consumer",
             "Midwest-Gulf Grain"
+          ],
+          "synonyms": [
+            "route name",
+            "corridor name",
+            "haul name"
           ]
         },
         {
@@ -97,6 +107,11 @@
             "Automotive",
             "Forest Products",
             "Metals"
+          ],
+          "synonyms": [
+            "cargo type",
+            "freight class",
+            "product type"
           ]
         },
         {
@@ -115,6 +130,11 @@
             "Southeast",
             "Southwest",
             "Central"
+          ],
+          "synonyms": [
+            "shipping region",
+            "source territory",
+            "departure zone"
           ]
         },
         {
@@ -365,6 +385,11 @@
             "FL-018",
             "FL-019",
             "FL-020"
+          ],
+          "synonyms": [
+            "route code",
+            "corridor id",
+            "track segment"
           ]
         },
         {
@@ -382,6 +407,11 @@
             "Automotive",
             "Forest Products",
             "Metals"
+          ],
+          "synonyms": [
+            "cargo type",
+            "freight class",
+            "product type"
           ]
         },
         {
@@ -400,6 +430,11 @@
             "Southeast",
             "Southwest",
             "Central"
+          ],
+          "synonyms": [
+            "shipping region",
+            "source territory",
+            "departure zone"
           ]
         },
         {
@@ -657,6 +692,11 @@
             "FL-018",
             "FL-019",
             "FL-020"
+          ],
+          "synonyms": [
+            "route code",
+            "corridor id",
+            "track segment"
           ]
         },
         {
@@ -674,6 +714,11 @@
             "Automotive",
             "Forest Products",
             "Metals"
+          ],
+          "synonyms": [
+            "cargo type",
+            "freight class",
+            "product type"
           ]
         },
         {
@@ -692,6 +737,11 @@
             "Southeast",
             "Southwest",
             "Central"
+          ],
+          "synonyms": [
+            "shipping region",
+            "source territory",
+            "departure zone"
           ]
         },
         {
@@ -1042,7 +1092,8 @@
         "FROM {fqn}.freight_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY shipment_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of distinct active freight lanes; matches phrases like 'lane count over time' or 'how many lanes per month' using unique_lane_count from freight_kpi_monthly."
     },
     {
       "question": "How has highest carloads changed over time?",
@@ -1051,7 +1102,8 @@
         "FROM {fqn}.freight_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY shipment_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak single-lane carload volume; matches 'highest carloads by month' or 'max carloads over time' using max_carloads from freight_kpi_monthly."
     },
     {
       "question": "What is the monthly trend in highest forecasted carloads?",
@@ -1060,7 +1112,8 @@
         "FROM {fqn}.forecast_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of peak forecasted carload volume; matches 'highest forecasted carloads over time' or 'max forecast by month' using max_forecasted_carloads from forecast_kpi_monthly."
     },
     {
       "question": "How has unique forecasts changed over time?",
@@ -1069,7 +1122,8 @@
         "FROM {fqn}.forecast_kpi_monthly",
         "GROUP BY ALL",
         "ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Time-series count of forecast records generated each month; matches 'how many forecasts per month' or 'forecast volume trend' using forecast_count from forecast_kpi_monthly."
     },
     {
       "question": "How does total number of carloads break down by freight lane for 'Delayed' records?",
@@ -1077,7 +1131,8 @@
         "SELECT lane_id, COUNT(*) AS record_count, SUM(carloads) AS total_carloads",
         "FROM {fqn}.shipping_lanes",
         "WHERE shipment_status = 'Delayed' GROUP BY lane_id ORDER BY total_carloads DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered breakdown of total carloads by lane restricted to Delayed shipments; matches 'delayed carloads per lane' or 'which lanes have most delayed volume' using shipment_status = 'Delayed'."
     },
     {
       "question": "What is the trend of total number of bookings over time?",
@@ -1085,7 +1140,8 @@
         "SELECT snapshot_date, SUM(bookings_count) AS total_bookings_count",
         "FROM {fqn}.freight_orders",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Rolling trend of total freight bookings over snapshot dates; matches 'booking volume over time' or 'how are bookings trending' using bookings_count from freight_orders."
     },
     {
       "question": "How has the average absolute forecast error pct changed over time?",
@@ -1093,7 +1149,8 @@
         "SELECT forecast_month, AVG(forecast_error_pct) AS avg_forecast_error_pct",
         "FROM {fqn}.demand_forecasts",
         "GROUP BY forecast_month ORDER BY forecast_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of average forecast accuracy error; matches 'how accurate are forecasts over time' or 'forecast error trend' using forecast_error_pct from demand_forecasts."
     }
   ],
   "sql_snippets": {
@@ -1102,7 +1159,9 @@
         "sql": "shipping_lanes.shipment_status = 'Delayed'",
         "display_name": "delayed shipments",
         "synonyms": [
-          "late"
+          "late",
+          "late freight",
+          "overdue hauls"
         ],
         "instruction": "Filter delayed."
       },
@@ -1110,7 +1169,9 @@
         "sql": "demand_forecasts.model_version = 'v1.2'",
         "display_name": "latest model",
         "synonyms": [
-          "v1.2"
+          "v1.2",
+          "current forecast",
+          "newest version"
         ],
         "instruction": "Filter to latest forecast model."
       },
@@ -1118,7 +1179,9 @@
         "sql": "freight_orders.demand_trend = 'Growing'",
         "display_name": "growing demand",
         "synonyms": [
-          "increasing"
+          "increasing",
+          "rising bookings",
+          "increasing volume"
         ],
         "instruction": "Filter to growing lanes."
       }
@@ -1129,7 +1192,9 @@
         "sql": "DATE_TRUNC('month', shipping_lanes.shipment_date)",
         "display_name": "shipment month",
         "synonyms": [
-          "monthly"
+          "monthly",
+          "haul month",
+          "shipping period"
         ]
       },
       {
@@ -1137,7 +1202,9 @@
         "sql": "shipping_lanes.revenue_usd / NULLIF(shipping_lanes.carloads, 0)",
         "display_name": "revenue per carload",
         "synonyms": [
-          "rate per car"
+          "rate per car",
+          "yield per car",
+          "car revenue"
         ]
       },
       {
@@ -1145,7 +1212,9 @@
         "sql": "demand_forecasts.forecasted_carloads - demand_forecasts.actual_carloads",
         "display_name": "forecast bias",
         "synonyms": [
-          "over/under forecast"
+          "over/under forecast",
+          "prediction gap",
+          "forecast overage"
         ]
       }
     ],
@@ -1155,7 +1224,9 @@
         "sql": "SUM(shipping_lanes.carloads)",
         "display_name": "total carloads",
         "synonyms": [
-          "volume"
+          "volume",
+          "car volume",
+          "total cars"
         ]
       },
       {
@@ -1163,7 +1234,9 @@
         "sql": "SUM(shipping_lanes.revenue_usd)",
         "display_name": "total revenue",
         "synonyms": [
-          "freight revenue"
+          "freight revenue",
+          "total earnings",
+          "haul revenue"
         ]
       },
       {
@@ -1171,7 +1244,9 @@
         "sql": "AVG(demand_forecasts.forecast_error_pct)",
         "display_name": "avg forecast error",
         "synonyms": [
-          "MAPE"
+          "MAPE",
+          "forecast accuracy",
+          "prediction error"
         ]
       },
       {
@@ -1179,7 +1254,9 @@
         "sql": "AVG(freight_orders.utilization_pct)",
         "display_name": "avg utilization",
         "synonyms": [
-          "capacity usage"
+          "capacity usage",
+          "fill rate",
+          "load factor"
         ]
       }
     ]

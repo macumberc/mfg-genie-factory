@@ -51,6 +51,11 @@
             "GZ-C02",
             "GZ-C03",
             "GZ-C04"
+          ],
+          "synonyms": [
+            "control area",
+            "balancing zone",
+            "grid node"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Central Data Center Hub",
             "Central Agricultural",
             "Central Gas Corridor"
+          ],
+          "synonyms": [
+            "territory name",
+            "service area",
+            "dispatch zone"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "East",
             "West",
             "Central"
+          ],
+          "synonyms": [
+            "territory",
+            "service territory",
+            "grid area"
           ]
         },
         {
@@ -307,6 +322,11 @@
             "GZ-C02",
             "GZ-C03",
             "GZ-C04"
+          ],
+          "synonyms": [
+            "control area",
+            "balancing zone",
+            "grid node"
           ]
         },
         {
@@ -336,6 +356,11 @@
             "Central Data Center Hub",
             "Central Agricultural",
             "Central Gas Corridor"
+          ],
+          "synonyms": [
+            "territory name",
+            "service area",
+            "dispatch zone"
           ]
         },
         {
@@ -350,6 +375,11 @@
             "East",
             "West",
             "Central"
+          ],
+          "synonyms": [
+            "territory",
+            "service territory",
+            "grid area"
           ]
         },
         {
@@ -559,6 +589,11 @@
             "GZ-C02",
             "GZ-C03",
             "GZ-C04"
+          ],
+          "synonyms": [
+            "control area",
+            "balancing zone",
+            "grid node"
           ]
         },
         {
@@ -573,6 +608,11 @@
             "East",
             "West",
             "Central"
+          ],
+          "synonyms": [
+            "territory",
+            "service territory",
+            "grid area"
           ]
         },
         {
@@ -861,7 +901,8 @@
         "FROM {fqn}.generation_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend-over-time questions about peak or highest generation MW output, using the max_generation_mw measure from generation_metrics."
     },
     {
       "question": "How has total generation output in mw changed over time?",
@@ -870,7 +911,8 @@
         "FROM {fqn}.generation_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about overall or cumulative generation output in MW, using total_generation_mw from generation_metrics."
     },
     {
       "question": "What is the monthly trend in total power exported in mw?",
@@ -879,7 +921,8 @@
         "FROM {fqn}.load_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route monthly trend questions about power exports in MW, using total_export_mw from load_metrics snapshot dates."
     },
     {
       "question": "What is the monthly trend in average renewable share percentage?",
@@ -888,7 +931,8 @@
         "FROM {fqn}.load_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about renewable energy share percentage across the grid, using avg_renewable_pct from load_metrics."
     },
     {
       "question": "What is the trend of total curtailed generation in mw (renewable only) over time?",
@@ -896,7 +940,8 @@
         "SELECT reading_date, SUM(curtailment_mw) AS total_curtailment_mw",
         "FROM {fqn}.generation_readings",
         "GROUP BY reading_date ORDER BY reading_date"
-      ]
+      ],
+      "usage_guidance": "Route trend questions about curtailed or wasted renewable generation in MW over time, sourced directly from generation_readings curtailment_mw."
     },
     {
       "question": "What is the trend of total peak demand in mw for the day over time?",
@@ -904,7 +949,8 @@
         "SELECT snapshot_date, SUM(peak_demand_mw) AS total_peak_demand_mw",
         "FROM {fqn}.load_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Route time-series questions about daily or periodic peak demand in MW, aggregated from load_snapshots peak_demand_mw."
     },
     {
       "question": "How has the average renewable energy share of total generation changed over time?",
@@ -912,7 +958,8 @@
         "SELECT report_month, AVG(renewable_share_pct) AS avg_renewable_share_pct",
         "FROM {fqn}.grid_kpi_monthly",
         "GROUP BY report_month ORDER BY report_month"
-      ]
+      ],
+      "usage_guidance": "Route monthly trend questions about renewable energy share of total generation, sourced from grid_kpi_monthly renewable_share_pct."
     }
   ],
   "sql_snippets": {
@@ -922,7 +969,8 @@
         "display_name": "renewable generation",
         "synonyms": [
           "renewables",
-          "clean energy"
+          "clean energy",
+          "green power"
         ],
         "instruction": "Use when filtering for renewable fuel sources only."
       },
@@ -931,7 +979,8 @@
         "display_name": "severe congestion",
         "synonyms": [
           "high congestion",
-          "congested zones"
+          "congested zones",
+          "grid bottleneck"
         ],
         "instruction": "Use when identifying zones with severe congestion."
       },
@@ -940,7 +989,8 @@
         "display_name": "fossil fuel generation",
         "synonyms": [
           "thermal generation",
-          "carbon-emitting sources"
+          "carbon-emitting sources",
+          "carbon generation"
         ],
         "instruction": "Use when analyzing fossil fuel or high-carbon generation."
       }
@@ -952,7 +1002,8 @@
         "display_name": "generation month",
         "synonyms": [
           "month of generation",
-          "monthly"
+          "monthly",
+          "billing month"
         ]
       },
       {
@@ -961,7 +1012,8 @@
         "display_name": "net interchange MW",
         "synonyms": [
           "net import",
-          "net flow"
+          "net flow",
+          "power flow balance"
         ]
       },
       {
@@ -970,7 +1022,8 @@
         "display_name": "frequency deviation from 60 Hz",
         "synonyms": [
           "frequency error",
-          "Hz deviation"
+          "Hz deviation",
+          "hz deviation"
         ]
       }
     ],
@@ -981,7 +1034,8 @@
         "display_name": "total generation MW",
         "synonyms": [
           "total output",
-          "generation capacity"
+          "generation capacity",
+          "power produced"
         ]
       },
       {
@@ -990,7 +1044,8 @@
         "display_name": "total curtailment MW",
         "synonyms": [
           "wasted renewable",
-          "curtailed energy"
+          "curtailed energy",
+          "clipped power"
         ]
       },
       {
@@ -999,7 +1054,8 @@
         "display_name": "average carbon intensity",
         "synonyms": [
           "emissions rate",
-          "carbon rate"
+          "carbon rate",
+          "co2 per mwh"
         ]
       },
       {
@@ -1008,7 +1064,8 @@
         "display_name": "average peak demand MW",
         "synonyms": [
           "peak load",
-          "max demand"
+          "max demand",
+          "average load peak"
         ]
       }
     ]

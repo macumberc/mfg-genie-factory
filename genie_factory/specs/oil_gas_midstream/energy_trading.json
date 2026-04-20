@@ -51,6 +51,11 @@
             "TF-NGL-018",
             "TF-PWR-019",
             "TF-CRD-020"
+          ],
+          "synonyms": [
+            "deal number",
+            "agreement code",
+            "contract ref"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Isobutane Physical",
             "MISO Power",
             "LLS Physical"
+          ],
+          "synonyms": [
+            "deal name",
+            "agreement title",
+            "contract label"
           ]
         },
         {
@@ -93,6 +103,11 @@
             "Natural Gas",
             "NGL",
             "Power"
+          ],
+          "synonyms": [
+            "product",
+            "energy type",
+            "traded good"
           ]
         },
         {
@@ -108,6 +123,11 @@
             "Petrochemical",
             "Refiner",
             "Midstream"
+          ],
+          "synonyms": [
+            "counterparty category",
+            "party type",
+            "entity type"
           ]
         },
         {
@@ -340,6 +360,11 @@
             "TF-NGL-018",
             "TF-PWR-019",
             "TF-CRD-020"
+          ],
+          "synonyms": [
+            "deal number",
+            "agreement code",
+            "contract ref"
           ]
         },
         {
@@ -353,6 +378,11 @@
             "Natural Gas",
             "NGL",
             "Power"
+          ],
+          "synonyms": [
+            "product",
+            "energy type",
+            "traded good"
           ]
         },
         {
@@ -368,6 +398,11 @@
             "Petrochemical",
             "Refiner",
             "Midstream"
+          ],
+          "synonyms": [
+            "counterparty category",
+            "party type",
+            "entity type"
           ]
         },
         {
@@ -555,6 +590,11 @@
             "TF-NGL-018",
             "TF-PWR-019",
             "TF-CRD-020"
+          ],
+          "synonyms": [
+            "deal number",
+            "agreement code",
+            "contract ref"
           ]
         },
         {
@@ -568,6 +608,11 @@
             "Natural Gas",
             "NGL",
             "Power"
+          ],
+          "synonyms": [
+            "product",
+            "energy type",
+            "traded good"
           ]
         },
         {
@@ -817,7 +862,8 @@
         "FROM {fqn}.trade_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY trade_date"
-      ]
+      ],
+      "usage_guidance": "Monthly P&L trend over time using trade_date; matches questions about profit/loss performance, earnings trajectory, or cumulative PnL across trading periods."
     },
     {
       "question": "How has total volume bbl changed over time?",
@@ -826,7 +872,8 @@
         "FROM {fqn}.trade_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY trade_date"
-      ]
+      ],
+      "usage_guidance": "Time-series volume trend using trade_date; matches questions about barrel throughput, trading activity levels, or how traded volumes have grown or declined."
     },
     {
       "question": "What is the monthly trend in total var usd?",
@@ -835,7 +882,8 @@
         "FROM {fqn}.position_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Daily or periodic Value-at-Risk trend using snapshot_date; matches questions about risk exposure changes, VaR movement, or portfolio risk over time."
     },
     {
       "question": "How does total volume in bbl equivalent break down by contract id for 'Settled' records?",
@@ -843,7 +891,8 @@
         "SELECT contract_id, COUNT(*) AS record_count, SUM(volume_bbl) AS total_volume_bbl",
         "FROM {fqn}.trade_transactions",
         "WHERE settlement_status = 'Settled' GROUP BY contract_id ORDER BY total_volume_bbl DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate volume breakdown by contract_id restricted to Settled trades; matches questions about settled contract performance or completed trade volumes by contract."
     },
     {
       "question": "What is the trend of total net position bbl over time?",
@@ -851,7 +900,8 @@
         "SELECT snapshot_date, SUM(net_position_bbl) AS total_net_position_bbl",
         "FROM {fqn}.position_snapshots",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Cumulative net position trend over time using snapshot_date; matches questions about open exposure, long/short positioning, or net barrel holdings across snapshots."
     },
     {
       "question": "How has the average sharpe ratio changed over time?",
@@ -859,7 +909,8 @@
         "SELECT kpi_month, AVG(sharpe_ratio) AS avg_sharpe_ratio",
         "FROM {fqn}.trading_kpi_monthly",
         "GROUP BY kpi_month ORDER BY kpi_month"
-      ]
+      ],
+      "usage_guidance": "Monthly Sharpe ratio trend using kpi_month; matches questions about risk-adjusted returns, trading strategy quality, or performance efficiency over time."
     },
     {
       "question": "How has unique total tradess changed over time?",
@@ -868,7 +919,8 @@
         "FROM {fqn}.trade_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY trade_date"
-      ]
+      ],
+      "usage_guidance": "Trade count trend over time using trade_date; matches questions about trading frequency, deal volume, or how the number of executed trades has changed."
     }
   ],
   "sql_snippets": {
@@ -877,7 +929,9 @@
         "sql": "settlement_status = 'Settled'",
         "display_name": "settled trades",
         "synonyms": [
-          "realized"
+          "realized",
+          "closed deals",
+          "completed trades"
         ],
         "instruction": "Settled trades only."
       },
@@ -885,7 +939,9 @@
         "sql": "commodity = 'Natural Gas'",
         "display_name": "natural gas",
         "synonyms": [
-          "gas trades"
+          "gas trades",
+          "natgas",
+          "ng commodity"
         ],
         "instruction": "Gas trades only."
       },
@@ -893,7 +949,9 @@
         "sql": "pnl_usd < 0",
         "display_name": "loss trades",
         "synonyms": [
-          "losses"
+          "losses",
+          "losing deals",
+          "negative pnl"
         ],
         "instruction": "Losing trades."
       }
@@ -904,7 +962,9 @@
         "sql": "ROUND(trade_transactions.pnl_usd / NULLIF(trade_transactions.volume_bbl, 0), 2)",
         "display_name": "P&L per barrel",
         "synonyms": [
-          "unit P&L"
+          "unit P&L",
+          "pnl per barrel",
+          "margin per barrel"
         ]
       },
       {
@@ -912,7 +972,9 @@
         "sql": "ROUND(100.0 * position_snapshots.var_95_usd / NULLIF(ABS(position_snapshots.mtm_value_usd), 0), 2)",
         "display_name": "VaR as pct of MTM",
         "synonyms": [
-          "risk ratio"
+          "risk ratio",
+          "var exposure pct",
+          "risk to value"
         ]
       },
       {
@@ -920,7 +982,9 @@
         "sql": "DATE_TRUNC('month', trade_transactions.trade_date)",
         "display_name": "month",
         "synonyms": [
-          "period"
+          "period",
+          "monthly bucket",
+          "deal month"
         ]
       }
     ],
@@ -930,7 +994,9 @@
         "sql": "SUM(trade_transactions.pnl_usd)",
         "display_name": "total P&L",
         "synonyms": [
-          "profit"
+          "profit",
+          "gross profit",
+          "net earnings"
         ]
       },
       {
@@ -938,7 +1004,9 @@
         "sql": "SUM(trade_transactions.volume_bbl)",
         "display_name": "total volume",
         "synonyms": [
-          "volume"
+          "volume",
+          "total barrels",
+          "aggregate volume"
         ]
       },
       {
@@ -946,7 +1014,9 @@
         "sql": "SUM(position_snapshots.mtm_value_usd)",
         "display_name": "total MTM",
         "synonyms": [
-          "mark to market"
+          "mark to market",
+          "portfolio value",
+          "mtm exposure"
         ]
       },
       {
@@ -954,7 +1024,9 @@
         "sql": "SUM(position_snapshots.var_95_usd)",
         "display_name": "total VaR",
         "synonyms": [
-          "risk"
+          "risk",
+          "value at risk",
+          "risk exposure"
         ]
       }
     ]

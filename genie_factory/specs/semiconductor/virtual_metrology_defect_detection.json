@@ -51,6 +51,11 @@
             "FS-IMP-002",
             "FS-IMP-003",
             "FS-IMP-004"
+          ],
+          "synonyms": [
+            "formula code",
+            "process code",
+            "run id"
           ]
         },
         {
@@ -80,6 +85,11 @@
             "Ion Implant S/D Extension",
             "Ion Implant Halo",
             "Ion Implant Threshold Adjust"
+          ],
+          "synonyms": [
+            "formula label",
+            "process title",
+            "run name"
           ]
         },
         {
@@ -94,6 +104,11 @@
             "Deposition",
             "CMP",
             "Implant"
+          ],
+          "synonyms": [
+            "fab stage",
+            "process stage",
+            "operation step"
           ]
         },
         {
@@ -313,6 +328,11 @@
             "FS-IMP-002",
             "FS-IMP-003",
             "FS-IMP-004"
+          ],
+          "synonyms": [
+            "formula code",
+            "process code",
+            "run id"
           ]
         },
         {
@@ -342,6 +362,11 @@
             "Ion Implant S/D Extension",
             "Ion Implant Halo",
             "Ion Implant Threshold Adjust"
+          ],
+          "synonyms": [
+            "formula label",
+            "process title",
+            "run name"
           ]
         },
         {
@@ -356,6 +381,11 @@
             "Deposition",
             "CMP",
             "Implant"
+          ],
+          "synonyms": [
+            "fab stage",
+            "process stage",
+            "operation step"
           ]
         },
         {
@@ -574,6 +604,11 @@
             "FS-IMP-002",
             "FS-IMP-003",
             "FS-IMP-004"
+          ],
+          "synonyms": [
+            "formula code",
+            "process code",
+            "run id"
           ]
         },
         {
@@ -603,6 +638,11 @@
             "Ion Implant S/D Extension",
             "Ion Implant Halo",
             "Ion Implant Threshold Adjust"
+          ],
+          "synonyms": [
+            "formula label",
+            "process title",
+            "run name"
           ]
         },
         {
@@ -617,6 +657,11 @@
             "Deposition",
             "CMP",
             "Implant"
+          ],
+          "synonyms": [
+            "fab stage",
+            "process stage",
+            "operation step"
           ]
         },
         {
@@ -916,7 +961,8 @@
         "FROM {fqn}.wafer_measurement_metrics",
         "GROUP BY ALL",
         "ORDER BY measurement_date"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of unique recipe count across wafer measurement dates; matches questions about recipe diversity or variety over time."
     },
     {
       "question": "How has highest thickness nm changed over time?",
@@ -925,7 +971,8 @@
         "FROM {fqn}.wafer_measurement_metrics",
         "GROUP BY ALL",
         "ORDER BY measurement_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of peak or maximum thickness in nanometers; matches questions about highest or worst-case film thickness evolution."
     },
     {
       "question": "How has total defects found changed over time?",
@@ -934,7 +981,8 @@
         "FROM {fqn}.defect_detection_metrics",
         "GROUP BY ALL",
         "ORDER BY detection_month"
-      ]
+      ],
+      "usage_guidance": "Monthly trend of cumulative defects found during wafer inspection; matches questions about defect volume or inspection totals over time."
     },
     {
       "question": "How does total film thickness measurement in nanometers break down by process recipe for 'In Spec' records?",
@@ -942,7 +990,8 @@
         "SELECT recipe_id, COUNT(*) AS record_count, SUM(thickness_nm) AS total_thickness_nm",
         "FROM {fqn}.wafer_measurements",
         "WHERE measurement_status = 'In Spec' GROUP BY recipe_id ORDER BY total_thickness_nm DESC"
-      ]
+      ],
+      "usage_guidance": "Filtered aggregate of total film thickness broken down by recipe_id, restricted to 'In Spec' measurement_status; matches recipe-level thickness rollups for conforming wafers."
     },
     {
       "question": "What is the trend of total model-predicted film thickness in nm over time?",
@@ -950,7 +999,8 @@
         "SELECT snapshot_date, SUM(predicted_thickness_nm) AS total_predicted_thickness_nm",
         "FROM {fqn}.metrology_predictions",
         "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of summed virtual-metrology predicted thickness in nanometers from metrology_predictions; matches questions about model forecast thickness totals over snapshot dates."
     },
     {
       "question": "How has the average estimated percentage of defects that are yield-killing changed over time?",
@@ -958,7 +1008,8 @@
         "SELECT detection_month, AVG(kill_ratio_pct) AS avg_kill_ratio_pct",
         "FROM {fqn}.defect_detections",
         "GROUP BY detection_month ORDER BY detection_month"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of average yield-killing kill_ratio_pct from defect_detections; matches questions about how lethal or yield-impacting defects have changed over detection months."
     },
     {
       "question": "How has out of spec count changed over time?",
@@ -967,7 +1018,8 @@
         "FROM {fqn}.wafer_measurement_metrics",
         "GROUP BY ALL",
         "ORDER BY measurement_date"
-      ]
+      ],
+      "usage_guidance": "Time-series trend of out-of-spec wafer measurement count; matches questions about spec violations, non-conformance frequency, or quality excursions over measurement dates."
     }
   ],
   "sql_snippets": {
@@ -987,7 +1039,8 @@
         "display_name": "latest model version",
         "synonyms": [
           "current model",
-          "newest VM model"
+          "newest VM model",
+          "newest vm model"
         ],
         "instruction": "Use when analyzing only the latest virtual metrology model."
       },
@@ -996,7 +1049,8 @@
         "display_name": "high kill ratio defects",
         "synonyms": [
           "yield killing defects",
-          "critical defects"
+          "critical defects",
+          "yield-killing defects"
         ],
         "instruction": "Use when focusing on defects most likely to cause yield loss."
       }
@@ -1008,7 +1062,8 @@
         "display_name": "measurement month",
         "synonyms": [
           "month of measurement",
-          "metrology month"
+          "metrology month",
+          "meas month"
         ]
       },
       {
@@ -1017,7 +1072,8 @@
         "display_name": "prediction gap",
         "synonyms": [
           "VM model error",
-          "thickness prediction delta"
+          "thickness prediction delta",
+          "thickness delta"
         ]
       },
       {
@@ -1026,7 +1082,8 @@
         "display_name": "defects per wafer",
         "synonyms": [
           "DPW",
-          "defect rate per wafer"
+          "defect rate per wafer",
+          "defect rate"
         ]
       }
     ],
@@ -1037,7 +1094,8 @@
         "display_name": "total measurements",
         "synonyms": [
           "measurement count",
-          "number of measurements"
+          "number of measurements",
+          "reading count"
         ]
       },
       {
@@ -1046,7 +1104,8 @@
         "display_name": "average defect density",
         "synonyms": [
           "mean defect density",
-          "avg density per cm2"
+          "avg density per cm2",
+          "defect density"
         ]
       },
       {
@@ -1055,7 +1114,8 @@
         "display_name": "average prediction error",
         "synonyms": [
           "mean VM error",
-          "prediction accuracy"
+          "prediction accuracy",
+          "mean forecast error"
         ]
       },
       {
@@ -1064,7 +1124,8 @@
         "display_name": "total defects found",
         "synonyms": [
           "defect count",
-          "number of defects"
+          "number of defects",
+          "faults found"
         ]
       }
     ]
