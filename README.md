@@ -18,9 +18,29 @@ Genie Factory deploys a complete, ready-to-use Genie room in ~2 minutes. Each de
 - **Unity Catalog schema** scoped to the deploying user
 - **3 Delta tables** with realistic synthetic data (~8,000 rows), column comments, and descriptions
 - **2 metric views** with governed measures and dimensions
-- **Genie space** pre-configured with sample questions, example SQLs, and benchmarks
+- **Genie space** pre-configured with sample questions, example SQLs, benchmarks, column synonyms, and SQL primitive snippets
 
 > **Requirement:** A Databricks workspace with Unity Catalog enabled and at least one SQL warehouse.
+
+---
+
+## Benchmark Quality
+
+Every Genie space deploys with 7 benchmark questions plus gold SQL. Across all 88 pre-built specs, the current benchmark pass rate is:
+
+**92.2% (568/616 questions) — 49 of 88 specs at 100%, 80 of 88 (91%) at ≥80%.**
+
+Measured end-to-end via the official Genie Benchmarks API on a fresh deploy. Details and per-spec results in [`GENIE_OPTIMIZATION_RESULTS.md`](GENIE_OPTIMIZATION_RESULTS.md).
+
+### What drove the lift (69% → 92.2%)
+
+Three simple spec-level changes, applied uniformly to all 88 specs:
+
+1. **Stripped the `"Deployed by:"` meta-prefix** from the instructions block — it was diluting the directive signal Genie weights at query time.
+2. **Aligned `"monthly trend"` gold SQL with Genie's natural output** by wrapping the date column in `DATE_TRUNC('month', ...)`. Previously the gold used a raw date column; Genie almost always bucketed to month, failing the judge's column-count comparison.
+3. **Rephrased ambiguous `"top X"` questions as `"top 10 X"`.** Unqualified "top" was interpreted as singular, emitting `RANK()=1` and returning one row where gold expected `LIMIT 10`.
+
+Both pattern fixes are automated in `scripts/fix_benchmark_patterns.py` and re-runnable on any future specs.
 
 ---
 
