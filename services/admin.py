@@ -297,25 +297,13 @@ def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
         logger.warning("Failed to list workspace groups via SCIM: %s", e)
         return []
 
-    admin_group_id = None
+    admins_group = None
     for g in (resp.json().get("Resources") or []):
         if (g.get("displayName") or "").lower() == "admins":
-            admin_group_id = g.get("id")
+            admins_group = g
             break
-    if not admin_group_id:
+    if not admins_group:
         logger.warning("No 'admins' group found on this workspace")
-        return []
-
-    try:
-        gresp = _req.get(
-            f"{host}/api/2.0/preview/scim/v2/Groups/{admin_group_id}",
-            headers=auth_headers,
-            timeout=15,
-        )
-        gresp.raise_for_status()
-        admins_group = gresp.json()
-    except Exception as e:
-        logger.warning("Failed to fetch admins group %s: %s", admin_group_id, e)
         return []
 
     member_ids = set()
@@ -324,7 +312,7 @@ def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
         if ref.startswith("Users/") and m.get("value"):
             member_ids.add(str(m["value"]))
     if not member_ids:
-        logger.warning("Admins group %s has no human members", admin_group_id)
+        logger.warning("Admins group has no human members")
         return []
 
     try:
