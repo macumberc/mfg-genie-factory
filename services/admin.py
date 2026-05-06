@@ -270,34 +270,61 @@ def _resolve_app_creator_email(ws: Any) -> Optional[str]:
 
 
 def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
-    """Return emails of all members of the workspace 'admins' SCIM group."""
+    """Return emails of all members of the workspace 'admins' SCIM group.
+
+    Uses the SCIM REST API directly — the Python SDK currently fails to parse
+    the group payload (rejects the `$ref` field on members).
+    """
+    import requests as _req
+
     try:
-        all_groups = list(ws.groups.list())
+        host = ws.config.host.rstrip("/")
+        auth_headers = ws.config.authenticate()
+        if callable(auth_headers):
+            auth_headers = auth_headers()
     except Exception as e:
-        logger.warning("Failed to list workspace groups: %s", e)
+        logger.warning("Cannot build auth headers for SCIM admins lookup: %s", e)
         return []
+
+    try:
+        resp = _req.get(
+            f"{host}/api/2.0/preview/scim/v2/Groups",
+            headers=auth_headers,
+            timeout=15,
+        )
+        resp.raise_for_status()
+    except Exception as e:
+        logger.warning("Failed to list workspace groups via SCIM: %s", e)
+        return []
+
     admin_group_id = None
-    for g in all_groups:
-        if (getattr(g, "display_name", "") or "").lower() == "admins":
-            admin_group_id = getattr(g, "id", None)
+    for g in (resp.json().get("Resources") or []):
+        if (g.get("displayName") or "").lower() == "admins":
+            admin_group_id = g.get("id")
             break
     if not admin_group_id:
         logger.warning("No 'admins' group found on this workspace")
         return []
 
-    # ws.groups.list() omits members; fetch the full group to get them.
     try:
-        admins_group = ws.groups.get(admin_group_id)
+        gresp = _req.get(
+            f"{host}/api/2.0/preview/scim/v2/Groups/{admin_group_id}",
+            headers=auth_headers,
+            timeout=15,
+        )
+        gresp.raise_for_status()
+        admins_group = gresp.json()
     except Exception as e:
         logger.warning("Failed to fetch admins group %s: %s", admin_group_id, e)
         return []
+
     member_ids = set()
-    for m in (getattr(admins_group, "members", None) or []):
-        v = getattr(m, "value", None)
-        if v:
-            member_ids.add(str(v))
+    for m in (admins_group.get("members") or []):
+        ref = m.get("$ref") or ""
+        if ref.startswith("Users/") and m.get("value"):
+            member_ids.add(str(m["value"]))
     if not member_ids:
-        logger.warning("Admins group %s has no members", admin_group_id)
+        logger.warning("Admins group %s has no human members", admin_group_id)
         return []
 
     try:
