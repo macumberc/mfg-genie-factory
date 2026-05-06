@@ -269,6 +269,64 @@ def _resolve_app_creator_email(ws: Any) -> Optional[str]:
         return None
 
 
+def _is_workspace_admin_via_user_token(host: str, user_access_token: str) -> Optional[bool]:
+    """Check if the request user is a workspace admin using their own OAuth token.
+
+    Calls SCIM /Me as the user (who has visibility into their own groups, even
+    when the app SP does not). Returns True/False on success, None on error.
+    """
+    import requests as _req
+
+    if not user_access_token or not host:
+        return None
+    try:
+        resp = _req.get(
+            f"{host.rstrip('/')}/api/2.0/preview/scim/v2/Me",
+            headers={"Authorization": f"Bearer {user_access_token}"},
+            timeout=10,
+        )
+        if resp.status_code != 200:
+            logger.warning("SCIM /Me as user returned %d", resp.status_code)
+            return None
+        body = resp.json()
+        for g in (body.get("groups") or []):
+            if (g.get("display") or "").lower() == "admins":
+                return True
+        return False
+    except Exception as e:
+        logger.warning("SCIM /Me check failed: %s", e)
+        return None
+
+
+def _promote_if_workspace_admin(spark: Any, email: str, user_access_token: str, host: str) -> bool:
+    """If `email` is a workspace admin (via SCIM /Me with the user's token),
+    add them to app_managers. Returns True if a new manager row was inserted."""
+    if not email or not user_access_token:
+        return False
+    is_ws_admin = _is_workspace_admin_via_user_token(host, user_access_token)
+    if not is_ws_admin:
+        return False
+    try:
+        _ensure_managers_table(spark)
+        mgr_table = _get_managers_table(spark)
+        esc = email.replace("'", "''")
+        already = spark.sql(f"SELECT COUNT(*) FROM {mgr_table} WHERE email = '{esc}'").first()[0]
+        if already > 0:
+            return False
+        now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        spark.sql(f"""
+            MERGE INTO {mgr_table} AS t
+            USING (SELECT '{esc}' AS email) AS s ON t.email = s.email
+            WHEN NOT MATCHED THEN INSERT (email, role, added_by, added_at)
+            VALUES (s.email, 'manager', 'workspace-admin-self', '{now}')
+        """)
+        logger.info("Auto-promoted workspace admin %s to manager", email)
+        return True
+    except Exception as e:
+        logger.warning("Failed to promote workspace admin %s: %s", email, e)
+        return False
+
+
 def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
     """Return emails of all users whose SCIM `groups` membership includes 'admins'.
 

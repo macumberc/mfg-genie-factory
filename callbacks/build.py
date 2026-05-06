@@ -766,6 +766,19 @@ def auto_detect_user(active_tab):
         try:
             spark = _get_spark()
             _ensure_first_admin(spark, email)
+            user_token = (
+                request.headers.get("x-forwarded-access-token")
+                or request.headers.get("X-Forwarded-Access-Token")
+                or ""
+            )
+            if user_token:
+                from services.admin import _promote_if_workspace_admin
+                from services.databricks import _get_workspace_client
+                try:
+                    host = _get_workspace_client().config.host
+                    _promote_if_workspace_admin(spark, email, user_token, host)
+                except Exception as e:
+                    logger.warning("Workspace-admin self-check failed for %s: %s", email, e)
             is_admin = _is_manager(spark, email)
         except Exception as e:
             # If DB is unreachable, grant admin so deployer can fix permissions
