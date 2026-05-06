@@ -297,14 +297,25 @@ def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
         logger.warning("Failed to list workspace groups via SCIM: %s", e)
         return []
 
+    resources = resp.json().get("Resources") or []
+    logger.info(
+        "SCIM list returned %d groups: %s",
+        len(resources),
+        [g.get("displayName") for g in resources],
+    )
     admins_group = None
-    for g in (resp.json().get("Resources") or []):
+    for g in resources:
         if (g.get("displayName") or "").lower() == "admins":
             admins_group = g
             break
     if not admins_group:
         logger.warning("No 'admins' group found on this workspace")
         return []
+    logger.info(
+        "Found admins group id=%s members=%d",
+        admins_group.get("id"),
+        len(admins_group.get("members") or []),
+    )
 
     member_ids = set()
     for m in (admins_group.get("members") or []):
