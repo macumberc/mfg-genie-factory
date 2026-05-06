@@ -95,14 +95,23 @@ def _bootstrap_permissions():
 def _bootstrap_backend_tables():
     """Create the metadata schema and tables at startup so callbacks don't fail."""
     try:
-        from services.databricks import _get_spark
-        from services.admin import _ensure_managers_table, _ensure_settings_table
+        from services.databricks import _get_spark, _get_workspace_client
+        from services.admin import (
+            _bootstrap_admin_managers,
+            _ensure_managers_table,
+            _ensure_settings_table,
+        )
         from services.deployment import _ensure_log_table
         spark = _get_spark()
         _ensure_managers_table(spark)
         _ensure_settings_table(spark)
         _ensure_log_table(spark)
         logger.info("Bootstrap: backend tables ready")
+        try:
+            ws = _get_workspace_client()
+            _bootstrap_admin_managers(spark, ws)
+        except Exception as e:
+            logger.warning("Bootstrap admin managers skipped: %s", e)
     except Exception as e:
         logger.warning("Bootstrap backend tables failed (will retry lazily): %s", e)
 

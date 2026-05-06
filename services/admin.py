@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import time
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -247,6 +248,134 @@ def _get_deployment_analytics(spark: Any, days: int = 30) -> dict:
     except Exception as e:
         logger.warning("Failed to get analytics: %s", e)
         return {"summary": {}, "per_user": [], "per_industry": []}
+
+
+def _resolve_app_creator_email(ws: Any) -> Optional[str]:
+    """Look up the email of the user who created this Databricks App."""
+    app_name = os.environ.get("DATABRICKS_APP_NAME", "").strip()
+    if not app_name:
+        logger.info("DATABRICKS_APP_NAME unset — skipping app-creator bootstrap")
+        return None
+    try:
+        app = ws.apps.get(app_name)
+        creator = getattr(app, "creator", None) or ""
+        creator = creator.strip()
+        if not creator:
+            logger.warning("App %s has no creator field — skipping deployer bootstrap", app_name)
+            return None
+        return creator
+    except Exception as e:
+        logger.warning("Failed to resolve app creator for %s: %s", app_name, e)
+        return None
+
+
+def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
+    """Return emails of all members of the workspace 'admins' SCIM group."""
+    try:
+        groups = list(ws.groups.list(filter='displayName eq "admins"'))
+    except Exception as e:
+        logger.warning("Failed to list workspace admins group: %s", e)
+        return []
+    if not groups:
+        logger.warning("No 'admins' group found on this workspace")
+        return []
+    admins_group = groups[0]
+    member_ids = set()
+    for m in (getattr(admins_group, "members", None) or []):
+        v = getattr(m, "value", None)
+        if v:
+            member_ids.add(str(v))
+    if not member_ids:
+        return []
+
+    try:
+        users = _list_workspace_users_with_ids()
+    except Exception as e:
+        logger.warning("Failed to list workspace users for admin resolution: %s", e)
+        return []
+
+    emails: list[str] = []
+    for u in users:
+        if u["id"] in member_ids and u["email"]:
+            emails.append(u["email"])
+    return emails
+
+
+def _list_workspace_users_with_ids() -> list[dict]:
+    """Like _list_workspace_users but includes SCIM user id (used for admin resolution)."""
+    ws = _get_workspace_client()
+    out: list[dict] = []
+    for u in ws.users.list(count=500):
+        email = ""
+        if u.emails:
+            for e in u.emails:
+                if e.primary:
+                    email = e.value
+                    break
+            if not email:
+                email = u.emails[0].value
+        if not email:
+            continue
+        out.append({"id": str(u.id), "email": email, "display_name": u.display_name or email.split("@")[0]})
+    return out
+
+
+def _bootstrap_admin_managers(spark: Any, ws: Any) -> None:
+    """At startup, MERGE the app creator and workspace admins into app_managers.
+
+    Best-effort: each lookup is independently wrapped. Never raises.
+    Idempotent: existing managers are not modified.
+    """
+    try:
+        _ensure_managers_table(spark)
+    except Exception as e:
+        logger.warning("Cannot bootstrap admin managers — managers table unavailable: %s", e)
+        return
+
+    mgr_table = _get_managers_table(spark)
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+    def _merge(email: str, added_by: str) -> bool:
+        esc_email = email.replace("'", "''")
+        esc_by = added_by.replace("'", "''")
+        try:
+            before = spark.sql(f"SELECT COUNT(*) FROM {mgr_table} WHERE email = '{esc_email}'").first()[0]
+            if before > 0:
+                return False
+            spark.sql(f"""
+                MERGE INTO {mgr_table} AS t
+                USING (SELECT '{esc_email}' AS email) AS s ON t.email = s.email
+                WHEN NOT MATCHED THEN INSERT (email, role, added_by, added_at)
+                VALUES (s.email, 'manager', '{esc_by}', '{now}')
+            """)
+            return True
+        except Exception as e:
+            logger.warning("Failed to insert manager %s (%s): %s", email, added_by, e)
+            return False
+
+    # 1. Deployer (app creator).
+    creator = _resolve_app_creator_email(ws)
+    if creator:
+        if _merge(creator, "app-creator"):
+            logger.info("Bootstrap: added app creator %s as manager", creator)
+        else:
+            logger.info("Bootstrap: app creator %s already a manager", creator)
+
+    # 2. Workspace admins group members.
+    admin_emails = _resolve_workspace_admin_emails(ws)
+    added = 0
+    skipped = 0
+    for email in admin_emails:
+        if creator and email.lower() == creator.lower():
+            continue  # already handled above
+        if _merge(email, "workspace-admin-sync"):
+            added += 1
+        else:
+            skipped += 1
+    logger.info(
+        "Bootstrap: workspace admin sync — %d new, %d already present (group size: %d)",
+        added, skipped, len(admin_emails),
+    )
 
 
 def _list_workspace_users() -> list[dict]:
