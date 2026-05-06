@@ -301,9 +301,13 @@ def _is_workspace_admin_via_user_token(host: str, user_access_token: str) -> Opt
 def _promote_if_workspace_admin(spark: Any, email: str, user_access_token: str, host: str) -> bool:
     """If `email` is a workspace admin (via SCIM /Me with the user's token),
     add them to app_managers. Returns True if a new manager row was inserted."""
-    if not email or not user_access_token:
+    if not email:
+        return False
+    if not user_access_token:
+        logger.info("Promote check for %s: no user OBO token forwarded", email)
         return False
     is_ws_admin = _is_workspace_admin_via_user_token(host, user_access_token)
+    logger.info("Promote check for %s: workspace_admin=%s", email, is_ws_admin)
     if not is_ws_admin:
         return False
     try:
