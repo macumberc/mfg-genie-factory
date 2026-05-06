@@ -270,10 +270,12 @@ def _resolve_app_creator_email(ws: Any) -> Optional[str]:
 
 
 def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
-    """Return emails of all members of the workspace 'admins' SCIM group.
+    """Return emails of all users whose SCIM `groups` membership includes 'admins'.
 
-    Uses the SCIM REST API directly — the Python SDK currently fails to parse
-    the group payload (rejects the `$ref` field on members).
+    The app's Service Principal cannot read group membership from the Groups
+    endpoint (members come back empty), but the Users endpoint does expose
+    each user's group memberships. Pivot through the Users endpoint instead.
+    Uses raw REST because the SDK has known parse issues on these payloads.
     """
     import requests as _req
 
@@ -286,77 +288,46 @@ def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
         logger.warning("Cannot build auth headers for SCIM admins lookup: %s", e)
         return []
 
-    try:
-        resp = _req.get(
-            f"{host}/api/2.0/preview/scim/v2/Groups",
-            headers=auth_headers,
-            params={"attributes": "id,displayName,members"},
-            timeout=15,
-        )
-        resp.raise_for_status()
-    except Exception as e:
-        logger.warning("Failed to list workspace groups via SCIM: %s", e)
-        return []
-
-    resources = resp.json().get("Resources") or []
-    logger.info(
-        "SCIM list returned %d groups: %s",
-        len(resources),
-        [g.get("displayName") for g in resources],
-    )
-    admins_group = None
-    for g in resources:
-        if (g.get("displayName") or "").lower() == "admins":
-            admins_group = g
-            break
-    if not admins_group:
-        logger.warning("No 'admins' group found on this workspace")
-        return []
-    logger.info(
-        "Found admins group id=%s members=%d",
-        admins_group.get("id"),
-        len(admins_group.get("members") or []),
-    )
-
-    member_ids = set()
-    for m in (admins_group.get("members") or []):
-        ref = m.get("$ref") or ""
-        if ref.startswith("Users/") and m.get("value"):
-            member_ids.add(str(m["value"]))
-    if not member_ids:
-        logger.warning("Admins group has no human members")
-        return []
-
-    try:
-        users = _list_workspace_users_with_ids()
-    except Exception as e:
-        logger.warning("Failed to list workspace users for admin resolution: %s", e)
-        return []
-
     emails: list[str] = []
-    for u in users:
-        if u["id"] in member_ids and u["email"]:
-            emails.append(u["email"])
+    start_index = 1
+    page_size = 500
+    page_count = 0
+    while True:
+        try:
+            resp = _req.get(
+                f"{host}/api/2.0/preview/scim/v2/Users",
+                headers=auth_headers,
+                params={"startIndex": start_index, "count": page_size},
+                timeout=20,
+            )
+            resp.raise_for_status()
+        except Exception as e:
+            logger.warning("Failed to list workspace users via SCIM: %s", e)
+            return emails
+        body = resp.json()
+        resources = body.get("Resources") or []
+        if not resources:
+            break
+        for u in resources:
+            groups = u.get("groups") or []
+            if any((g.get("display") or "").lower() == "admins" for g in groups):
+                primary_email = ""
+                for e in (u.get("emails") or []):
+                    if e.get("primary"):
+                        primary_email = e.get("value") or ""
+                        break
+                if not primary_email and u.get("emails"):
+                    primary_email = u["emails"][0].get("value") or ""
+                if primary_email:
+                    emails.append(primary_email)
+        page_count += 1
+        if len(resources) < page_size:
+            break
+        start_index += page_size
+        if page_count > 20:  # safety stop — 10k users
+            break
+    logger.info("SCIM users scan: %d admin emails resolved across %d page(s)", len(emails), page_count)
     return emails
-
-
-def _list_workspace_users_with_ids() -> list[dict]:
-    """Like _list_workspace_users but includes SCIM user id (used for admin resolution)."""
-    ws = _get_workspace_client()
-    out: list[dict] = []
-    for u in ws.users.list(count=500):
-        email = ""
-        if u.emails:
-            for e in u.emails:
-                if e.primary:
-                    email = e.value
-                    break
-            if not email:
-                email = u.emails[0].value
-        if not email:
-            continue
-        out.append({"id": str(u.id), "email": email, "display_name": u.display_name or email.split("@")[0]})
-    return out
 
 
 def _bootstrap_admin_managers(spark: Any, ws: Any) -> None:
