@@ -290,6 +290,7 @@ def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
         resp = _req.get(
             f"{host}/api/2.0/preview/scim/v2/Groups",
             headers=auth_headers,
+            params={"attributes": "id,displayName,members"},
             timeout=15,
         )
         resp.raise_for_status()
