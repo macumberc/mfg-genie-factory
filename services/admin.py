@@ -272,20 +272,32 @@ def _resolve_app_creator_email(ws: Any) -> Optional[str]:
 def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
     """Return emails of all members of the workspace 'admins' SCIM group."""
     try:
-        groups = list(ws.groups.list(filter='displayName eq "admins"'))
+        all_groups = list(ws.groups.list())
     except Exception as e:
-        logger.warning("Failed to list workspace admins group: %s", e)
+        logger.warning("Failed to list workspace groups: %s", e)
         return []
-    if not groups:
+    admin_group_id = None
+    for g in all_groups:
+        if (getattr(g, "display_name", "") or "").lower() == "admins":
+            admin_group_id = getattr(g, "id", None)
+            break
+    if not admin_group_id:
         logger.warning("No 'admins' group found on this workspace")
         return []
-    admins_group = groups[0]
+
+    # ws.groups.list() omits members; fetch the full group to get them.
+    try:
+        admins_group = ws.groups.get(admin_group_id)
+    except Exception as e:
+        logger.warning("Failed to fetch admins group %s: %s", admin_group_id, e)
+        return []
     member_ids = set()
     for m in (getattr(admins_group, "members", None) or []):
         v = getattr(m, "value", None)
         if v:
             member_ids.add(str(v))
     if not member_ids:
+        logger.warning("Admins group %s has no members", admin_group_id)
         return []
 
     try:
