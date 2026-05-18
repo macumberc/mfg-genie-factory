@@ -331,6 +331,88 @@ def _promote_if_workspace_admin(spark: Any, email: str, user_access_token: str, 
         return False
 
 
+def _promote_sp_to_workspace_admin(host: str, user_access_token: str, sp_app_id: str) -> bool:
+    """Add the app's SP to the workspace `admins` SCIM group, using a workspace
+    admin's OBO token. The SP cannot promote itself, so this must be triggered
+    by a user request whose forwarded access token belongs to an admin.
+
+    Once the SP is a workspace admin, it can read every `/Workspace/Users/<email>`
+    folder, which is required for `POST /api/2.0/genie/spaces` to succeed (the
+    Genie API checks read permission on the parent_path folder).
+
+    Idempotent — a 409 (already a member) is treated as success.
+    Returns True if the SP is (now) a workspace admin, False otherwise.
+    """
+    import requests as _req
+
+    if not (host and user_access_token and sp_app_id):
+        return False
+    base = host.rstrip("/")
+    headers = {
+        "Authorization": f"Bearer {user_access_token}",
+        "Content-Type": "application/scim+json",
+    }
+    try:
+        # 1. Resolve admins group id
+        r = _req.get(
+            f"{base}/api/2.0/preview/scim/v2/Groups",
+            headers=headers,
+            params={"filter": 'displayName eq "admins"'},
+            timeout=10,
+        )
+        if not r.ok:
+            logger.warning("SP promote: list admins group returned %s", r.status_code)
+            return False
+        resources = r.json().get("Resources", [])
+        if not resources:
+            logger.warning("SP promote: admins group not found via SCIM")
+            return False
+        group_id = resources[0]["id"]
+
+        # 2. Resolve SP internal SCIM id from its applicationId (client_id)
+        r = _req.get(
+            f"{base}/api/2.0/preview/scim/v2/ServicePrincipals",
+            headers=headers,
+            params={"filter": f'applicationId eq "{sp_app_id}"'},
+            timeout=10,
+        )
+        if not r.ok:
+            logger.warning("SP promote: list SPs returned %s", r.status_code)
+            return False
+        sps = r.json().get("Resources", [])
+        if not sps:
+            logger.warning("SP promote: SP %s not found via SCIM", sp_app_id[:12])
+            return False
+        sp_internal_id = sps[0]["id"]
+
+        # 3. PATCH admins group to add the SP as a member
+        patch = {
+            "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+            "Operations": [
+                {"op": "add", "path": "members", "value": [{"value": sp_internal_id}]}
+            ],
+        }
+        r = _req.patch(
+            f"{base}/api/2.0/preview/scim/v2/Groups/{group_id}",
+            headers=headers,
+            json=patch,
+            timeout=10,
+        )
+        if r.status_code in (200, 204):
+            logger.info("SP promote: added SP %s to workspace admins", sp_app_id[:12])
+            return True
+        if r.status_code == 409:
+            logger.info("SP promote: SP %s already in workspace admins", sp_app_id[:12])
+            return True
+        logger.warning(
+            "SP promote PATCH failed: %s %s", r.status_code, (r.text or "")[:200]
+        )
+        return False
+    except Exception as e:
+        logger.warning("SP promote raised: %s", e)
+        return False
+
+
 def _resolve_workspace_admin_emails(ws: Any) -> list[str]:
     """Return emails of all users whose SCIM `groups` membership includes 'admins'.
 

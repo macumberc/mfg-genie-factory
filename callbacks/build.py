@@ -772,11 +772,23 @@ def auto_detect_user(active_tab):
                 or ""
             )
             if user_token:
-                from services.admin import _promote_if_workspace_admin
+                from services.admin import (
+                    _is_workspace_admin_via_user_token,
+                    _promote_if_workspace_admin,
+                    _promote_sp_to_workspace_admin,
+                )
                 from services.databricks import _get_workspace_client
                 try:
-                    host = _get_workspace_client().config.host
+                    ws = _get_workspace_client()
+                    host = ws.config.host
                     _promote_if_workspace_admin(spark, email, user_token, host)
+                    # If the requester is a workspace admin, use their OBO token to
+                    # add the SP to the workspace admins group. Required for Genie
+                    # space creation, which reads /Workspace/Users/<deployer> ACLs.
+                    # Idempotent — re-runs are no-ops (409 -> success).
+                    if _is_workspace_admin_via_user_token(host, user_token):
+                        sp_app_id = ws.config.client_id or ""
+                        _promote_sp_to_workspace_admin(host, user_token, sp_app_id)
                 except Exception as e:
                     logger.warning("Workspace-admin self-check failed for %s: %s", email, e)
             is_admin = _is_manager(spark, email)

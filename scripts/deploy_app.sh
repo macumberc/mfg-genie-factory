@@ -68,11 +68,7 @@ echo "Warehouse: $WH_ID"
 run_sql() {
   local stmt="$1"
   local result
-  result=$(databricks api post /api/2.0/sql/statements \
-    --profile "$PROFILE" \
-    --json "$(python3 -c "import json; print(json.dumps({'warehouse_id': '$WH_ID', 'statement': stmt, 'wait_timeout': '30s'}))" <<< "")" 2>&1)
-
-  # Use python to build the JSON properly
+  # Use python to build the JSON payload and invoke databricks CLI (avoids bash quoting)
   result=$(python3 -c "
 import json, subprocess, sys
 stmt = sys.argv[1]
@@ -152,6 +148,38 @@ if [ -n "$SP_CLIENT_ID" ]; then
         >/dev/null 2>&1 && echo "  ✓ CAN_MANAGE on warehouse $wid" || true
     fi
   done
+
+  # ---------------------------------------------------------------------
+  # Promote SP to workspace admin. Required for Genie space creation:
+  # POST /api/2.0/genie/spaces reads ACLs on /Workspace/Users/<deployer>,
+  # and workspace folder ACLs do NOT cascade from /Users to children.
+  # Workspace admins implicitly have read on every user folder.
+  # ---------------------------------------------------------------------
+  echo ""
+  echo "--- Promoting SP to workspace admin (needed for Genie space creation) ---"
+  ADMINS_GROUP_ID=$(databricks api get '/api/2.0/preview/scim/v2/Groups?filter=displayName%20eq%20%22admins%22' \
+    --profile "$PROFILE" 2>/dev/null \
+    | python3 -c "import sys,json; r=json.load(sys.stdin).get('Resources',[]); print(r[0]['id'] if r else '')" 2>/dev/null)
+  SP_INTERNAL_ID=$(databricks api get "/api/2.0/preview/scim/v2/ServicePrincipals?filter=applicationId%20eq%20%22${SP_CLIENT_ID}%22" \
+    --profile "$PROFILE" 2>/dev/null \
+    | python3 -c "import sys,json; r=json.load(sys.stdin).get('Resources',[]); print(r[0]['id'] if r else '')" 2>/dev/null)
+  if [ -n "$ADMINS_GROUP_ID" ] && [ -n "$SP_INTERNAL_ID" ]; then
+    PATCH_JSON=$(python3 -c "
+import json
+print(json.dumps({
+    'schemas': ['urn:ietf:params:scim:api:messages:2.0:PatchOp'],
+    'Operations': [{'op': 'add', 'path': 'members', 'value': [{'value': '$SP_INTERNAL_ID'}]}],
+}))")
+    if databricks api patch "/api/2.0/preview/scim/v2/Groups/$ADMINS_GROUP_ID" \
+        --profile "$PROFILE" --json "$PATCH_JSON" >/dev/null 2>&1; then
+      echo "  ✓ SP added to workspace admins group"
+    else
+      echo "  ✓ SP already in workspace admins (or PATCH was a no-op)"
+    fi
+  else
+    echo "  ✗ Could not resolve admins group or SP SCIM id — Genie deploys may 403."
+    echo "    (Re-run as a workspace admin, or add the SP to 'admins' manually.)"
+  fi
 fi
 
 # -------------------------------------------------------------------------

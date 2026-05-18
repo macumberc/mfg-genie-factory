@@ -1,18 +1,36 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
-.DS_Store
-.env
+*.egg-info/
+
+# Build artifacts
+build/
+dist/
+
+# Virtual environments
 .venv/
 venv/
-*.egg-info/
-dist/
-build/
-.claude/
 
-# Project-specific
+# OS / Editor
 .DS_Store
+.env
+
+# Claude Code & local working docs
 .claude/
 CLAUDE.md
 TODO.md
-scripts/
+GENIE_SPEC_UPGRADE.md
+GENIE_OPTIMIZATION_*.md
+
+# Local dev scripts (ship deploy_app.sh only)
+scripts/*
+!scripts/deploy_app.sh
+
+# Test runs & benchmark outputs
+test_results_*.json
+benchmark_baseline_*.jsonl
+benchmark_baseline_*_summary.json
+
+# Pytest
+.pytest_cache/

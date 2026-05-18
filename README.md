@@ -118,7 +118,7 @@ The first deploy takes ~2 minutes. When the status shows **Running**, click the 
 | Problem | Fix |
 |:--------|:----|
 | Deploy fails with permission errors | The app's Service Principal may need manual grants. Clone the repo and run `./scripts/deploy_app.sh --profile <your-cli-profile>` to grant catalog, warehouse, and workspace permissions. Safe to re-run. |
-| Genie space creation fails | The SP needs `CAN_MANAGE` on SQL warehouses **and** on the `/Users` workspace directory. Re-run the deploy script after the app exists. |
+| Genie space creation fails with `PERMISSION_DENIED ... aclPath /workspace/...` | The SP must be a **workspace admin**. Workspace folder ACLs do not cascade — granting `CAN_MANAGE` on `/Users` does not grant access to `/Users/<email>` children, which is what the Genie API reads. The app auto-promotes the SP when a workspace admin first opens it, or run `./scripts/deploy_app.sh` to do it directly. |
 | "More than one authorization method" error | The app runtime sets `DATABRICKS_TOKEN` in the environment. The app code handles this — don't set additional auth env vars. |
 | Tables fail with permission error on redeploy | When a schema was previously transferred to a user, the SP needs re-granting. Re-run the deploy script. |
 | No SQL warehouse found | Ensure at least one SQL Pro or Serverless warehouse exists and is running on the workspace. |
