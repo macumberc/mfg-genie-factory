@@ -743,7 +743,7 @@
   "sample_questions": [
     "Show monthly total revenue, COGS, and OpEx for the trailing 12 months — what is the trajectory of gross margin?",
     "Which 10 cost centers have the largest critical budget overruns this quarter?",
-    "Top 10 departments by total CapEx spend in the trailing 12 months — where is investment concentrated?",
+    "Rank departments by total CapEx spend in the trailing 12 months — where is investment concentrated?",
     "How has the critical overrun count trended month-over-month by department?",
     "Which departments have the highest R&D intensity, and how does that compare to the 15–25% semi-industry benchmark?",
     "What is the trailing 12-month total OpEx by GL category, and which categories are growing fastest?",
