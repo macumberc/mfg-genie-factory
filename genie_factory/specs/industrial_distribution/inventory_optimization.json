@@ -307,7 +307,7 @@
           "sql_type": "DOUBLE",
           "comment": "Estimated days of stock remaining",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 85.0), 1)"
+          "generation_expr": "ROUND(5.0 + {qty_noise} * 200.0, 1)"
         },
         {
           "name": "carrying_cost_usd",

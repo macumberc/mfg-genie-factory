@@ -507,7 +507,7 @@
           "sql_type": "INT",
           "comment": "Days elapsed since previous inspection",
           "is_dimension": false,
-          "generation_expr": "CAST(7 + FLOOR({qty_noise} * 83) AS INT)"
+          "generation_expr": "CAST(7 + FLOOR({qty_noise} * 200) AS INT)"
         },
         {
           "name": "inspection_result",

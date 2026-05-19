@@ -490,7 +490,7 @@
           "sql_type": "DOUBLE",
           "comment": "Current ratio",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(0.5, 0.8 + {qty_noise} * 1.5), 2)"
+          "generation_expr": "ROUND(GREATEST(0.5, 0.5 + {qty_noise} * 2.5), 2)"
         },
         {
           "name": "net_debt_usd",

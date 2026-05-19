@@ -469,7 +469,7 @@
           "sql_type": "DOUBLE",
           "comment": "Operating margin percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(-10.0, 5.0 + {qty_noise} * 30.0), 2)"
+          "generation_expr": "ROUND(GREATEST(-10.0, -10.0 + {qty_noise} * 55.0), 2)"
         },
         {
           "name": "roic_pct",

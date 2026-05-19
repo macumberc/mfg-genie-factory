@@ -508,7 +508,7 @@
           "sql_type": "DOUBLE",
           "comment": "Cash conversion cycle in days",
           "is_dimension": false,
-          "generation_expr": "ROUND(30.0 + ({qty_noise} * 60.0), 1)"
+          "generation_expr": "ROUND(15.0 + {qty_noise} * 120.0, 1)"
         },
         {
           "name": "current_ratio",
