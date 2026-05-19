@@ -294,7 +294,8 @@
           "sql_type": "DOUBLE",
           "comment": "Overall quality score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(65.0 + ({qty_noise} * 35.0), 1)"
+          "generation_expr": "ROUND(65.0 + (({qty_noise} * {seasonal_mult}) * 35.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "disposition",
@@ -517,7 +518,8 @@
           "sql_type": "DOUBLE",
           "comment": "Regulatory audit score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(70.0 + ({qty_noise} * 30.0), 1)"
+          "generation_expr": "ROUND(70.0 + (({qty_noise} * {seasonal_mult}) * 30.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "compliance_status",

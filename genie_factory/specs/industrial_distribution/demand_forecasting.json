@@ -275,7 +275,8 @@
           "sql_type": "DOUBLE",
           "comment": "Order fill rate 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(80.0 + ({qty_noise} * 19.0), 2)"
+          "generation_expr": "ROUND(80.0 + (({qty_noise} * {seasonal_mult}) * 19.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "backorder_units",
@@ -296,7 +297,8 @@
           "sql_type": "DOUBLE",
           "comment": "Customer satisfaction 1-5 scale",
           "is_dimension": false,
-          "generation_expr": "ROUND(3.0 + ({qty_noise} * 2.0), 1)"
+          "generation_expr": "ROUND(3.0 + (({qty_noise} * {seasonal_mult}) * 2.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "pipeline_status",
@@ -505,7 +507,8 @@
           "sql_type": "DOUBLE",
           "comment": "Absolute forecast error percent",
           "is_dimension": false,
-          "generation_expr": "ROUND(ABS(({qty_noise} * 0.40) - 0.10) * 100.0, 2)"
+          "generation_expr": "ROUND(ABS((({qty_noise} * {seasonal_mult}) * 0.40) - 0.10) * 100.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "confidence_lower",

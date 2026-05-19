@@ -287,21 +287,24 @@
           "sql_type": "DOUBLE",
           "comment": "Weekly spoilage rate 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 8.0, 2)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 8.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "fill_rate_pct",
           "sql_type": "DOUBLE",
           "comment": "Order fill rate 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(82.0 + ({qty_noise} * 17.0), 2)"
+          "generation_expr": "ROUND(82.0 + (({qty_noise} * {seasonal_mult}) * 17.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "freshness_score",
           "sql_type": "DOUBLE",
           "comment": "Average freshness score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(50.0 + ({qty_noise} * 50.0), 1)"
+          "generation_expr": "ROUND(50.0 + (({qty_noise} * {seasonal_mult}) * 50.0), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -510,7 +513,8 @@
           "sql_type": "DOUBLE",
           "comment": "Inventory turnover ratio",
           "is_dimension": false,
-          "generation_expr": "ROUND(4.0 + ({qty_noise} * 16.0), 2)"
+          "generation_expr": "ROUND(4.0 + (({qty_noise} * {seasonal_mult}) * 16.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_shelf_remaining_days",

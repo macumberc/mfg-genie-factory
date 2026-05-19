@@ -254,7 +254,8 @@
           "sql_type": "DOUBLE",
           "comment": "Technician utilization percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 1)"
+          "generation_expr": "ROUND(40.0 + (({qty_noise} * {seasonal_mult}) * 55.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "tickets_closed",
@@ -451,14 +452,16 @@
           "sql_type": "DOUBLE",
           "comment": "First-time fix rate percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(55.0 + ({qty_noise} * 40.0), 2)"
+          "generation_expr": "ROUND(55.0 + (({qty_noise} * {seasonal_mult}) * 40.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "sla_compliance_pct",
           "sql_type": "DOUBLE",
           "comment": "SLA compliance percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(70.0 + ({qty_noise} * 28.0), 2)"
+          "generation_expr": "ROUND(70.0 + (({qty_noise} * {seasonal_mult}) * 28.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_cost_per_ticket_usd",
@@ -479,7 +482,8 @@
           "sql_type": "DOUBLE",
           "comment": "Repeat visit percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mean_time_to_dispatch_hours",

@@ -515,7 +515,8 @@
           "sql_type": "DOUBLE",
           "comment": "Current ratio (assets/liabilities)",
           "is_dimension": false,
-          "generation_expr": "ROUND(1.0 + ({qty_noise} * 2.0), 2)"
+          "generation_expr": "ROUND(1.0 + (({qty_noise} * {seasonal_mult}) * 2.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "liquidity_status",

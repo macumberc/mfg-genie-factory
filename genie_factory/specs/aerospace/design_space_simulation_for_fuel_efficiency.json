@@ -64,7 +64,8 @@
           "sql_type": "DOUBLE",
           "comment": "Lift-to-drag ratio L/D",
           "is_dimension": false,
-          "generation_expr": "ROUND(14.0 + ({qty_noise} * 10.0), 2)"
+          "generation_expr": "ROUND(14.0 + (({qty_noise} * {seasonal_mult}) * 10.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "fuel_burn_kg_nm",
@@ -284,7 +285,8 @@
           "sql_type": "DOUBLE",
           "comment": "Engine bypass ratio",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 10.0), 1)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 10.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "empty_weight_kg",
@@ -298,7 +300,8 @@
           "sql_type": "DOUBLE",
           "comment": "Fuel efficiency improvement vs baseline in percent",
           "is_dimension": false,
-          "generation_expr": "ROUND(-5.0 + ({qty_noise} * 35.0), 2)"
+          "generation_expr": "ROUND(-5.0 + (({qty_noise} * {seasonal_mult}) * 35.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "technology_readiness_level",

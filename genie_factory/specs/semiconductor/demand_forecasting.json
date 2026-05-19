@@ -277,7 +277,8 @@
           "sql_type": "DOUBLE",
           "comment": "Forecast accuracy as percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(50.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(50.0, 82.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "forecast_bias",
@@ -489,7 +490,8 @@
           "sql_type": "STRING",
           "comment": "Inventory health status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN (2.0 + {qty_noise} * 18.0) >= 8.0 THEN 'Excess' WHEN (2.0 + {qty_noise} * 18.0) >= 4.0 THEN 'Healthy' WHEN (2.0 + {qty_noise} * 18.0) >= 2.0 THEN 'Low' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN (2.0 + ({qty_noise} * {seasonal_mult}) * 18.0) >= 8.0 THEN 'Excess' WHEN (2.0 + {qty_noise} * 18.0) >= 4.0 THEN 'Healthy' WHEN (2.0 + {qty_noise} * 18.0) >= 2.0 THEN 'Low' ELSE 'Critical' END",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

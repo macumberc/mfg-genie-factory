@@ -281,14 +281,16 @@
           "sql_type": "DOUBLE",
           "comment": "Batch yield percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(75 + {qty_noise} * 24, 2)"
+          "generation_expr": "ROUND(75 + ({qty_noise} * {seasonal_mult}) * 24, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "purity_pct",
           "sql_type": "DOUBLE",
           "comment": "Batch purity percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(90 + {qty_noise} * 9.8, 2)"
+          "generation_expr": "ROUND(90 + ({qty_noise} * {seasonal_mult}) * 9.8, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "temperature_deviation_c",
@@ -475,7 +477,8 @@
           "sql_type": "DOUBLE",
           "comment": "CAPA closure rate for the month",
           "is_dimension": false,
-          "generation_expr": "ROUND(60 + {qty_noise} * 38, 2)"
+          "generation_expr": "ROUND(60 + ({qty_noise} * {seasonal_mult}) * 38, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "cost_of_quality_usd",
@@ -489,7 +492,8 @@
           "sql_type": "DOUBLE",
           "comment": "Batch quality pass rate for the month",
           "is_dimension": false,
-          "generation_expr": "ROUND(80 + {qty_noise} * 19, 2)"
+          "generation_expr": "ROUND(80 + ({qty_noise} * {seasonal_mult}) * 19, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_resolution_days",

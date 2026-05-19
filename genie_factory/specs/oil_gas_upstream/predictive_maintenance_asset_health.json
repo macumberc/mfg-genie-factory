@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "Health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 70.0 + ({qty_noise} - 0.5) * 60.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 70.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 60.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "alert_level",
@@ -490,21 +491,24 @@
           "sql_type": "DOUBLE",
           "comment": "Avg health score",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 72.0 + ({qty_noise} - 0.5) * 44.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 72.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 44.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mtbf_days",
           "sql_type": "DOUBLE",
           "comment": "MTBF days",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 20.0 + {qty_noise} * 100.0), 1)"
+          "generation_expr": "ROUND(GREATEST(5.0, 20.0 + ({qty_noise} * {seasonal_mult}) * 100.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "availability_pct",
           "sql_type": "DOUBLE",
           "comment": "Availability pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(75.0, 93.0 + ({qty_noise} - 0.5) * 14.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(75.0, 93.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 14.0)), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

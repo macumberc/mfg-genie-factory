@@ -285,21 +285,24 @@
           "sql_type": "DOUBLE",
           "comment": "Internal rate of return percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(-5.0, 2.0 + {qty_noise} * 28.0), 2)"
+          "generation_expr": "ROUND(GREATEST(-5.0, 2.0 + ({qty_noise} * {seasonal_mult}) * 28.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "schedule_adherence_pct",
           "sql_type": "DOUBLE",
           "comment": "Schedule adherence percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(110.0, GREATEST(60.0, 90.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(110.0, GREATEST(60.0, 90.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "cost_variance_pct",
           "sql_type": "DOUBLE",
           "comment": "Cost variance from budget percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(-15.0 + {qty_noise} * 30.0, 2)"
+          "generation_expr": "ROUND(-15.0 + ({qty_noise} * {seasonal_mult}) * 30.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "risk_rating",
@@ -499,14 +502,16 @@
           "sql_type": "DOUBLE",
           "comment": "Budget remaining percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 60.0 + ({qty_noise} - 0.5) * 80.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 60.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 80.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "portfolio_roic_pct",
           "sql_type": "DOUBLE",
           "comment": "Return on invested capital percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(-5.0, 3.0 + {qty_noise} * 17.0), 2)"
+          "generation_expr": "ROUND(GREATEST(-5.0, 3.0 + ({qty_noise} * {seasonal_mult}) * 17.0), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

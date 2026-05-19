@@ -286,7 +286,8 @@
           "sql_type": "DOUBLE",
           "comment": "Dispatched hours as percentage of available hours",
           "is_dimension": false,
-          "generation_expr": "ROUND((0.45 + {qty_noise} * 0.45) * 100, 2)"
+          "generation_expr": "ROUND((0.45 + ({qty_noise} * {seasonal_mult}) * 0.45) * 100, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "odometer_km",
@@ -479,14 +480,16 @@
           "sql_type": "DOUBLE",
           "comment": "Average utilization rate for the month",
           "is_dimension": false,
-          "generation_expr": "ROUND(50 + {qty_noise} * 42, 2)"
+          "generation_expr": "ROUND(50 + ({qty_noise} * {seasonal_mult}) * 42, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "on_time_delivery_pct",
           "sql_type": "DOUBLE",
           "comment": "Percentage of on-time deliveries for the month",
           "is_dimension": false,
-          "generation_expr": "ROUND(78 + {qty_noise} * 20, 2)"
+          "generation_expr": "ROUND(78 + ({qty_noise} * {seasonal_mult}) * 20, 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

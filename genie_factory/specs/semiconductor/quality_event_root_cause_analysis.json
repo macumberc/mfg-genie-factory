@@ -270,7 +270,8 @@
           "sql_type": "DOUBLE",
           "comment": "Lot yield percentage (0-100)",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.5, GREATEST(55.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 2)"
+          "generation_expr": "ROUND(LEAST(99.5, GREATEST(55.0, 82.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "lot_grade",
@@ -489,14 +490,16 @@
           "sql_type": "DOUBLE",
           "comment": "First pass yield percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.5, GREATEST(70.0, 88.0 + ({qty_noise} - 0.5) * 20.0)), 2)"
+          "generation_expr": "ROUND(LEAST(99.5, GREATEST(70.0, 88.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 20.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "containment_effectiveness_pct",
           "sql_type": "DOUBLE",
           "comment": "Percentage of defects contained before shipment",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 90.0 + ({qty_noise} - 0.5) * 15.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 90.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 15.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_resolution_days",

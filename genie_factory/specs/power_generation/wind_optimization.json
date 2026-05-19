@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "Capacity factor 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(15.0 + ({qty_noise} * 55.0), 2)"
+          "generation_expr": "ROUND(15.0 + (({qty_noise} * {seasonal_mult}) * 55.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "turbine_status",
@@ -270,14 +271,16 @@
           "sql_type": "DOUBLE",
           "comment": "Deviation from ideal power curve 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 25.0, 2)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 25.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "wake_loss_pct",
           "sql_type": "DOUBLE",
           "comment": "Wake effect losses percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 15.0, 2)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 15.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "blade_pitch_deg",
@@ -503,7 +506,8 @@
           "sql_type": "DOUBLE",
           "comment": "Turbine availability percentage 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(85.0 + ({qty_noise} * 14.0), 2)"
+          "generation_expr": "ROUND(85.0 + (({qty_noise} * {seasonal_mult}) * 14.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "revenue_usd",

@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "AI-computed equipment health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 70.0 + ({qty_noise} - 0.5) * 60.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 70.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 60.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "alert_level",
@@ -307,7 +308,8 @@
           "sql_type": "DOUBLE",
           "comment": "Refinery throughput loss in barrels",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(0.0, {qty_noise} * 12000.0), 0)"
+          "generation_expr": "ROUND(GREATEST(0.0, ({qty_noise} * {seasonal_mult}) * 12000.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "repair_cost_usd",
@@ -494,35 +496,40 @@
           "sql_type": "DOUBLE",
           "comment": "Average health score for the month",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 72.0 + ({qty_noise} - 0.5) * 44.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 72.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 44.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mtbf_days",
           "sql_type": "DOUBLE",
           "comment": "Mean time between failures in days",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 25.0 + {qty_noise} * 120.0), 1)"
+          "generation_expr": "ROUND(GREATEST(5.0, 25.0 + ({qty_noise} * {seasonal_mult}) * 120.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mttr_hours",
           "sql_type": "DOUBLE",
           "comment": "Mean time to repair in hours",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(1.0, 3.0 + {qty_noise} * 45.0), 1)"
+          "generation_expr": "ROUND(GREATEST(1.0, 3.0 + ({qty_noise} * {seasonal_mult}) * 45.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "availability_pct",
           "sql_type": "DOUBLE",
           "comment": "Equipment availability percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(82.0, 94.0 + ({qty_noise} - 0.5) * 12.0)), 2)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(82.0, 94.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 12.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "prediction_accuracy_pct",
           "sql_type": "DOUBLE",
           "comment": "ML prediction accuracy percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.0, GREATEST(50.0, 75.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(50.0, 75.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

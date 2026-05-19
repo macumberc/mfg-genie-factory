@@ -78,14 +78,16 @@
           "sql_type": "DOUBLE",
           "comment": "Product yield percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(15 + {qty_noise} * 80, 2)"
+          "generation_expr": "ROUND(15 + ({qty_noise} * {seasonal_mult}) * 80, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "purity_pct",
           "sql_type": "DOUBLE",
           "comment": "Product purity percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(70 + {qty_noise} * 29.5, 2)"
+          "generation_expr": "ROUND(70 + ({qty_noise} * {seasonal_mult}) * 29.5, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "run_result",
@@ -288,14 +290,16 @@
           "sql_type": "DOUBLE",
           "comment": "Model-predicted yield percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(40 + {qty_noise} * 55, 2)"
+          "generation_expr": "ROUND(40 + ({qty_noise} * {seasonal_mult}) * 55, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "confidence_score",
           "sql_type": "DOUBLE",
           "comment": "Model confidence score (0-1)",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.50 + {qty_noise} * 0.48, 3)"
+          "generation_expr": "ROUND(0.50 + ({qty_noise} * {seasonal_mult}) * 0.48, 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "experiments_to_date",
@@ -468,21 +472,24 @@
           "sql_type": "DOUBLE",
           "comment": "Percentage of experiments that passed",
           "is_dimension": false,
-          "generation_expr": "ROUND(55 + {qty_noise} * 40, 2)"
+          "generation_expr": "ROUND(55 + ({qty_noise} * {seasonal_mult}) * 40, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_yield_pct",
           "sql_type": "DOUBLE",
           "comment": "Average yield across experiments",
           "is_dimension": false,
-          "generation_expr": "ROUND(30 + {qty_noise} * 60, 2)"
+          "generation_expr": "ROUND(30 + ({qty_noise} * {seasonal_mult}) * 60, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "best_yield_pct",
           "sql_type": "DOUBLE",
           "comment": "Best yield achieved in the month",
           "is_dimension": false,
-          "generation_expr": "ROUND(50 + {qty_noise} * 48, 2)"
+          "generation_expr": "ROUND(50 + ({qty_noise} * {seasonal_mult}) * 48, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "cost_per_experiment_usd",
@@ -496,7 +503,8 @@
           "sql_type": "DOUBLE",
           "comment": "How close model predictions were to actual yields (%)",
           "is_dimension": false,
-          "generation_expr": "ROUND(60 + {qty_noise} * 35, 2)"
+          "generation_expr": "ROUND(60 + ({qty_noise} * {seasonal_mult}) * 35, 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

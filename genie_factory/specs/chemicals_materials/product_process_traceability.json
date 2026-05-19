@@ -476,7 +476,8 @@
           "sql_type": "DOUBLE",
           "comment": "Traceability completeness score (0-100)",
           "is_dimension": false,
-          "generation_expr": "ROUND(70 + {qty_noise} * 29, 2)"
+          "generation_expr": "ROUND(70 + ({qty_noise} * {seasonal_mult}) * 29, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "recall_readiness_hours",

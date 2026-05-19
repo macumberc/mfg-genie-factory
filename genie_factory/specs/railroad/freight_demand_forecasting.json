@@ -314,7 +314,8 @@
           "sql_type": "DOUBLE",
           "comment": "Capacity utilization 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 2)"
+          "generation_expr": "ROUND(40.0 + (({qty_noise} * {seasonal_mult}) * 55.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "demand_trend",
@@ -550,7 +551,8 @@
           "sql_type": "DOUBLE",
           "comment": "Absolute forecast error pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(ABS(({qty_noise} * 0.40) - 0.10) * 100.0, 2)"
+          "generation_expr": "ROUND(ABS((({qty_noise} * {seasonal_mult}) * 0.40) - 0.10) * 100.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "forecasted_revenue_usd",

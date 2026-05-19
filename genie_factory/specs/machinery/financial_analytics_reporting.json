@@ -270,7 +270,8 @@
           "sql_type": "DOUBLE",
           "comment": "Variance percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(-15.0 + ({qty_noise} * 30.0), 2)"
+          "generation_expr": "ROUND(-15.0 + (({qty_noise} * {seasonal_mult}) * 30.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "forecast_amount_usd",
@@ -455,14 +456,16 @@
           "sql_type": "DOUBLE",
           "comment": "Gross margin percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(25.0 + ({qty_noise} * 30.0), 2)"
+          "generation_expr": "ROUND(25.0 + (({qty_noise} * {seasonal_mult}) * 30.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "operating_margin_pct",
           "sql_type": "DOUBLE",
           "comment": "Operating margin percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "revenue_usd",
@@ -490,7 +493,8 @@
           "sql_type": "DOUBLE",
           "comment": "Budget utilization percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(60.0 + ({qty_noise} * 45.0), 2)"
+          "generation_expr": "ROUND(60.0 + (({qty_noise} * {seasonal_mult}) * 45.0), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

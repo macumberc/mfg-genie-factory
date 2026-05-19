@@ -280,14 +280,16 @@
           "sql_type": "DOUBLE",
           "comment": "On-time delivery percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(65.0 + ({qty_noise} * 34.0), 2)"
+          "generation_expr": "ROUND(65.0 + (({qty_noise} * {seasonal_mult}) * 34.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "quality_acceptance_pct",
           "sql_type": "DOUBLE",
           "comment": "Quality acceptance percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(85.0 + ({qty_noise} * 14.5), 2)"
+          "generation_expr": "ROUND(85.0 + (({qty_noise} * {seasonal_mult}) * 14.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "lead_time_days",
@@ -301,21 +303,24 @@
           "sql_type": "DOUBLE",
           "comment": "Price variance vs contract percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(-8.0 + ({qty_noise} * 16.0), 2)"
+          "generation_expr": "ROUND(-8.0 + (({qty_noise} * {seasonal_mult}) * 16.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "supplier_score",
           "sql_type": "DOUBLE",
           "comment": "Composite supplier score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(40.0 + ({qty_noise} * 58.0), 1)"
+          "generation_expr": "ROUND(40.0 + (({qty_noise} * {seasonal_mult}) * 58.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "contract_compliance_pct",
           "sql_type": "DOUBLE",
           "comment": "Contract compliance percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(70.0 + ({qty_noise} * 29.0), 2)"
+          "generation_expr": "ROUND(70.0 + (({qty_noise} * {seasonal_mult}) * 29.0), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -531,7 +536,8 @@
           "sql_type": "DOUBLE",
           "comment": "Maverick (off-contract) spend percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(2.0 + ({qty_noise} * 18.0), 2)"
+          "generation_expr": "ROUND(2.0 + (({qty_noise} * {seasonal_mult}) * 18.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "po_cycle_time_days",
@@ -545,7 +551,8 @@
           "sql_type": "DOUBLE",
           "comment": "Diverse supplier spend percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "cost_avoidance_usd",

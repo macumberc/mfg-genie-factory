@@ -281,21 +281,24 @@
           "sql_type": "DOUBLE",
           "comment": "Overall completion 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 100.0, 1)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 100.0, 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "schedule_performance_index",
           "sql_type": "DOUBLE",
           "comment": "SPI (earned/planned value ratio)",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.7 + ({qty_noise} * 0.6), 3)"
+          "generation_expr": "ROUND(0.7 + (({qty_noise} * {seasonal_mult}) * 0.6), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "cost_performance_index",
           "sql_type": "DOUBLE",
           "comment": "CPI (earned/actual cost ratio)",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.75 + ({qty_noise} * 0.5), 3)"
+          "generation_expr": "ROUND(0.75 + (({qty_noise} * {seasonal_mult}) * 0.5), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "milestones_completed",

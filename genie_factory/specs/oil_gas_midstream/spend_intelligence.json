@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "Contract compliance pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 88.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 88.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 20.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "delivery_days",
@@ -269,14 +270,16 @@
           "sql_type": "DOUBLE",
           "comment": "Quality score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 78.0 + ({qty_noise} - 0.5) * 36.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 78.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 36.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "on_time_delivery_pct",
           "sql_type": "DOUBLE",
           "comment": "On-time delivery pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 88.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 88.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 20.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_lead_time_days",
@@ -290,7 +293,8 @@
           "sql_type": "DOUBLE",
           "comment": "Defect rate pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(10.0, GREATEST(0.1, 1.0 + {qty_noise} * 5.0)), 2)"
+          "generation_expr": "ROUND(LEAST(10.0, GREATEST(0.1, 1.0 + ({qty_noise} * {seasonal_mult}) * 5.0)), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},
@@ -474,14 +478,16 @@
           "sql_type": "DOUBLE",
           "comment": "Off-contract spend pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(30.0, GREATEST(1.0, 5.0 + {qty_noise} * 18.0)), 1)"
+          "generation_expr": "ROUND(LEAST(30.0, GREATEST(1.0, 5.0 + ({qty_noise} * {seasonal_mult}) * 18.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "invoice_accuracy_pct",
           "sql_type": "DOUBLE",
           "comment": "Invoice accuracy pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(80.0, 94.0 + ({qty_noise} - 0.5) * 10.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(80.0, 94.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 10.0)), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

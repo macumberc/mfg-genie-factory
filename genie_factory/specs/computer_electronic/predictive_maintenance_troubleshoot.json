@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "ML anomaly detection score 0-1",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 1.0, 4)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 1.0, 4)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "alert_level",
@@ -459,21 +460,24 @@
           "sql_type": "DOUBLE",
           "comment": "Mean time between failures in hours",
           "is_dimension": false,
-          "generation_expr": "ROUND(200.0 + ({qty_noise} * 1800.0), 1)"
+          "generation_expr": "ROUND(200.0 + (({qty_noise} * {seasonal_mult}) * 1800.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mttr_hours",
           "sql_type": "DOUBLE",
           "comment": "Mean time to repair in hours",
           "is_dimension": false,
-          "generation_expr": "ROUND(1.0 + ({qty_noise} * 11.0), 1)"
+          "generation_expr": "ROUND(1.0 + (({qty_noise} * {seasonal_mult}) * 11.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "availability_pct",
           "sql_type": "DOUBLE",
           "comment": "Equipment availability percentage 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(85.0 + ({qty_noise} * 14.5), 2)"
+          "generation_expr": "ROUND(85.0 + (({qty_noise} * {seasonal_mult}) * 14.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "total_downtime_hours",
@@ -494,7 +498,8 @@
           "sql_type": "DOUBLE",
           "comment": "Predictive model accuracy percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(70.0 + ({qty_noise} * 28.0), 2)"
+          "generation_expr": "ROUND(70.0 + (({qty_noise} * {seasonal_mult}) * 28.0), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

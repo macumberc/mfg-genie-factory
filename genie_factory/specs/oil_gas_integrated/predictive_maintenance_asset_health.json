@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "AI-computed asset health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 72.0 + ({qty_noise} - 0.5) * 56.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(0.0, 72.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 56.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "alert_level",
@@ -515,28 +516,32 @@
           "sql_type": "DOUBLE",
           "comment": "Average health score for the month 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 75.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 75.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 40.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mtbf_days",
           "sql_type": "DOUBLE",
           "comment": "Mean time between failures in days",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 30.0 + {qty_noise} * 150.0), 1)"
+          "generation_expr": "ROUND(GREATEST(5.0, 30.0 + ({qty_noise} * {seasonal_mult}) * 150.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "mttr_hours",
           "sql_type": "DOUBLE",
           "comment": "Mean time to repair in hours",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(1.0, 4.0 + {qty_noise} * 68.0), 1)"
+          "generation_expr": "ROUND(GREATEST(1.0, 4.0 + ({qty_noise} * {seasonal_mult}) * 68.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "availability_pct",
           "sql_type": "DOUBLE",
           "comment": "Equipment availability percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(80.0, 95.0 + ({qty_noise} - 0.5) * 10.0)), 2)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(80.0, 95.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 10.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "predicted_failure_count",

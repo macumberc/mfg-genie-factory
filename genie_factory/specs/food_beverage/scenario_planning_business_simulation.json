@@ -71,14 +71,16 @@
           "sql_type": "DOUBLE",
           "comment": "Simulated margin 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 40.0), 2)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 40.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "price_change_pct",
           "sql_type": "DOUBLE",
           "comment": "Price change from baseline pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(({qty_noise} - 0.5) * 20.0, 2)"
+          "generation_expr": "ROUND((({qty_noise} * {seasonal_mult}) - 0.5) * 20.0, 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -274,14 +276,16 @@
           "sql_type": "DOUBLE",
           "comment": "Input cost index (100=baseline)",
           "is_dimension": false,
-          "generation_expr": "ROUND(85.0 + ({qty_noise} * 30.0), 1)"
+          "generation_expr": "ROUND(85.0 + (({qty_noise} * {seasonal_mult}) * 30.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "consumer_sentiment_index",
           "sql_type": "DOUBLE",
           "comment": "Consumer sentiment 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(40.0 + ({qty_noise} * 55.0), 1)"
+          "generation_expr": "ROUND(40.0 + (({qty_noise} * {seasonal_mult}) * 55.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "competitive_pressure",
@@ -295,7 +299,8 @@
           "sql_type": "DOUBLE",
           "comment": "Estimated market share 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "demand_elasticity",
@@ -512,7 +517,8 @@
           "sql_type": "DOUBLE",
           "comment": "Recommended price change pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(({qty_noise} - 0.4) * 15.0, 2)"
+          "generation_expr": "ROUND((({qty_noise} * {seasonal_mult}) - 0.4) * 15.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "investment_priority",
@@ -526,7 +532,8 @@
           "sql_type": "DOUBLE",
           "comment": "Scenario confidence 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(50.0 + ({qty_noise} * 45.0), 1)"
+          "generation_expr": "ROUND(50.0 + (({qty_noise} * {seasonal_mult}) * 45.0), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

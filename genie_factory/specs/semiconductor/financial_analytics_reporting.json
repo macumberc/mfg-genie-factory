@@ -270,7 +270,8 @@
           "sql_type": "DOUBLE",
           "comment": "Budget variance as percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(({qty_noise} - 0.5) * 30.0 + ({status_noise} - 0.5) * 10.0, 1)"
+          "generation_expr": "ROUND((({qty_noise} * {seasonal_mult}) - 0.5) * 30.0 + ({status_noise} - 0.5) * 10.0, 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "budget_status",
@@ -454,21 +455,24 @@
           "sql_type": "DOUBLE",
           "comment": "Gross margin percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(75.0, GREATEST(25.0, 52.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+          "generation_expr": "ROUND(LEAST(75.0, GREATEST(25.0, 52.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 40.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "operating_margin_pct",
           "sql_type": "DOUBLE",
           "comment": "Operating margin percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(45.0, GREATEST(5.0, 22.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(45.0, GREATEST(5.0, 22.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "rd_intensity_pct",
           "sql_type": "DOUBLE",
           "comment": "R&D spend as percentage of revenue",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(35.0, GREATEST(8.0, 18.0 + ({qty_noise} - 0.5) * 20.0)), 1)"
+          "generation_expr": "ROUND(LEAST(35.0, GREATEST(8.0, 18.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 20.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "cost_per_wafer_usd",

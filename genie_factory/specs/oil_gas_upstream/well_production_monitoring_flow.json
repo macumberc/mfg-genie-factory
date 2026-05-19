@@ -57,21 +57,24 @@
           "sql_type": "DOUBLE",
           "comment": "Oil BPD",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 100.0 + {qty_noise} * 2900.0), 0)"
+          "generation_expr": "ROUND(GREATEST(5.0, 100.0 + ({qty_noise} * {seasonal_mult}) * 2900.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "gas_mcfpd",
           "sql_type": "DOUBLE",
           "comment": "Gas MCF/day",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(20.0, 300.0 + {qty_noise} * 9700.0), 0)"
+          "generation_expr": "ROUND(GREATEST(20.0, 300.0 + ({qty_noise} * {seasonal_mult}) * 9700.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "water_bpd",
           "sql_type": "DOUBLE",
           "comment": "Water BPD",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 30.0 + {qty_noise} * 1500.0), 0)"
+          "generation_expr": "ROUND(GREATEST(5.0, 30.0 + ({qty_noise} * {seasonal_mult}) * 1500.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "tubing_pressure_psi",
@@ -286,28 +289,32 @@
           "sql_type": "DOUBLE",
           "comment": "Water cut pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(85.0, GREATEST(5.0, 20.0 + {qty_noise} * 55.0)), 1)"
+          "generation_expr": "ROUND(LEAST(85.0, GREATEST(5.0, 20.0 + ({qty_noise} * {seasonal_mult}) * 55.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "gor_scf_bbl",
           "sql_type": "DOUBLE",
           "comment": "GOR SCF/BBL",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(200.0, 500.0 + {qty_noise} * 4500.0), 0)"
+          "generation_expr": "ROUND(GREATEST(200.0, 500.0 + ({qty_noise} * {seasonal_mult}) * 4500.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "uptime_pct",
           "sql_type": "DOUBLE",
           "comment": "Well uptime pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 91.0 + ({qty_noise} - 0.5) * 16.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 91.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 16.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "artificial_lift_efficiency_pct",
           "sql_type": "DOUBLE",
           "comment": "Lift efficiency pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(98.0, GREATEST(50.0, 78.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(50.0, 78.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

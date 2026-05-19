@@ -85,7 +85,8 @@
           "sql_type": "DOUBLE",
           "comment": "Overall vehicle health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(35.0, 82.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(35.0, 82.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "alert_severity",
@@ -604,21 +605,24 @@
           "sql_type": "DOUBLE",
           "comment": "Model-predicted health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 80.0 + ({qty_noise} - 0.5) * 25.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(40.0, 80.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 25.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "actual_health_score",
           "sql_type": "DOUBLE",
           "comment": "Actual observed average health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(35.0, 80.0 + ({qty_noise} - 0.5) * 30.0 + ({status_noise} - 0.5) * 8.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(35.0, 80.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0 + ({status_noise} - 0.5) * 8.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "predicted_failure_rate",
           "sql_type": "DOUBLE",
           "comment": "Predicted failure probability 0-1",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(0.35, GREATEST(0.01, 0.08 + ({qty_noise} - 0.5) * 0.15)), 3)"
+          "generation_expr": "ROUND(LEAST(0.35, GREATEST(0.01, 0.08 + (({qty_noise} * {seasonal_mult}) - 0.5) * 0.15)), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "model_version",

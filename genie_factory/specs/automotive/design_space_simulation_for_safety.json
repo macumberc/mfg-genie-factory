@@ -78,7 +78,8 @@
           "sql_type": "DOUBLE",
           "comment": "Computed injury risk probability 0-1",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(0.95, GREATEST(0.02, 0.25 + ({qty_noise} - 0.5) * 0.50)), 3)"
+          "generation_expr": "ROUND(LEAST(0.95, GREATEST(0.02, 0.25 + (({qty_noise} * {seasonal_mult}) - 0.5) * 0.50)), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "safety_rating",
@@ -342,7 +343,8 @@
           "sql_type": "DOUBLE",
           "comment": "Composite safety score 0-100 from parameter combination",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.0, GREATEST(40.0, 72.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(40.0, 72.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 40.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "exploration_status",
@@ -560,21 +562,24 @@
           "sql_type": "DOUBLE",
           "comment": "Predicted composite safety score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(98.0, GREATEST(45.0, 75.0 + ({qty_noise} - 0.5) * 35.0)), 1)"
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(45.0, 75.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 35.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "actual_safety_score",
           "sql_type": "DOUBLE",
           "comment": "Actual realized composite safety score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.0, GREATEST(40.0, 75.0 + ({qty_noise} - 0.5) * 40.0 + ({status_noise} - 0.5) * 8.0)), 1)"
+          "generation_expr": "ROUND(LEAST(99.0, GREATEST(40.0, 75.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 40.0 + ({status_noise} - 0.5) * 8.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "forecast_error_pct",
           "sql_type": "DOUBLE",
           "comment": "Absolute safety score forecast error in pct points",
           "is_dimension": false,
-          "generation_expr": "ROUND(ABS((75.0 + ({qty_noise} - 0.5) * 35.0) - (75.0 + ({qty_noise} - 0.5) * 40.0 + ({status_noise} - 0.5) * 8.0)), 1)"
+          "generation_expr": "ROUND(ABS((75.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 35.0) - (75.0 + ({qty_noise} - 0.5) * 40.0 + ({status_noise} - 0.5) * 8.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "simulation_model_version",

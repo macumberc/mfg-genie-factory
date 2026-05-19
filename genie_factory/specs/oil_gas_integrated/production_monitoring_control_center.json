@@ -78,7 +78,8 @@
           "sql_type": "DOUBLE",
           "comment": "Choke valve position percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(10.0, 65.0 + ({qty_noise} - 0.5) * 70.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(10.0, 65.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 70.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "wellhead_pressure_psi",
@@ -519,21 +520,24 @@
           "sql_type": "DOUBLE",
           "comment": "Water cut percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(85.0, GREATEST(5.0, 25.0 + {qty_noise} * 50.0)), 1)"
+          "generation_expr": "ROUND(LEAST(85.0, GREATEST(5.0, 25.0 + ({qty_noise} * {seasonal_mult}) * 50.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "gor_ratio",
           "sql_type": "DOUBLE",
           "comment": "Gas-to-oil ratio SCF/BBL",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(100.0, 800.0 + ({qty_noise} - 0.5) * 1200.0), 0)"
+          "generation_expr": "ROUND(GREATEST(100.0, 800.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 1200.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "uptime_pct",
           "sql_type": "DOUBLE",
           "comment": "Well uptime percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 92.0 + ({qty_noise} - 0.5) * 16.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(60.0, 92.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 16.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "deferred_oil_bbl",

@@ -274,17 +274,24 @@ def apply_fix_wrong_range(spec: dict, spec_key: str) -> int:
 
 
 # KPI column-name patterns that should ride a monthly seasonal curve.
+# Anchored at end (`_pct$`) or unanchored (`.*gor.*`) — kept narrow to avoid
+# touching cumulative counters or identifier-style columns. To exempt a
+# specific column from seasonality, the spec author sets seasonal_amplitude
+# to 0 explicitly before running this mode.
 _KPI_NAME_PATTERNS = [
     re.compile(p, re.IGNORECASE) for p in [
         r".*_pct$", r".*_ratio$", r".*_rate$", r".*_score$",
         r".*_efficiency$", r".*_accuracy$", r".*_uptime$", r".*_oee$",
         r".*_health$", r".*_margin$", r".*_yield$", r".*_factor$",
-        r"^mtbf.*", r"^mttr.*", r"^rul_.*", r"^ccc.*",
-        r".*_compliance$", r".*_availability$", r".*_utilization$",
-        r".*_throughput$", r".*_intensity$", r".*_emissions$",
+        r"^mtbf.*", r"^mttr.*", r"^rul_.*", r"^ccc.*", r".*_index$",
+        r".*availability.*", r".*utilization.*",
+        r".*compliance.*", r".*throughput.*", r".*intensity.*",
         r"^saidi.*", r"^saifi.*", r"^caidi.*",
-        r".*_gor.*", r".*_water_cut.*", r".*_recovery.*",
-        r".*_velocity.*", r".*_dwell.*",
+        r".*gor.*", r".*water_cut.*", r".*recovery.*",
+        r".*velocity.*", r".*dwell.*",
+        # Oil & gas production rates (bbl per day, mcf per day) — daily
+        # rate measures, NOT cumulative counters.
+        r".*_bopd$", r".*_bpd$", r".*_mcfpd$",
     ]
 ]
 

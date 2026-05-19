@@ -57,14 +57,16 @@
           "sql_type": "DOUBLE",
           "comment": "Throughput tons per hour",
           "is_dimension": false,
-          "generation_expr": "ROUND(100.0 + ({qty_noise} * 900.0), 1)"
+          "generation_expr": "ROUND(100.0 + (({qty_noise} * {seasonal_mult}) * 900.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "recovery_pct",
           "sql_type": "DOUBLE",
           "comment": "Material recovery 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(70.0 + ({qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(70.0 + (({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "energy_kwh_per_ton",
@@ -274,7 +276,8 @@
           "sql_type": "DOUBLE",
           "comment": "Ore grade percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.5 + ({qty_noise} * 4.5), 3)"
+          "generation_expr": "ROUND(0.5 + (({qty_noise} * {seasonal_mult}) * 4.5), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "particle_size_mm",
@@ -288,14 +291,16 @@
           "sql_type": "DOUBLE",
           "comment": "Moisture content percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(2.0 + ({qty_noise} * 13.0), 1)"
+          "generation_expr": "ROUND(2.0 + (({qty_noise} * {seasonal_mult}) * 13.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "concentrate_grade_pct",
           "sql_type": "DOUBLE",
           "comment": "Concentrate grade percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(15.0 + ({qty_noise} * 45.0), 2)"
+          "generation_expr": "ROUND(15.0 + (({qty_noise} * {seasonal_mult}) * 45.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "quality_status",
@@ -498,21 +503,24 @@
           "sql_type": "DOUBLE",
           "comment": "Planned throughput tons/day",
           "is_dimension": false,
-          "generation_expr": "ROUND(2000.0 + ({qty_noise} * 18000.0), 0)"
+          "generation_expr": "ROUND(2000.0 + (({qty_noise} * {seasonal_mult}) * 18000.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "actual_throughput_tpd",
           "sql_type": "DOUBLE",
           "comment": "Actual throughput tons/day",
           "is_dimension": false,
-          "generation_expr": "ROUND((2000.0 + ({qty_noise} * 18000.0)) * (0.75 + {status_noise} * 0.35), 0)"
+          "generation_expr": "ROUND((2000.0 + (({qty_noise} * {seasonal_mult}) * 18000.0)) * (0.75 + {status_noise} * 0.35), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "utilization_pct",
           "sql_type": "DOUBLE",
           "comment": "Equipment utilization 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(55.0 + ({qty_noise} * 40.0), 2)"
+          "generation_expr": "ROUND(55.0 + (({qty_noise} * {seasonal_mult}) * 40.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "downtime_hours",

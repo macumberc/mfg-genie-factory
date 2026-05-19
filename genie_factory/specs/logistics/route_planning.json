@@ -450,7 +450,8 @@
           "sql_type": "DOUBLE",
           "comment": "Load weight as percent of vehicle capacity",
           "is_dimension": false,
-          "generation_expr": "ROUND(30 + {qty_noise} * 65, 2)"
+          "generation_expr": "ROUND(30 + ({qty_noise} * {seasonal_mult}) * 65, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "traffic_delay_minutes",
@@ -647,7 +648,8 @@
           "sql_type": "DOUBLE",
           "comment": "Percentage of deliveries completed on time",
           "is_dimension": false,
-          "generation_expr": "ROUND(75 + {qty_noise} * 24, 2)"
+          "generation_expr": "ROUND(75 + ({qty_noise} * {seasonal_mult}) * 24, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "deliveries_completed",

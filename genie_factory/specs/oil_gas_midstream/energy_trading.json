@@ -456,14 +456,16 @@
           "sql_type": "DOUBLE",
           "comment": "Sharpe ratio",
           "is_dimension": false,
-          "generation_expr": "ROUND(-0.5 + {qty_noise} * 3.0, 2)"
+          "generation_expr": "ROUND(-0.5 + ({qty_noise} * {seasonal_mult}) * 3.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "win_rate_pct",
           "sql_type": "DOUBLE",
           "comment": "Trade win rate pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 55.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+          "generation_expr": "ROUND(LEAST(100.0, GREATEST(30.0, 55.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 40.0)), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "Transformer load as percentage of rated capacity",
           "is_dimension": false,
-          "generation_expr": "ROUND(25.0 + ({qty_noise} * 70.0) + (CASE WHEN MONTH(d.dt) IN (7,8) THEN 10.0 WHEN MONTH(d.dt) IN (1,2) THEN 5.0 ELSE 0.0 END), 2)"
+          "generation_expr": "ROUND(25.0 + (({qty_noise} * {seasonal_mult}) * 70.0) + (CASE WHEN MONTH(d.dt) IN (7,8) THEN 10.0 WHEN MONTH(d.dt) IN (1,2) THEN 5.0 ELSE 0.0 END), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "vibration_mm_s",
@@ -85,7 +86,8 @@
           "sql_type": "DOUBLE",
           "comment": "Computed health index 0-100 (higher is healthier)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(10.0, 100.0 - ({qty_noise} * 50.0) - (CASE WHEN {status_noise} < 0.05 THEN 30.0 ELSE 0.0 END)), 2)"
+          "generation_expr": "ROUND(GREATEST(10.0, 100.0 - (({qty_noise} * {seasonal_mult}) * 50.0) - (CASE WHEN {status_noise} < 0.05 THEN 30.0 ELSE 0.0 END)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "alert_level",
@@ -555,7 +557,8 @@
           "sql_type": "DOUBLE",
           "comment": "Average health index for the month (0-100)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(15.0, 85.0 - ({qty_noise} * 40.0)), 2)"
+          "generation_expr": "ROUND(GREATEST(15.0, 85.0 - (({qty_noise} * {seasonal_mult}) * 40.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "failure_count",

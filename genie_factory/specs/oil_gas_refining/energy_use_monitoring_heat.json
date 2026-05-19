@@ -71,14 +71,16 @@
           "sql_type": "DOUBLE",
           "comment": "Thermal efficiency percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(98.0, GREATEST(55.0, 78.0 + ({qty_noise} - 0.5) * 30.0)), 1)"
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(55.0, 78.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "fouling_factor",
           "sql_type": "DOUBLE",
           "comment": "Fouling factor (higher = more fouled)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(0.0001, 0.0005 + {qty_noise} * 0.004), 5)"
+          "generation_expr": "ROUND(GREATEST(0.0001, 0.0005 + ({qty_noise} * {seasonal_mult}) * 0.004), 5)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "inlet_temp_f",
@@ -292,14 +294,16 @@
           "sql_type": "DOUBLE",
           "comment": "Heat transfer effectiveness percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(98.0, GREATEST(40.0, 75.0 + ({qty_noise} - 0.5) * 35.0)), 1)"
+          "generation_expr": "ROUND(LEAST(98.0, GREATEST(40.0, 75.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 35.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "energy_intensity_btu_bbl",
           "sql_type": "DOUBLE",
           "comment": "Energy intensity BTU per barrel processed",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(50000.0, 100000.0 + {qty_noise} * 200000.0), 0)"
+          "generation_expr": "ROUND(GREATEST(50000.0, 100000.0 + ({qty_noise} * {seasonal_mult}) * 200000.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "co2_emissions_tons",
@@ -465,14 +469,16 @@
           "sql_type": "DOUBLE",
           "comment": "Solomon Energy Efficiency Index (lower=better)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(70.0, 85.0 + ({qty_noise} - 0.5) * 30.0), 1)"
+          "generation_expr": "ROUND(GREATEST(70.0, 85.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 30.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "heat_recovery_pct",
           "sql_type": "DOUBLE",
           "comment": "Heat recovery percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(95.0, GREATEST(40.0, 68.0 + ({qty_noise} - 0.5) * 40.0)), 1)"
+          "generation_expr": "ROUND(LEAST(95.0, GREATEST(40.0, 68.0 + (({qty_noise} * {seasonal_mult}) - 0.5) * 40.0)), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "total_energy_cost_usd",
@@ -486,7 +492,8 @@
           "sql_type": "DOUBLE",
           "comment": "CO2 intensity kg per barrel processed",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 12.0 + {qty_noise} * 28.0), 1)"
+          "generation_expr": "ROUND(GREATEST(5.0, 12.0 + ({qty_noise} * {seasonal_mult}) * 28.0), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

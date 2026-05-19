@@ -50,7 +50,8 @@
           "sql_type": "DOUBLE",
           "comment": "Vibration velocity in mm/s (ISO 10816 scale)",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.5 + ({qty_noise} * 19.5), 2)"
+          "generation_expr": "ROUND(0.5 + (({qty_noise} * {seasonal_mult}) * 19.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "bearing_temperature_c",
@@ -71,7 +72,8 @@
           "sql_type": "DOUBLE",
           "comment": "Computed health index 0-100 (100 = perfect health)",
           "is_dimension": false,
-          "generation_expr": "ROUND(30.0 + ({qty_noise} * 70.0), 1)"
+          "generation_expr": "ROUND(30.0 + (({qty_noise} * {seasonal_mult}) * 70.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "remaining_useful_life_days",
@@ -513,14 +515,16 @@
           "sql_type": "DOUBLE",
           "comment": "Average health index for the month 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(40.0 + ({qty_noise} * 58.0), 1)"
+          "generation_expr": "ROUND(40.0 + (({qty_noise} * {seasonal_mult}) * 58.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "availability_pct",
           "sql_type": "DOUBLE",
           "comment": "Asset availability percentage 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(82.0 + ({qty_noise} * 17.5), 2)"
+          "generation_expr": "ROUND(82.0 + (({qty_noise} * {seasonal_mult}) * 17.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "maintenance_cost_usd",

@@ -541,14 +541,16 @@
           "sql_type": "DOUBLE",
           "comment": "Inventory turnover ratio",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.5 + ({qty_noise} * 11.5), 2)"
+          "generation_expr": "ROUND(0.5 + (({qty_noise} * {seasonal_mult}) * 11.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "fill_rate_pct",
           "sql_type": "DOUBLE",
           "comment": "Order fill rate percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(80.0 + ({qty_noise} * 19.5), 2)"
+          "generation_expr": "ROUND(80.0 + (({qty_noise} * {seasonal_mult}) * 19.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "stockout_events",

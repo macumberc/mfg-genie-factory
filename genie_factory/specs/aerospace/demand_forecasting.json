@@ -277,7 +277,8 @@
           "sql_type": "DOUBLE",
           "comment": "Absolute forecast error percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(ABS(({qty_noise} * 0.40) - 0.10) * 100.0, 2)"
+          "generation_expr": "ROUND(ABS((({qty_noise} * {seasonal_mult}) * 0.40) - 0.10) * 100.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "model_version",
@@ -435,7 +436,8 @@
           "sql_type": "DOUBLE",
           "comment": "Order fill rate percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.5, 75.0 + ({qty_noise} * 24.0)), 2)"
+          "generation_expr": "ROUND(LEAST(99.5, 75.0 + (({qty_noise} * {seasonal_mult}) * 24.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "backlog_value_usd",
@@ -463,7 +465,8 @@
           "sql_type": "DOUBLE",
           "comment": "On-time delivery percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(99.0, 70.0 + ({qty_noise} * 28.0)), 2)"
+          "generation_expr": "ROUND(LEAST(99.0, 70.0 + (({qty_noise} * {seasonal_mult}) * 28.0)), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {},

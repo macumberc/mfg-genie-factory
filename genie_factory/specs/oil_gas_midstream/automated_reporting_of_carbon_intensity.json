@@ -71,14 +71,16 @@
           "sql_type": "DOUBLE",
           "comment": "Throughput BOE for intensity",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(100.0, {qty_noise} * 50000.0), 0)"
+          "generation_expr": "ROUND(GREATEST(100.0, ({qty_noise} * {seasonal_mult}) * 50000.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "carbon_intensity_kg_boe",
           "sql_type": "DOUBLE",
           "comment": "Carbon intensity kg CO2e per BOE",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(1.0, 5.0 + {qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(GREATEST(1.0, 5.0 + ({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "measurement_method",
@@ -450,14 +452,16 @@
           "sql_type": "DOUBLE",
           "comment": "Avg intensity kg/BOE",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(1.0, 5.0 + {qty_noise} * 20.0), 2)"
+          "generation_expr": "ROUND(GREATEST(1.0, 5.0 + ({qty_noise} * {seasonal_mult}) * 20.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "methane_intensity_pct",
           "sql_type": "DOUBLE",
           "comment": "Methane intensity pct",
           "is_dimension": false,
-          "generation_expr": "ROUND(LEAST(5.0, GREATEST(0.01, 0.5 + {qty_noise} * 3.0)), 3)"
+          "generation_expr": "ROUND(LEAST(5.0, GREATEST(0.01, 0.5 + ({qty_noise} * {seasonal_mult}) * 3.0)), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "compliance_status",

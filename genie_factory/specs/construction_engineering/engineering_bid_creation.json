@@ -71,7 +71,8 @@
           "sql_type": "DOUBLE",
           "comment": "Target margin 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 20.0), 2)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 20.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "bid_result",
@@ -302,7 +303,8 @@
           "sql_type": "DOUBLE",
           "comment": "Contingency percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(3.0 + ({qty_noise} * 12.0), 2)"
+          "generation_expr": "ROUND(3.0 + (({qty_noise} * {seasonal_mult}) * 12.0), 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -519,7 +521,8 @@
           "sql_type": "DOUBLE",
           "comment": "Cost estimate accuracy 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(75.0 + ({qty_noise} * 22.0), 2)"
+          "generation_expr": "ROUND(75.0 + (({qty_noise} * {seasonal_mult}) * 22.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "avg_competitors",

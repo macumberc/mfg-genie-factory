@@ -85,7 +85,8 @@
           "sql_type": "DOUBLE",
           "comment": "Computed engine health score 0-100 (higher is healthier)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(15.0, 95.0 - ({qty_noise} * 45.0) - (CASE WHEN {status_noise} < 0.05 THEN 25.0 ELSE 0.0 END)), 2)"
+          "generation_expr": "ROUND(GREATEST(15.0, 95.0 - (({qty_noise} * {seasonal_mult}) * 45.0) - (CASE WHEN {status_noise} < 0.05 THEN 25.0 ELSE 0.0 END)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "anomaly_flag",
@@ -526,7 +527,8 @@
           "sql_type": "DOUBLE",
           "comment": "Average health score for the month (0-100)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(20.0, 90.0 - ({qty_noise} * 40.0)), 2)"
+          "generation_expr": "ROUND(GREATEST(20.0, 90.0 - (({qty_noise} * {seasonal_mult}) * 40.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "remaining_useful_life_hours",

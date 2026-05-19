@@ -269,7 +269,8 @@
           "sql_type": "DOUBLE",
           "comment": "Estimated remaining tool life percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 95.0), 1)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 95.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "parts_machined",
@@ -453,14 +454,16 @@
           "sql_type": "DOUBLE",
           "comment": "Defect rate percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.5 + ({qty_noise} * 7.5), 2)"
+          "generation_expr": "ROUND(0.5 + (({qty_noise} * {seasonal_mult}) * 7.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "first_pass_yield_pct",
           "sql_type": "DOUBLE",
           "comment": "First-pass yield percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(88.0 + ({qty_noise} * 11.5), 2)"
+          "generation_expr": "ROUND(88.0 + (({qty_noise} * {seasonal_mult}) * 11.5), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "scrap_cost_usd",
