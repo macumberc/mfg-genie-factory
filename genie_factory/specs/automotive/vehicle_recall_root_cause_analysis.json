@@ -113,14 +113,14 @@
           "sql_type": "STRING",
           "comment": "Root cause classification for the defect",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 100 < 11 THEN 'Calibration Drift' WHEN {seed} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {seed} % 100 < 33 THEN 'Assembly Error' WHEN {seed} % 100 < 44 THEN 'Inadequate Testing' WHEN {seed} % 100 < 55 THEN 'Environmental Degradation' WHEN {seed} % 100 < 65 THEN 'Design Deficiency' WHEN {seed} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {seed} % 100 < 84 THEN 'Material Specification Failure' WHEN {seed} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END"
+          "generation_expr": "CASE WHEN {id_seq} % 100 < 11 THEN 'Calibration Drift' WHEN {id_seq} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {id_seq} % 100 < 33 THEN 'Assembly Error' WHEN {id_seq} % 100 < 44 THEN 'Inadequate Testing' WHEN {id_seq} % 100 < 55 THEN 'Environmental Degradation' WHEN {id_seq} % 100 < 65 THEN 'Design Deficiency' WHEN {id_seq} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {id_seq} % 100 < 84 THEN 'Material Specification Failure' WHEN {id_seq} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END"
         },
         {
           "name": "supplier_id",
           "sql_type": "STRING",
           "comment": "Tier-1 supplier identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 15 = 0 THEN 'SUP-BOSCH' WHEN {seed} % 15 = 1 THEN 'SUP-DENSO' WHEN {seed} % 15 = 2 THEN 'SUP-MAGNA' WHEN {seed} % 15 = 3 THEN 'SUP-CONTI' WHEN {seed} % 15 = 4 THEN 'SUP-ZF' WHEN {seed} % 15 = 5 THEN 'SUP-AISIN' WHEN {seed} % 15 = 6 THEN 'SUP-LEAR' WHEN {seed} % 15 = 7 THEN 'SUP-APTIV' WHEN {seed} % 15 = 8 THEN 'SUP-VALEO' WHEN {seed} % 15 = 9 THEN 'SUP-HELLA' WHEN {seed} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {seed} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {seed} % 15 = 12 THEN 'SUP-MANDO' WHEN {seed} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END"
+          "generation_expr": "CASE WHEN {id_seq} % 15 = 0 THEN 'SUP-BOSCH' WHEN {id_seq} % 15 = 1 THEN 'SUP-DENSO' WHEN {id_seq} % 15 = 2 THEN 'SUP-MAGNA' WHEN {id_seq} % 15 = 3 THEN 'SUP-CONTI' WHEN {id_seq} % 15 = 4 THEN 'SUP-ZF' WHEN {id_seq} % 15 = 5 THEN 'SUP-AISIN' WHEN {id_seq} % 15 = 6 THEN 'SUP-LEAR' WHEN {id_seq} % 15 = 7 THEN 'SUP-APTIV' WHEN {id_seq} % 15 = 8 THEN 'SUP-VALEO' WHEN {id_seq} % 15 = 9 THEN 'SUP-HELLA' WHEN {id_seq} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {id_seq} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {id_seq} % 15 = 12 THEN 'SUP-MANDO' WHEN {id_seq} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END"
         },
         {
           "name": "days_to_remedy",
@@ -401,7 +401,7 @@
           "sql_type": "STRING",
           "comment": "Component code identifying the failed part",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 30 = 0 THEN 'SU-BLJ' WHEN {seed} % 30 = 1 THEN 'PT-TBW' WHEN {seed} % 30 = 2 THEN 'BR-PAD' WHEN {seed} % 30 = 3 THEN 'EL-BCM' WHEN {seed} % 30 = 4 THEN 'EN-THR' WHEN {seed} % 30 = 5 THEN 'IN-TCH' WHEN {seed} % 30 = 6 THEN 'FS-INJ' WHEN {seed} % 30 = 7 THEN 'ST-RCK' WHEN {seed} % 30 = 8 THEN 'CL-RAD' WHEN {seed} % 30 = 9 THEN 'EX-LED' WHEN {seed} % 30 = 10 THEN 'SE-BKL' WHEN {seed} % 30 = 11 THEN 'WH-BRG' WHEN {seed} % 30 = 12 THEN 'AD-CAM' WHEN {seed} % 30 = 13 THEN 'AB-SNS' WHEN {seed} % 30 = 14 THEN 'PT-CVT' WHEN {seed} % 30 = 15 THEN 'BR-ABS' WHEN {seed} % 30 = 16 THEN 'EL-ALT' WHEN {seed} % 30 = 17 THEN 'EN-WTP' WHEN {seed} % 30 = 18 THEN 'SU-SWA' WHEN {seed} % 30 = 19 THEN 'IN-AMP' WHEN {seed} % 30 = 20 THEN 'FS-PMP' WHEN {seed} % 30 = 21 THEN 'ST-EPS' WHEN {seed} % 30 = 22 THEN 'CL-FAN' WHEN {seed} % 30 = 23 THEN 'EX-HRN' WHEN {seed} % 30 = 24 THEN 'SE-MTR' WHEN {seed} % 30 = 25 THEN 'WH-TPS' WHEN {seed} % 30 = 26 THEN 'AD-RDR' WHEN {seed} % 30 = 27 THEN 'AB-INF' WHEN {seed} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END"
+          "generation_expr": "CASE WHEN {id_seq} % 30 = 0 THEN 'SU-BLJ' WHEN {id_seq} % 30 = 1 THEN 'PT-TBW' WHEN {id_seq} % 30 = 2 THEN 'BR-PAD' WHEN {id_seq} % 30 = 3 THEN 'EL-BCM' WHEN {id_seq} % 30 = 4 THEN 'EN-THR' WHEN {id_seq} % 30 = 5 THEN 'IN-TCH' WHEN {id_seq} % 30 = 6 THEN 'FS-INJ' WHEN {id_seq} % 30 = 7 THEN 'ST-RCK' WHEN {id_seq} % 30 = 8 THEN 'CL-RAD' WHEN {id_seq} % 30 = 9 THEN 'EX-LED' WHEN {id_seq} % 30 = 10 THEN 'SE-BKL' WHEN {id_seq} % 30 = 11 THEN 'WH-BRG' WHEN {id_seq} % 30 = 12 THEN 'AD-CAM' WHEN {id_seq} % 30 = 13 THEN 'AB-SNS' WHEN {id_seq} % 30 = 14 THEN 'PT-CVT' WHEN {id_seq} % 30 = 15 THEN 'BR-ABS' WHEN {id_seq} % 30 = 16 THEN 'EL-ALT' WHEN {id_seq} % 30 = 17 THEN 'EN-WTP' WHEN {id_seq} % 30 = 18 THEN 'SU-SWA' WHEN {id_seq} % 30 = 19 THEN 'IN-AMP' WHEN {id_seq} % 30 = 20 THEN 'FS-PMP' WHEN {id_seq} % 30 = 21 THEN 'ST-EPS' WHEN {id_seq} % 30 = 22 THEN 'CL-FAN' WHEN {id_seq} % 30 = 23 THEN 'EX-HRN' WHEN {id_seq} % 30 = 24 THEN 'SE-MTR' WHEN {id_seq} % 30 = 25 THEN 'WH-TPS' WHEN {id_seq} % 30 = 26 THEN 'AD-RDR' WHEN {id_seq} % 30 = 27 THEN 'AB-INF' WHEN {id_seq} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END"
         },
         {
           "name": "labor_hours",
