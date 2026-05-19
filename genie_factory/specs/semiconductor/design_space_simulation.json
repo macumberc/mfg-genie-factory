@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Simulation completion status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Completed' WHEN {status_noise} < 0.80 THEN 'Timing Fail' WHEN {status_noise} < 0.90 THEN 'DRC Fail' ELSE 'Aborted' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.65 THEN 'Completed' WHEN {alt_status_noise} < 0.80 THEN 'Timing Fail' WHEN {alt_status_noise} < 0.90 THEN 'DRC Fail' ELSE 'Aborted' END"
         }
       ],
       "seasonal_patterns": {

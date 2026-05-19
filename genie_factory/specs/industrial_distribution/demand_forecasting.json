@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Status: Shipped, Backordered, In Process, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.12 THEN 'Backordered' WHEN {status_noise} < 0.25 THEN 'In Process' ELSE 'Shipped' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.03 THEN 'Cancelled' WHEN {alt_status_noise} < 0.12 THEN 'Backordered' WHEN {alt_status_noise} < 0.25 THEN 'In Process' ELSE 'Shipped' END"
         }
       ],
       "seasonal_patterns": {

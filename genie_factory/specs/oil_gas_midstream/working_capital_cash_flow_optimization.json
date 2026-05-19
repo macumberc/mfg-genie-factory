@@ -64,14 +64,14 @@
           "sql_type": "DOUBLE",
           "comment": "Cash flow amount USD (positive=inflow)",
           "is_dimension": false,
-          "generation_expr": "ROUND(CASE WHEN {status_noise} < 0.35 THEN {qty_noise} * 6000000.0 ELSE -{qty_noise} * 4500000.0 END, 2)"
+          "generation_expr": "ROUND(CASE WHEN {alt_status_noise} < 0.35 THEN {qty_noise} * 6000000.0 ELSE -{qty_noise} * 4500000.0 END, 2)"
         },
         {
           "name": "counterparty",
           "sql_type": "STRING",
           "comment": "Counterparty type",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Customer' WHEN {status_noise} < 0.55 THEN 'Supplier' WHEN {status_noise} < 0.72 THEN 'Government' WHEN {status_noise} < 0.88 THEN 'Internal' ELSE 'Shareholder' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.30 THEN 'Customer' WHEN {alt_status_noise2} < 0.55 THEN 'Supplier' WHEN {alt_status_noise2} < 0.72 THEN 'Government' WHEN {alt_status_noise2} < 0.88 THEN 'Internal' ELSE 'Shareholder' END"
         },
         {
           "name": "days_outstanding",

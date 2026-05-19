@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Order status: Shipped, Backlog, In Production, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.18 THEN 'Backlog' WHEN {status_noise} < 0.30 THEN 'In Production' ELSE 'Shipped' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.03 THEN 'Cancelled' WHEN {alt_status_noise} < 0.18 THEN 'Backlog' WHEN {alt_status_noise} < 0.30 THEN 'In Production' ELSE 'Shipped' END"
         }
       ],
       "seasonal_patterns": {
@@ -284,7 +284,7 @@
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'v4.0' WHEN {status_noise} < 0.55 THEN 'v4.1' ELSE 'v4.2' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.25 THEN 'v4.0' WHEN {alt_status_noise} < 0.55 THEN 'v4.1' ELSE 'v4.2' END"
         }
       ],
       "seasonal_patterns": {},

@@ -78,14 +78,14 @@
           "sql_type": "STRING",
           "comment": "Delivery status: On Time, Late, Partial, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'On Time' WHEN {status_noise} < 0.82 THEN 'Late' WHEN {status_noise} < 0.95 THEN 'Partial' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.60 THEN 'On Time' WHEN {alt_status_noise} < 0.82 THEN 'Late' WHEN {alt_status_noise} < 0.95 THEN 'Partial' ELSE 'Cancelled' END"
         },
         {
           "name": "quality_acceptance",
           "sql_type": "STRING",
           "comment": "Quality acceptance: Accepted, Conditional, Rejected",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Accepted' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Rejected' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.80 THEN 'Accepted' WHEN {alt_status_noise2} < 0.93 THEN 'Conditional' ELSE 'Rejected' END"
         }
       ],
       "seasonal_patterns": {

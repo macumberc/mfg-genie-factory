@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Measurement result status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'In Spec' WHEN {status_noise} < 0.88 THEN 'Warning' ELSE 'Out of Spec' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.70 THEN 'In Spec' WHEN {alt_status_noise} < 0.88 THEN 'Warning' ELSE 'Out of Spec' END"
         }
       ],
       "seasonal_patterns": {

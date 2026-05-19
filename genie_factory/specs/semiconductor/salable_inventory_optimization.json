@@ -57,7 +57,7 @@
           "sql_type": "STRING",
           "comment": "Warehouse or storage location",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {status_noise} < 0.45 THEN 'WH-Chandler' WHEN {status_noise} < 0.65 THEN 'WH-Penang' WHEN {status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.25 THEN 'WH-Taiwan' WHEN {alt_status_noise} < 0.45 THEN 'WH-Chandler' WHEN {alt_status_noise} < 0.65 THEN 'WH-Penang' WHEN {alt_status_noise} < 0.82 THEN 'WH-Shanghai' ELSE 'WH-Munich' END"
         },
         {
           "name": "quantity_units",
@@ -85,7 +85,7 @@
           "sql_type": "STRING",
           "comment": "Stage of inventory in the supply chain",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Wafer Bank' WHEN {status_noise} < 0.55 THEN 'Die Bank' WHEN {status_noise} < 0.80 THEN 'Finished Goods' ELSE 'WIP' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.30 THEN 'Wafer Bank' WHEN {alt_status_noise2} < 0.55 THEN 'Die Bank' WHEN {alt_status_noise2} < 0.80 THEN 'Finished Goods' ELSE 'WIP' END"
         }
       ],
       "seasonal_patterns": {
@@ -291,7 +291,7 @@
           "sql_type": "STRING",
           "comment": "Inventory age classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN '0-30 days' WHEN {status_noise} < 0.65 THEN '31-60 days' WHEN {status_noise} < 0.82 THEN '61-90 days' WHEN {status_noise} < 0.93 THEN '91-180 days' ELSE '180+ days' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.40 THEN '0-30 days' WHEN {alt_status_noise} < 0.65 THEN '31-60 days' WHEN {alt_status_noise} < 0.82 THEN '61-90 days' WHEN {alt_status_noise} < 0.93 THEN '91-180 days' ELSE '180+ days' END"
         }
       ],
       "seasonal_patterns": {

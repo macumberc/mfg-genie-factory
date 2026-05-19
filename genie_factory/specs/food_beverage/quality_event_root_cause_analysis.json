@@ -64,7 +64,7 @@
           "sql_type": "STRING",
           "comment": "Cause: Equipment, Ingredient, Process, Contamination, Packaging, Handling",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Equipment' WHEN {status_noise} < 0.40 THEN 'Process' WHEN {status_noise} < 0.55 THEN 'Ingredient' WHEN {status_noise} < 0.70 THEN 'Contamination' WHEN {status_noise} < 0.85 THEN 'Packaging' ELSE 'Handling' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.22 THEN 'Equipment' WHEN {alt_status_noise} < 0.40 THEN 'Process' WHEN {alt_status_noise} < 0.55 THEN 'Ingredient' WHEN {alt_status_noise} < 0.70 THEN 'Contamination' WHEN {alt_status_noise} < 0.85 THEN 'Packaging' ELSE 'Handling' END"
         },
         {
           "name": "units_affected",
@@ -301,7 +301,7 @@
           "sql_type": "STRING",
           "comment": "Disposition: Released, Hold, Rework, Rejected",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Rejected' WHEN {status_noise} < 0.10 THEN 'Rework' WHEN {status_noise} < 0.20 THEN 'Hold' ELSE 'Released' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.03 THEN 'Rejected' WHEN {alt_status_noise} < 0.10 THEN 'Rework' WHEN {alt_status_noise} < 0.20 THEN 'Hold' ELSE 'Released' END"
         }
       ],
       "seasonal_patterns": {

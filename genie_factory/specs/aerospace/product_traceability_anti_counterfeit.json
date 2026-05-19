@@ -64,28 +64,28 @@
           "sql_type": "STRING",
           "comment": "Facility where event occurred",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'OEM-SEA' WHEN {status_noise} < 0.40 THEN 'MRO-DFW' WHEN {status_noise} < 0.55 THEN 'MRO-SIN' WHEN {status_noise} < 0.70 THEN 'MRO-DUB' WHEN {status_noise} < 0.82 THEN 'OEM-TLS' WHEN {status_noise} < 0.92 THEN 'MRO-HKG' ELSE 'DEPOT-OKC' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.20 THEN 'OEM-SEA' WHEN {alt_status_noise} < 0.40 THEN 'MRO-DFW' WHEN {alt_status_noise} < 0.55 THEN 'MRO-SIN' WHEN {alt_status_noise} < 0.70 THEN 'MRO-DUB' WHEN {alt_status_noise} < 0.82 THEN 'OEM-TLS' WHEN {alt_status_noise} < 0.92 THEN 'MRO-HKG' ELSE 'DEPOT-OKC' END"
         },
         {
           "name": "document_reference",
           "sql_type": "STRING",
           "comment": "Reference document: 8130-3, EASA Form 1, Work Order, Birth Certificate",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN '8130-3' WHEN {status_noise} < 0.55 THEN 'EASA Form 1' WHEN {status_noise} < 0.80 THEN 'Work Order' ELSE 'Birth Certificate' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.30 THEN '8130-3' WHEN {alt_status_noise2} < 0.55 THEN 'EASA Form 1' WHEN {alt_status_noise2} < 0.80 THEN 'Work Order' ELSE 'Birth Certificate' END"
         },
         {
           "name": "counterfeit_risk_score",
           "sql_type": "DOUBLE",
           "comment": "AI-computed counterfeit risk score 0-100 (higher = riskier)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(1.0, {qty_noise} * 100.0 * (CASE WHEN {status_noise} < 0.05 THEN 3.0 ELSE 1.0 END)), 2)"
+          "generation_expr": "ROUND(GREATEST(1.0, {qty_noise} * 100.0 * (CASE WHEN {alt_status_noise3} < 0.05 THEN 3.0 ELSE 1.0 END)), 2)"
         },
         {
           "name": "chain_of_custody_valid",
           "sql_type": "STRING",
           "comment": "Chain of custody validation: Valid, Gap Detected, Under Review",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Valid' WHEN {status_noise} < 0.94 THEN 'Gap Detected' ELSE 'Under Review' END"
+          "generation_expr": "CASE WHEN {alt_status_noise4} < 0.82 THEN 'Valid' WHEN {alt_status_noise4} < 0.94 THEN 'Gap Detected' ELSE 'Under Review' END"
         }
       ],
       "seasonal_patterns": {},
@@ -293,7 +293,7 @@
           "sql_type": "STRING",
           "comment": "Airworthiness Directive compliance: Compliant, Pending, Overdue",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.78 THEN 'Compliant' WHEN {status_noise} < 0.93 THEN 'Pending' ELSE 'Overdue' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.78 THEN 'Compliant' WHEN {alt_status_noise} < 0.93 THEN 'Pending' ELSE 'Overdue' END"
         }
       ],
       "seasonal_patterns": {},

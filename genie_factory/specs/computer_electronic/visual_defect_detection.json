@@ -50,14 +50,14 @@
           "sql_type": "STRING",
           "comment": "Detected defect classification: Solder Bridge, Missing Component, Misalignment, Tombstone, Scratch, Crack, None",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.65 THEN 'Solder Bridge' WHEN {status_noise} < 0.74 THEN 'Missing Component' WHEN {status_noise} < 0.82 THEN 'Misalignment' WHEN {status_noise} < 0.88 THEN 'Tombstone' WHEN {status_noise} < 0.94 THEN 'Scratch' ELSE 'Crack' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.55 THEN 'None' WHEN {alt_status_noise} < 0.65 THEN 'Solder Bridge' WHEN {alt_status_noise} < 0.74 THEN 'Missing Component' WHEN {alt_status_noise} < 0.82 THEN 'Misalignment' WHEN {alt_status_noise} < 0.88 THEN 'Tombstone' WHEN {alt_status_noise} < 0.94 THEN 'Scratch' ELSE 'Crack' END"
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Defect severity: Critical, Major, Minor, None",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.70 THEN 'Minor' WHEN {status_noise} < 0.88 THEN 'Major' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.55 THEN 'None' WHEN {alt_status_noise2} < 0.70 THEN 'Minor' WHEN {alt_status_noise2} < 0.88 THEN 'Major' ELSE 'Critical' END"
         },
         {
           "name": "confidence_score",
@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Inspection result: Pass or Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Pass' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.55 THEN 'Pass' ELSE 'Fail' END"
         }
       ],
       "seasonal_patterns": {

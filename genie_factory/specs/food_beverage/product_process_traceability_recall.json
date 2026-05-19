@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Status: Full Trace, Partial, Gap, Pending",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Gap' WHEN {status_noise} < 0.10 THEN 'Pending' WHEN {status_noise} < 0.22 THEN 'Partial' ELSE 'Full Trace' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.03 THEN 'Gap' WHEN {alt_status_noise} < 0.10 THEN 'Pending' WHEN {alt_status_noise} < 0.22 THEN 'Partial' ELSE 'Full Trace' END"
         }
       ],
       "seasonal_patterns": {
@@ -287,7 +287,7 @@
           "sql_type": "STRING",
           "comment": "Temp compliant: Yes, No",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'No' ELSE 'Yes' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.08 THEN 'No' ELSE 'Yes' END"
         },
         {
           "name": "custody_transfers",

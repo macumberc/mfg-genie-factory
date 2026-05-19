@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Approval status: Approved, Pending, Rejected",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Rejected' WHEN {status_noise} < 0.12 THEN 'Pending' ELSE 'Approved' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.03 THEN 'Rejected' WHEN {alt_status_noise} < 0.12 THEN 'Pending' ELSE 'Approved' END"
         }
       ],
       "seasonal_patterns": {

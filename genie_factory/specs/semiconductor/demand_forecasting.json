@@ -85,14 +85,14 @@
           "sql_type": "STRING",
           "comment": "Order fulfillment status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Shipped' WHEN {status_noise} < 0.72 THEN 'In Production' WHEN {status_noise} < 0.85 THEN 'Backlogged' WHEN {status_noise} < 0.93 THEN 'Partial Ship' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.55 THEN 'Shipped' WHEN {alt_status_noise} < 0.72 THEN 'In Production' WHEN {alt_status_noise} < 0.85 THEN 'Backlogged' WHEN {alt_status_noise} < 0.93 THEN 'Partial Ship' ELSE 'Cancelled' END"
         },
         {
           "name": "region",
           "sql_type": "STRING",
           "comment": "Customer geographic region",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Asia Pacific' WHEN {status_noise} < 0.55 THEN 'North America' WHEN {status_noise} < 0.75 THEN 'Europe' WHEN {status_noise} < 0.90 THEN 'Greater China' ELSE 'Rest of World' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.30 THEN 'Asia Pacific' WHEN {alt_status_noise2} < 0.55 THEN 'North America' WHEN {alt_status_noise2} < 0.75 THEN 'Europe' WHEN {alt_status_noise2} < 0.90 THEN 'Greater China' ELSE 'Rest of World' END"
         }
       ],
       "seasonal_patterns": {
@@ -291,7 +291,7 @@
           "sql_type": "STRING",
           "comment": "Forecasting model used",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN 'ML Ensemble' WHEN {status_noise} < 0.65 THEN 'ARIMA' ELSE 'Prophet' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.35 THEN 'ML Ensemble' WHEN {alt_status_noise} < 0.65 THEN 'ARIMA' ELSE 'Prophet' END"
         }
       ],
       "seasonal_patterns": {

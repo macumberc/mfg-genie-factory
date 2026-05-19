@@ -64,14 +64,14 @@
           "sql_type": "STRING",
           "comment": "Process step: Mixing, Reaction, Purification, Drying, Packaging",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.22 THEN 'Mixing' WHEN {status_noise} < 0.44 THEN 'Reaction' WHEN {status_noise} < 0.62 THEN 'Purification' WHEN {status_noise} < 0.80 THEN 'Drying' ELSE 'Packaging' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.22 THEN 'Mixing' WHEN {alt_status_noise} < 0.44 THEN 'Reaction' WHEN {alt_status_noise} < 0.62 THEN 'Purification' WHEN {alt_status_noise} < 0.80 THEN 'Drying' ELSE 'Packaging' END"
         },
         {
           "name": "supplier_id",
           "sql_type": "STRING",
           "comment": "Raw material supplier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'SUP-01' WHEN {status_noise} < 0.30 THEN 'SUP-02' WHEN {status_noise} < 0.45 THEN 'SUP-03' WHEN {status_noise} < 0.60 THEN 'SUP-04' WHEN {status_noise} < 0.75 THEN 'SUP-05' WHEN {status_noise} < 0.88 THEN 'SUP-06' ELSE 'SUP-07' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.15 THEN 'SUP-01' WHEN {alt_status_noise2} < 0.30 THEN 'SUP-02' WHEN {alt_status_noise2} < 0.45 THEN 'SUP-03' WHEN {alt_status_noise2} < 0.60 THEN 'SUP-04' WHEN {alt_status_noise2} < 0.75 THEN 'SUP-05' WHEN {alt_status_noise2} < 0.88 THEN 'SUP-06' ELSE 'SUP-07' END"
         },
         {
           "name": "input_quantity_kg",
@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Quality checkpoint result: Pass, Fail, Hold",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Fail' WHEN {status_noise} < 0.12 THEN 'Hold' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.05 THEN 'Fail' WHEN {alt_status_noise3} < 0.12 THEN 'Hold' ELSE 'Pass' END"
         }
       ],
       "seasonal_patterns": {

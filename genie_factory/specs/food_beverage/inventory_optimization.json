@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Zone: Frozen, Refrigerated, Ambient",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Frozen' WHEN {status_noise} < 0.75 THEN 'Refrigerated' ELSE 'Ambient' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.30 THEN 'Frozen' WHEN {alt_status_noise} < 0.75 THEN 'Refrigerated' ELSE 'Ambient' END"
         }
       ],
       "seasonal_patterns": {

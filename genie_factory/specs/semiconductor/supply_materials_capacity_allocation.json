@@ -78,14 +78,14 @@
           "sql_type": "STRING",
           "comment": "Order delivery status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Delivered' WHEN {status_noise} < 0.72 THEN 'In Transit' WHEN {status_noise} < 0.85 THEN 'Confirmed' WHEN {status_noise} < 0.93 THEN 'Delayed' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.55 THEN 'Delivered' WHEN {alt_status_noise} < 0.72 THEN 'In Transit' WHEN {alt_status_noise} < 0.85 THEN 'Confirmed' WHEN {alt_status_noise} < 0.93 THEN 'Delayed' ELSE 'Cancelled' END"
         },
         {
           "name": "quality_result",
           "sql_type": "STRING",
           "comment": "Incoming quality inspection result",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Pass' WHEN {status_noise} < 0.93 THEN 'Conditional' ELSE 'Reject' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.82 THEN 'Pass' WHEN {alt_status_noise2} < 0.93 THEN 'Conditional' ELSE 'Reject' END"
         }
       ],
       "seasonal_patterns": {
@@ -489,7 +489,7 @@
           "sql_type": "STRING",
           "comment": "Allocation priority level",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Critical' WHEN {status_noise} < 0.60 THEN 'High' WHEN {status_noise} < 0.85 THEN 'Standard' ELSE 'Low' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.30 THEN 'Critical' WHEN {alt_status_noise} < 0.60 THEN 'High' WHEN {alt_status_noise} < 0.85 THEN 'Standard' ELSE 'Low' END"
         }
       ],
       "seasonal_patterns": {

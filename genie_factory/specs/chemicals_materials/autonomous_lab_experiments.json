@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Result: Pass, Fail, Inconclusive",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Fail' WHEN {status_noise} < 0.20 THEN 'Inconclusive' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.12 THEN 'Fail' WHEN {alt_status_noise} < 0.20 THEN 'Inconclusive' ELSE 'Pass' END"
         }
       ],
       "seasonal_patterns": {

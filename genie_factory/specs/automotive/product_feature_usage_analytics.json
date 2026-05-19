@@ -71,7 +71,7 @@
           "sql_type": "STRING",
           "comment": "Category of the feature",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'ADAS' WHEN {status_noise} < 0.55 THEN 'Infotainment' WHEN {status_noise} < 0.75 THEN 'Convenience' ELSE 'Safety' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.30 THEN 'ADAS' WHEN {alt_status_noise} < 0.55 THEN 'Infotainment' WHEN {alt_status_noise} < 0.75 THEN 'Convenience' ELSE 'Safety' END"
         },
         {
           "name": "session_duration_sec",
@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Whether the feature activated successfully",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.82 THEN 'Success' WHEN {status_noise} < 0.94 THEN 'Partial' ELSE 'Failed' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.82 THEN 'Success' WHEN {alt_status_noise2} < 0.94 THEN 'Partial' ELSE 'Failed' END"
         }
       ],
       "seasonal_patterns": {
@@ -575,7 +575,7 @@
           "sql_type": "STRING",
           "comment": "Predicted subscription renewal likelihood",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Low' WHEN {status_noise} < 0.55 THEN 'Medium' ELSE 'High' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.20 THEN 'Low' WHEN {alt_status_noise} < 0.55 THEN 'Medium' ELSE 'High' END"
         }
       ],
       "seasonal_patterns": {

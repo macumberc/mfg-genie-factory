@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Whether the simulation passed regulatory thresholds",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Pass' WHEN {status_noise} < 0.90 THEN 'Marginal' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.72 THEN 'Pass' WHEN {alt_status_noise} < 0.90 THEN 'Marginal' ELSE 'Fail' END"
         }
       ],
       "seasonal_patterns": {
@@ -328,7 +328,7 @@
           "sql_type": "INT",
           "comment": "Number of airbags in configuration",
           "is_dimension": false,
-          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.20 THEN 6 WHEN {status_noise} < 0.50 THEN 8 WHEN {status_noise} < 0.80 THEN 10 ELSE 12 END AS INT)"
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise} < 0.20 THEN 6 WHEN {alt_status_noise} < 0.50 THEN 8 WHEN {alt_status_noise} < 0.80 THEN 10 ELSE 12 END AS INT)"
         },
         {
           "name": "weight_kg",
@@ -349,7 +349,7 @@
           "sql_type": "STRING",
           "comment": "Design exploration convergence status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Converged' WHEN {status_noise} < 0.65 THEN 'Exploring' ELSE 'Divergent' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.30 THEN 'Converged' WHEN {alt_status_noise2} < 0.65 THEN 'Exploring' ELSE 'Divergent' END"
         }
       ],
       "seasonal_patterns": {
@@ -588,7 +588,7 @@
           "sql_type": "STRING",
           "comment": "Regulatory compliance status for the month",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Compliant' WHEN {status_noise} < 0.88 THEN 'Under Review' ELSE 'Non-Compliant' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.65 THEN 'Compliant' WHEN {alt_status_noise} < 0.88 THEN 'Under Review' ELSE 'Non-Compliant' END"
         }
       ],
       "seasonal_patterns": {

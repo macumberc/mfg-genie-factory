@@ -57,14 +57,14 @@
           "sql_type": "STRING",
           "comment": "Root cause category",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Catalyst Degradation' WHEN {status_noise} < 0.28 THEN 'Feedstock Variation' WHEN {status_noise} < 0.42 THEN 'Equipment Malfunction' WHEN {status_noise} < 0.56 THEN 'Operator Error' WHEN {status_noise} < 0.68 THEN 'Process Control Drift' WHEN {status_noise} < 0.80 THEN 'Fouling Accumulation' WHEN {status_noise} < 0.90 THEN 'Corrosion Product' ELSE 'Unknown' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.14 THEN 'Catalyst Degradation' WHEN {alt_status_noise} < 0.28 THEN 'Feedstock Variation' WHEN {alt_status_noise} < 0.42 THEN 'Equipment Malfunction' WHEN {alt_status_noise} < 0.56 THEN 'Operator Error' WHEN {alt_status_noise} < 0.68 THEN 'Process Control Drift' WHEN {alt_status_noise} < 0.80 THEN 'Fouling Accumulation' WHEN {alt_status_noise} < 0.90 THEN 'Corrosion Product' ELSE 'Unknown' END"
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Minor, Moderate, Major, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Minor' WHEN {status_noise} < 0.70 THEN 'Moderate' WHEN {status_noise} < 0.90 THEN 'Major' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.40 THEN 'Minor' WHEN {alt_status_noise2} < 0.70 THEN 'Moderate' WHEN {alt_status_noise2} < 0.90 THEN 'Major' ELSE 'Critical' END"
         },
         {
           "name": "off_spec_volume_bbl",

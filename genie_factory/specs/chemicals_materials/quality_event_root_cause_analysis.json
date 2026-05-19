@@ -57,21 +57,21 @@
           "sql_type": "STRING",
           "comment": "Type: Deviation, Non-Conformance, Customer Complaint, Audit Finding",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Deviation' WHEN {status_noise} < 0.65 THEN 'Non-Conformance' WHEN {status_noise} < 0.85 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.40 THEN 'Deviation' WHEN {alt_status_noise} < 0.65 THEN 'Non-Conformance' WHEN {alt_status_noise} < 0.85 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Critical, Major, Minor",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.35 THEN 'Major' ELSE 'Minor' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.08 THEN 'Critical' WHEN {alt_status_noise2} < 0.35 THEN 'Major' ELSE 'Minor' END"
         },
         {
           "name": "root_cause_category",
           "sql_type": "STRING",
           "comment": "Root cause: Equipment, Process, Material, Human Error, Environmental",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Equipment' WHEN {status_noise} < 0.50 THEN 'Process' WHEN {status_noise} < 0.70 THEN 'Material' WHEN {status_noise} < 0.88 THEN 'Human Error' ELSE 'Environmental' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.25 THEN 'Equipment' WHEN {alt_status_noise3} < 0.50 THEN 'Process' WHEN {alt_status_noise3} < 0.70 THEN 'Material' WHEN {alt_status_noise3} < 0.88 THEN 'Human Error' ELSE 'Environmental' END"
         },
         {
           "name": "cost_of_quality_usd",
@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "CAPA status: Open, In Progress, Closed Effective, Closed Ineffective",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Open' WHEN {status_noise} < 0.25 THEN 'In Progress' WHEN {status_noise} < 0.90 THEN 'Closed Effective' ELSE 'Closed Ineffective' END"
+          "generation_expr": "CASE WHEN {alt_status_noise4} < 0.10 THEN 'Open' WHEN {alt_status_noise4} < 0.25 THEN 'In Progress' WHEN {alt_status_noise4} < 0.90 THEN 'Closed Effective' ELSE 'Closed Ineffective' END"
         }
       ],
       "seasonal_patterns": {
@@ -302,7 +302,7 @@
           "sql_type": "STRING",
           "comment": "Quality outcome: Pass, Conditional Pass, Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.06 THEN 'Fail' WHEN {status_noise} < 0.18 THEN 'Conditional Pass' ELSE 'Pass' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.06 THEN 'Fail' WHEN {alt_status_noise} < 0.18 THEN 'Conditional Pass' ELSE 'Pass' END"
         }
       ],
       "seasonal_patterns": {},

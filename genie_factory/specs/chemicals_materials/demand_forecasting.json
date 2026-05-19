@@ -57,7 +57,7 @@
           "sql_type": "STRING",
           "comment": "Customer segment: Industrial, Automotive, Construction, Consumer, Pharmaceutical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'Industrial' WHEN {status_noise} < 0.45 THEN 'Automotive' WHEN {status_noise} < 0.65 THEN 'Construction' WHEN {status_noise} < 0.82 THEN 'Consumer' ELSE 'Pharmaceutical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.25 THEN 'Industrial' WHEN {alt_status_noise} < 0.45 THEN 'Automotive' WHEN {alt_status_noise} < 0.65 THEN 'Construction' WHEN {alt_status_noise} < 0.82 THEN 'Consumer' ELSE 'Pharmaceutical' END"
         },
         {
           "name": "order_quantity_kg",
@@ -85,7 +85,7 @@
           "sql_type": "STRING",
           "comment": "Fulfillment status: Fulfilled, Partial, Backorder, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.02 THEN 'Cancelled' WHEN {status_noise} < 0.08 THEN 'Backorder' WHEN {status_noise} < 0.15 THEN 'Partial' ELSE 'Fulfilled' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.02 THEN 'Cancelled' WHEN {alt_status_noise2} < 0.08 THEN 'Backorder' WHEN {alt_status_noise2} < 0.15 THEN 'Partial' ELSE 'Fulfilled' END"
         }
       ],
       "seasonal_patterns": {
@@ -262,7 +262,7 @@
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v4.0' WHEN {status_noise} < 0.66 THEN 'v4.1' ELSE 'v4.2' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.33 THEN 'v4.0' WHEN {alt_status_noise} < 0.66 THEN 'v4.1' ELSE 'v4.2' END"
         },
         {
           "name": "forecasted_quantity_kg",
@@ -493,7 +493,7 @@
           "sql_type": "STRING",
           "comment": "Reorder status: Adequate, Low, Critical, Reorder Placed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.05 THEN 'Critical' WHEN {status_noise} < 0.15 THEN 'Reorder Placed' WHEN {status_noise} < 0.30 THEN 'Low' ELSE 'Adequate' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.05 THEN 'Critical' WHEN {alt_status_noise} < 0.15 THEN 'Reorder Placed' WHEN {alt_status_noise} < 0.30 THEN 'Low' ELSE 'Adequate' END"
         }
       ],
       "seasonal_patterns": {},

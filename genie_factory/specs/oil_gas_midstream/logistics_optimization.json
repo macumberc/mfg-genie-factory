@@ -305,7 +305,7 @@
           "sql_type": "STRING",
           "comment": "Severity: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.40 THEN 'Low' WHEN {alt_status_noise} < 0.70 THEN 'Medium' WHEN {alt_status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
         }
       ],
       "seasonal_patterns": {},

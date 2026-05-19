@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Anomaly detection flag: Normal, Watch, Alert, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'Normal' WHEN {status_noise} < 0.82 THEN 'Watch' WHEN {status_noise} < 0.94 THEN 'Alert' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.65 THEN 'Normal' WHEN {alt_status_noise} < 0.82 THEN 'Watch' WHEN {alt_status_noise} < 0.94 THEN 'Alert' ELSE 'Critical' END"
         }
       ],
       "seasonal_patterns": {
@@ -329,7 +329,7 @@
           "sql_type": "STRING",
           "comment": "Primary finding: Blade Erosion, Oil Leak, Bearing Wear, Combustor Cracking, FOD Damage, Seal Degradation, Normal Wear, No Defect Found",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Blade Erosion' WHEN {status_noise} < 0.28 THEN 'Oil Leak' WHEN {status_noise} < 0.38 THEN 'Bearing Wear' WHEN {status_noise} < 0.48 THEN 'Combustor Cracking' WHEN {status_noise} < 0.55 THEN 'FOD Damage' WHEN {status_noise} < 0.65 THEN 'Seal Degradation' WHEN {status_noise} < 0.82 THEN 'Normal Wear' ELSE 'No Defect Found' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.15 THEN 'Blade Erosion' WHEN {alt_status_noise} < 0.28 THEN 'Oil Leak' WHEN {alt_status_noise} < 0.38 THEN 'Bearing Wear' WHEN {alt_status_noise} < 0.48 THEN 'Combustor Cracking' WHEN {alt_status_noise} < 0.55 THEN 'FOD Damage' WHEN {alt_status_noise} < 0.65 THEN 'Seal Degradation' WHEN {alt_status_noise} < 0.82 THEN 'Normal Wear' ELSE 'No Defect Found' END"
         },
         {
           "name": "downtime_hours",

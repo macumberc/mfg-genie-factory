@@ -57,21 +57,21 @@
           "sql_type": "STRING",
           "comment": "Event type: Non-Conformance, Escape, Customer Complaint, Audit Finding",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Non-Conformance' WHEN {status_noise} < 0.70 THEN 'Escape' WHEN {status_noise} < 0.88 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.50 THEN 'Non-Conformance' WHEN {alt_status_noise} < 0.70 THEN 'Escape' WHEN {alt_status_noise} < 0.88 THEN 'Customer Complaint' ELSE 'Audit Finding' END"
         },
         {
           "name": "severity",
           "sql_type": "STRING",
           "comment": "Severity: Critical, Major, Minor, Observation",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.08 THEN 'Critical' WHEN {status_noise} < 0.30 THEN 'Major' WHEN {status_noise} < 0.70 THEN 'Minor' ELSE 'Observation' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.08 THEN 'Critical' WHEN {alt_status_noise2} < 0.30 THEN 'Major' WHEN {alt_status_noise2} < 0.70 THEN 'Minor' ELSE 'Observation' END"
         },
         {
           "name": "root_cause",
           "sql_type": "STRING",
           "comment": "Root cause: Tooling Wear, Operator Error, Material Defect, Process Drift, Design Gap, Supplier Quality, Environmental, Unknown",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Tooling Wear' WHEN {status_noise} < 0.28 THEN 'Operator Error' WHEN {status_noise} < 0.40 THEN 'Material Defect' WHEN {status_noise} < 0.52 THEN 'Process Drift' WHEN {status_noise} < 0.62 THEN 'Design Gap' WHEN {status_noise} < 0.75 THEN 'Supplier Quality' WHEN {status_noise} < 0.85 THEN 'Environmental' ELSE 'Unknown' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.15 THEN 'Tooling Wear' WHEN {alt_status_noise3} < 0.28 THEN 'Operator Error' WHEN {alt_status_noise3} < 0.40 THEN 'Material Defect' WHEN {alt_status_noise3} < 0.52 THEN 'Process Drift' WHEN {alt_status_noise3} < 0.62 THEN 'Design Gap' WHEN {alt_status_noise3} < 0.75 THEN 'Supplier Quality' WHEN {alt_status_noise3} < 0.85 THEN 'Environmental' ELSE 'Unknown' END"
         },
         {
           "name": "cost_of_quality_usd",
@@ -252,7 +252,7 @@
           "sql_type": "STRING",
           "comment": "Inspection type: First Article, In-Process, Final, Receiving, Audit",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'First Article' WHEN {status_noise} < 0.45 THEN 'In-Process' WHEN {status_noise} < 0.70 THEN 'Final' WHEN {status_noise} < 0.85 THEN 'Receiving' ELSE 'Audit' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.15 THEN 'First Article' WHEN {alt_status_noise} < 0.45 THEN 'In-Process' WHEN {alt_status_noise} < 0.70 THEN 'Final' WHEN {alt_status_noise} < 0.85 THEN 'Receiving' ELSE 'Audit' END"
         },
         {
           "name": "units_inspected",
@@ -273,7 +273,7 @@
           "sql_type": "STRING",
           "comment": "Overall result: Pass, Conditional, Fail",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.70 THEN 'Pass' WHEN {status_noise} < 0.88 THEN 'Conditional' ELSE 'Fail' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.70 THEN 'Pass' WHEN {alt_status_noise2} < 0.88 THEN 'Conditional' ELSE 'Fail' END"
         },
         {
           "name": "cycle_time_hours",

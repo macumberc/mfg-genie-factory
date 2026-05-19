@@ -415,7 +415,7 @@
           "sql_type": "STRING",
           "comment": "Segment destination city",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Denver' WHEN {status_noise} < 0.2 THEN 'Miami' WHEN {status_noise} < 0.3 THEN 'Chicago' WHEN {status_noise} < 0.4 THEN 'New York' WHEN {status_noise} < 0.5 THEN 'Dallas' WHEN {status_noise} < 0.6 THEN 'Atlanta' WHEN {status_noise} < 0.7 THEN 'Los Angeles' WHEN {status_noise} < 0.8 THEN 'Phoenix' WHEN {status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.1 THEN 'Denver' WHEN {alt_status_noise} < 0.2 THEN 'Miami' WHEN {alt_status_noise} < 0.3 THEN 'Chicago' WHEN {alt_status_noise} < 0.4 THEN 'New York' WHEN {alt_status_noise} < 0.5 THEN 'Dallas' WHEN {alt_status_noise} < 0.6 THEN 'Atlanta' WHEN {alt_status_noise} < 0.7 THEN 'Los Angeles' WHEN {alt_status_noise} < 0.8 THEN 'Phoenix' WHEN {alt_status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END"
         },
         {
           "name": "distance_km",
@@ -464,7 +464,7 @@
           "sql_type": "STRING",
           "comment": "Weather during segment: Clear, Rain, Snow, Fog",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Clear' WHEN {status_noise} < 0.80 THEN 'Rain' WHEN {status_noise} < 0.93 THEN 'Snow' ELSE 'Fog' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.55 THEN 'Clear' WHEN {alt_status_noise2} < 0.80 THEN 'Rain' WHEN {alt_status_noise2} < 0.93 THEN 'Snow' ELSE 'Fog' END"
         }
       ],
       "seasonal_patterns": {

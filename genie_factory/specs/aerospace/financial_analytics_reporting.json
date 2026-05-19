@@ -57,28 +57,28 @@
           "sql_type": "DOUBLE",
           "comment": "Transaction amount in USD (revenue positive, expenses negative)",
           "is_dimension": false,
-          "generation_expr": "ROUND((CASE WHEN {status_noise} < 0.20 THEN 1.0 ELSE -1.0 END) * (10000.0 + ({qty_noise} * 990000.0)), 2)"
+          "generation_expr": "ROUND((CASE WHEN {alt_status_noise} < 0.20 THEN 1.0 ELSE -1.0 END) * (10000.0 + ({qty_noise} * 990000.0)), 2)"
         },
         {
           "name": "currency",
           "sql_type": "STRING",
           "comment": "Original currency: USD, EUR, GBP",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.65 THEN 'USD' WHEN {status_noise} < 0.85 THEN 'EUR' ELSE 'GBP' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.65 THEN 'USD' WHEN {alt_status_noise2} < 0.85 THEN 'EUR' ELSE 'GBP' END"
         },
         {
           "name": "project_code",
           "sql_type": "STRING",
           "comment": "Project code for cost allocation",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.25 THEN 'PROD-NB' WHEN {status_noise} < 0.45 THEN 'PROD-WB' WHEN {status_noise} < 0.60 THEN 'DEF-FW' WHEN {status_noise} < 0.72 THEN 'SPC-SAT' WHEN {status_noise} < 0.82 THEN 'BJ-CABIN' WHEN {status_noise} < 0.92 THEN 'SVC-MRO' ELSE 'RD-NXT' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.25 THEN 'PROD-NB' WHEN {alt_status_noise3} < 0.45 THEN 'PROD-WB' WHEN {alt_status_noise3} < 0.60 THEN 'DEF-FW' WHEN {alt_status_noise3} < 0.72 THEN 'SPC-SAT' WHEN {alt_status_noise3} < 0.82 THEN 'BJ-CABIN' WHEN {alt_status_noise3} < 0.92 THEN 'SVC-MRO' ELSE 'RD-NXT' END"
         },
         {
           "name": "is_recurring",
           "sql_type": "STRING",
           "comment": "Recurring vs one-time: Recurring, One-Time",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.75 THEN 'Recurring' ELSE 'One-Time' END"
+          "generation_expr": "CASE WHEN {alt_status_noise4} < 0.75 THEN 'Recurring' ELSE 'One-Time' END"
         }
       ],
       "seasonal_patterns": {

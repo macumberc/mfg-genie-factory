@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Alert: Normal, Advisory, Warning, Alarm, Trip",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.55 THEN 'Normal' WHEN {alt_status_noise} < 0.75 THEN 'Advisory' WHEN {alt_status_noise} < 0.88 THEN 'Warning' WHEN {alt_status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
         },
         {
           "name": "predicted_rul_days",
@@ -288,7 +288,7 @@
           "sql_type": "BOOLEAN",
           "comment": "ML predicted",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN TRUE ELSE FALSE END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.40 THEN TRUE ELSE FALSE END"
         },
         {
           "name": "downtime_hours",

@@ -119,7 +119,13 @@ def apply_fix_seed_modulo(spec: dict) -> int:
 _CASE_STATUS_NOISE_RE = re.compile(
     r"(WHEN|IF)[^A-Za-z_]+\{\s*status_noise\s*\}", re.IGNORECASE
 )
-_REPLACEMENT_PLACEHOLDERS = ["{alt_status_noise}", "{alt_status_noise2}"]
+_REPLACEMENT_PLACEHOLDERS = [
+    "{alt_status_noise}",
+    "{alt_status_noise2}",
+    "{alt_status_noise3}",
+    "{alt_status_noise4}",
+    "{alt_status_noise5}",
+]
 
 
 def _uses_status_noise_in_case(expr: str) -> bool:

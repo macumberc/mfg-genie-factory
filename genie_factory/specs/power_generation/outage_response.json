@@ -279,7 +279,7 @@
           "sql_type": "STRING",
           "comment": "Root cause category: Mechanical, Electrical, Boiler, Controls, External",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Mechanical' WHEN {status_noise} < 0.55 THEN 'Electrical' WHEN {status_noise} < 0.72 THEN 'Boiler' WHEN {status_noise} < 0.88 THEN 'Controls' ELSE 'External' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.30 THEN 'Mechanical' WHEN {alt_status_noise} < 0.55 THEN 'Electrical' WHEN {alt_status_noise} < 0.72 THEN 'Boiler' WHEN {alt_status_noise} < 0.88 THEN 'Controls' ELSE 'External' END"
         },
         {
           "name": "duration_hours",

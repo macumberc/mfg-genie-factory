@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Alert level: Normal, Watch, Warning, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.60 THEN 'Normal' WHEN {status_noise} < 0.80 THEN 'Watch' WHEN {status_noise} < 0.93 THEN 'Warning' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.60 THEN 'Normal' WHEN {alt_status_noise} < 0.80 THEN 'Watch' WHEN {alt_status_noise} < 0.93 THEN 'Warning' ELSE 'Critical' END"
         }
       ],
       "seasonal_patterns": {
@@ -348,7 +348,7 @@
           "sql_type": "STRING",
           "comment": "Root cause: Insulation Degradation, Oil Contamination, Overloading, Lightning, Bushing Failure, Tap Changer, Cooling System, Age/Wear",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Insulation Degradation' WHEN {status_noise} < 0.28 THEN 'Oil Contamination' WHEN {status_noise} < 0.40 THEN 'Overloading' WHEN {status_noise} < 0.50 THEN 'Lightning' WHEN {status_noise} < 0.60 THEN 'Bushing Failure' WHEN {status_noise} < 0.72 THEN 'Tap Changer' WHEN {status_noise} < 0.85 THEN 'Cooling System' ELSE 'Age/Wear' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.15 THEN 'Insulation Degradation' WHEN {alt_status_noise} < 0.28 THEN 'Oil Contamination' WHEN {alt_status_noise} < 0.40 THEN 'Overloading' WHEN {alt_status_noise} < 0.50 THEN 'Lightning' WHEN {alt_status_noise} < 0.60 THEN 'Bushing Failure' WHEN {alt_status_noise} < 0.72 THEN 'Tap Changer' WHEN {alt_status_noise} < 0.85 THEN 'Cooling System' ELSE 'Age/Wear' END"
         },
         {
           "name": "outage_hours",

@@ -296,7 +296,7 @@
           "sql_type": "STRING",
           "comment": "Component: Engine, Brakes, Wheels, Bearings, Couplers, Electronics",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Engine' WHEN {status_noise} < 0.38 THEN 'Brakes' WHEN {status_noise} < 0.55 THEN 'Wheels' WHEN {status_noise} < 0.70 THEN 'Bearings' WHEN {status_noise} < 0.85 THEN 'Couplers' ELSE 'Electronics' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.20 THEN 'Engine' WHEN {alt_status_noise} < 0.38 THEN 'Brakes' WHEN {alt_status_noise} < 0.55 THEN 'Wheels' WHEN {alt_status_noise} < 0.70 THEN 'Bearings' WHEN {alt_status_noise} < 0.85 THEN 'Couplers' ELSE 'Electronics' END"
         }
       ],
       "seasonal_patterns": {

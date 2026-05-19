@@ -258,7 +258,7 @@
           "sql_type": "STRING",
           "comment": "Failure mode identified: Belt Wear, Motor Burnout, Nozzle Clog, Thermal Drift, Solder Contamination, Calibration Drift, None",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'None' WHEN {status_noise} < 0.52 THEN 'Belt Wear' WHEN {status_noise} < 0.62 THEN 'Motor Burnout' WHEN {status_noise} < 0.72 THEN 'Nozzle Clog' WHEN {status_noise} < 0.82 THEN 'Thermal Drift' WHEN {status_noise} < 0.92 THEN 'Solder Contamination' ELSE 'Calibration Drift' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.40 THEN 'None' WHEN {alt_status_noise} < 0.52 THEN 'Belt Wear' WHEN {alt_status_noise} < 0.62 THEN 'Motor Burnout' WHEN {alt_status_noise} < 0.72 THEN 'Nozzle Clog' WHEN {alt_status_noise} < 0.82 THEN 'Thermal Drift' WHEN {alt_status_noise} < 0.92 THEN 'Solder Contamination' ELSE 'Calibration Drift' END"
         },
         {
           "name": "downtime_hours",
@@ -286,7 +286,7 @@
           "sql_type": "BOOLEAN",
           "comment": "Whether the failure was predicted by ML model",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.35 THEN true ELSE false END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.35 THEN true ELSE false END"
         }
       ],
       "seasonal_patterns": {

@@ -57,7 +57,7 @@
           "sql_type": "STRING",
           "comment": "Destination hub",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.125 THEN 'Denver Hub' WHEN {status_noise} < 0.25 THEN 'Miami Hub' WHEN {status_noise} < 0.375 THEN 'New York Hub' WHEN {status_noise} < 0.5 THEN 'Chicago Hub' WHEN {status_noise} < 0.625 THEN 'Dallas Hub' WHEN {status_noise} < 0.75 THEN 'Atlanta Hub' WHEN {status_noise} < 0.875 THEN 'Los Angeles Hub' ELSE 'Seattle Hub' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.125 THEN 'Denver Hub' WHEN {alt_status_noise} < 0.25 THEN 'Miami Hub' WHEN {alt_status_noise} < 0.375 THEN 'New York Hub' WHEN {alt_status_noise} < 0.5 THEN 'Chicago Hub' WHEN {alt_status_noise} < 0.625 THEN 'Dallas Hub' WHEN {alt_status_noise} < 0.75 THEN 'Atlanta Hub' WHEN {alt_status_noise} < 0.875 THEN 'Los Angeles Hub' ELSE 'Seattle Hub' END"
         },
         {
           "name": "weight_lbs",
@@ -85,7 +85,7 @@
           "sql_type": "STRING",
           "comment": "Status: Delivered, In Transit, Delayed, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Cancelled' WHEN {status_noise} < 0.10 THEN 'Delayed' WHEN {status_noise} < 0.18 THEN 'In Transit' ELSE 'Delivered' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.03 THEN 'Cancelled' WHEN {alt_status_noise2} < 0.10 THEN 'Delayed' WHEN {alt_status_noise2} < 0.18 THEN 'In Transit' ELSE 'Delivered' END"
         }
       ],
       "seasonal_patterns": {
@@ -258,7 +258,7 @@
           "sql_type": "STRING",
           "comment": "Forecast model version",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.33 THEN 'v2.0' WHEN {status_noise} < 0.66 THEN 'v2.1' ELSE 'v2.2' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.33 THEN 'v2.0' WHEN {alt_status_noise} < 0.66 THEN 'v2.1' ELSE 'v2.2' END"
         },
         {
           "name": "forecasted_shipments",

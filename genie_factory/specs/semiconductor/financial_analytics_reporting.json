@@ -57,21 +57,21 @@
           "sql_type": "STRING",
           "comment": "Specific GL account",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.12 THEN 'Product Revenue' WHEN {status_noise} < 0.22 THEN 'License Revenue' WHEN {status_noise} < 0.30 THEN 'Service Revenue' WHEN {status_noise} < 0.38 THEN 'Wafer Cost' WHEN {status_noise} < 0.44 THEN 'Packaging Cost' WHEN {status_noise} < 0.50 THEN 'Test Cost' WHEN {status_noise} < 0.56 THEN 'R&D Salaries' WHEN {status_noise} < 0.62 THEN 'R&D Equipment' WHEN {status_noise} < 0.68 THEN 'SG&A' WHEN {status_noise} < 0.73 THEN 'Marketing' WHEN {status_noise} < 0.78 THEN 'Fab Equipment' WHEN {status_noise} < 0.83 THEN 'IT Infrastructure' WHEN {status_noise} < 0.88 THEN 'Facilities' WHEN {status_noise} < 0.93 THEN 'Depreciation' ELSE 'Other Expense' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.12 THEN 'Product Revenue' WHEN {alt_status_noise} < 0.22 THEN 'License Revenue' WHEN {alt_status_noise} < 0.30 THEN 'Service Revenue' WHEN {alt_status_noise} < 0.38 THEN 'Wafer Cost' WHEN {alt_status_noise} < 0.44 THEN 'Packaging Cost' WHEN {alt_status_noise} < 0.50 THEN 'Test Cost' WHEN {alt_status_noise} < 0.56 THEN 'R&D Salaries' WHEN {alt_status_noise} < 0.62 THEN 'R&D Equipment' WHEN {alt_status_noise} < 0.68 THEN 'SG&A' WHEN {alt_status_noise} < 0.73 THEN 'Marketing' WHEN {alt_status_noise} < 0.78 THEN 'Fab Equipment' WHEN {alt_status_noise} < 0.83 THEN 'IT Infrastructure' WHEN {alt_status_noise} < 0.88 THEN 'Facilities' WHEN {alt_status_noise} < 0.93 THEN 'Depreciation' ELSE 'Other Expense' END"
         },
         {
           "name": "amount_usd",
           "sql_type": "DOUBLE",
           "comment": "Transaction amount in USD (positive = credit/revenue, negative = debit/expense)",
           "is_dimension": false,
-          "generation_expr": "ROUND(CASE WHEN {status_noise} < 0.30 THEN 1000.0 + {qty_noise} * 99000.0 ELSE -500.0 - {qty_noise} * 49500.0 END, 2)"
+          "generation_expr": "ROUND(CASE WHEN {alt_status_noise2} < 0.30 THEN 1000.0 + {qty_noise} * 99000.0 ELSE -500.0 - {qty_noise} * 49500.0 END, 2)"
         },
         {
           "name": "currency_code",
           "sql_type": "STRING",
           "comment": "Original transaction currency",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'USD' WHEN {status_noise} < 0.70 THEN 'EUR' WHEN {status_noise} < 0.85 THEN 'TWD' ELSE 'JPY' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.50 THEN 'USD' WHEN {alt_status_noise3} < 0.70 THEN 'EUR' WHEN {alt_status_noise3} < 0.85 THEN 'TWD' ELSE 'JPY' END"
         },
         {
           "name": "fiscal_quarter",

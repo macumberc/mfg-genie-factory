@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Delivery outcome: On Time, Late, Partial, Failed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.03 THEN 'Failed' WHEN {status_noise} < 0.08 THEN 'Partial' WHEN {status_noise} < 0.18 THEN 'Late' ELSE 'On Time' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.03 THEN 'Failed' WHEN {alt_status_noise} < 0.08 THEN 'Partial' WHEN {alt_status_noise} < 0.18 THEN 'Late' ELSE 'On Time' END"
         },
         {
           "name": "revenue_usd",

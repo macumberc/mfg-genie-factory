@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Simulation convergence: Converged, Partial, Failed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.72 THEN 'Converged' WHEN {status_noise} < 0.90 THEN 'Partial' ELSE 'Failed' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.72 THEN 'Converged' WHEN {alt_status_noise} < 0.90 THEN 'Partial' ELSE 'Failed' END"
         }
       ],
       "seasonal_patterns": {
@@ -288,7 +288,7 @@
           "sql_type": "STRING",
           "comment": "Sweep status: Complete, In Progress, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.80 THEN 'Complete' WHEN {status_noise} < 0.95 THEN 'In Progress' ELSE 'Cancelled' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.80 THEN 'Complete' WHEN {alt_status_noise} < 0.95 THEN 'In Progress' ELSE 'Cancelled' END"
         }
       ],
       "seasonal_patterns": {

@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "Alert level: Normal, Advisory, Warning, Alarm, Trip",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Normal' WHEN {status_noise} < 0.75 THEN 'Advisory' WHEN {status_noise} < 0.88 THEN 'Warning' WHEN {status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.55 THEN 'Normal' WHEN {alt_status_noise} < 0.75 THEN 'Advisory' WHEN {alt_status_noise} < 0.88 THEN 'Warning' WHEN {alt_status_noise} < 0.96 THEN 'Alarm' ELSE 'Trip' END"
         },
         {
           "name": "predicted_rul_days",
@@ -286,14 +286,14 @@
           "sql_type": "STRING",
           "comment": "Root cause failure mode",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.10 THEN 'Fouling' WHEN {status_noise} < 0.20 THEN 'Corrosion' WHEN {status_noise} < 0.30 THEN 'Erosion' WHEN {status_noise} < 0.40 THEN 'Catalyst Deactivation' WHEN {status_noise} < 0.50 THEN 'Seal Failure' WHEN {status_noise} < 0.58 THEN 'Bearing Wear' WHEN {status_noise} < 0.66 THEN 'Tube Leak' WHEN {status_noise} < 0.74 THEN 'Coking' WHEN {status_noise} < 0.82 THEN 'Vibration Fatigue' WHEN {status_noise} < 0.90 THEN 'Tray Damage' ELSE 'Refractory Failure' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.10 THEN 'Fouling' WHEN {alt_status_noise} < 0.20 THEN 'Corrosion' WHEN {alt_status_noise} < 0.30 THEN 'Erosion' WHEN {alt_status_noise} < 0.40 THEN 'Catalyst Deactivation' WHEN {alt_status_noise} < 0.50 THEN 'Seal Failure' WHEN {alt_status_noise} < 0.58 THEN 'Bearing Wear' WHEN {alt_status_noise} < 0.66 THEN 'Tube Leak' WHEN {alt_status_noise} < 0.74 THEN 'Coking' WHEN {alt_status_noise} < 0.82 THEN 'Vibration Fatigue' WHEN {alt_status_noise} < 0.90 THEN 'Tray Damage' ELSE 'Refractory Failure' END"
         },
         {
           "name": "was_predicted",
           "sql_type": "BOOLEAN",
           "comment": "Whether the failure was predicted by the ML model",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.42 THEN TRUE ELSE FALSE END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.42 THEN TRUE ELSE FALSE END"
         },
         {
           "name": "downtime_hours",

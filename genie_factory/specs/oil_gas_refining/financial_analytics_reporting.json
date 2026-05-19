@@ -78,7 +78,7 @@
           "sql_type": "STRING",
           "comment": "GL category",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Operations' WHEN {status_noise} < 0.40 THEN 'Maintenance' WHEN {status_noise} < 0.58 THEN 'Labor' WHEN {status_noise} < 0.74 THEN 'Materials' WHEN {status_noise} < 0.88 THEN 'Utilities' ELSE 'Admin' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.20 THEN 'Operations' WHEN {alt_status_noise} < 0.40 THEN 'Maintenance' WHEN {alt_status_noise} < 0.58 THEN 'Labor' WHEN {alt_status_noise} < 0.74 THEN 'Materials' WHEN {alt_status_noise} < 0.88 THEN 'Utilities' ELSE 'Admin' END"
         }
       ],
       "seasonal_patterns": {},

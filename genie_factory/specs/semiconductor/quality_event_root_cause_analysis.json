@@ -57,35 +57,35 @@
           "sql_type": "STRING",
           "comment": "Type of quality event",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.18 THEN 'Defect Excursion' WHEN {status_noise} < 0.34 THEN 'Process Deviation' WHEN {status_noise} < 0.48 THEN 'Equipment Alarm' WHEN {status_noise} < 0.60 THEN 'Yield Drop' WHEN {status_noise} < 0.72 THEN 'Customer Return' WHEN {status_noise} < 0.86 THEN 'Incoming Material Fail' ELSE 'Environmental Event' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.18 THEN 'Defect Excursion' WHEN {alt_status_noise} < 0.34 THEN 'Process Deviation' WHEN {alt_status_noise} < 0.48 THEN 'Equipment Alarm' WHEN {alt_status_noise} < 0.60 THEN 'Yield Drop' WHEN {alt_status_noise} < 0.72 THEN 'Customer Return' WHEN {alt_status_noise} < 0.86 THEN 'Incoming Material Fail' ELSE 'Environmental Event' END"
         },
         {
           "name": "failure_mode",
           "sql_type": "STRING",
           "comment": "Specific failure mode observed",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.07 THEN 'Open Circuit' WHEN {status_noise} < 0.14 THEN 'Short Circuit' WHEN {status_noise} < 0.20 THEN 'Gate Oxide Breakdown' WHEN {status_noise} < 0.26 THEN 'Electromigration' WHEN {status_noise} < 0.32 THEN 'Hot Carrier Injection' WHEN {status_noise} < 0.38 THEN 'Latch-Up' WHEN {status_noise} < 0.44 THEN 'Metal Bridging' WHEN {status_noise} < 0.50 THEN 'Via Void' WHEN {status_noise} < 0.56 THEN 'Particle Contamination' WHEN {status_noise} < 0.62 THEN 'Pattern Collapse' WHEN {status_noise} < 0.68 THEN 'Delamination' WHEN {status_noise} < 0.74 THEN 'Crack Propagation' WHEN {status_noise} < 0.80 THEN 'Solder Joint Fatigue' WHEN {status_noise} < 0.86 THEN 'Wire Bond Lift' WHEN {status_noise} < 0.93 THEN 'ESD Damage' ELSE 'Corrosion' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.07 THEN 'Open Circuit' WHEN {alt_status_noise2} < 0.14 THEN 'Short Circuit' WHEN {alt_status_noise2} < 0.20 THEN 'Gate Oxide Breakdown' WHEN {alt_status_noise2} < 0.26 THEN 'Electromigration' WHEN {alt_status_noise2} < 0.32 THEN 'Hot Carrier Injection' WHEN {alt_status_noise2} < 0.38 THEN 'Latch-Up' WHEN {alt_status_noise2} < 0.44 THEN 'Metal Bridging' WHEN {alt_status_noise2} < 0.50 THEN 'Via Void' WHEN {alt_status_noise2} < 0.56 THEN 'Particle Contamination' WHEN {alt_status_noise2} < 0.62 THEN 'Pattern Collapse' WHEN {alt_status_noise2} < 0.68 THEN 'Delamination' WHEN {alt_status_noise2} < 0.74 THEN 'Crack Propagation' WHEN {alt_status_noise2} < 0.80 THEN 'Solder Joint Fatigue' WHEN {alt_status_noise2} < 0.86 THEN 'Wire Bond Lift' WHEN {alt_status_noise2} < 0.93 THEN 'ESD Damage' ELSE 'Corrosion' END"
         },
         {
           "name": "severity_level",
           "sql_type": "STRING",
           "comment": "Event severity classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.50 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.95 THEN 'Observation' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.50 THEN 'Minor' WHEN {alt_status_noise3} < 0.74 THEN 'Major' WHEN {alt_status_noise3} < 0.95 THEN 'Observation' ELSE 'Critical' END"
         },
         {
           "name": "root_cause_category",
           "sql_type": "STRING",
           "comment": "Root cause classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.14 THEN 'Contamination' WHEN {status_noise} < 0.26 THEN 'Lithography' WHEN {status_noise} < 0.38 THEN 'Etch Variation' WHEN {status_noise} < 0.48 THEN 'CMP Defect' WHEN {status_noise} < 0.58 THEN 'Implant Drift' WHEN {status_noise} < 0.68 THEN 'Equipment Fault' WHEN {status_noise} < 0.78 THEN 'Material Defect' WHEN {status_noise} < 0.88 THEN 'Operator Error' ELSE 'Environmental' END"
+          "generation_expr": "CASE WHEN {alt_status_noise4} < 0.14 THEN 'Contamination' WHEN {alt_status_noise4} < 0.26 THEN 'Lithography' WHEN {alt_status_noise4} < 0.38 THEN 'Etch Variation' WHEN {alt_status_noise4} < 0.48 THEN 'CMP Defect' WHEN {alt_status_noise4} < 0.58 THEN 'Implant Drift' WHEN {alt_status_noise4} < 0.68 THEN 'Equipment Fault' WHEN {alt_status_noise4} < 0.78 THEN 'Material Defect' WHEN {alt_status_noise4} < 0.88 THEN 'Operator Error' ELSE 'Environmental' END"
         },
         {
           "name": "status",
           "sql_type": "STRING",
           "comment": "Current event status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.51 THEN 'Closed' WHEN {status_noise} < 0.68 THEN 'Pending' WHEN {status_noise} < 0.85 THEN 'Open' ELSE 'In Progress' END"
+          "generation_expr": "CASE WHEN {alt_status_noise5} < 0.51 THEN 'Closed' WHEN {alt_status_noise5} < 0.68 THEN 'Pending' WHEN {alt_status_noise5} < 0.85 THEN 'Open' ELSE 'In Progress' END"
         },
         {
           "name": "affected_wafer_count",

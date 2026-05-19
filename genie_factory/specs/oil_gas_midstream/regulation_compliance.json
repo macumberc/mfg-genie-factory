@@ -64,7 +64,7 @@
           "sql_type": "STRING",
           "comment": "Severity: Low, Medium, High, Critical",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.40 THEN 'Low' WHEN {status_noise} < 0.70 THEN 'Medium' WHEN {status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.40 THEN 'Low' WHEN {alt_status_noise} < 0.70 THEN 'Medium' WHEN {alt_status_noise} < 0.90 THEN 'High' ELSE 'Critical' END"
         },
         {
           "name": "fine_amount_usd",
@@ -85,7 +85,7 @@
           "sql_type": "STRING",
           "comment": "Status: Open, In Progress, Closed, Overdue",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Open' WHEN {status_noise} < 0.45 THEN 'In Progress' WHEN {status_noise} < 0.85 THEN 'Closed' ELSE 'Overdue' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.20 THEN 'Open' WHEN {alt_status_noise2} < 0.45 THEN 'In Progress' WHEN {alt_status_noise2} < 0.85 THEN 'Closed' ELSE 'Overdue' END"
         }
       ],
       "seasonal_patterns": {},

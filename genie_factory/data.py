@@ -346,15 +346,18 @@ def _build_table_sql(table: Any, fqn: str, seed: int, scale: int, target_rows: i
         case_expr = "    CASE\n" + "\n".join(case_lines) + f"\n      ELSE {fallback_prob:.4f}\n    END"
 
     # Hash-based noise columns (backtick-quote entity PK for safety).
-    # Distinct salts decorrelate columns; spec authors who need a 2nd
-    # independent CASE-on-noise use {alt_status_noise}, {alt_status_noise2},
-    # or {qty_noise2} so different CASE columns don't share a hash band.
+    # Distinct salts decorrelate columns; spec authors who need
+    # independent CASE-on-noise use {alt_status_noise[2..5]} so up to six
+    # CASE columns in one table can each ride their own independent hash.
     pk_ref = f"e.`{entity_pk}`"
     qty_noise = _hash_fraction(seed, "qty_noise", "d.dt", pk_ref)
     qty_noise2 = _hash_fraction(seed, "qty_noise2", "d.dt", pk_ref)
     status_noise = _hash_fraction(seed, "status_noise", "d.dt", pk_ref)
     alt_status_noise = _hash_fraction(seed, "alt_status_noise", "d.dt", pk_ref)
     alt_status_noise2 = _hash_fraction(seed, "alt_status_noise2", "d.dt", pk_ref)
+    alt_status_noise3 = _hash_fraction(seed, "alt_status_noise3", "d.dt", pk_ref)
+    alt_status_noise4 = _hash_fraction(seed, "alt_status_noise4", "d.dt", pk_ref)
+    alt_status_noise5 = _hash_fraction(seed, "alt_status_noise5", "d.dt", pk_ref)
     select_noise = _hash_fraction(seed, "select_noise", "d.dt", pk_ref)
     id_seq = _hash_int(seed, "id_seq", "d.dt", pk_ref, modulo=500)
 
@@ -393,14 +396,21 @@ def _build_table_sql(table: Any, fqn: str, seed: int, scale: int, target_rows: i
             else:
                 seasonal_mult_sql = "1.0"
 
-            # Case-insensitive placeholder replacement
+            # Case-insensitive placeholder replacement. Note: longest names
+            # listed first so {alt_status_noise5} isn't partially matched by
+            # the shorter {alt_status_noise} pattern below.
             for placeholder, replacement in [
                 ("{fqn}", fqn), ("{table}", table.table_name),
-                ("{qty_noise}", "qty_noise"), ("{qty_noise2}", "qty_noise2"),
-                ("{status_noise}", "status_noise"),
-                ("{alt_status_noise}", "alt_status_noise"),
+                ("{alt_status_noise5}", "alt_status_noise5"),
+                ("{alt_status_noise4}", "alt_status_noise4"),
+                ("{alt_status_noise3}", "alt_status_noise3"),
                 ("{alt_status_noise2}", "alt_status_noise2"),
-                ("{select_noise}", "select_noise"), ("{id_seq}", "id_seq"),
+                ("{alt_status_noise}", "alt_status_noise"),
+                ("{qty_noise2}", "qty_noise2"),
+                ("{qty_noise}", "qty_noise"),
+                ("{status_noise}", "status_noise"),
+                ("{select_noise}", "select_noise"),
+                ("{id_seq}", "id_seq"),
                 ("{seasonal_mult}", seasonal_mult_sql),
                 ("{seed}", str(seed)),
             ]:
@@ -463,6 +473,9 @@ skeleton AS (
     {status_noise} AS status_noise,
     {alt_status_noise} AS alt_status_noise,
     {alt_status_noise2} AS alt_status_noise2,
+    {alt_status_noise3} AS alt_status_noise3,
+    {alt_status_noise4} AS alt_status_noise4,
+    {alt_status_noise5} AS alt_status_noise5,
     {select_noise} AS select_noise,
     {id_seq} AS id_seq,
     MONTH(d.dt) AS mo

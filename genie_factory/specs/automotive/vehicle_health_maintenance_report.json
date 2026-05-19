@@ -92,7 +92,7 @@
           "sql_type": "STRING",
           "comment": "Alert severity level for the reading",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'None' WHEN {status_noise} < 0.78 THEN 'Low' WHEN {status_noise} < 0.92 THEN 'Medium' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.55 THEN 'None' WHEN {alt_status_noise} < 0.78 THEN 'Low' WHEN {alt_status_noise} < 0.92 THEN 'Medium' ELSE 'Critical' END"
         }
       ],
       "seasonal_patterns": {
@@ -334,7 +334,7 @@
           "sql_type": "INT",
           "comment": "Number of parts replaced during service",
           "is_dimension": false,
-          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.30 THEN FLOOR({qty_noise} * 3) WHEN {status_noise} < 0.70 THEN 1 + FLOOR({qty_noise} * 4) ELSE 2 + FLOOR({qty_noise} * 6) END AS INT)"
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise} < 0.30 THEN FLOOR({qty_noise} * 3) WHEN {alt_status_noise} < 0.70 THEN 1 + FLOOR({qty_noise} * 4) ELSE 2 + FLOOR({qty_noise} * 6) END AS INT)"
         },
         {
           "name": "labor_hours",
@@ -355,14 +355,14 @@
           "sql_type": "STRING",
           "comment": "Whether repair was covered by warranty",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.45 THEN 'Yes' WHEN {status_noise} < 0.80 THEN 'No' ELSE 'Partial' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.45 THEN 'Yes' WHEN {alt_status_noise2} < 0.80 THEN 'No' ELSE 'Partial' END"
         },
         {
           "name": "service_region",
           "sql_type": "STRING",
           "comment": "Service center region",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.15 THEN 'Northeast' WHEN {status_noise} < 0.30 THEN 'Southeast' WHEN {status_noise} < 0.45 THEN 'Midwest' WHEN {status_noise} < 0.60 THEN 'Southwest' WHEN {status_noise} < 0.75 THEN 'West Coast' WHEN {status_noise} < 0.88 THEN 'Mountain' ELSE 'Pacific NW' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.15 THEN 'Northeast' WHEN {alt_status_noise3} < 0.30 THEN 'Southeast' WHEN {alt_status_noise3} < 0.45 THEN 'Midwest' WHEN {alt_status_noise3} < 0.60 THEN 'Southwest' WHEN {alt_status_noise3} < 0.75 THEN 'West Coast' WHEN {alt_status_noise3} < 0.88 THEN 'Mountain' ELSE 'Pacific NW' END"
         },
         {
           "name": "customer_satisfaction",
@@ -632,7 +632,7 @@
           "sql_type": "STRING",
           "comment": "Health score trend direction",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN 'Improving' WHEN {status_noise} < 0.70 THEN 'Stable' ELSE 'Declining' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.30 THEN 'Improving' WHEN {alt_status_noise} < 0.70 THEN 'Stable' ELSE 'Declining' END"
         }
       ],
       "seasonal_patterns": {
