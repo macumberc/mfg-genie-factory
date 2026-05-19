@@ -27,6 +27,14 @@ class ColumnSpec:
     comment: str
     is_dimension: bool
     generation_expr: str
+    # Optional data-quality knobs (all default-zero / unset to keep
+    # existing spec JSONs backward-compatible). The engine substitutes
+    # {seasonal_mult} into the generation_expr using these values, so a
+    # spec author can give a KPI column a real monthly trend by setting
+    # seasonal_amplitude and referencing {seasonal_mult} in the expr.
+    seasonal_amplitude: float = 0.0
+    yoy_growth: float = 0.0
+    noise_salt: str | None = None
 
 
 @dataclass
@@ -46,6 +54,10 @@ class MetricViewSpec:
     source_table: str
     dimensions: list[dict]
     measures: list[dict]
+    # When True (default), engine auto-synthesizes AVG(col) measures for
+    # every SUM(col) measure that lacks an AVG companion. Set to False
+    # if a metric view should expose ONLY the measures explicitly listed.
+    auto_avg: bool = True
 
 
 @dataclass
