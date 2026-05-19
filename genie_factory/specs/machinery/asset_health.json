@@ -2,8 +2,8 @@
   "company_name": "IronPulse Manufacturing",
   "industry": "Machinery",
   "use_case": "Industrial asset health monitoring and predictive maintenance",
-  "space_title": "IronPulse Manufacturing - Asset Health Monitor 🔧",
-  "space_description": "Industrial asset health analytics for IronPulse. Ask about vibration trends, bearing temperatures, health indices, failure predictions, and maintenance costs across 20 industrial assets.",
+  "space_title": "IronPulse Manufacturing - Asset Health Monitor \ud83d\udd27",
+  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Asset Health & Predictive Maintenance\n\nIronPulse Manufacturing \u2014 condition-monitoring analytics for 20 industrial assets (compressors, pumps, turbines, gearboxes, motors) across utilities, process, power gen, milling, and conveyor areas. Reliability Engineers and Plant Managers track vibration, bearing temperature, and computed health indices day-to-day; the VP of Operations and CFO use it to quantify avoided downtime, prediction ROI, and maintenance spend versus availability targets.\n\n**Key KPIs**\n- Health index (0\u2013100) \u2014 composite condition score; <50 triggers planned intervention\n- Vibration velocity (mm/s) \u2014 ISO 10816 zones: Good <4.5, Alert 4.5\u201311.2, Danger \u226511.2\n- Remaining useful life (days) \u2014 predictive horizon to plan parts and labor\n- Asset availability (%) \u2014 world-class target \u226590%, leaders 95%+\n- Mean time between failures (MTBF) \u2014 heavy rotating equipment benchmark 4,000\u20138,000 hrs\n- Unplanned downtime hours \u2014 direct production-loss driver\n- Prediction catch rate \u2014 % of failures detected before breakdown (target \u226560%)\n- Maintenance cost ($) per asset \u2014 capex deferral and opex budget input\n\n**Data sources**\n- `condition_readings` \u2014 daily vibration, bearing/oil temperature, health index, RUL per asset\n- `failure_events` \u2014 recorded failures with mode, detection method, severity, downtime, repair cost\n- `asset_health_monthly` \u2014 monthly availability, maintenance cost, predicted-failure catches, downtime",
   "schema_basename": "mach_asset_health",
   "tables": [
     {
@@ -810,15 +810,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The condition_readings_metrics view (source: condition_readings) has dimensions: reading_date, asset_type, manufacturer. Measures: avg_vibration_velocity, avg_bearing_temp, avg_health_index, avg_rul_days. The asset_health_monthly_metrics view (source: asset_health_monthly) has dimensions: summary_month, asset_type, manufacturer. Measures: avg_availability, total_maintenance_cost, total_predicted_caught, total_unplanned_downtime. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. asset_id).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports asset health and predictive maintenance across 20 heavy industrial assets at IronPulse. Stakeholders: Plant Manager and Reliability Engineering (daily condition trends, intervention triggers), VP Operations (availability, MTBF, unplanned downtime), and CFO (maintenance spend, predicted-failure ROI versus breakdown cost).\n\nMETRIC DEFINITIONS\n- Health index = AVG(health_index); healthy \u226580, watch 50\u201379, critical <50.\n- Vibration = AVG(vibration_velocity_mm_s); ISO 10816 alert at 4.5, danger at 11.2 mm/s.\n- Bearing temp = AVG(bearing_temperature_c); typical alarm threshold ~85\u00b0C.\n- RUL = AVG(remaining_useful_life_days); under 30 days flags imminent intervention.\n- Availability = AVG(availability_pct); world-class \u226590%, leaders 95%+.\n- Unplanned downtime = SUM(unplanned_downtime_hours); leading lagging indicator of MTBF.\n- Prediction catch rate = SUM(predicted_failures_caught) / COUNT(failure_events) (target \u226560%).\n- Maintenance cost = SUM(maintenance_cost_usd); benchmark 2\u20134% of asset replacement value.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - condition_readings_metrics (source: condition_readings) \u2014 dims: reading_date, asset_type, manufacturer; measures: avg_vibration_velocity, avg_bearing_temp, avg_health_index, avg_rul_days, unique_asset_count, max_vibration_velocity_mm_s.\n  - asset_health_monthly_metrics (source: asset_health_monthly) \u2014 dims: summary_month, asset_type, manufacturer; measures: avg_availability, total_maintenance_cost, total_predicted_caught, total_unplanned_downtime, unique_asset_count.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. asset_id, failure_mode, detection_method, severity, repair_cost_usd, was_predicted).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in unique assets?",
-    "How has highest vibration velocity mm s changed over time?",
-    "What is the monthly trend in total oil temperature c?",
-    "How has average vibration velocity in mm/s changed over time?",
-    "What is the monthly trend in unique assets?",
-    "How has highest avg health index changed over time?",
-    "What is the monthly trend in total maintenance cost in usd?"
+    "Top 10 assets by unplanned downtime hours in the last 90 days, and what was their average health index?",
+    "Show monthly trend in average health index by asset type across the trailing 12 months.",
+    "Which assets currently have vibration velocity in the ISO 10816 Danger zone (\u226511.2 mm/s)?",
+    "What share of failures in the last 6 months were caught by the prediction model, broken out by asset type?",
+    "Rank manufacturers by average asset availability \u2014 which are below the 90% world-class threshold?",
+    "Monthly trend in total maintenance cost vs unplanned downtime hours across the network.",
+    "Top 10 assets by repair cost from breakdown-detected failures \u2014 what is the cost gap versus sensor-detected ones?"
   ],
   "example_sqls": [
     {

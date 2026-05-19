@@ -2,8 +2,8 @@
   "company_name": "StratOil Dynamics",
   "industry": "Oil & Gas Integrated",
   "use_case": "Scenario planning and business simulation for strategic decision-making",
-  "space_title": "StratOil Dynamics - Scenario Planning & Business Simulation 🎯",
-  "space_description": "Scenario planning analytics for StratOil Dynamics. Ask questions about simulation outcomes, scenario comparisons, sensitivity analysis, and strategic KPIs across 20 business scenarios covering oil price, production, and capital allocation strategies.",
+  "space_title": "StratOil Dynamics - Scenario Planning & Business Simulation \ud83c\udfaf",
+  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Scenario Planning & Business Simulation\n\nStratOil Dynamics \u2014 corporate scenario and simulation analytics across 20 strategic scenarios spanning oil-price stress, production upside, capital reallocation, and energy-transition pathways. Strategy & Planning and the CFO use this space to stress-test the portfolio under WTI price decks, probability-weight outcomes, and compare scenarios on NPV, IRR, and breakeven price; the CEO and Board use it for capital allocation, transition-strategy framing, and net-zero scenario selection.\n\n**Key KPIs**\n- NPV ($MM) \u2014 primary value metric per scenario\n- IRR (%) \u2014 return threshold; majors typically use 10-15% hurdle\n- Probability-weighted NPV ($MM) \u2014 risk-adjusted portfolio value\n- Breakeven oil price ($/bbl) \u2014 downside resilience indicator\n- Projected production (MBOED) \u2014 top-line operational driver\n- CO2 intensity (kg/BOE) \u2014 transition / Scope 1+2 benchmark, IOGP median ~17\n- EBITDA margin (%) \u2014 projected profitability under scenario\n- Variance to baseline (%) \u2014 scenario delta vs. current trajectory\n\n**Data sources**\n- `simulation_runs` \u2014 individual run inputs (oil price, growth, capex) and outputs (NPV, IRR)\n- `outcome_snapshots` \u2014 projected revenue, EBITDA, production, CO2, breakeven, confidence\n- `scenario_kpi_monthly` \u2014 probability-weighted NPV/IRR, risk scores, variance to baseline",
   "schema_basename": "og_integrated_scenario",
   "tables": [
     {
@@ -671,15 +671,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The simulation_runs_metrics view (source: simulation_runs) has dimensions: run_date, scenario_id, scenario_category. Measures: avg_npv_mm, avg_irr_pct, total_capex_mm, total_runs, avg_oil_price. The outcome_snapshots_metrics view (source: outcome_snapshots) has dimensions: snapshot_date, scenario_id, scenario_category, confidence_level. Measures: avg_projected_revenue_mm, avg_projected_ebitda_mm, avg_breakeven_price, avg_co2_intensity, avg_production_mboed. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. scenario_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Scenario Planning and Business Simulation for an integrated oil & gas major running 20 named scenarios across Baseline, Price Stress, Production Upside, Capital Reallocation, and Energy Transition categories. Stakeholders include Strategy & Planning (NPV / IRR / sensitivity), the CFO (capital allocation, breakeven), and the CEO / Board (transition pathways, probability-weighted outcomes).\n\nMETRIC DEFINITIONS\n- NPV = npv_mm on simulation_runs (USD millions, single run); avg_npv_mm rolls up across runs\n- IRR = irr_pct on simulation_runs; majors typically hurdle at 10-15% for development capex\n- Probability-weighted NPV = weighted_npv_mm on scenario_kpi_monthly\n- Breakeven = breakeven_price_usd on outcome_snapshots; resilience benchmark, top-quartile deepwater <40 USD/bbl\n- Projected production = projected_production_mboed on outcome_snapshots (thousand BOE/d)\n- CO2 intensity = co2_intensity_kg_boe; IOGP 2023 median ~17 kg CO2e/BOE upstream\n- Variance to baseline = variance_to_baseline_pct; delta vs. Baseline scenario family\n- Confidence = confidence_level on outcome_snapshots (High / Medium / Low)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - simulation_runs_metrics (source: simulation_runs) \u2014 dims: run_date, scenario_id, scenario_category; measures: avg_npv_mm, avg_irr_pct, total_capex_mm, total_runs, avg_oil_price, total_production_growth_percent, total_probability_weight, max_oil_price_assumption.\n  - outcome_snapshots_metrics (source: outcome_snapshots) \u2014 dims: snapshot_date, scenario_id, scenario_category, confidence_level; measures: avg_projected_revenue_mm, avg_projected_ebitda_mm, avg_breakeven_price, avg_co2_intensity, avg_production_mboed, max_projected_revenue_mm.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. scenario_name, npv_mm, irr_pct, weighted_npv_mm, variance_to_baseline_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in unique total runss?",
-    "How has highest oil price assumption changed over time?",
-    "What is the monthly trend in total capital expenditure allocation in millions?",
-    "How has total production growth pct changed over time?",
-    "What is the monthly trend in highest projected revenue mm?",
-    "How has average projected revenue in millions usd changed over time?",
-    "What is the monthly trend in average projected ebitda in millions usd?"
+    "Top 10 scenarios by average NPV across all simulation runs.",
+    "Show monthly probability-weighted NPV by scenario category for the trailing 12 months.",
+    "Which Transition scenarios deliver positive IRR above 10%, and what is their projected CO2 intensity?",
+    "Compare average breakeven oil price across Baseline, Price Stress, and Production Upside scenarios.",
+    "Top 10 scenarios by projected EBITDA \u2014 and how do they rank on CO2 intensity?",
+    "How has average projected EBITDA trended month-over-month across the portfolio?",
+    "Which Price Stress scenarios have negative variance to baseline greater than 15%?"
   ],
   "example_sqls": [
     {

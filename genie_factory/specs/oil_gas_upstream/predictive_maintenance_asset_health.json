@@ -3,7 +3,7 @@
   "industry": "Oil & Gas Upstream",
   "use_case": "Predictive maintenance for drilling and production equipment",
   "space_title": "WellGuard Upstream - Predictive Maintenance & Asset Health 🔧",
-  "space_description": "Asset health analytics for WellGuard Upstream. Ask questions about drilling and production equipment health, sensor readings, maintenance events, and failure predictions across 20 assets in onshore fields.",
+  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Predictive Maintenance & Asset Health\n\nWellGuard Upstream — equipment reliability analytics for 20 critical assets (top drives, mud pumps, ESPs, rod pumps, BOPs, compressors) across the Permian, Eagle Ford, Bakken, Haynesville, and Marcellus. Reliability Engineers and Asset Managers use this space to triage health scores, MTBF, and RUL day-to-day; Drilling Managers and the Reliability VP use it to quantify deferred production, repair spend, and the ROI of the predictive-maintenance program vs. reactive break-fix.\n\n**Key KPIs**\n- Avg health score (0-100) — composite condition indicator from sensor telemetry\n- MTBF days — mean time between failures; ESP industry benchmark is ~400-600 days\n- Availability % — target ≥95% on rotating equipment, ≥98% on BOPs\n- Predicted RUL days — remaining useful life from ML model; <30d = act now\n- Unplanned downtime hours — emergency + corrective events\n- Repair cost (USD) and cost per downtime hour — maintenance spend efficiency\n- Production loss (BBL) — deferred barrels from equipment downtime\n- Prediction rate — % of events flagged in advance by the ML model\n\n**Data sources**\n- `sensor_readings` — daily telemetry: vibration, temperature, pressure, RUL, alert level per asset\n- `maintenance_events` — work orders with event type, downtime, cost, deferred production, ML prediction flag\n- `equipment_health_monthly` — monthly availability, MTBF, and aggregate health score per asset",
   "schema_basename": "og_upstream_pred_maint",
   "tables": [
     {
@@ -737,15 +737,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The sensor_readings_metrics view (source: sensor_readings) has dimensions: reading_date, equipment_id, equipment_type, field_name, alert_level. Measures: avg_health_score, min_rul_days, alarm_trip_count, total_readings. The maintenance_events_metrics view (source: maintenance_events) has dimensions: event_date, equipment_id, equipment_type, field_name, event_type, was_predicted. Measures: total_events, total_downtime_hours, total_repair_cost_usd, total_production_loss_bbl. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Predictive Maintenance for an upstream operator with 20 critical drilling and production assets (top drives, mud pumps, drawworks, BOPs, ESPs, rod pumps, compressors, generators) across the Permian Basin, Eagle Ford, Bakken, Haynesville, and Marcellus. Stakeholders include the Reliability VP (MTBF, availability, prediction rate), Asset Managers (health score, RUL, alarm load), Drilling Managers (rig downtime), and Finance (repair cost, deferred-production dollars vs. PdM program spend).\n\nMETRIC DEFINITIONS\n- Health score = health_score on sensor_readings (0-100; <60 = degraded, <40 = critical).\n- RUL = predicted_rul_days; <30 days = imminent failure, schedule intervention now.\n- MTBF = mtbf_days on equipment_health_monthly; ESP benchmark ~400-600 days, mud pumps ~180-300, top drives ~500+.\n- Availability = availability_pct; target ≥95% on rotating equipment.\n- Alarm/trip count = alarm_trip_count (alert_level IN ('Alarm','Trip')) — backlog of critical signals.\n- Prediction rate = % of maintenance_events with was_predicted = TRUE; mature PdM programs achieve 50-70%.\n- Downtime hours = downtime_hours on maintenance_events; Emergency + Corrective drive unplanned downtime.\n- Production loss = production_loss_bbl (BBL deferred); cost per downtime hour = repair_cost_usd / downtime_hours.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - sensor_readings_metrics (source: sensor_readings) — dims: reading_date, equipment_id, equipment_type, field_name, alert_level; measures: avg_health_score, min_rul_days, alarm_trip_count, total_readings, total_sensor_value, max_sensor_value.\n  - maintenance_events_metrics (source: maintenance_events) — dims: event_date, equipment_id, equipment_type, field_name, event_type, was_predicted; measures: total_events, total_downtime_hours, total_repair_cost_usd, total_production_loss_bbl, max_downtime_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. equipment_name, sensor_type, predicted_rul_days, mtbf_days, availability_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in alarm trip count?",
-    "How has unique total readingss changed over time?",
-    "What is the monthly trend in highest sensor value?",
-    "How has total sensor value changed over time?",
-    "What is the monthly trend in unique total eventss?",
-    "How has highest downtime hours changed over time?",
-    "What is the monthly trend in total downtime hours?"
+    "Top 10 equipment assets by total unplanned downtime hours over the last 90 days.",
+    "Show monthly trend of total repair cost and production loss BBL across the fleet for the trailing 12 months.",
+    "Which assets currently have a predicted RUL under 30 days, and what is their equipment type and field?",
+    "What is the prediction rate (share of events flagged by ML) by equipment type this year?",
+    "Top 10 fields by alarm and trip count this month — how does that compare to last month?",
+    "Which equipment types have the lowest availability and shortest MTBF over the last 6 months?",
+    "What is the total deferred production (BBL) and repair spend from Emergency events by field, year to date?"
   ],
   "example_sqls": [
     {

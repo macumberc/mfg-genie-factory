@@ -3,7 +3,7 @@
   "industry": "Semiconductor",
   "use_case": "Supply chain materials management and fab capacity allocation",
   "space_title": "CapAlloc - Supply & Capacity Allocation 🔗",
-  "space_description": "Supply and materials capacity allocation analytics for CapAlloc Semi. Analyze material orders, capacity snapshots, and monthly allocation plans across 20 materials and components to optimize fab utilization and procurement spend.",
+  "space_description": "**Subindustry:** Semiconductor\n\n**Use case:** Supply Chain Materials & Fab Capacity Allocation\n\nCapAlloc Semi — supplier and capacity analytics covering 20 materials (silicon wafers, photoresists, gases, sputtering targets, EUV consumables) and multiple fab lines. Procurement and Supply Chain use this space to monitor supplier lead times and quality reject rates; the COO and CFO use it to track fab utilization against the 85–90% target, identify single-source risk on EUV / advanced-process consumables, and time capex against projected wafer-start demand.\n\n**Key KPIs**\n- Fab utilization % — consumed vs available wafer starts; world-class 85–90%, >95% signals risk of breakage\n- Wafer starts (weekly) — capacity throughput baseline\n- Material lead time (days) — supplier responsiveness; EUV-related gases often 90+ days\n- Delayed order count — supplier-on-time exposure\n- Reject rate % — incoming quality issues, target <1%\n- Plan adherence % — allocation discipline vs commit; target 95%+\n- Procurement spend (USD) — direct materials COGS line\n- Critical bottleneck count — fab lines flagged as capacity-constrained\n\n**Data sources**\n- `material_orders` — daily supplier purchase orders with lead time, value, quality, and delivery status\n- `capacity_snapshots` — weekly fab-line utilization, wafer starts, and bottleneck classification\n- `allocation_monthly` — monthly allocation plans with adherence percentage and procurement spend",
   "schema_basename": "semiconductor_supply_capacity",
   "tables": [
     {
@@ -739,15 +739,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The material_order_metrics view (source: material_orders) has dimensions: order_date, material_category, supplier_name, delivery_status, quality_result. Measures: total_material_orders, total_order_value_usd, avg_lead_time_days, delayed_order_count, rejected_order_count. The capacity_utilization_metrics view (source: capacity_snapshots) has dimensions: snapshot_date, material_category, fab_line, bottleneck_status. Measures: avg_utilization_pct, total_available_starts, total_consumed_starts, critical_bottleneck_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. material_id, material_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Supply Materials and Capacity Allocation for a semiconductor IDM running multiple fab lines and procuring 20 categories of materials (silicon wafers, photoresists, specialty gases, sputtering targets, EUV pellicles, packaging substrates). Stakeholders include Procurement (supplier reliability, spend), Industrial Engineering (capacity utilization, bottlenecks), and the COO (fab loading, allocation discipline). EUV-related consumables and advanced-node materials often have single-source supplier risk and 90+ day lead times.\n\nMETRIC DEFINITIONS\n- Fab utilization = utilization_pct (capacity_snapshots); target 85–90%, >95% raises breakage risk\n- Wafer starts: available_wafer_starts (capacity), consumed_wafer_starts (load)\n- Lead time = lead_time_days; specialty materials often 60–120 days\n- Delayed orders = delivery_status = 'Delayed' or 'Late'\n- Reject = quality_result = 'Rejected' (incoming inspection failure)\n- Plan adherence = plan_adherence_pct; target 95%+\n- Procurement spend = procurement_spend_usd (allocation_monthly)\n- Bottleneck = bottleneck_status = 'Critical' (fab line capacity-constrained)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - material_order_metrics (source: material_orders) — dims: order_date, material_category, supplier_name, delivery_status, quality_result; measures: total_material_orders, total_order_value_usd, avg_lead_time_days, delayed_order_count, rejected_order_count, unique_material_count, max_order_quantity, total_order_quantity.\n  - capacity_utilization_metrics (source: capacity_snapshots) — dims: snapshot_date, material_category, fab_line, bottleneck_status; measures: avg_utilization_pct, total_available_starts, total_consumed_starts, critical_bottleneck_count, unique_material_count, max_utilization_percent.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. material_id, material_name, fab_line, allocated_capacity_units, consumed_capacity_units, plan_adherence_pct, procurement_spend_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in delayed order count?",
-    "How has rejected order count changed over time?",
-    "What is the monthly trend in unique total material orderss?",
-    "How has unique materials changed over time?",
-    "What is the monthly trend in critical bottleneck count?",
-    "How has unique materials changed over time?",
-    "What is the monthly trend in highest utilization percent?"
+    "Which 10 suppliers have the highest delayed order count in the trailing 12 months?",
+    "Show monthly fab utilization by fab line for the trailing 12 months — where are we above 95%?",
+    "Which material categories have the longest average lead times — which are single-source risks?",
+    "Top 10 materials by total procurement spend this quarter, and how does that compare to last quarter?",
+    "How has critical bottleneck count trended monthly by fab line — which lines need capex?",
+    "Which suppliers have the highest reject rate — where do we have quality exposure?",
+    "What is the trailing 6-month plan adherence percentage by material category, and which categories are below the 95% target?"
   ],
   "example_sqls": [
     {

@@ -2,8 +2,8 @@
   "company_name": "PowerGrid Analytics",
   "industry": "Electric Utility",
   "use_case": "Grid management, energy mix optimization, and renewable integration",
-  "space_title": "PowerGrid Analytics - Grid Management & Energy Mix ⚡",
-  "space_description": "Grid management analytics for PowerGrid Analytics. Ask about generation mix, renewable integration, grid frequency, load balancing, and congestion across 20 grid zones and 6 generation fuel types.",
+  "space_title": "PowerGrid Analytics - Grid Management & Energy Mix \u26a1",
+  "space_description": "**Subindustry:** Electric Utility\n\n**Use case:** Grid Management & Energy Mix Optimization\n\nPowerGrid Analytics \u2014 bulk power system analytics for generation dispatch, renewable integration, and reliability across multiple grid zones and regions. Grid Operations and Resource Planning teams use this space to monitor frequency, congestion, and curtailment in near real-time; T&D VPs and ESG leadership use it to track renewable share, carbon intensity, and SAIDI/SAIFI against regulatory targets and decarbonization commitments.\n\n**Key KPIs**\n- Renewable share (%) \u2014 generation mix and clean energy target tracking\n- Curtailment (MW / MWh) \u2014 wasted renewable energy; healthy <5% of renewable output\n- Carbon intensity (kg CO2/MWh) \u2014 sub-200 = mostly clean, 400+ = heavy fossil\n- Capacity factor (%) \u2014 asset productivity (solar ~20-25%, wind ~35-45%, nuclear ~90%)\n- Grid frequency (Hz) \u2014 target 60.00; deviation >0.05 Hz triggers reliability concerns\n- SAIDI (minutes) \u2014 IEEE 1366 industry median ~120 minutes/customer/year\n- SAIFI (events) \u2014 industry median ~1.0-1.4 events/customer/year\n- LMP ($/MWh) \u2014 locational marginal price; market and congestion signal\n\n**Data sources**\n- `generation_readings` \u2014 daily MW output, capacity factor, curtailment, and carbon intensity by zone and fuel type\n- `load_snapshots` \u2014 daily peak demand, frequency, congestion, imports/exports, renewable served % by zone\n- `grid_kpi_monthly` \u2014 monthly per-zone rollups: renewable share, SAIDI, SAIFI, total carbon, avg LMP, curtailment MWh",
   "schema_basename": "utility_grid_management",
   "tables": [
     {
@@ -704,15 +704,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The generation_metrics view (source: generation_readings) has dimensions: reading_date, region, fuel_type. Measures: total_generation_mw, avg_capacity_factor, total_curtailment_mw, avg_carbon_intensity, reading_count. The load_metrics view (source: load_snapshots) has dimensions: snapshot_date, region, zone_id. Measures: avg_peak_demand_mw, avg_congestion_index, total_import_mw, total_export_mw, avg_renewable_pct. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. zone_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports grid management and energy mix optimization for an electric utility balancing renewable integration, reliability, and cost across multiple zones and regions. Stakeholders include Grid Operations (frequency / congestion / imports), Resource Planning (capacity factor, curtailment, LMP), the T&D VP (SAIDI/SAIFI reliability), and ESG/CFO (renewable share, carbon intensity, fuel mix).\n\nMETRIC DEFINITIONS\n- Generation = generation_mw by fuel_type; renewables = Solar, Wind, Hydro\n- Curtailment = curtailment_mw (instantaneous) / curtailment_mwh (monthly); healthy <5% of renewable output, >10% indicates congestion or oversupply\n- Carbon intensity = carbon_intensity_kg_mwh; <100 mostly clean, 400-800 typical fossil mix\n- Capacity factor = capacity_factor_pct (solar ~20-25%, wind ~35-45%, nuclear ~90%)\n- Renewable share = renewable_share_pct (monthly) or renewable_pct (daily load snapshot)\n- Grid frequency = avg_frequency_hz; target 60.00, deviation >0.05 Hz is a reliability concern\n- SAIDI = saidi_minutes (IEEE 1366 industry median ~120 min/customer/year)\n- SAIFI = saifi_events (industry median ~1.0-1.4 events/customer/year)\n- LMP = avg_lmp_usd_mwh; locational marginal price\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - generation_metrics (source: generation_readings) \u2014 dims: reading_date, region, fuel_type; measures: total_generation_mw, avg_capacity_factor, total_curtailment_mw, avg_carbon_intensity, reading_count, unique_zone_count, max_generation_mw.\n  - load_metrics (source: load_snapshots) \u2014 dims: snapshot_date, region, zone_id; measures: avg_peak_demand_mw, avg_congestion_index, total_import_mw, total_export_mw, avg_renewable_pct, total_avg_frequency_hz, max_peak_demand_mw.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. zone_name, saidi_minutes, saifi_events, avg_lmp_usd_mwh, total_carbon_tons, renewable_share_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in unique readings?",
-    "How has unique zones changed over time?",
-    "What is the monthly trend in highest generation mw?",
-    "How has total generation output in mw changed over time?",
-    "What is the monthly trend in highest peak demand mw?",
-    "How has total power imported in mw changed over time?",
-    "What is the monthly trend in total power exported in mw?"
+    "Show monthly trend of total generation MW by fuel type for the trailing 12 months.",
+    "Top 10 zones by total renewable curtailment MW over the last 90 days.",
+    "How has average carbon intensity trended month-over-month by region?",
+    "Which regions have the highest SAIDI minutes and SAIFI events in the most recent month?",
+    "What is the average renewable share by region this year, and how does it compare to last year?",
+    "Top 10 zones by congestion index \u2014 what is the average LMP for those zones?",
+    "Show monthly trend of total carbon emissions tons against renewable share % across the network."
   ],
   "example_sqls": [
     {

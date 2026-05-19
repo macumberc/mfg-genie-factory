@@ -3,7 +3,7 @@
   "industry": "Food & Beverage",
   "use_case": "Perishable food inventory optimization and shelf life management",
   "space_title": "FreshStock Solutions - Perishable Inventory Optimization 📦",
-  "space_description": "Food inventory analytics for FreshStock Solutions. Ask about shelf life, spoilage rates, reorder optimization, and cold chain compliance across 20 perishable items.",
+  "space_description": "**Subindustry:** Food & Beverage\n\n**Use case:** Perishable Inventory Optimization & Shelf-Life Management\n\nFreshStock Solutions — perishable inventory analytics across 20 SKUs and 12 production lines balancing freshness, spoilage cost, and customer fill-rate commitments. Plant Managers and Supply Chain leaders use this space day-to-day to monitor on-hand, days-to-expiry, and FIFO compliance; the S&OP team and CFO use it to quantify shrink, drive inventory turnover, and protect retailer OTIF scorecards.\n\n**Key KPIs**\n- Spoilage rate (%) — fresh produce ~5-8%, refrigerated ~5%, dry goods <2% benchmark\n- Fill rate (%) — retailer scorecard threshold 95-98% OTIF\n- Freshness score — blended quality / days-remaining index 0-100\n- Total spoilage cost ($) — shrink dollars; perishables drive ~2/3 of grocery shrink\n- Average shelf remaining (days) — pipeline health for downstream channels\n- Inventory turnover ratio — target 12-20x annually for fresh items\n- Near-expiry units — at-risk inventory needing markdown or diversion\n- On-hand units — stocking-position balance vs. expected demand\n\n**Data sources**\n- `perishable_products` — daily inventory movements with quantity, days-to-expiry, temperature zone\n- `inventory_transactions` — weekly snapshots with on-hand, near-expiry, spoilage rate, fill rate, freshness\n- `shelf_life_snapshots` — monthly waste-reduction rollup with spoiled units, spoilage cost, turnover, optimization action",
   "schema_basename": "fb_inventory_opt",
   "tables": [
     {
@@ -783,15 +783,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_kpi_monthly view (source: inventory_transactions) has dimensions: snapshot_date, product_category, production_line. Measures: avg_on_hand, avg_spoilage_rate, avg_fill_rate, avg_freshness, total_near_expiry. The waste_kpi_monthly view (source: shelf_life_snapshots) has dimensions: perf_month, product_category, optimization_action. Measures: total_spoiled, total_spoilage_cost, avg_turnover, avg_shelf_remaining, item_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_id, product_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Perishable Inventory Optimization for a multi-category food manufacturer / distributor managing bakery, dairy, produce, protein, seafood, and frozen SKUs against tight retailer fill-rate SLAs. Stakeholders include the Plant Manager and Supply Chain leader (daily on-hand, days-to-expiry, FIFO), the S&OP team (turnover, demand-vs-supply balance), and the CFO (shrink dollars, working capital). Optimization_action is Reorder / Markdown / Hold / Divert.\n\nMETRIC DEFINITIONS\n- Spoilage rate = AVG(spoilage_rate_pct); benchmark <2% dry, ~5% refrigerated, 5-8% fresh produce\n- Fill rate = AVG(fill_rate_pct); 95-98% OTIF target for retailer scorecards (Walmart, Kroger)\n- Freshness score = AVG(freshness_score); composite 0-100 quality / days-remaining index\n- Total spoilage cost = SUM(spoilage_cost_usd); ~2/3 of grocery shrink comes from perishables\n- Average shelf remaining days = AVG(avg_shelf_remaining_days)\n- Turnover ratio = AVG(turnover_ratio); fresh items target 12-20x annual, premium fresh 26-52x\n- Near-expiry units = SUM(near_expiry_units); at-risk inventory needing intervention\n- On-hand units = AVG(on_hand_units); stocking-position health\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - inventory_kpi_monthly (source: inventory_transactions) — dims: snapshot_date, product_category, production_line; measures: avg_on_hand, avg_spoilage_rate, avg_fill_rate, avg_freshness, total_near_expiry, unique_product_count, max_on_hand_units.\n  - waste_kpi_monthly (source: shelf_life_snapshots) — dims: perf_month, product_category, optimization_action; measures: total_spoiled, total_spoilage_cost, avg_turnover, avg_shelf_remaining, item_count, max_total_spoiled_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_id, product_name, days_to_expiry, movement_type, temperature_zone).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in unique products?",
-    "How has highest on hand units changed over time?",
-    "What is the monthly trend in total near-expiry units?",
-    "How has avg units on hand changed over time?",
-    "What is the monthly trend in unique items?",
-    "How has highest total spoiled units changed over time?",
-    "What is the monthly trend in total units spoiled?"
+    "Show the monthly trend in total spoilage cost across all product categories for the trailing 12 months.",
+    "Top 10 product categories by spoilage cost this year — what optimization actions are most common for each?",
+    "Which production lines have the lowest fill rate, and how much near-expiry inventory are they carrying?",
+    "How has average freshness score trended month-over-month by product category?",
+    "Top 10 product categories by near-expiry units — what is the projected shrink dollar exposure?",
+    "Which temperature zones in the perishable_products table show the highest spoilage and shortest days-to-expiry?",
+    "What is the monthly trend in inventory turnover ratio, and which categories fall below the 12x benchmark?"
   ],
   "example_sqls": [
     {

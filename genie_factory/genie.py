@@ -101,12 +101,11 @@ def build_genie_payload(
 
     data_sources.sort(key=lambda x: x["identifier"])
 
-    # Text instructions
-    deployer_prefix = f"Deployed by {username} using Genie Factory.\n\n"
+    # Text instructions (no deployer prefix — pure directive content only)
     text_instructions = [
         {
             "id": next_id(),
-            "content": [f"{deployer_prefix}{domain_spec.genie_instructions}"],
+            "content": [domain_spec.genie_instructions],
         }
     ]
 
@@ -186,8 +185,10 @@ def build_genie_payload(
 
     description = domain_spec.space_description
 
+    title = f"{domain_spec.industry} - {domain_spec.space_title}"
+
     return {
-        "title": domain_spec.space_title,
+        "title": title,
         "description": description,
         "parent_path": f"/Workspace/Users/{username}",
         "warehouse_id": warehouse_id,
@@ -246,7 +247,8 @@ def create_or_replace_genie_space(
     ws = workspace_client or _default_workspace_client()
 
     # 1. Find existing spaces (before creation, for later cleanup)
-    existing = find_managed_spaces(spark, fqn, domain_spec.space_title, workspace_client=ws)
+    final_title = f"{domain_spec.industry} - {domain_spec.space_title}"
+    existing = find_managed_spaces(spark, fqn, final_title, workspace_client=ws)
 
     # 2. Build payload and create new space FIRST
     payload = build_genie_payload(

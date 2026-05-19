@@ -3,7 +3,7 @@
   "industry": "Oil & Gas Upstream",
   "use_case": "Well production monitoring and flow optimization",
   "space_title": "WellFlow Monitoring - Well Production Monitoring 📊",
-  "space_description": "Well production analytics for WellFlow Monitoring. Ask questions about well production rates, flow optimization, well status, and production KPIs across 20 wells on multi-well pads.",
+  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Well Production Monitoring & Flow Optimization\n\nWellFlow Monitoring — daily well surveillance across 20 horizontal and vertical wells on 11 multi-well pads (Wolfcamp, Bone Spring, Spraberry, Eagle Ford, Niobrara, Bakken, Haynesville, Marcellus, Utica, Woodford, SCOOP, San Andres). Production Engineers use this space to triage low-rate and shut-in wells day-to-day; the Asset Manager and Field Superintendent use it to rank deferred-production opportunities, monitor lift efficiency, and benchmark pad-level LOE/BOE for monthly performance reviews.\n\n**Key KPIs**\n- Oil rate (BOPD), gas rate (MCF/day), water rate (BPD) — primary production volumes\n- Well uptime % — target ≥95%; <90% triggers root-cause review\n- Artificial lift efficiency % — ESP/rod pump fitness; <70% flags optimization\n- Water cut % — >60% prioritizes water-handling capacity, >75% near economic limit\n- GOR (SCF/BBL) — gas-oil ratio; rising GOR can indicate gas breakthrough\n- Tubing & casing pressure (PSI) — flow assurance indicators\n- Deferred oil (BBL) — production loss from downtime / chokes / shut-ins\n- LOE per BOE (USD) — lease operating expense; onshore US benchmark $6-12/BOE\n\n**Data sources**\n- `production_readings` — daily oil/gas/water rates, tubing & casing pressure, well status per well\n- `well_status_snapshots` — weekly cumulative oil, water cut, GOR, uptime, lift efficiency per well\n- `production_kpi_monthly` — monthly oil/gas volumes, deferred oil BBL, LOE/BOE per well and pad",
   "schema_basename": "og_upstream_wellflow",
   "tables": [
     {
@@ -731,15 +731,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_readings_metrics view (source: production_readings) has dimensions: reading_date, well_id, well_type, pad_name, well_status. Measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_tubing_pressure. The well_status_snapshots_metrics view (source: well_status_snapshots) has dimensions: snapshot_date, well_id, well_type, pad_name. Measures: avg_water_cut, avg_uptime_pct, avg_lift_efficiency, total_cumulative_oil. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. well_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Well Production Monitoring for an upstream operator with 20 wells (mostly horizontals plus a few verticals) on 11 multi-well pads across the Wolfcamp, Bone Spring, Spraberry, Eagle Ford, Niobrara, Bakken/Three Forks, Haynesville, Marcellus, Utica, Woodford, SCOOP, and San Andres plays. Stakeholders include Production Engineers (rates, pressure, status, lift efficiency), Field Superintendents (pad-level uptime, deferred barrels), and the Asset Manager (LOE/BOE, water cut, cumulative oil).\n\nMETRIC DEFINITIONS\n- Oil rate = oil_bpd; gas rate = gas_mcfpd; water rate = water_bpd.\n- Tubing pressure = tubing_pressure_psi; casing pressure = casing_pressure_psi (flow-assurance signals).\n- Well status = well_status (Flowing / Shut-In / Workover / Completion / Abandoned); only Flowing produces revenue.\n- Water cut = water_cut_pct (weekly snapshot); >60% prioritize water handling, >75% near economic limit.\n- GOR (SCF/BBL) = gor_scf_bbl; rising GOR can indicate gas breakthrough or reservoir-energy decline.\n- Uptime = uptime_pct; target ≥95%, <90% flag for root-cause.\n- Lift efficiency = artificial_lift_efficiency_pct; <70% flags ESP/rod-pump optimization opportunity.\n- Deferred oil = deferred_oil_bbl (BBL not produced due to downtime/chokes).\n- LOE/BOE = loe_per_boe (USD); onshore US benchmark $6-12/BOE.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) — dims: reading_date, well_id, well_type, pad_name, well_status; measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_tubing_pressure, total_casing_pressure_psi, max_oil_bpd.\n  - well_status_snapshots_metrics (source: well_status_snapshots) — dims: snapshot_date, well_id, well_type, pad_name; measures: avg_water_cut, avg_uptime_pct, avg_lift_efficiency, total_cumulative_oil, total_gor_scf_bbl, max_cumulative_oil_bbl.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. well_name, deferred_oil_bbl, loe_per_boe, monthly_oil_bbl, gor_scf_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in highest oil bpd?",
-    "How has total casing pressure psi changed over time?",
-    "What is the monthly trend in avg oil bpd?",
-    "How has avg gas mcfpd changed over time?",
-    "What is the monthly trend in highest cumulative oil bbl?",
-    "How has total cumulative oil bbl changed over time?",
-    "What is the monthly trend in total gor scf bbl?"
+    "Top 10 wells by average oil rate (BOPD) over the last 90 days.",
+    "Show the monthly trend in total deferred oil BBL by pad for the trailing 12 months.",
+    "Which wells have uptime below 90% or lift efficiency below 70%, and what pad are they on?",
+    "What is the average LOE per BOE by pad and well type year to date?",
+    "Top 10 wells by water cut % — and how does that compare to last quarter?",
+    "How has average GOR trended month over month across horizontal wells?",
+    "Which pads have the most shut-in or workover wells right now, and what is the deferred oil impact?"
   ],
   "example_sqls": [
     {

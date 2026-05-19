@@ -3,7 +3,7 @@
   "industry": "Power Generation",
   "use_case": "Wind farm performance optimization and turbine health monitoring",
   "space_title": "WindPeak Energy - Wind Farm Optimization 💨",
-  "space_description": "Wind energy analytics for WindPeak Energy. Ask about turbine performance, wind resource availability, capacity factors, and maintenance events across 20 wind turbines.",
+  "space_description": "**Subindustry:** Power Generation\n\n**Use case:** Wind Farm Performance & Turbine Health Optimization\n\nWindPeak Energy — wind farm operations analytics across 20 turbines and multiple farms. Turbine Engineers and Plant Managers use this space to monitor capacity factor, power-curve deviation, and vibration; the Trading desk and CFO use it to track PPA revenue, curtailment exposure, and forecast accuracy against day-ahead commitments.\n\n**Key KPIs**\n- Capacity factor (%) — onshore wind benchmark ~35%, offshore ~45%\n- Turbine availability (%) — IEC 61400-26 target >97%\n- Power curve deviation (%) — degradation or wake-loss indicator\n- Wake loss (%) — typical 5-15% across a wind farm\n- Wind speed (m/s) — primary dispatch driver; cut-in ~3 m/s, rated ~12 m/s\n- Curtailment (MWh) — grid-imposed losses\n- Forecast accuracy — PPA settlement risk\n- Vibration level (g) — leading indicator of gearbox/bearing failure\n\n**Data sources**\n- `wind_turbines` — daily generation, capacity factor, wind speed, status per turbine\n- `performance_readings` — power-curve deviation, wake loss, blade pitch, rotor RPM, vibration\n- `wind_snapshots` — forecasted vs actual MWh, curtailment, revenue, PPA price, availability",
   "schema_basename": "wind_optimization",
   "tables": [
     {
@@ -777,15 +777,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The turbine_kpi_monthly view (source: wind_turbines) has dimensions: record_date, turbine_model, wind_farm, turbine_status. Measures: total_generation_mwh, avg_capacity_factor, avg_wind_speed, generating_count, total_turbine_count. The wind_forecast_monthly view (source: wind_snapshots) has dimensions: snapshot_date, wind_farm. Measures: total_forecasted_mwh, total_actual_mwh, total_curtailment_mwh, total_revenue, avg_availability. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. turbine_id, turbine_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports wind farm optimization and turbine health monitoring across 20 turbines. Personas: Turbine Engineer (power_curve_deviation_pct, wake_loss_pct, vibration_level_g, rotor_rpm), Plant Manager (capacity_factor_pct, generation_mwh, turbine_status, availability_pct), Trading desk (forecasted_generation_mwh vs actual, curtailment_mwh, revenue_usd, ppa_price_mwh), and CFO (revenue settlement, curtailment exposure).\n\nMETRIC DEFINITIONS\n- Capacity factor = capacity_factor_pct; onshore benchmark ~35% (US new builds 40-45%), offshore ~45-50%.\n- Turbine availability = availability_pct; IEC 61400-26 target >97%.\n- Power curve deviation = power_curve_deviation_pct; sustained >5% indicates pitch issue or blade soiling.\n- Wake loss = wake_loss_pct; typical 5-15% farm-wide; >20% may justify control optimization.\n- Wind speed = avg_wind_speed_ms; cut-in ~3 m/s, rated ~12 m/s, cut-out ~25 m/s.\n- Vibration = vibration_level_g; ISO 10816-21 thresholds; >0.7g sustained triggers inspection.\n- Forecast accuracy ~ actual_mwh / forecasted_mwh; PPA settlement target ±10%.\n- Curtailment = curtailment_mwh; multiply by ppa_price_mwh for revenue impact.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - turbine_kpi_monthly (source: wind_turbines) — dims: record_date, turbine_model, wind_farm, turbine_status; measures: total_generation_mwh, avg_capacity_factor, avg_wind_speed, generating_count, total_turbine_count, max_generation_mwh.\n  - wind_forecast_monthly (source: wind_snapshots) — dims: snapshot_date, wind_farm; measures: total_forecasted_mwh, total_actual_mwh, total_curtailment_mwh, total_revenue, avg_availability, total_ppa_price_mwh, unique_turbine_count, max_forecasted_generation_mwh.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. turbine_id, turbine_name, power_curve_deviation_pct, wake_loss_pct, vibration_level_g, ppa_price_mwh).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in generating count?",
-    "How has unique total turbines changed over time?",
-    "What is the monthly trend in highest generation mwh?",
-    "How has total wind generation mwh changed over time?",
-    "What is the monthly trend in unique turbines?",
-    "How has highest forecasted generation mwh changed over time?",
-    "What is the monthly trend in total forecasted generation mwh?"
+    "Show monthly total wind generation MWh by wind farm for the trailing 12 months.",
+    "Top 10 turbines by average capacity factor over the last 90 days.",
+    "Which wind farms had the largest gap between forecasted and actual MWh this quarter?",
+    "How has total curtailment MWh trended month-over-month, and what is the implied revenue loss?",
+    "Which turbines show sustained power curve deviation above 5% or vibration above 0.7g this year?",
+    "Top 10 wind farms by total revenue USD year-to-date — and how does that compare to last year?",
+    "What is the monthly trend in average wind speed across all turbines, by farm?"
   ],
   "example_sqls": [
     {
