@@ -95,12 +95,23 @@ if manifest["error"]:
             print(f"  {r['subindustry']}/{r['use_case']}: {r.get('error','')[:140]}")
     print()
 
-# Return the manifest path so it shows on the job-output page.
-import re
+# Return the manifest summary plus the first failure traceback inline so
+# the get-output API surfaces it even when stdout/stderr are not captured.
+first_failure = next(
+    (r for r in manifest["results"] if r["status"] == "error"),
+    None,
+)
 result_summary = {
     "ran_at": manifest["ran_at"],
     "success": manifest["success"],
     "error": manifest["error"],
     "total": manifest["total"],
 }
+if first_failure:
+    result_summary["first_failure"] = {
+        "subindustry": first_failure["subindustry"],
+        "use_case": first_failure["use_case"],
+        "error": first_failure.get("error", "")[:500],
+        "traceback": (first_failure.get("traceback") or "")[-3000:],
+    }
 dbutils.notebook.exit(json.dumps(result_summary))  # noqa: F821
