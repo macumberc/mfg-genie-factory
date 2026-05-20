@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Any, Optional
 import urllib.error
 import urllib.request
@@ -289,23 +290,66 @@ def create_or_replace_genie_space(
     )
 
 
+_TIMESTAMP_SUFFIX_RE = re.compile(r"\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s*$")
+
+
+def _list_all_genie_spaces(ws: Any) -> list[dict[str, Any]]:
+    """List every Genie space in the workspace, walking all pagination pages.
+
+    The /api/2.0/genie/spaces endpoint caps responses at ~100 spaces per
+    page and returns a ``next_page_token``; without pagination, large
+    workspaces (175+ spaces) silently truncate.
+    """
+    spaces: list[dict[str, Any]] = []
+    page_token: Optional[str] = None
+    seen_tokens: set[str] = set()
+    while True:
+        path = "/api/2.0/genie/spaces"
+        if page_token:
+            path = f"{path}?page_token={page_token}"
+        data = _api_request(ws, "GET", path)
+        if not isinstance(data, dict):
+            break
+        spaces.extend(data.get("spaces", []))
+        page_token = data.get("next_page_token")
+        if not page_token or page_token in seen_tokens:
+            break
+        seen_tokens.add(page_token)
+    return spaces
+
+
 def find_managed_spaces(
     spark, fqn: str, title: Optional[str] = None, workspace_client: Any = None,
 ) -> list[dict[str, Any]]:
-    """List spaces owned by this package for the target namespace."""
+    """List spaces owned by this package for the target namespace.
+
+    Matches on three signals so that previous deploys are reliably found
+    even when Databricks auto-renamed them on title-conflict:
+
+      1. Exact title equality.
+      2. Title equality after stripping a trailing " YYYY-MM-DD HH:MM:SS"
+         suffix the Databricks Genie API appends on title collisions.
+      3. Legacy ``fqn=<...>`` marker in the description (pre-2026 deploys).
+    """
 
     ws = workspace_client or _default_workspace_client()
-    data = _api_request(ws, "GET", "/api/2.0/genie/spaces")
-    spaces = data.get("spaces", []) if isinstance(data, dict) else []
+    spaces = _list_all_genie_spaces(ws)
 
-    # Primary: match by title (current spaces use clean descriptions)
-    # Secondary fallback: match by fqn marker in description (legacy spaces)
     legacy_marker = f"fqn={fqn}"
-    results = []
+    expected_title = title or ""
+    results: list[dict[str, Any]] = []
     for space in spaces:
-        if title and space.get("title") == title:
-            results.append(space)
-        elif legacy_marker in (space.get("description", "") or ""):
+        space_title = space.get("title", "") or ""
+        if expected_title:
+            if space_title == expected_title:
+                results.append(space)
+                continue
+            # Databricks auto-renames duplicates with a timestamp suffix.
+            stripped = _TIMESTAMP_SUFFIX_RE.sub("", space_title)
+            if stripped == expected_title:
+                results.append(space)
+                continue
+        if legacy_marker in (space.get("description", "") or ""):
             results.append(space)
     return results
 
