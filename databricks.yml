@@ -1,0 +1,67 @@
+# Databricks Asset Bundle definition for the monthly refresh job.
+#
+# Deploy with:
+#   databricks bundle deploy --profile fe-vm-logistics-demos --target prod
+#
+# Trigger on-demand with:
+#   databricks bundle run monthly_refresh --profile fe-vm-logistics-demos --target prod
+#
+# Scheduled to run on the 1st of each month at 06:00 UTC so the rolling
+# data window slides cleanly. Concurrency is pinned to 3 to respect the
+# 5 qpm Genie space-creation cap on the workspace.
+
+bundle:
+  name: genie-factory-monthly-refresh
+
+targets:
+  prod:
+    mode: production
+    default: true
+    workspace:
+      host: https://fevm-logistics-demos.cloud.databricks.com
+    run_as:
+      user_name: chad.macumber@databricks.com
+
+resources:
+  jobs:
+    monthly_refresh:
+      name: "[Genie Factory] Monthly refresh of all 88 demos"
+      description: |
+        Re-runs deploy_use_case() for every preset demo so the engine's
+        rolling current-date data window stays inside the trailing 12 months.
+        Idempotent: drops and recreates schemas + Genie spaces. Concurrency
+        is bounded to 3 to respect the workspace 5 qpm Genie API cap.
+
+      email_notifications:
+        on_failure:
+          - chad.macumber@databricks.com
+        on_duration_warning_threshold_exceeded:
+          - chad.macumber@databricks.com
+
+      schedule:
+        # Cron: "0 0 6 1 * ?" (Quartz). 06:00 UTC on day 1 of each month.
+        quartz_cron_expression: "0 0 6 1 * ?"
+        timezone_id: "UTC"
+        pause_status: "UNPAUSED"
+
+      max_concurrent_runs: 1
+      timeout_seconds: 7200  # 2 hours — concurrency=3 of ~88 specs at ~30s each.
+
+      tasks:
+        - task_key: refresh
+          notebook_task:
+            notebook_path: ./notebooks/monthly_refresh.py
+            base_parameters:
+              concurrency: "3"
+              # end_date intentionally empty — engine rolls with CURRENT_DATE.
+              end_date: ""
+            source: WORKSPACE
+
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            client: "1"
+            dependencies:
+              - git+https://github.com/macumberc/genie-factory.git@chad/data-quality-remediation
