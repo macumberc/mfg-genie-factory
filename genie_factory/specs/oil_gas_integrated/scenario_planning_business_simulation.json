@@ -2,8 +2,8 @@
   "company_name": "StratOil Dynamics",
   "industry": "Oil & Gas Integrated",
   "use_case": "Scenario planning and business simulation for strategic decision-making",
-  "space_title": "StratOil Dynamics - Scenario Planning & Business Simulation 🎯",
-  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Scenario Planning & Business Simulation\n\nStratOil Dynamics — corporate scenario and simulation analytics across 20 strategic scenarios spanning oil-price stress, production upside, capital reallocation, and energy-transition pathways. Strategy & Planning and the CFO use this space to stress-test the portfolio under WTI price decks, probability-weight outcomes, and compare scenarios on NPV, IRR, and breakeven price; the CEO and Board use it for capital allocation, transition-strategy framing, and net-zero scenario selection.\n\n**Key KPIs**\n- NPV ($MM) — primary value metric per scenario\n- IRR (%) — return threshold; majors typically use 10-15% hurdle\n- Probability-weighted NPV ($MM) — risk-adjusted portfolio value\n- Breakeven oil price ($/bbl) — downside resilience indicator\n- Projected production (MBOED) — top-line operational driver\n- CO2 intensity (kg/BOE) — transition / Scope 1+2 benchmark, IOGP median ~17\n- EBITDA margin (%) — projected profitability under scenario\n- Variance to baseline (%) — scenario delta vs. current trajectory\n\n**Data sources**\n- `simulation_runs` — individual run inputs (oil price, growth, capex) and outputs (NPV, IRR)\n- `outcome_snapshots` — projected revenue, EBITDA, production, CO2, breakeven, confidence\n- `scenario_kpi_monthly` — probability-weighted NPV/IRR, risk scores, variance to baseline",
+  "space_title": "StratOil Dynamics - Scenario Planning & Business Simulation \ud83c\udfaf",
+  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Scenario Planning & Business Simulation\n\nStratOil Dynamics \u2014 corporate scenario and simulation analytics across 20 strategic scenarios spanning oil-price stress, production upside, capital reallocation, and energy-transition pathways. Strategy & Planning and the CFO use this space to stress-test the portfolio under WTI price decks, probability-weight outcomes, and compare scenarios on NPV, IRR, and breakeven price; the CEO and Board use it for capital allocation, transition-strategy framing, and net-zero scenario selection.\n\n**Key KPIs**\n- NPV ($MM) \u2014 primary value metric per scenario\n- IRR (%) \u2014 return threshold; majors typically use 10-15% hurdle\n- Probability-weighted NPV ($MM) \u2014 risk-adjusted portfolio value\n- Breakeven oil price ($/bbl) \u2014 downside resilience indicator\n- Projected production (MBOED) \u2014 top-line operational driver\n- CO2 intensity (kg/BOE) \u2014 transition / Scope 1+2 benchmark, IOGP median ~17\n- EBITDA margin (%) \u2014 projected profitability under scenario\n- Variance to baseline (%) \u2014 scenario delta vs. current trajectory\n\n**Data sources**\n- `simulation_runs` \u2014 individual run inputs (oil price, growth, capex) and outputs (NPV, IRR)\n- `outcome_snapshots` \u2014 projected revenue, EBITDA, production, CO2, breakeven, confidence\n- `scenario_kpi_monthly` \u2014 probability-weighted NPV/IRR, risk scores, variance to baseline",
   "schema_basename": "og_integrated_scenario",
   "tables": [
     {
@@ -677,13 +677,13 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Scenario Planning and Business Simulation for an integrated oil & gas major running 20 named scenarios across Baseline, Price Stress, Production Upside, Capital Reallocation, and Energy Transition categories. Stakeholders include Strategy & Planning (NPV / IRR / sensitivity), the CFO (capital allocation, breakeven), and the CEO / Board (transition pathways, probability-weighted outcomes).\n\nMETRIC DEFINITIONS\n- NPV = npv_mm on simulation_runs (USD millions, single run); avg_npv_mm rolls up across runs\n- IRR = irr_pct on simulation_runs; majors typically hurdle at 10-15% for development capex\n- Probability-weighted NPV = weighted_npv_mm on scenario_kpi_monthly\n- Breakeven = breakeven_price_usd on outcome_snapshots; resilience benchmark, top-quartile deepwater <40 USD/bbl\n- Projected production = projected_production_mboed on outcome_snapshots (thousand BOE/d)\n- CO2 intensity = co2_intensity_kg_boe; IOGP 2023 median ~17 kg CO2e/BOE upstream\n- Variance to baseline = variance_to_baseline_pct; delta vs. Baseline scenario family\n- Confidence = confidence_level on outcome_snapshots (High / Medium / Low)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - simulation_runs_metrics (source: simulation_runs) — dims: run_date, scenario_id, scenario_category; measures: avg_npv_mm, avg_irr_pct, total_capex_mm, total_runs, avg_oil_price, total_production_growth_percent, total_probability_weight, max_oil_price_assumption.\n  - outcome_snapshots_metrics (source: outcome_snapshots) — dims: snapshot_date, scenario_id, scenario_category, confidence_level; measures: avg_projected_revenue_mm, avg_projected_ebitda_mm, avg_breakeven_price, avg_co2_intensity, avg_production_mboed, max_projected_revenue_mm.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. scenario_name, npv_mm, irr_pct, weighted_npv_mm, variance_to_baseline_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Scenario Planning and Business Simulation for an integrated oil & gas major running 20 named scenarios across Baseline, Price Stress, Production Upside, Capital Reallocation, and Energy Transition categories. Stakeholders include Strategy & Planning (NPV / IRR / sensitivity), the CFO (capital allocation, breakeven), and the CEO / Board (transition pathways, probability-weighted outcomes).\n\nMETRIC DEFINITIONS\n- NPV = npv_mm on simulation_runs (USD millions, single run); avg_npv_mm rolls up across runs\n- IRR = irr_pct on simulation_runs; majors typically hurdle at 10-15% for development capex\n- Probability-weighted NPV = weighted_npv_mm on scenario_kpi_monthly\n- Breakeven = breakeven_price_usd on outcome_snapshots; resilience benchmark, top-quartile deepwater <40 USD/bbl\n- Projected production = projected_production_mboed on outcome_snapshots (thousand BOE/d)\n- CO2 intensity = co2_intensity_kg_boe; IOGP 2023 median ~17 kg CO2e/BOE upstream\n- Variance to baseline = variance_to_baseline_pct; delta vs. Baseline scenario family\n- Confidence = confidence_level on outcome_snapshots (High / Medium / Low)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - simulation_runs_metrics (source: simulation_runs) \u2014 dims: run_date, scenario_id, scenario_category; measures: avg_npv_mm, avg_irr_pct, total_capex_mm, total_runs, avg_oil_price, total_production_growth_percent, total_probability_weight, max_oil_price_assumption.\n  - outcome_snapshots_metrics (source: outcome_snapshots) \u2014 dims: snapshot_date, scenario_id, scenario_category, confidence_level; measures: avg_projected_revenue_mm, avg_projected_ebitda_mm, avg_breakeven_price, avg_co2_intensity, avg_production_mboed, max_projected_revenue_mm.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. scenario_name, npv_mm, irr_pct, weighted_npv_mm, variance_to_baseline_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 scenarios by average NPV across all simulation runs.",
     "Show monthly probability-weighted NPV by scenario category for the trailing 12 months.",
     "Which Transition scenarios deliver positive IRR above 10%, and what is their projected CO2 intensity?",
     "Compare average breakeven oil price across Baseline, Price Stress, and Production Upside scenarios.",
-    "Top 10 scenarios by projected EBITDA — and how do they rank on CO2 intensity?",
+    "Top 10 scenarios by projected EBITDA \u2014 and how do they rank on CO2 intensity?",
     "How has average projected EBITDA trended month-over-month across the portfolio?",
     "Which Price Stress scenarios have negative variance to baseline greater than 15%?"
   ],
@@ -698,7 +698,7 @@
       ]
     },
     {
-      "question": "How has total production growth pct changed over time?",
+      "question": "How has average production growth percent trended by month?",
       "sql_lines": [
         "SELECT run_date, MEASURE(total_production_growth_percent) AS total_production_growth_percent",
         "FROM {fqn}.simulation_runs_metrics",
@@ -707,7 +707,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in average projected ebitda in millions usd?",
+      "question": "How has total projected ebitda trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(avg_projected_ebitda_mm) AS avg_projected_ebitda_mm",
         "FROM {fqn}.outcome_snapshots_metrics",
@@ -716,7 +716,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in average co2 intensity kg per boe?",
+      "question": "How has total co2 intensity trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(avg_co2_intensity) AS avg_co2_intensity",
         "FROM {fqn}.outcome_snapshots_metrics",
@@ -725,19 +725,21 @@
       ]
     },
     {
-      "question": "What is the trend of total assumed wti oil price usd per barrel over time?",
+      "question": "How has total assumed wti oil price per barrel trended over time?",
       "sql_lines": [
         "SELECT run_date, SUM(oil_price_assumption) AS total_oil_price_assumption",
         "FROM {fqn}.simulation_runs",
-        "GROUP BY run_date ORDER BY run_date"
+        "GROUP BY run_date",
+        "ORDER BY run_date"
       ]
     },
     {
-      "question": "What is the trend of total projected revenue in millions usd over time?",
+      "question": "How has total projected revenue trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(projected_revenue_mm) AS total_projected_revenue_mm",
         "FROM {fqn}.outcome_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
@@ -850,12 +852,12 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in unique total runss?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_runs) AS total_runs",
-        "FROM {fqn}.simulation_runs_metrics",
-        "GROUP BY ALL",
-        "ORDER BY run_date"
+        "SELECT DATE_TRUNC('month', run_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -868,16 +870,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest projected revenue mm?",
-      "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_projected_revenue_mm) AS max_projected_revenue_mm",
-        "FROM {fqn}.outcome_snapshots_metrics",
-        "GROUP BY ALL",
-        "ORDER BY snapshot_date"
-      ]
-    },
-    {
-      "question": "How has average projected revenue in millions usd changed over time?",
+      "question": "How has average projected revenue trended by month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(avg_projected_revenue_mm) AS avg_projected_revenue_mm",
         "FROM {fqn}.outcome_snapshots_metrics",
@@ -886,27 +879,43 @@
       ]
     },
     {
-      "question": "What are the top scenario identifier by total assumed wti oil price usd per barrel?",
+      "question": "Which scenario have the best average assumed annual production growth rate?",
       "sql_lines": [
-        "SELECT scenario_id, SUM(oil_price_assumption) AS total_oil_price_assumption",
+        "SELECT scenario_name, AVG(production_growth_pct) AS avg_metric",
         "FROM {fqn}.simulation_runs",
-        "GROUP BY scenario_id ORDER BY total_oil_price_assumption DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per date of the outcome snapshot?",
+      "question": "Which scenario have the highest total assumed wti oil price per barrel?",
       "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
-        "FROM {fqn}.outcome_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "SELECT scenario_name, SUM(oil_price_assumption) AS total_oil_price_assumption",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY scenario_name",
+        "ORDER BY total_oil_price_assumption DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per first day of the kpi month?",
+      "question": "Which scenario have the highest average projected revenue?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT scenario_name, MEASURE(avg_projected_revenue_mm) AS avg_projected_revenue_mm",
+        "FROM {fqn}.outcome_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_projected_revenue_mm DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which scenario categorys have the highest total probability-weighted npv?",
+      "sql_lines": [
+        "SELECT scenario_category, SUM(weighted_npv_mm) AS total_metric",
         "FROM {fqn}.scenario_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

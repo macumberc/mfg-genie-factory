@@ -2,8 +2,8 @@
   "company_name": "RefineCapital Systems",
   "industry": "Oil & Gas Refining",
   "use_case": "Working capital and cash flow optimization for oil & gas refining operations",
-  "space_title": "RefineCapital Systems - Working Capital & Cash Flow Optimization 💰",
-  "space_description": "**Subindustry:** Oil & Gas Refining\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nRefineCapital Systems — working capital and cash flow analytics across 20 business units spanning Processing, Supply Chain, Support, and Corporate segments. CFOs and Treasurers use this space to compress the cash conversion cycle, manage Days Sales Outstanding (DSO) and Days Payable Outstanding (DPO) against integrated-refiner benchmarks, and free up trapped working capital from inventory and receivables. Treasury teams use it for daily cash positioning and net debt management.\n\n**Key KPIs**\n- Cash conversion cycle (days) — refining peers typically run 15-40 days NWC\n- Days Sales Outstanding (DSO) — integrated refiners target 25-35 days\n- Days Payable Outstanding (DPO) — typically 30-50 days\n- Free cash flow ($) by segment\n- Current ratio — healthy refiners run 1.2-1.8\n- Net debt ($) and net debt / EBITDA leverage\n- Inventory tied up in feedstock and product (bbl converted to $)\n- Net cash flow (inflows − outflows) by business unit\n\n**Data sources**\n- `cash_transactions` — daily cash inflows and outflows by flow type and counterparty\n- `working_capital_snapshots` — weekly AR / AP / inventory / cash balances and DSO/DPO\n- `cashflow_monthly` — monthly FCF, cash conversion cycle, current ratio, net debt",
+  "space_title": "RefineCapital Systems - Working Capital & Cash Flow Optimization \ud83d\udcb0",
+  "space_description": "**Subindustry:** Oil & Gas Refining\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nRefineCapital Systems \u2014 working capital and cash flow analytics across 20 business units spanning Processing, Supply Chain, Support, and Corporate segments. CFOs and Treasurers use this space to compress the cash conversion cycle, manage Days Sales Outstanding (DSO) and Days Payable Outstanding (DPO) against integrated-refiner benchmarks, and free up trapped working capital from inventory and receivables. Treasury teams use it for daily cash positioning and net debt management.\n\n**Key KPIs**\n- Cash conversion cycle (days) \u2014 refining peers typically run 15-40 days NWC\n- Days Sales Outstanding (DSO) \u2014 integrated refiners target 25-35 days\n- Days Payable Outstanding (DPO) \u2014 typically 30-50 days\n- Free cash flow ($) by segment\n- Current ratio \u2014 healthy refiners run 1.2-1.8\n- Net debt ($) and net debt / EBITDA leverage\n- Inventory tied up in feedstock and product (bbl converted to $)\n- Net cash flow (inflows \u2212 outflows) by business unit\n\n**Data sources**\n- `cash_transactions` \u2014 daily cash inflows and outflows by flow type and counterparty\n- `working_capital_snapshots` \u2014 weekly AR / AP / inventory / cash balances and DSO/DPO\n- `cashflow_monthly` \u2014 monthly FCF, cash conversion cycle, current ratio, net debt",
   "schema_basename": "og_refining_cashflow",
   "tables": [
     {
@@ -732,24 +732,24 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Working Capital & Cash Flow Optimization for a refining business with Processing, Supply Chain, Support, and Corporate segments across Gulf Coast, Midwest, and National regions. Stakeholders include the CFO (FCF, cash conversion cycle, net debt), Treasurer (daily cash position, DSO/DPO, current ratio), and Segment VPs (segment-level NWC and FCF drivers).\n\nMETRIC DEFINITIONS\n- Cash conversion cycle = cash_conversion_cycle_days on cashflow_monthly; integrated refiners typically run 15-40 days NWC\n- DSO = dso_days on working_capital_snapshots; integrated-refiner benchmark 25-35 days\n- DPO = dpo_days; benchmark 30-50 days; higher DPO = better working capital position (within supplier-risk limits)\n- Net working capital (NWC) = accounts_receivable_usd + inventory_usd - accounts_payable_usd\n- Free cash flow = free_cash_flow_usd; primary lens for dividend / buyback / capex allocation\n- Current ratio = current_ratio; healthy refiners run 1.2-1.8, <1.0 signals liquidity stress\n- Net debt = net_debt_usd; refining peers target net debt / EBITDA < 2.0x mid-cycle\n- Flow types: Collection (inflow), Disbursement (outflow), Intercompany, Tax Payment, Dividend\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cash_transactions_metrics (source: cash_transactions) — dims: transaction_date, business_unit_id, segment, region, flow_type; measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions, max_amount, total_days_outstanding.\n  - working_capital_snapshots_metrics (source: working_capital_snapshots) — dims: snapshot_date, business_unit_id, segment, region; measures: total_receivables_usd, total_payables_usd, total_cash_balance_usd, avg_dso_days, total_inventory, total_dpo_days, max_accounts_receivable.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. business_unit_name, dso_days at row level, dpo_days at row level, free_cash_flow_usd, current_ratio, net_debt_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Working Capital & Cash Flow Optimization for a refining business with Processing, Supply Chain, Support, and Corporate segments across Gulf Coast, Midwest, and National regions. Stakeholders include the CFO (FCF, cash conversion cycle, net debt), Treasurer (daily cash position, DSO/DPO, current ratio), and Segment VPs (segment-level NWC and FCF drivers).\n\nMETRIC DEFINITIONS\n- Cash conversion cycle = cash_conversion_cycle_days on cashflow_monthly; integrated refiners typically run 15-40 days NWC\n- DSO = dso_days on working_capital_snapshots; integrated-refiner benchmark 25-35 days\n- DPO = dpo_days; benchmark 30-50 days; higher DPO = better working capital position (within supplier-risk limits)\n- Net working capital (NWC) = accounts_receivable_usd + inventory_usd - accounts_payable_usd\n- Free cash flow = free_cash_flow_usd; primary lens for dividend / buyback / capex allocation\n- Current ratio = current_ratio; healthy refiners run 1.2-1.8, <1.0 signals liquidity stress\n- Net debt = net_debt_usd; refining peers target net debt / EBITDA < 2.0x mid-cycle\n- Flow types: Collection (inflow), Disbursement (outflow), Intercompany, Tax Payment, Dividend\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cash_transactions_metrics (source: cash_transactions) \u2014 dims: transaction_date, business_unit_id, segment, region, flow_type; measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions, max_amount, total_days_outstanding.\n  - working_capital_snapshots_metrics (source: working_capital_snapshots) \u2014 dims: snapshot_date, business_unit_id, segment, region; measures: total_receivables_usd, total_payables_usd, total_cash_balance_usd, avg_dso_days, total_inventory, total_dpo_days, max_accounts_receivable.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. business_unit_name, dso_days at row level, dpo_days at row level, free_cash_flow_usd, current_ratio, net_debt_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 business units by net cash flow over the last 12 months.",
     "Show monthly trend of total free cash flow across the company for the trailing 12 months.",
-    "Which business units have DSO greater than 45 days — driving working capital trapped in receivables?",
+    "Which business units have DSO greater than 45 days \u2014 driving working capital trapped in receivables?",
     "Top 10 business units by total accounts receivable balance right now.",
     "How has the cash conversion cycle trended month-over-month by segment?",
-    "Which segments have a current ratio below 1.0 — signaling liquidity risk?",
+    "Which segments have a current ratio below 1.0 \u2014 signaling liquidity risk?",
     "What is total inventory tied up by segment, and how has it changed quarter-over-quarter?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique total transactionss?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
-        "FROM {fqn}.cash_transactions_metrics",
-        "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.cash_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -762,7 +762,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total ap usd?",
+      "question": "How has total payables trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_payables_usd) AS total_payables_usd",
         "FROM {fqn}.working_capital_snapshots_metrics",
@@ -771,19 +771,22 @@
       ]
     },
     {
-      "question": "What is the trend of total cash flow amount usd (positive=inflow) over time?",
+      "question": "How does cash flow amount compare across business units?",
       "sql_lines": [
-        "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
+        "SELECT business_unit_name, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",
-        "GROUP BY transaction_date ORDER BY transaction_date"
+        "GROUP BY business_unit_name",
+        "ORDER BY business_unit_name",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the trend of total ar balance usd over time?",
+      "question": "How has total ar balance trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(accounts_receivable_usd) AS total_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
@@ -795,12 +798,12 @@
       ]
     },
     {
-      "question": "How has unique total transactionss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
-        "FROM {fqn}.cash_transactions_metrics",
-        "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.cash_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     }
   ],
@@ -894,7 +897,7 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in total inflows usd count?",
+      "question": "How has total inflows trended over time?",
       "sql_lines": [
         "SELECT transaction_date, MEASURE(total_inflows_usd) AS total_inflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
@@ -903,7 +906,7 @@
       ]
     },
     {
-      "question": "How has total outflows usd count changed over time?",
+      "question": "How has total outflows trended over time?",
       "sql_lines": [
         "SELECT transaction_date, MEASURE(total_outflows_usd) AS total_outflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
@@ -912,7 +915,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest accounts receivable?",
+      "question": "What has been the peak accounts_receivable each month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
         "FROM {fqn}.working_capital_snapshots_metrics",
@@ -921,7 +924,7 @@
       ]
     },
     {
-      "question": "How has total ar usd changed over time?",
+      "question": "How has total receivables trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_receivables_usd) AS total_receivables_usd",
         "FROM {fqn}.working_capital_snapshots_metrics",
@@ -930,27 +933,33 @@
       ]
     },
     {
-      "question": "What are the top business unit id by total cash flow amount usd (positive=inflow)?",
+      "question": "Which business units have the most cash flow amount?",
       "sql_lines": [
-        "SELECT business_unit_id, SUM(amount_usd) AS total_amount_usd",
+        "SELECT business_unit_name, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",
-        "GROUP BY business_unit_id ORDER BY total_amount_usd DESC LIMIT 10"
+        "GROUP BY business_unit_name",
+        "ORDER BY total_amount_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per snapshot date?",
+      "question": "Which business units have the highest average dso?",
       "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
-        "FROM {fqn}.working_capital_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "SELECT business_unit_name, MEASURE(avg_dso_days) AS avg_dso_days",
+        "FROM {fqn}.working_capital_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_dso_days DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per kpi month?",
+      "question": "Which segments have the highest total free cash flow?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT segment, SUM(free_cash_flow_usd) AS total_metric",
         "FROM {fqn}.cashflow_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

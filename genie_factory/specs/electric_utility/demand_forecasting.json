@@ -2,8 +2,8 @@
   "company_name": "LoadCast Energy",
   "industry": "Electric Utility",
   "use_case": "Electric load demand forecasting and capacity planning",
-  "space_title": "LoadCast Energy - Demand Forecasting & Capacity Planning 📈",
-  "space_description": "**Subindustry:** Electric Utility\n\n**Use case:** Demand Forecasting & Capacity Planning\n\nLoadCast Energy — electric load forecasting and capacity adequacy analytics across multiple service territories, climate zones, and customer classes. Resource Planners and Load Forecasters use this space to track MAPE by territory and model version; T&D VPs and CFOs use it to validate reserve margin, size capex for capacity additions, and quantify exposure to EV load growth and behind-the-meter solar offsets.\n\n**Key KPIs**\n- Forecast MAPE (%) — short-term load forecast benchmark <3%, day-ahead <5%\n- Reserve margin (%) — NERC reliability target typically 15-20% above peak\n- Capacity margin (%) — available headroom for contingencies\n- Load factor (%) — avg / peak; higher = more efficient asset utilization\n- Peak demand (MW) — drives capacity planning and demand charges\n- Weather sensitivity score — load-temp elasticity by territory\n- EV load contribution (MW) — emerging demand driver\n- Distributed solar offset (MW) — behind-the-meter generation reducing net load\n\n**Data sources**\n- `demand_readings` — daily peak/avg demand, temperature, day type, customer count by territory\n- `demand_forecasts` — monthly forecast vs. actual peak MW with error % and capacity margin by model version\n- `demand_kpi_monthly` — monthly per-territory rollups: load factor, reserve margin, weather sensitivity, EV load, distributed solar",
+  "space_title": "LoadCast Energy - Demand Forecasting & Capacity Planning \ud83d\udcc8",
+  "space_description": "**Subindustry:** Electric Utility\n\n**Use case:** Demand Forecasting & Capacity Planning\n\nLoadCast Energy \u2014 electric load forecasting and capacity adequacy analytics across multiple service territories, climate zones, and customer classes. Resource Planners and Load Forecasters use this space to track MAPE by territory and model version; T&D VPs and CFOs use it to validate reserve margin, size capex for capacity additions, and quantify exposure to EV load growth and behind-the-meter solar offsets.\n\n**Key KPIs**\n- Forecast MAPE (%) \u2014 short-term load forecast benchmark <3%, day-ahead <5%\n- Reserve margin (%) \u2014 NERC reliability target typically 15-20% above peak\n- Capacity margin (%) \u2014 available headroom for contingencies\n- Load factor (%) \u2014 avg / peak; higher = more efficient asset utilization\n- Peak demand (MW) \u2014 drives capacity planning and demand charges\n- Weather sensitivity score \u2014 load-temp elasticity by territory\n- EV load contribution (MW) \u2014 emerging demand driver\n- Distributed solar offset (MW) \u2014 behind-the-meter generation reducing net load\n\n**Data sources**\n- `demand_readings` \u2014 daily peak/avg demand, temperature, day type, customer count by territory\n- `demand_forecasts` \u2014 monthly forecast vs. actual peak MW with error % and capacity margin by model version\n- `demand_kpi_monthly` \u2014 monthly per-territory rollups: load factor, reserve margin, weather sensitivity, EV load, distributed solar",
   "schema_basename": "utility_demand_forecast",
   "tables": [
     {
@@ -781,28 +781,28 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports electric load demand forecasting and capacity planning for a utility serving multiple territories (Urban, Suburban, Rural, Industrial, Commercial) across multiple climate zones. Stakeholders include Resource Planning (capacity margin, reserve margin, peak growth), the Load Forecasting team (MAPE by model version), the T&D VP (capacity adequacy), and Finance/CFO (capex sizing, EV and DER impacts).\n\nMETRIC DEFINITIONS\n- Forecast MAPE = AVG(forecast_error_pct) on demand_forecasts; short-term target <3%, day-ahead <5%, monthly <7%\n- Peak demand = peak_demand_mw (daily) / forecasted_peak_mw vs. actual_peak_mw (forecast)\n- Reserve margin = reserve_margin_pct; NERC reliability target typically 15-20%\n- Capacity margin = capacity_margin_pct on demand_forecasts\n- Load factor = load_factor_pct = avg / peak * 100; higher = better asset utilization\n- Weather sensitivity = weather_sensitivity_score (0-10; higher = more weather-dependent)\n- EV load = ev_load_mw (behind-the-meter EV charging contribution)\n- Distributed solar = distributed_solar_mw (BTM PV offsetting gross load)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - demand_readings_metrics (source: demand_readings) — dims: reading_date, territory_type, climate_zone, day_type; measures: avg_peak_demand_mw, max_peak_demand_mw, avg_demand_mw, total_customer_count, reading_count, total_avg_temp_fahrenheit, unique_territory_count, max_avg_demand_mw.\n  - demand_forecast_metrics (source: demand_forecasts) — dims: forecast_month, territory_type, model_version; measures: avg_forecasted_peak_mw, avg_actual_peak_mw, avg_forecast_error_pct, avg_capacity_margin_pct, forecast_count, unique_territory_count, max_forecasted_peak_mw.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. territory_name, load_factor_pct, reserve_margin_pct, ev_load_mw, distributed_solar_mw, weather_sensitivity_score).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports electric load demand forecasting and capacity planning for a utility serving multiple territories (Urban, Suburban, Rural, Industrial, Commercial) across multiple climate zones. Stakeholders include Resource Planning (capacity margin, reserve margin, peak growth), the Load Forecasting team (MAPE by model version), the T&D VP (capacity adequacy), and Finance/CFO (capex sizing, EV and DER impacts).\n\nMETRIC DEFINITIONS\n- Forecast MAPE = AVG(forecast_error_pct) on demand_forecasts; short-term target <3%, day-ahead <5%, monthly <7%\n- Peak demand = peak_demand_mw (daily) / forecasted_peak_mw vs. actual_peak_mw (forecast)\n- Reserve margin = reserve_margin_pct; NERC reliability target typically 15-20%\n- Capacity margin = capacity_margin_pct on demand_forecasts\n- Load factor = load_factor_pct = avg / peak * 100; higher = better asset utilization\n- Weather sensitivity = weather_sensitivity_score (0-10; higher = more weather-dependent)\n- EV load = ev_load_mw (behind-the-meter EV charging contribution)\n- Distributed solar = distributed_solar_mw (BTM PV offsetting gross load)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - demand_readings_metrics (source: demand_readings) \u2014 dims: reading_date, territory_type, climate_zone, day_type; measures: avg_peak_demand_mw, max_peak_demand_mw, avg_demand_mw, total_customer_count, reading_count, total_avg_temp_fahrenheit, unique_territory_count, max_avg_demand_mw.\n  - demand_forecast_metrics (source: demand_forecasts) \u2014 dims: forecast_month, territory_type, model_version; measures: avg_forecasted_peak_mw, avg_actual_peak_mw, avg_forecast_error_pct, avg_capacity_margin_pct, forecast_count, unique_territory_count, max_forecasted_peak_mw.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. territory_name, load_factor_pct, reserve_margin_pct, ev_load_mw, distributed_solar_mw, weather_sensitivity_score).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly trend of average forecast error percentage by model version for the trailing 12 months.",
     "Top 10 territories by maximum peak demand MW over the last 90 days.",
     "Which territories have the highest weather sensitivity score and what is their EV load contribution?",
     "How has reserve margin trended month-over-month by territory type?",
-    "Top 10 territories by capacity margin shortfall — which are below the 15% NERC reliability target?",
+    "Top 10 territories by capacity margin shortfall \u2014 which are below the 15% NERC reliability target?",
     "What is the average load factor by climate zone, and how does it compare across territory types?",
     "Show monthly trend of distributed solar MW and EV load MW for the trailing 12 months."
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in highest peak demand mw?",
+      "question": "How has average daily peak demand in mw trended by month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_peak_demand_mw) AS max_peak_demand_mw",
+        "SELECT reading_date, MEASURE(avg_peak_demand_mw) AS avg_peak_demand_mw",
         "FROM {fqn}.demand_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "How has highest avg demand mw changed over time?",
+      "question": "How has highest average demand mw changed over time?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(max_avg_demand_mw) AS max_avg_demand_mw",
         "FROM {fqn}.demand_readings_metrics",
@@ -811,12 +811,12 @@
       ]
     },
     {
-      "question": "How has unique forecasts changed over time?",
+      "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
-        "FROM {fqn}.demand_forecast_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "SELECT DATE_TRUNC('month', forecast_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -836,7 +836,7 @@
       ]
     },
     {
-      "question": "How has the average load factor as percentage (avg demand / peak demand * 100) changed over time?",
+      "question": "How has the average load factor as percentage (average demand / peak demand * 100) changed over time?",
       "sql_lines": [
         "SELECT report_month, AVG(load_factor_pct) AS avg_load_factor_pct",
         "FROM {fqn}.demand_kpi_monthly",
@@ -844,11 +844,11 @@
       ]
     },
     {
-      "question": "How has total avg temp fahrenheit changed over time?",
+      "question": "How has average average daily temperature in fahrenheit trended over time?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_avg_temp_fahrenheit) AS total_avg_temp_fahrenheit",
-        "FROM {fqn}.demand_readings_metrics",
-        "GROUP BY ALL",
+        "SELECT reading_date, AVG(avg_temp_fahrenheit) AS avg_avg_temp_fahrenheit",
+        "FROM {fqn}.demand_readings",
+        "GROUP BY reading_date",
         "ORDER BY reading_date"
       ]
     }
@@ -953,47 +953,51 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in unique readings?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
-        "FROM {fqn}.demand_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
-      ]
-    },
-    {
-      "question": "How has unique territorys changed over time?",
-      "sql_lines": [
-        "SELECT reading_date, MEASURE(unique_territory_count) AS unique_territory_count",
-        "FROM {fqn}.demand_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
-      ]
-    },
-    {
-      "question": "What is the monthly trend in unique forecasts?",
-      "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
-        "FROM {fqn}.demand_forecast_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
-      ]
-    },
-    {
-      "question": "What is the monthly trend in highest forecasted peak mw?",
-      "sql_lines": [
-        "SELECT forecast_month, MEASURE(max_forecasted_peak_mw) AS max_forecasted_peak_mw",
-        "FROM {fqn}.demand_forecast_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
-      ]
-    },
-    {
-      "question": "What are the top service territory identifier by total daily peak demand in mw?",
-      "sql_lines": [
-        "SELECT territory_id, SUM(peak_demand_mw) AS total_peak_demand_mw",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
         "FROM {fqn}.demand_readings",
-        "GROUP BY territory_id ORDER BY total_peak_demand_mw DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY 1"
+      ]
+    },
+    {
+      "question": "Which service territorys have the highest total daily peak demand in mw?",
+      "sql_lines": [
+        "SELECT territory_name, SUM(peak_demand_mw) AS total_metric",
+        "FROM {fqn}.demand_readings",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which territory type: urban, suburban, rural, industrial, commercials have the highest total average demand in mw for the day?",
+      "sql_lines": [
+        "SELECT territory_type, SUM(avg_demand_mw) AS total_metric",
+        "FROM {fqn}.demand_readings",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "How has average forecasted peak demand in mw trended by month?",
+      "sql_lines": [
+        "SELECT forecast_month, MEASURE(avg_forecasted_peak_mw) AS avg_forecasted_peak_mw",
+        "FROM {fqn}.demand_forecast_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_month"
+      ]
+    },
+    {
+      "question": "Which climate zone: hot-humid, hot-dry, temperate, cold, mixeds have the best average average daily temperature in fahrenheit?",
+      "sql_lines": [
+        "SELECT climate_zone, AVG(avg_temp_fahrenheit) AS avg_metric",
+        "FROM {fqn}.demand_readings",
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -1005,11 +1009,13 @@
       ]
     },
     {
-      "question": "How many records are there per first day of the report month?",
+      "question": "Which territory types have the highest average load factor as percentage?",
       "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
+        "SELECT territory_type, AVG(load_factor_pct) AS avg_metric",
         "FROM {fqn}.demand_kpi_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

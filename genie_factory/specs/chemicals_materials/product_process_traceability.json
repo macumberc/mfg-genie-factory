@@ -2,8 +2,8 @@
   "company_name": "TraceCore Materials",
   "industry": "Chemicals & Materials",
   "use_case": "Product and process traceability for chemical manufacturing",
-  "space_title": "TraceCore Materials - Product & Process Traceability 📋",
-  "space_description": "**Subindustry:** Chemicals & Materials\n\n**Use case:** Product & Process Traceability\n\nTraceCore Materials — end-to-end lot genealogy, supplier provenance, and recall-readiness analytics across 20 products (resins, pigments, catalysts, surfactants, intermediates) and 5 production facilities. The Quality Director uses this space to defend REACH / GHS / TSCA compliance audits (responsible-care audits typically require lot trace in < 4 hours); the Supply Chain VP tracks supplier audit cadence and held-lot exposure; the CFO monitors recalled / quarantined inventory as direct write-down risk.\n\n**Key KPIs**\n- Traceability score (%) — completeness of lot genealogy records; target ≥ 95%\n- Recall readiness (hours) — time to trace a lot end-to-end; regulatory target < 4 hours\n- Quality pass rate (%) — share of production events passing QC; target ≥ 95%\n- Lots with full genealogy / lots produced — audit-readiness indicator\n- Quality holds count — held-inventory exposure and working-capital lock\n- Supplier audits completed — supply-chain compliance cadence\n- Process step yield (output_kg / input_kg) — material efficiency by step\n- Quarantined / recalled lot count — direct write-down and customer-notification trigger\n\n**Data sources**\n- `production_events` — daily process-step records with lot, supplier, input/output kg, QC result\n- `lot_tracking_snapshots` — weekly lot status, downstream customers, shelf life, storage temp\n- `traceability_monthly` — monthly rollups: lots produced, genealogy completeness, recall hours, supplier audits",
+  "space_title": "TraceCore Materials - Product & Process Traceability \ud83d\udccb",
+  "space_description": "**Subindustry:** Chemicals & Materials\n\n**Use case:** Product & Process Traceability\n\nTraceCore Materials \u2014 end-to-end lot genealogy, supplier provenance, and recall-readiness analytics across 20 products (resins, pigments, catalysts, surfactants, intermediates) and 5 production facilities. The Quality Director uses this space to defend REACH / GHS / TSCA compliance audits (responsible-care audits typically require lot trace in < 4 hours); the Supply Chain VP tracks supplier audit cadence and held-lot exposure; the CFO monitors recalled / quarantined inventory as direct write-down risk.\n\n**Key KPIs**\n- Traceability score (%) \u2014 completeness of lot genealogy records; target \u2265 95%\n- Recall readiness (hours) \u2014 time to trace a lot end-to-end; regulatory target < 4 hours\n- Quality pass rate (%) \u2014 share of production events passing QC; target \u2265 95%\n- Lots with full genealogy / lots produced \u2014 audit-readiness indicator\n- Quality holds count \u2014 held-inventory exposure and working-capital lock\n- Supplier audits completed \u2014 supply-chain compliance cadence\n- Process step yield (output_kg / input_kg) \u2014 material efficiency by step\n- Quarantined / recalled lot count \u2014 direct write-down and customer-notification trigger\n\n**Data sources**\n- `production_events` \u2014 daily process-step records with lot, supplier, input/output kg, QC result\n- `lot_tracking_snapshots` \u2014 weekly lot status, downstream customers, shelf life, storage temp\n- `traceability_monthly` \u2014 monthly rollups: lots produced, genealogy completeness, recall hours, supplier audits",
   "schema_basename": "product_traceability",
   "tables": [
     {
@@ -759,33 +759,33 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports product and process traceability for a chemicals manufacturer subject to REACH, GHS, TSCA, and responsible-care audits. Regulators and customers increasingly demand sub-4-hour lot trace for recall response and provenance attestations. Stakeholders: Quality Director (genealogy completeness, recall hours, audit findings), Supply Chain VP (supplier audit cadence, quarantined / recalled inventory), CFO (held-lot working capital and recall write-down risk).\n\nMETRIC DEFINITIONS\n- Traceability score = AVG(traceability_score_pct); target ≥ 95% genealogy completeness\n- Recall readiness = AVG(recall_readiness_hours); regulatory target < 4 hours end-to-end\n- Quality pass rate = passed_quality_checks / total_production_events; target ≥ 95%\n- Failed quality checks = events with quality_check_result = 'Fail'; root-cause investigation trigger\n- Process step yield = output_quantity_kg / NULLIF(input_quantity_kg, 0); material efficiency by step\n- Lots with full genealogy / lots produced = audit-readiness ratio\n- Quality holds = lots placed on quality hold; held-inventory exposure\n- Supplier audits completed = compliance cadence; target ≥ 1 per critical supplier per year\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_events_metrics (source: production_events) — dims: event_date, product_category, facility_id, process_step, supplier_id, quality_check_result; measures: total_production_events, total_input_kg, total_output_kg, passed_quality_checks, failed_quality_checks, unique_lot_count, unique_product_count, max_input_quantity_kg.\n  - traceability_monthly_metrics (source: traceability_monthly) — dims: report_month, product_category, product_id; measures: total_lots_produced, total_lots_full_genealogy, avg_traceability_score, avg_recall_readiness_hours, total_quality_holds, max_lots_produced, total_supplier_audits_completed.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_name, lot_number, lot_status, quantity_on_hand_kg, shelf_life_remaining_days, storage_temp_c).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports product and process traceability for a chemicals manufacturer subject to REACH, GHS, TSCA, and responsible-care audits. Regulators and customers increasingly demand sub-4-hour lot trace for recall response and provenance attestations. Stakeholders: Quality Director (genealogy completeness, recall hours, audit findings), Supply Chain VP (supplier audit cadence, quarantined / recalled inventory), CFO (held-lot working capital and recall write-down risk).\n\nMETRIC DEFINITIONS\n- Traceability score = AVG(traceability_score_pct); target \u2265 95% genealogy completeness\n- Recall readiness = AVG(recall_readiness_hours); regulatory target < 4 hours end-to-end\n- Quality pass rate = passed_quality_checks / total_production_events; target \u2265 95%\n- Failed quality checks = events with quality_check_result = 'Fail'; root-cause investigation trigger\n- Process step yield = output_quantity_kg / NULLIF(input_quantity_kg, 0); material efficiency by step\n- Lots with full genealogy / lots produced = audit-readiness ratio\n- Quality holds = lots placed on quality hold; held-inventory exposure\n- Supplier audits completed = compliance cadence; target \u2265 1 per critical supplier per year\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_events_metrics (source: production_events) \u2014 dims: event_date, product_category, facility_id, process_step, supplier_id, quality_check_result; measures: total_production_events, total_input_kg, total_output_kg, passed_quality_checks, failed_quality_checks, unique_lot_count, unique_product_count, max_input_quantity_kg.\n  - traceability_monthly_metrics (source: traceability_monthly) \u2014 dims: report_month, product_category, product_id; measures: total_lots_produced, total_lots_full_genealogy, avg_traceability_score, avg_recall_readiness_hours, total_quality_holds, max_lots_produced, total_supplier_audits_completed.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_name, lot_number, lot_status, quantity_on_hand_kg, shelf_life_remaining_days, storage_temp_c).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly average traceability score by product category for the trailing 12 months.",
-    "Rank suppliers by failed quality check count this year — which products are affected?",
+    "Rank suppliers by failed quality check count this year \u2014 which products are affected?",
     "How has average recall readiness time (hours) trended month-over-month across facilities?",
     "Which products currently have lots in Quarantine or Recalled status, and what is the on-hand kg?",
     "What is the total quality holds count by product category over the last 6 months?",
-    "Top 10 facilities by total production output (kg) — and how do their quality pass rates compare?",
+    "Top 10 facilities by total production output (kg) \u2014 and how do their quality pass rates compare?",
     "Which product categories have a traceability score below 90%, and what is the held-lot exposure?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique total production eventss?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_production_events) AS total_production_events",
-        "FROM {fqn}.production_events_metrics",
-        "GROUP BY ALL",
-        "ORDER BY event_date"
+        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.production_events",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How has unique lots changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(unique_lot_count) AS unique_lot_count",
-        "FROM {fqn}.production_events_metrics",
-        "GROUP BY ALL",
-        "ORDER BY event_date"
+        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.production_events",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -798,27 +798,31 @@
       ]
     },
     {
-      "question": "What is the trend of total input material quantity in kg over time?",
+      "question": "How has total input material quantity in kilograms trended over time?",
       "sql_lines": [
         "SELECT event_date, SUM(input_quantity_kg) AS total_input_quantity_kg",
         "FROM {fqn}.production_events",
-        "GROUP BY event_date ORDER BY event_date"
+        "GROUP BY event_date",
+        "ORDER BY event_date"
       ]
     },
     {
-      "question": "What is the trend of total quantity remaining in lot in kg over time?",
+      "question": "How has total quantity remaining in lot in kilograms trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(quantity_on_hand_kg) AS total_quantity_on_hand_kg",
         "FROM {fqn}.lot_tracking_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
-      "question": "How has the average traceability completeness score (0-100) changed over time?",
+      "question": "How does traceability completeness score compare across products?",
       "sql_lines": [
-        "SELECT report_month, AVG(traceability_score_pct) AS avg_traceability_score_pct",
+        "SELECT product_name, AVG(traceability_score_pct) AS avg_traceability_score_pct",
         "FROM {fqn}.traceability_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "GROUP BY product_name",
+        "ORDER BY product_name",
+        "LIMIT 10"
       ]
     },
     {
@@ -953,7 +957,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest lots produced?",
+      "question": "What has been the peak number of lots produced in the month each month?",
       "sql_lines": [
         "SELECT report_month, MEASURE(max_lots_produced) AS max_lots_produced",
         "FROM {fqn}.traceability_monthly_metrics",
@@ -962,36 +966,43 @@
       ]
     },
     {
-      "question": "How has total lots produced changed over time?",
+      "question": "Which products have the highest total input material quantity in kilograms?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(total_lots_produced) AS total_lots_produced",
+        "SELECT product_name, SUM(input_quantity_kg) AS total_metric",
+        "FROM {fqn}.production_events",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which category: resins, pigments, catalysts, surfactants, intermediatess have the highest total output product quantity in kilograms?",
+      "sql_lines": [
+        "SELECT product_category, SUM(output_quantity_kg) AS total_metric",
+        "FROM {fqn}.production_events",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which products have the highest total quantity remaining in lot in kilograms?",
+      "sql_lines": [
+        "SELECT product_name, SUM(quantity_on_hand_kg) AS total_metric",
+        "FROM {fqn}.lot_tracking_snapshots",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which products have the highest average traceability score?",
+      "sql_lines": [
+        "SELECT product_name, MEASURE(avg_traceability_score) AS avg_traceability_score",
         "FROM {fqn}.traceability_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY report_month"
-      ]
-    },
-    {
-      "question": "What are the top product identifier by total input material quantity in kg?",
-      "sql_lines": [
-        "SELECT product_id, SUM(input_quantity_kg) AS total_input_quantity_kg",
-        "FROM {fqn}.production_events",
-        "GROUP BY product_id ORDER BY total_input_quantity_kg DESC LIMIT 10"
-      ]
-    },
-    {
-      "question": "How many records are there per weekly snapshot date?",
-      "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
-        "FROM {fqn}.lot_tracking_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
-    },
-    {
-      "question": "How many records are there per first day of reporting month?",
-      "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
-        "FROM {fqn}.traceability_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "ORDER BY avg_traceability_score DESC",
+        "LIMIT 10"
       ]
     }
   ]

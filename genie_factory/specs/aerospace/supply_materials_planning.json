@@ -2,8 +2,8 @@
   "company_name": "AeroChain Logistics",
   "industry": "Aerospace",
   "use_case": "Aerospace supply chain and long-lead materials planning",
-  "space_title": "AeroChain Logistics - Supply & Materials Planning 🔗",
-  "space_description": "**Subindustry:** Aerospace\n\n**Use case:** Supply & Long-Lead Materials Planning\n\nAeroChain Logistics — supply chain analytics across 20 long-lead aerospace materials (titanium, nickel superalloys, composites, forgings) sourced from 6 supplier regions. Procurement Managers use this space to track PO performance and late-delivery risk; the VP of Supply Chain uses it to monitor supplier OTD and single-source exposure; the COO uses it to escalate at-risk material positions blocking production lines.\n\n**Key KPIs**\n- Supplier on-time delivery % (target >95%, industry benchmark 90-95%)\n- Late delivery count vs. total PO count\n- Days of supply (target 30-60 days for production materials, 90+ for long-lead forgings)\n- Supplier quality % (acceptance rate, target >99% on flight-critical)\n- Average lead time (weeks) — titanium 30-40 wks, composites 16-24 wks, forgings 40-60 wks\n- Monthly spend (USD) by material class and supplier region\n- Single-source material count — risk concentration metric\n- Critical / at-risk material count blocking production\n\n**Data sources**\n- `procurement_orders` — daily PO records with quantity, cost, lead time, delivery status, quality acceptance\n- `supply_snapshots` — weekly on-hand, committed, safety stock, days of supply, at-risk flag\n- `supply_kpi_monthly` — monthly supplier OTD %, quality %, spend, lead time, single-source flag",
+  "space_title": "AeroChain Logistics - Supply & Materials Planning \ud83d\udd17",
+  "space_description": "**Subindustry:** Aerospace\n\n**Use case:** Supply & Long-Lead Materials Planning\n\nAeroChain Logistics \u2014 supply chain analytics across 20 long-lead aerospace materials (titanium, nickel superalloys, composites, forgings) sourced from 6 supplier regions. Procurement Managers use this space to track PO performance and late-delivery risk; the VP of Supply Chain uses it to monitor supplier OTD and single-source exposure; the COO uses it to escalate at-risk material positions blocking production lines.\n\n**Key KPIs**\n- Supplier on-time delivery % (target >95%, industry benchmark 90-95%)\n- Late delivery count vs. total PO count\n- Days of supply (target 30-60 days for production materials, 90+ for long-lead forgings)\n- Supplier quality % (acceptance rate, target >99% on flight-critical)\n- Average lead time (weeks) \u2014 titanium 30-40 wks, composites 16-24 wks, forgings 40-60 wks\n- Monthly spend (USD) by material class and supplier region\n- Single-source material count \u2014 risk concentration metric\n- Critical / at-risk material count blocking production\n\n**Data sources**\n- `procurement_orders` \u2014 daily PO records with quantity, cost, lead time, delivery status, quality acceptance\n- `supply_snapshots` \u2014 weekly on-hand, committed, safety stock, days of supply, at-risk flag\n- `supply_kpi_monthly` \u2014 monthly supplier OTD %, quality %, spend, lead time, single-source flag",
   "schema_basename": "aerospace_supply_planning",
   "tables": [
     {
@@ -709,28 +709,28 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports long-lead materials planning for an aerospace OEM/Tier-1 sourcing 20 critical materials (titanium, nickel superalloys, carbon fiber, aluminum, specialty steel, ceramic matrix composites) across 6 supplier regions (North America, Europe, Japan, China, South Korea, Australia). Stakeholders include Procurement Managers (PO performance, late delivery), VP Supply Chain (OTD, supplier quality, single-source risk), and COO (at-risk materials, production stoppage).\n\nMETRIC DEFINITIONS\n- Supplier OTD % target >95%; industry benchmark 90-95%; tracked via late_delivery_count / total_po_count\n- Days of supply = avg_days_of_supply; production materials target 30-60 days, long-lead forgings 90+ days\n- Lead time (weeks) = avg_lead_time_weeks; titanium 30-40, composites 16-24, forgings 40-60\n- Quality acceptance % target >99% on flight-critical components\n- Critical / at-risk material count = critical_material_count where at_risk_flag = 'At Risk'\n- Monthly spend = total_order_value (USD) — drives material P&L\n- Single-source risk = single_source_flag (count materials with single supplier)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - procurement_metrics (source: procurement_orders) — dims: order_date, material_class, supplier_region, delivery_status; measures: total_order_value, total_order_quantity_kg, avg_lead_time_weeks, total_po_count, late_delivery_count, unique_material_count, max_order_quantity_kg.\n  - supply_position_metrics (source: supply_snapshots) — dims: snapshot_date, material_class, at_risk_flag; measures: total_on_hand_kg, avg_days_of_supply, critical_material_count, total_committed_kg, snapshot_count, total_safety_stock_kg, max_on_hand_kg.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. material_id, material_name, unit_cost_usd_kg, quality_acceptance, single_source_flag, on_time_delivery_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports long-lead materials planning for an aerospace OEM/Tier-1 sourcing 20 critical materials (titanium, nickel superalloys, carbon fiber, aluminum, specialty steel, ceramic matrix composites) across 6 supplier regions (North America, Europe, Japan, China, South Korea, Australia). Stakeholders include Procurement Managers (PO performance, late delivery), VP Supply Chain (OTD, supplier quality, single-source risk), and COO (at-risk materials, production stoppage).\n\nMETRIC DEFINITIONS\n- Supplier OTD % target >95%; industry benchmark 90-95%; tracked via late_delivery_count / total_po_count\n- Days of supply = avg_days_of_supply; production materials target 30-60 days, long-lead forgings 90+ days\n- Lead time (weeks) = avg_lead_time_weeks; titanium 30-40, composites 16-24, forgings 40-60\n- Quality acceptance % target >99% on flight-critical components\n- Critical / at-risk material count = critical_material_count where at_risk_flag = 'At Risk'\n- Monthly spend = total_order_value (USD) \u2014 drives material P&L\n- Single-source risk = single_source_flag (count materials with single supplier)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - procurement_metrics (source: procurement_orders) \u2014 dims: order_date, material_class, supplier_region, delivery_status; measures: total_order_value, total_order_quantity_kg, avg_lead_time_weeks, total_po_count, late_delivery_count, unique_material_count, max_order_quantity_kg.\n  - supply_position_metrics (source: supply_snapshots) \u2014 dims: snapshot_date, material_class, at_risk_flag; measures: total_on_hand_kg, avg_days_of_supply, critical_material_count, total_committed_kg, snapshot_count, total_safety_stock_kg, max_on_hand_kg.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. material_id, material_name, unit_cost_usd_kg, quality_acceptance, single_source_flag, on_time_delivery_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 materials by total order value over the last 12 months, and which supplier regions ship them?",
     "Show monthly trend in late delivery count by supplier region.",
     "Which material classes have the lowest days of supply right now, and what is at risk?",
-    "Top 10 supplier regions by average lead time in weeks — flag any above industry benchmark.",
+    "Top 10 supplier regions by average lead time in weeks \u2014 flag any above industry benchmark.",
     "How has total monthly spend trended over the trailing 12 months by material class?",
     "Which materials are flagged as critical or at-risk this month, and what is on hand?",
     "Show monthly trend in average lead time weeks for the trailing 12 months."
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique materials?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(unique_material_count) AS unique_material_count",
-        "FROM {fqn}.procurement_metrics",
-        "GROUP BY ALL",
-        "ORDER BY order_date"
+        "SELECT DATE_TRUNC('month', order_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.procurement_orders",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How has highest order quantity kg changed over time?",
+      "question": "How has total order quantity in kilograms trended over time?",
       "sql_lines": [
         "SELECT order_date, MEASURE(max_order_quantity_kg) AS max_order_quantity_kg",
         "FROM {fqn}.procurement_metrics",
@@ -739,7 +739,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest on hand kg?",
+      "question": "What has been the peak on-hand inventory in kilograms each month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(max_on_hand_kg) AS max_on_hand_kg",
         "FROM {fqn}.supply_position_metrics",
@@ -748,19 +748,23 @@
       ]
     },
     {
-      "question": "How does total order quantity in kilograms break down by material identifier for 'On Time' records?",
+      "question": "Which material have the highest total *?",
       "sql_lines": [
-        "SELECT material_id, COUNT(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
+        "SELECT material_name, SUM(*) AS record_count, SUM(order_quantity_kg) AS total_order_quantity_kg",
         "FROM {fqn}.procurement_orders",
-        "WHERE delivery_status = 'On Time' GROUP BY material_id ORDER BY total_order_quantity_kg DESC"
+        "WHERE delivery_status = 'On Time'",
+        "GROUP BY material_name",
+        "ORDER BY total_order_quantity_kg DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the trend of total on-hand inventory in kg over time?",
+      "question": "How has total on-hand inventory in kilograms trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(on_hand_kg) AS total_on_hand_kg",
         "FROM {fqn}.supply_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
@@ -888,12 +892,12 @@
       ]
     },
     {
-      "question": "How has unique total pos changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_po_count) AS total_po_count",
-        "FROM {fqn}.procurement_metrics",
-        "GROUP BY ALL",
-        "ORDER BY order_date"
+        "SELECT DATE_TRUNC('month', order_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.procurement_orders",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -906,36 +910,43 @@
       ]
     },
     {
-      "question": "How has unique snapshots changed over time?",
+      "question": "Which material have the highest total order quantity in kilograms?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(snapshot_count) AS snapshot_count",
+        "SELECT material_name, SUM(order_quantity_kg) AS total_metric",
+        "FROM {fqn}.procurement_orders",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which material class: titanium, nickel superalloy, carbon fiber, aluminum, specialty steel, ceramic matrixs have the highest total cost per kilogram?",
+      "sql_lines": [
+        "SELECT material_class, SUM(unit_cost_usd_kg) AS total_metric",
+        "FROM {fqn}.procurement_orders",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which material classs have the highest average days of supply?",
+      "sql_lines": [
+        "SELECT material_class, MEASURE(avg_days_of_supply) AS avg_days_of_supply",
         "FROM {fqn}.supply_position_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY avg_days_of_supply DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What are the top material identifier by total order quantity in kilograms?",
+      "question": "Which material classs have the highest average supplier on-time delivery rate?",
       "sql_lines": [
-        "SELECT material_id, SUM(order_quantity_kg) AS total_order_quantity_kg",
-        "FROM {fqn}.procurement_orders",
-        "GROUP BY material_id ORDER BY total_order_quantity_kg DESC LIMIT 10"
-      ]
-    },
-    {
-      "question": "How many records are there per date of supply snapshot?",
-      "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
-        "FROM {fqn}.supply_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
-    },
-    {
-      "question": "How many records are there per first day of report month?",
-      "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
+        "SELECT material_class, AVG(on_time_delivery_pct) AS avg_metric",
         "FROM {fqn}.supply_kpi_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "company_name": "AeroLedger Corp",
   "industry": "Aerospace",
   "use_case": "Aerospace financial analytics, cost reporting, and margin analysis",
-  "space_title": "AeroLedger Corp - Financial Analytics & Cost Reporting 💰",
-  "space_description": "**Subindustry:** Aerospace\n\n**Use case:** Financial Analytics & Cost Reporting\n\nAeroLedger Corp — financial reporting analytics across 20 cost centers and 5 business segments (Commercial Aviation, Defense, Space, Business Jets, Services). Segment Controllers use this space to monitor revenue, COGS, and margin against plan; the CFO uses it to track operating margin, EBITDA, and book-to-bill against guidance; FP&A uses it to drive monthly close, variance analysis, and headcount productivity.\n\n**Key KPIs**\n- Gross margin % — A&D commercial benchmark 18-22%, defense 10-15%, services 25-35%\n- Operating margin % — top-tier A&D ~10-12%\n- EBITDA (USD) and EBITDA margin %\n- Revenue variance vs. budget % (flag >5% adverse)\n- Revenue per employee (USD) — productivity benchmark $300K-$500K in A&D\n- Backlog book-to-bill ratio (target >1.0 for growth)\n- Total R&D spend (USD) — innovation indicator, typical 4-7% of revenue in A&D\n- Cost efficiency ratio (actual cost / budgeted cost; target <1.0)\n\n**Data sources**\n- `financial_transactions` — GL transactions with revenue, COGS, OpEx, R&D by cost center / segment / project\n- `budget_snapshots` — weekly actuals vs. budget snapshots with headcount and variance %\n- `financial_kpi_monthly` — monthly margin, EBITDA, revenue per employee, book-to-bill",
+  "space_title": "AeroLedger Corp - Financial Analytics & Cost Reporting \ud83d\udcb0",
+  "space_description": "**Subindustry:** Aerospace\n\n**Use case:** Financial Analytics & Cost Reporting\n\nAeroLedger Corp \u2014 financial reporting analytics across 20 cost centers and 5 business segments (Commercial Aviation, Defense, Space, Business Jets, Services). Segment Controllers use this space to monitor revenue, COGS, and margin against plan; the CFO uses it to track operating margin, EBITDA, and book-to-bill against guidance; FP&A uses it to drive monthly close, variance analysis, and headcount productivity.\n\n**Key KPIs**\n- Gross margin % \u2014 A&D commercial benchmark 18-22%, defense 10-15%, services 25-35%\n- Operating margin % \u2014 top-tier A&D ~10-12%\n- EBITDA (USD) and EBITDA margin %\n- Revenue variance vs. budget % (flag >5% adverse)\n- Revenue per employee (USD) \u2014 productivity benchmark $300K-$500K in A&D\n- Backlog book-to-bill ratio (target >1.0 for growth)\n- Total R&D spend (USD) \u2014 innovation indicator, typical 4-7% of revenue in A&D\n- Cost efficiency ratio (actual cost / budgeted cost; target <1.0)\n\n**Data sources**\n- `financial_transactions` \u2014 GL transactions with revenue, COGS, OpEx, R&D by cost center / segment / project\n- `budget_snapshots` \u2014 weekly actuals vs. budget snapshots with headcount and variance %\n- `financial_kpi_monthly` \u2014 monthly margin, EBITDA, revenue per employee, book-to-bill",
   "schema_basename": "aerospace_financial_analytics",
   "tables": [
     {
@@ -699,9 +699,9 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports financial planning, analysis, and reporting for an A&D enterprise with 20 cost centers across 5 business segments (Commercial Aviation, Defense, Space, Business Jets, Services). Stakeholders include Segment Controllers (revenue, COGS, margin), CFO (operating margin, EBITDA, book-to-bill), and FP&A (variance, headcount productivity, R&D intensity).\n\nMETRIC DEFINITIONS\n- Total revenue = total_revenue from financial_txn_metrics; segment benchmarks: Commercial 18-22% GM, Defense 10-15% GM, Services 25-35% GM\n- COGS = total_cogs; gross margin = (revenue - COGS) / revenue\n- OpEx = total_opex; operating margin best-in-class A&D 10-12%\n- R&D spend = total_rd_spend; A&D typical 4-7% of revenue\n- Revenue variance % vs. budget — flag >5% adverse\n- Revenue per employee target $300K-$500K (A&D benchmark)\n- Book-to-bill = backlog_book_to_bill; >1.0 = growth, <1.0 = backlog shrinkage\n- EBITDA = ebitda_usd on financial_kpi_monthly\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - financial_txn_metrics (source: financial_transactions) — dims: txn_date, business_segment, gl_category, project_code; measures: total_revenue, total_cogs, total_opex, total_rd_spend, txn_count, unique_cost_center_count, max_amount.\n  - budget_metrics (source: budget_snapshots) — dims: snapshot_date, business_segment; measures: total_budgeted_revenue, total_actual_revenue, total_budgeted_cost, total_actual_cost, total_headcount, total_revenue_variance_percent, unique_cost_center_count, max_budgeted_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. cost_center_id, cost_center_name, is_recurring, gross_margin_pct, operating_margin_pct, ebitda_usd, revenue_per_employee_usd, backlog_book_to_bill).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports financial planning, analysis, and reporting for an A&D enterprise with 20 cost centers across 5 business segments (Commercial Aviation, Defense, Space, Business Jets, Services). Stakeholders include Segment Controllers (revenue, COGS, margin), CFO (operating margin, EBITDA, book-to-bill), and FP&A (variance, headcount productivity, R&D intensity).\n\nMETRIC DEFINITIONS\n- Total revenue = total_revenue from financial_txn_metrics; segment benchmarks: Commercial 18-22% GM, Defense 10-15% GM, Services 25-35% GM\n- COGS = total_cogs; gross margin = (revenue - COGS) / revenue\n- OpEx = total_opex; operating margin best-in-class A&D 10-12%\n- R&D spend = total_rd_spend; A&D typical 4-7% of revenue\n- Revenue variance % vs. budget \u2014 flag >5% adverse\n- Revenue per employee target $300K-$500K (A&D benchmark)\n- Book-to-bill = backlog_book_to_bill; >1.0 = growth, <1.0 = backlog shrinkage\n- EBITDA = ebitda_usd on financial_kpi_monthly\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - financial_txn_metrics (source: financial_transactions) \u2014 dims: txn_date, business_segment, gl_category, project_code; measures: total_revenue, total_cogs, total_opex, total_rd_spend, txn_count, unique_cost_center_count, max_amount.\n  - budget_metrics (source: budget_snapshots) \u2014 dims: snapshot_date, business_segment; measures: total_budgeted_revenue, total_actual_revenue, total_budgeted_cost, total_actual_cost, total_headcount, total_revenue_variance_percent, unique_cost_center_count, max_budgeted_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. cost_center_id, cost_center_name, is_recurring, gross_margin_pct, operating_margin_pct, ebitda_usd, revenue_per_employee_usd, backlog_book_to_bill).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "Top 10 cost centers by total revenue over the last 12 months — and what are their gross margins?",
+    "Top 10 cost centers by total revenue over the last 12 months \u2014 and what are their gross margins?",
     "Show monthly trend in total revenue by business segment for the trailing 12 months.",
     "Which business segments have the largest unfavorable revenue variance vs. budget this quarter?",
     "Top 10 projects by R&D spend in the last 12 months.",
@@ -711,7 +711,7 @@
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in total opex count?",
+      "question": "How has total opex trended over time?",
       "sql_lines": [
         "SELECT txn_date, MEASURE(total_opex) AS total_opex",
         "FROM {fqn}.financial_txn_metrics",
@@ -729,7 +729,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total budgeted revenue usd?",
+      "question": "How has total budgeted revenue trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_budgeted_revenue) AS total_budgeted_revenue",
         "FROM {fqn}.budget_metrics",
@@ -738,7 +738,7 @@
       ]
     },
     {
-      "question": "How has total revenue variance pct changed over time?",
+      "question": "How has average revenue variance percent trended by month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_revenue_variance_percent) AS total_revenue_variance_percent",
         "FROM {fqn}.budget_metrics",
@@ -747,19 +747,21 @@
       ]
     },
     {
-      "question": "What is the trend of total transaction amount in usd (revenue positive, expenses negative) over time?",
+      "question": "How has total transaction amount in trended over time?",
       "sql_lines": [
         "SELECT txn_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
-        "GROUP BY txn_date ORDER BY txn_date"
+        "GROUP BY txn_date",
+        "ORDER BY txn_date"
       ]
     },
     {
-      "question": "What is the trend of total budgeted revenue in usd over time?",
+      "question": "How has total budgeted revenue in trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(budgeted_revenue_usd) AS total_budgeted_revenue_usd",
         "FROM {fqn}.budget_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
@@ -888,12 +890,12 @@
       ]
     },
     {
-      "question": "What is the monthly trend in unique cost centers?",
+      "question": "How many distinct snapshots appeared each month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(unique_cost_center_count) AS unique_cost_center_count",
-        "FROM {fqn}.budget_metrics",
-        "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, COUNT(DISTINCT snapshot) AS distinct_count",
+        "FROM {fqn}.budget_snapshots",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -906,27 +908,33 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd (revenue positive, expenses negative)?",
+      "question": "Which cost centers have the highest total transaction amount?",
       "sql_lines": [
-        "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
+        "SELECT cost_center_name, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
-        "GROUP BY cost_center_id ORDER BY total_amount_usd DESC LIMIT 10"
+        "GROUP BY cost_center_name",
+        "ORDER BY total_amount_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the average revenue variance as percentage (positive = favorable) by business segment?",
+      "question": "Which business segments have the highest average revenue variance as percentage?",
       "sql_lines": [
         "SELECT business_segment, AVG(revenue_variance_pct) AS avg_revenue_variance_pct",
         "FROM {fqn}.budget_snapshots",
-        "GROUP BY business_segment ORDER BY avg_revenue_variance_pct DESC"
+        "GROUP BY business_segment",
+        "ORDER BY avg_revenue_variance_pct DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per first day of report month?",
+      "question": "Which business segments have the highest average gross margin percentage?",
       "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
+        "SELECT business_segment, AVG(gross_margin_pct) AS avg_metric",
         "FROM {fqn}.financial_kpi_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "company_name": "WellGuard Upstream",
   "industry": "Oil & Gas Upstream",
   "use_case": "Predictive maintenance for drilling and production equipment",
-  "space_title": "WellGuard Upstream - Predictive Maintenance & Asset Health 🔧",
-  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Predictive Maintenance & Asset Health\n\nWellGuard Upstream — equipment reliability analytics for 20 critical assets (top drives, mud pumps, ESPs, rod pumps, BOPs, compressors) across the Permian, Eagle Ford, Bakken, Haynesville, and Marcellus. Reliability Engineers and Asset Managers use this space to triage health scores, MTBF, and RUL day-to-day; Drilling Managers and the Reliability VP use it to quantify deferred production, repair spend, and the ROI of the predictive-maintenance program vs. reactive break-fix.\n\n**Key KPIs**\n- Avg health score (0-100) — composite condition indicator from sensor telemetry\n- MTBF days — mean time between failures; ESP industry benchmark is ~400-600 days\n- Availability % — target ≥95% on rotating equipment, ≥98% on BOPs\n- Predicted RUL days — remaining useful life from ML model; <30d = act now\n- Unplanned downtime hours — emergency + corrective events\n- Repair cost (USD) and cost per downtime hour — maintenance spend efficiency\n- Production loss (BBL) — deferred barrels from equipment downtime\n- Prediction rate — % of events flagged in advance by the ML model\n\n**Data sources**\n- `sensor_readings` — daily telemetry: vibration, temperature, pressure, RUL, alert level per asset\n- `maintenance_events` — work orders with event type, downtime, cost, deferred production, ML prediction flag\n- `equipment_health_monthly` — monthly availability, MTBF, and aggregate health score per asset",
+  "space_title": "WellGuard Upstream - Predictive Maintenance & Asset Health \ud83d\udd27",
+  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Predictive Maintenance & Asset Health\n\nWellGuard Upstream \u2014 equipment reliability analytics for 20 critical assets (top drives, mud pumps, ESPs, rod pumps, BOPs, compressors) across the Permian, Eagle Ford, Bakken, Haynesville, and Marcellus. Reliability Engineers and Asset Managers use this space to triage health scores, MTBF, and RUL day-to-day; Drilling Managers and the Reliability VP use it to quantify deferred production, repair spend, and the ROI of the predictive-maintenance program vs. reactive break-fix.\n\n**Key KPIs**\n- Avg health score (0-100) \u2014 composite condition indicator from sensor telemetry\n- MTBF days \u2014 mean time between failures; ESP industry benchmark is ~400-600 days\n- Availability % \u2014 target \u226595% on rotating equipment, \u226598% on BOPs\n- Predicted RUL days \u2014 remaining useful life from ML model; <30d = act now\n- Unplanned downtime hours \u2014 emergency + corrective events\n- Repair cost (USD) and cost per downtime hour \u2014 maintenance spend efficiency\n- Production loss (BBL) \u2014 deferred barrels from equipment downtime\n- Prediction rate \u2014 % of events flagged in advance by the ML model\n\n**Data sources**\n- `sensor_readings` \u2014 daily telemetry: vibration, temperature, pressure, RUL, alert level per asset\n- `maintenance_events` \u2014 work orders with event type, downtime, cost, deferred production, ML prediction flag\n- `equipment_health_monthly` \u2014 monthly availability, MTBF, and aggregate health score per asset",
   "schema_basename": "og_upstream_pred_maint",
   "tables": [
     {
@@ -742,19 +742,19 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Predictive Maintenance for an upstream operator with 20 critical drilling and production assets (top drives, mud pumps, drawworks, BOPs, ESPs, rod pumps, compressors, generators) across the Permian Basin, Eagle Ford, Bakken, Haynesville, and Marcellus. Stakeholders include the Reliability VP (MTBF, availability, prediction rate), Asset Managers (health score, RUL, alarm load), Drilling Managers (rig downtime), and Finance (repair cost, deferred-production dollars vs. PdM program spend).\n\nMETRIC DEFINITIONS\n- Health score = health_score on sensor_readings (0-100; <60 = degraded, <40 = critical).\n- RUL = predicted_rul_days; <30 days = imminent failure, schedule intervention now.\n- MTBF = mtbf_days on equipment_health_monthly; ESP benchmark ~400-600 days, mud pumps ~180-300, top drives ~500+.\n- Availability = availability_pct; target ≥95% on rotating equipment.\n- Alarm/trip count = alarm_trip_count (alert_level IN ('Alarm','Trip')) — backlog of critical signals.\n- Prediction rate = % of maintenance_events with was_predicted = TRUE; mature PdM programs achieve 50-70%.\n- Downtime hours = downtime_hours on maintenance_events; Emergency + Corrective drive unplanned downtime.\n- Production loss = production_loss_bbl (BBL deferred); cost per downtime hour = repair_cost_usd / downtime_hours.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - sensor_readings_metrics (source: sensor_readings) — dims: reading_date, equipment_id, equipment_type, field_name, alert_level; measures: avg_health_score, min_rul_days, alarm_trip_count, total_readings, total_sensor_value, max_sensor_value.\n  - maintenance_events_metrics (source: maintenance_events) — dims: event_date, equipment_id, equipment_type, field_name, event_type, was_predicted; measures: total_events, total_downtime_hours, total_repair_cost_usd, total_production_loss_bbl, max_downtime_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. equipment_name, sensor_type, predicted_rul_days, mtbf_days, availability_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Predictive Maintenance for an upstream operator with 20 critical drilling and production assets (top drives, mud pumps, drawworks, BOPs, ESPs, rod pumps, compressors, generators) across the Permian Basin, Eagle Ford, Bakken, Haynesville, and Marcellus. Stakeholders include the Reliability VP (MTBF, availability, prediction rate), Asset Managers (health score, RUL, alarm load), Drilling Managers (rig downtime), and Finance (repair cost, deferred-production dollars vs. PdM program spend).\n\nMETRIC DEFINITIONS\n- Health score = health_score on sensor_readings (0-100; <60 = degraded, <40 = critical).\n- RUL = predicted_rul_days; <30 days = imminent failure, schedule intervention now.\n- MTBF = mtbf_days on equipment_health_monthly; ESP benchmark ~400-600 days, mud pumps ~180-300, top drives ~500+.\n- Availability = availability_pct; target \u226595% on rotating equipment.\n- Alarm/trip count = alarm_trip_count (alert_level IN ('Alarm','Trip')) \u2014 backlog of critical signals.\n- Prediction rate = % of maintenance_events with was_predicted = TRUE; mature PdM programs achieve 50-70%.\n- Downtime hours = downtime_hours on maintenance_events; Emergency + Corrective drive unplanned downtime.\n- Production loss = production_loss_bbl (BBL deferred); cost per downtime hour = repair_cost_usd / downtime_hours.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - sensor_readings_metrics (source: sensor_readings) \u2014 dims: reading_date, equipment_id, equipment_type, field_name, alert_level; measures: avg_health_score, min_rul_days, alarm_trip_count, total_readings, total_sensor_value, max_sensor_value.\n  - maintenance_events_metrics (source: maintenance_events) \u2014 dims: event_date, equipment_id, equipment_type, field_name, event_type, was_predicted; measures: total_events, total_downtime_hours, total_repair_cost_usd, total_production_loss_bbl, max_downtime_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. equipment_name, sensor_type, predicted_rul_days, mtbf_days, availability_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 equipment assets by total unplanned downtime hours over the last 90 days.",
     "Show monthly trend of total repair cost and production loss BBL across the fleet for the trailing 12 months.",
     "Which assets currently have a predicted RUL under 30 days, and what is their equipment type and field?",
     "What is the prediction rate (share of events flagged by ML) by equipment type this year?",
-    "Top 10 fields by alarm and trip count this month — how does that compare to last month?",
+    "Top 10 fields by alarm and trip count this month \u2014 how does that compare to last month?",
     "Which equipment types have the lowest availability and shortest MTBF over the last 6 months?",
     "What is the total deferred production (BBL) and repair spend from Emergency events by field, year to date?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in highest sensor value?",
+      "question": "What has been the peak sensor value each month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(max_sensor_value) AS max_sensor_value",
         "FROM {fqn}.sensor_readings_metrics",
@@ -772,11 +772,11 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total downtime hours?",
+      "question": "How has average downtime hours trended over time?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
-        "FROM {fqn}.maintenance_events_metrics",
-        "GROUP BY ALL",
+        "SELECT event_date, AVG(downtime_hours) AS avg_downtime_hours",
+        "FROM {fqn}.maintenance_events",
+        "GROUP BY event_date",
         "ORDER BY event_date"
       ]
     },
@@ -797,7 +797,7 @@
       ]
     },
     {
-      "question": "How has the average avg health score changed over time?",
+      "question": "How has the average average health score changed over time?",
       "sql_lines": [
         "SELECT kpi_month, AVG(avg_health_score) AS avg_avg_health_score",
         "FROM {fqn}.equipment_health_monthly",
@@ -913,21 +913,22 @@
       ]
     },
     {
-      "question": "How has unique total readingss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
-        "FROM {fqn}.sensor_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "What is the monthly trend in unique total eventss?",
+      "question": "Which equipments have the highest total sensor value?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_events) AS total_events",
-        "FROM {fqn}.maintenance_events_metrics",
-        "GROUP BY ALL",
-        "ORDER BY event_date"
+        "SELECT equipment_name, SUM(sensor_value) AS total_metric",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -940,27 +941,33 @@
       ]
     },
     {
-      "question": "What are the top equipment id by total sensor value?",
+      "question": "Which equipment types have the best average health score 0-100?",
       "sql_lines": [
-        "SELECT equipment_id, SUM(sensor_value) AS total_sensor_value",
+        "SELECT equipment_type, AVG(health_score) AS avg_metric",
         "FROM {fqn}.sensor_readings",
-        "GROUP BY equipment_id ORDER BY total_sensor_value DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per event date?",
+      "question": "Which equipments have the highest total events?",
       "sql_lines": [
-        "SELECT event_date, COUNT(*) AS record_count",
-        "FROM {fqn}.maintenance_events",
-        "GROUP BY event_date ORDER BY event_date"
+        "SELECT equipment_name, MEASURE(total_events) AS total_events",
+        "FROM {fqn}.maintenance_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_events DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per kpi month?",
+      "question": "Which fields have the highest average average health score?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT field_name, AVG(avg_health_score) AS avg_metric",
         "FROM {fqn}.equipment_health_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "company_name": "MineTruck Analytics",
   "industry": "Mining",
   "use_case": "Haul vehicle asset health monitoring and predictive maintenance",
-  "space_title": "MineTruck Analytics - Haul Vehicle Asset Health 🔧",
-  "space_description": "**Subindustry:** Mining\n\n**Use case:** Haul Vehicle Asset Health & Predictive Maintenance\n\nMineTruck Analytics — ultra-class haul truck reliability analytics across 20 Cat 797F / Komatsu 930E / Liebherr T284 / Hitachi EH5000 / BelAZ 75710 / Cat 794AC units operating across four pits. Mine Managers and Fleet Managers use this space to monitor daily availability, payload, and cycle time; Reliability VPs and CFOs use it to rank failure risk, plan component changeouts, and quantify unplanned downtime cost against a fleet replacement value of ~$5M per truck.\n\n**Key KPIs**\n- Mechanical availability (%) — target 85-92% for ultra-class trucks\n- Daily payload (tons) — total tons hauled per truck-day, typical range 100-400 tons across the fleet\n- Cycle time (minutes) — primary tons-per-operating-hour driver\n- Fleet health score (0-100) — composite from sensor telemetry\n- Critical / Warning alert count — leading indicator of unplanned downtime\n- Mean time between failures (MTBF, hours) — industry benchmark 200-400 hrs\n- Remaining useful life (RUL, days) — component changeout planning input\n- Repair cost ($) and unplanned downtime hours — opex and lost-production impact\n\n**Data sources**\n- `haul_vehicles` — daily operational records: loads, payload tons, cycle time, fuel\n- `sensor_readings` — daily telemetry: engine temp, tire pressure, hydraulics, health score, alert level\n- `failure_events` — monthly failure events with downtime, repair cost, RUL, 30-day failure probability",
+  "space_title": "MineTruck Analytics - Haul Vehicle Asset Health \ud83d\udd27",
+  "space_description": "**Subindustry:** Mining\n\n**Use case:** Haul Vehicle Asset Health & Predictive Maintenance\n\nMineTruck Analytics \u2014 ultra-class haul truck reliability analytics across 20 Cat 797F / Komatsu 930E / Liebherr T284 / Hitachi EH5000 / BelAZ 75710 / Cat 794AC units operating across four pits. Mine Managers and Fleet Managers use this space to monitor daily availability, payload, and cycle time; Reliability VPs and CFOs use it to rank failure risk, plan component changeouts, and quantify unplanned downtime cost against a fleet replacement value of ~$5M per truck.\n\n**Key KPIs**\n- Mechanical availability (%) \u2014 target 85-92% for ultra-class trucks\n- Daily payload (tons) \u2014 total tons hauled per truck-day, typical range 100-400 tons across the fleet\n- Cycle time (minutes) \u2014 primary tons-per-operating-hour driver\n- Fleet health score (0-100) \u2014 composite from sensor telemetry\n- Critical / Warning alert count \u2014 leading indicator of unplanned downtime\n- Mean time between failures (MTBF, hours) \u2014 industry benchmark 200-400 hrs\n- Remaining useful life (RUL, days) \u2014 component changeout planning input\n- Repair cost ($) and unplanned downtime hours \u2014 opex and lost-production impact\n\n**Data sources**\n- `haul_vehicles` \u2014 daily operational records: loads, payload tons, cycle time, fuel\n- `sensor_readings` \u2014 daily telemetry: engine temp, tire pressure, hydraulics, health score, alert level\n- `failure_events` \u2014 monthly failure events with downtime, repair cost, RUL, 30-day failure probability",
   "schema_basename": "mining_haul_health",
   "tables": [
     {
@@ -789,42 +789,42 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Haul Vehicle Asset Health for a surface mining operation running 20 ultra-class haul trucks (Cat 797F, Komatsu 930E, Liebherr T284, Hitachi EH5000, BelAZ 75710, Cat 794AC) across four pits. Stakeholders include the Mine Manager (availability, cycle time, loads completed), Fleet Manager (alerts, sensor anomalies, tire and engine health), Reliability VP (MTBF, RUL, failure-type Pareto), and CFO (repair cost, unplanned downtime $ impact, capex deferral).\n\nMETRIC DEFINITIONS\n- Mechanical availability proxy = vehicles not in Critical alert; benchmark 85-92% for ultra-class trucks\n- Daily payload tons = payload_tons (total per truck-day, 100-400 ton range); loads_completed = trips per day\n- Cycle time = cycle_time_minutes; healthy ~22-30 min for typical 5km hauls\n- Fleet health score = AVG(health_score) on sensor_readings (0-100)\n- Alert level = alert_level on sensor_readings (Normal / Caution / Warning / Critical)\n- MTBF proxy = operating hours between failure_events; benchmark 200-400 hrs depending on model\n- RUL = rul_days on failure_events (component changeout horizon)\n- 30-day failure probability = failure_probability_pct on failure_events (>25% = high risk)\n- Engine temp = engine_temp_celsius; >100C indicates overheating risk\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - health_monthly (source: sensor_readings) — dims: reading_date, vehicle_model, pit, alert_level; measures: avg_health_score, avg_engine_temp, vehicle_count, critical_count, reading_count, total_tire_pressure_psi, total_hydraulic_pressure_bar, max_engine_temp_celsius.\n  - failure_monthly (source: failure_events) — dims: event_month, vehicle_model, pit, failure_type; measures: total_downtime, total_repair_cost, avg_rul, failure_count, high_risk_count, unique_vehicle_count, max_downtime_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. vehicle_id, vehicle_name, payload_tons, fuel_liters, repair_cost_usd, failure_probability_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Haul Vehicle Asset Health for a surface mining operation running 20 ultra-class haul trucks (Cat 797F, Komatsu 930E, Liebherr T284, Hitachi EH5000, BelAZ 75710, Cat 794AC) across four pits. Stakeholders include the Mine Manager (availability, cycle time, loads completed), Fleet Manager (alerts, sensor anomalies, tire and engine health), Reliability VP (MTBF, RUL, failure-type Pareto), and CFO (repair cost, unplanned downtime $ impact, capex deferral).\n\nMETRIC DEFINITIONS\n- Mechanical availability proxy = vehicles not in Critical alert; benchmark 85-92% for ultra-class trucks\n- Daily payload tons = payload_tons (total per truck-day, 100-400 ton range); loads_completed = trips per day\n- Cycle time = cycle_time_minutes; healthy ~22-30 min for typical 5km hauls\n- Fleet health score = AVG(health_score) on sensor_readings (0-100)\n- Alert level = alert_level on sensor_readings (Normal / Caution / Warning / Critical)\n- MTBF proxy = operating hours between failure_events; benchmark 200-400 hrs depending on model\n- RUL = rul_days on failure_events (component changeout horizon)\n- 30-day failure probability = failure_probability_pct on failure_events (>25% = high risk)\n- Engine temp = engine_temp_celsius; >100C indicates overheating risk\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - health_monthly (source: sensor_readings) \u2014 dims: reading_date, vehicle_model, pit, alert_level; measures: avg_health_score, avg_engine_temp, vehicle_count, critical_count, reading_count, total_tire_pressure_psi, total_hydraulic_pressure_bar, max_engine_temp_celsius.\n  - failure_monthly (source: failure_events) \u2014 dims: event_month, vehicle_model, pit, failure_type; measures: total_downtime, total_repair_cost, avg_rul, failure_count, high_risk_count, unique_vehicle_count, max_downtime_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. vehicle_id, vehicle_name, payload_tons, fuel_liters, repair_cost_usd, failure_probability_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly fleet health score trend by vehicle model for the trailing 12 months.",
     "Which 10 haul trucks have the highest 30-day failure probability right now, and what is each one's RUL?",
-    "Top 10 vehicle models by total unplanned downtime hours this year — rank by lost production impact.",
+    "Top 10 vehicle models by total unplanned downtime hours this year \u2014 rank by lost production impact.",
     "How has total repair cost trended month-over-month by failure type across the fleet?",
     "Which pits have the most Critical alerts in the last 90 days, and which vehicle models are driving them?",
     "What is the average daily payload by vehicle model across the fleet?",
-    "Top 10 vehicles by repair cost over the last 6 months — and what failure types are most common on each?"
+    "Top 10 vehicles by repair cost over the last 6 months \u2014 and what failure types are most common on each?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique readings?",
+      "question": "How many distinct snapshots appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT snapshot) AS distinct_count",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
+      ]
+    },
+    {
+      "question": "How has average engine temperature c trended by month?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_engine_temp) AS avg_engine_temp",
         "FROM {fqn}.health_monthly",
         "GROUP BY ALL",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "How has highest engine temp celsius changed over time?",
+      "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_engine_temp_celsius) AS max_engine_temp_celsius",
-        "FROM {fqn}.health_monthly",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
-      ]
-    },
-    {
-      "question": "What is the monthly trend in unique vehicles?",
-      "sql_lines": [
-        "SELECT event_month, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
-        "FROM {fqn}.failure_monthly",
-        "GROUP BY ALL",
-        "ORDER BY event_month"
+        "SELECT DATE_TRUNC('month', event_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
+        "FROM {fqn}.failure_events",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -960,12 +960,12 @@
       ]
     },
     {
-      "question": "How has unique vehicles changed over time?",
+      "question": "How many distinct snapshots appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(vehicle_count) AS vehicle_count",
-        "FROM {fqn}.health_monthly",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT snapshot) AS distinct_count",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -978,20 +978,23 @@
       ]
     },
     {
-      "question": "How has unique failures changed over time?",
+      "question": "Which vehicles have the highest total loads completed?",
       "sql_lines": [
-        "SELECT event_month, MEASURE(failure_count) AS failure_count",
-        "FROM {fqn}.failure_monthly",
-        "GROUP BY ALL",
-        "ORDER BY event_month"
+        "SELECT vehicle_name, SUM(loads_completed) AS total_metric",
+        "FROM {fqn}.haul_vehicles",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What are the top vehicle id by total loads completed?",
+      "question": "Which vehicle models have the highest total total payload in tons?",
       "sql_lines": [
-        "SELECT vehicle_id, SUM(loads_completed) AS total_loads_completed",
+        "SELECT vehicle_model, SUM(payload_tons) AS total_metric",
         "FROM {fqn}.haul_vehicles",
-        "GROUP BY vehicle_id ORDER BY total_loads_completed DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -1003,11 +1006,13 @@
       ]
     },
     {
-      "question": "How many records are there per event month?",
+      "question": "Which models have the highest average remaining useful life days?",
       "sql_lines": [
-        "SELECT event_month, COUNT(*) AS record_count",
-        "FROM {fqn}.failure_events",
-        "GROUP BY event_month ORDER BY event_month"
+        "SELECT vehicle_model, MEASURE(avg_rul) AS avg_rul",
+        "FROM {fqn}.failure_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_rul DESC",
+        "LIMIT 10"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "company_name": "FleetEdge Solutions",
   "industry": "Logistics",
   "use_case": "Fleet planning, vehicle allocation, and capacity optimization",
-  "space_title": "FleetEdge Solutions - Fleet Planning & Optimization 🚚",
-  "space_description": "**Subindustry:** Logistics\n\n**Use case:** Fleet Planning, Vehicle Allocation & Capacity Optimization\n\nFleetEdge Solutions — asset-level fleet analytics across 20 vehicles (Heavy Duty / Medium Duty / Light Duty / Sprinter) dispatched from 8 regional depots. Fleet Managers use this space for daily dispatch and utilization decisions; the S&OP Lead balances capacity to demand; the VP Logistics tracks OTD and dispatch failure rates; the CFO monitors revenue per asset, maintenance spend, and operating margin per vehicle class.\n\n**Key KPIs**\n- Asset utilization % — dispatched / available hours; industry target 70%+ for heavy duty\n- On-time delivery % — SLA performance; target 95%+\n- Revenue per vehicle (USD/month) — asset productivity metric\n- Cost per km (fuel + maintenance) — primary unit-cost lever\n- Maintenance cost as % of revenue — fleet health and aging signal\n- Idle hours — under-utilization indicator\n- Operation count — throughput per asset class\n- Delivery failure / partial rate — service quality red flag\n\n**Data sources**\n- `fleet_operations` — daily dispatch records: vehicle, depot, route distance, cargo, fuel, delivery status, revenue\n- `vehicle_utilization_snapshots` — weekly per-vehicle hours (available, dispatched, maintenance, idle) and odometer\n- `fleet_kpi_monthly` — monthly per-vehicle P&L: revenue, fuel cost, maintenance cost, distance, utilization, OTD",
+  "space_title": "FleetEdge Solutions - Fleet Planning & Optimization \ud83d\ude9a",
+  "space_description": "**Subindustry:** Logistics\n\n**Use case:** Fleet Planning, Vehicle Allocation & Capacity Optimization\n\nFleetEdge Solutions \u2014 asset-level fleet analytics across 20 vehicles (Heavy Duty / Medium Duty / Light Duty / Sprinter) dispatched from 8 regional depots. Fleet Managers use this space for daily dispatch and utilization decisions; the S&OP Lead balances capacity to demand; the VP Logistics tracks OTD and dispatch failure rates; the CFO monitors revenue per asset, maintenance spend, and operating margin per vehicle class.\n\n**Key KPIs**\n- Asset utilization % \u2014 dispatched / available hours; industry target 70%+ for heavy duty\n- On-time delivery % \u2014 SLA performance; target 95%+\n- Revenue per vehicle (USD/month) \u2014 asset productivity metric\n- Cost per km (fuel + maintenance) \u2014 primary unit-cost lever\n- Maintenance cost as % of revenue \u2014 fleet health and aging signal\n- Idle hours \u2014 under-utilization indicator\n- Operation count \u2014 throughput per asset class\n- Delivery failure / partial rate \u2014 service quality red flag\n\n**Data sources**\n- `fleet_operations` \u2014 daily dispatch records: vehicle, depot, route distance, cargo, fuel, delivery status, revenue\n- `vehicle_utilization_snapshots` \u2014 weekly per-vehicle hours (available, dispatched, maintenance, idle) and odometer\n- `fleet_kpi_monthly` \u2014 monthly per-vehicle P&L: revenue, fuel cost, maintenance cost, distance, utilization, OTD",
   "schema_basename": "fleet_planning",
   "tables": [
     {
@@ -738,28 +738,28 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports fleet planning, vehicle allocation, and capacity optimization for a 3PL operating 20 vehicles across Heavy Duty, Medium Duty, Light Duty, and Sprinter classes from 8 regional depots. Stakeholders include the Fleet Manager (utilization, dispatch, maintenance), VP Logistics (OTD, delivery failures), S&OP Lead (capacity vs. demand), and CFO (revenue per asset, cost per km, margin by vehicle class).\n\nMETRIC DEFINITIONS\n- Asset utilization = utilization_pct = dispatched_hours / available_hours; heavy-duty target 70%+\n- On-time delivery rate = on_time_delivery_pct on fleet_kpi_monthly (or count of delivery_status='On Time' in fleet_operations); target 95%+\n- Revenue per vehicle = monthly_revenue_usd by vehicle_id\n- Cost per km = (monthly_fuel_cost_usd + monthly_maintenance_cost_usd) / total_distance_km; benchmark $0.60–$1.20 for heavy duty\n- Maintenance burden = monthly_maintenance_cost_usd / monthly_revenue_usd; >15% is aging-fleet warning\n- Idle ratio = idle_hours / available_hours; persistent >25% signals over-fleet exposure\n- Delivery failure / partial rate = share of fleet_operations.delivery_status in ('Failed','Partial')\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - fleet_operations_metrics (source: fleet_operations) — dims: operation_date, vehicle_class, depot_code, delivery_status; measures: total_revenue_usd, total_fuel_consumed_liters, total_distance_km, total_cargo_weight_kg, operation_count, on_time_operation_count, unique_vehicle_count, max_route_distance_km.\n  - fleet_kpi_monthly_metrics (source: fleet_kpi_monthly) — dims: report_month, vehicle_class, vehicle_id; measures: total_monthly_revenue, total_monthly_fuel_cost, total_monthly_maintenance_cost, avg_utilization_pct, avg_on_time_delivery_pct, total_total_distance_km, max_monthly_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. vehicle_name, available_hours, idle_hours, maintenance_hours, odometer_km).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports fleet planning, vehicle allocation, and capacity optimization for a 3PL operating 20 vehicles across Heavy Duty, Medium Duty, Light Duty, and Sprinter classes from 8 regional depots. Stakeholders include the Fleet Manager (utilization, dispatch, maintenance), VP Logistics (OTD, delivery failures), S&OP Lead (capacity vs. demand), and CFO (revenue per asset, cost per km, margin by vehicle class).\n\nMETRIC DEFINITIONS\n- Asset utilization = utilization_pct = dispatched_hours / available_hours; heavy-duty target 70%+\n- On-time delivery rate = on_time_delivery_pct on fleet_kpi_monthly (or count of delivery_status='On Time' in fleet_operations); target 95%+\n- Revenue per vehicle = monthly_revenue_usd by vehicle_id\n- Cost per km = (monthly_fuel_cost_usd + monthly_maintenance_cost_usd) / total_distance_km; benchmark $0.60\u2013$1.20 for heavy duty\n- Maintenance burden = monthly_maintenance_cost_usd / monthly_revenue_usd; >15% is aging-fleet warning\n- Idle ratio = idle_hours / available_hours; persistent >25% signals over-fleet exposure\n- Delivery failure / partial rate = share of fleet_operations.delivery_status in ('Failed','Partial')\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - fleet_operations_metrics (source: fleet_operations) \u2014 dims: operation_date, vehicle_class, depot_code, delivery_status; measures: total_revenue_usd, total_fuel_consumed_liters, total_distance_km, total_cargo_weight_kg, operation_count, on_time_operation_count, unique_vehicle_count, max_route_distance_km.\n  - fleet_kpi_monthly_metrics (source: fleet_kpi_monthly) \u2014 dims: report_month, vehicle_class, vehicle_id; measures: total_monthly_revenue, total_monthly_fuel_cost, total_monthly_maintenance_cost, avg_utilization_pct, avg_on_time_delivery_pct, total_total_distance_km, max_monthly_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. vehicle_name, available_hours, idle_hours, maintenance_hours, odometer_km).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly total revenue and monthly fuel cost by vehicle class for the trailing 12 months.",
     "How has average utilization trended month-over-month across each vehicle class?",
     "Top 10 vehicles by monthly revenue last month, and what was each vehicle's maintenance cost?",
     "Which depots had the highest share of delivery_status = 'Failed' or 'Partial' operations this quarter?",
-    "Top 10 vehicles by maintenance cost as a percent of revenue — which assets should we consider retiring?",
+    "Top 10 vehicles by maintenance cost as a percent of revenue \u2014 which assets should we consider retiring?",
     "What is the total operation count and on-time operation count by depot for the last 90 days?",
     "Which vehicle class generated the highest revenue per kilometer in the most recent reporting month?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique vehicles?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT operation_date, MEASURE(unique_vehicle_count) AS unique_vehicle_count",
-        "FROM {fqn}.fleet_operations_metrics",
-        "GROUP BY ALL",
-        "ORDER BY operation_date"
+        "SELECT DATE_TRUNC('month', operation_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.fleet_operations",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How has highest route distance km changed over time?",
+      "question": "How has total total route distance in kilometers trended over time?",
       "sql_lines": [
         "SELECT operation_date, MEASURE(max_route_distance_km) AS max_route_distance_km",
         "FROM {fqn}.fleet_operations_metrics",
@@ -768,7 +768,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total monthly fuel cost in usd?",
+      "question": "How has total monthly fuel cost trended over time?",
       "sql_lines": [
         "SELECT report_month, MEASURE(total_monthly_fuel_cost) AS total_monthly_fuel_cost",
         "FROM {fqn}.fleet_kpi_monthly_metrics",
@@ -786,11 +786,14 @@
       ]
     },
     {
-      "question": "How does total total route distance in kilometers break down by vehicle asset identifier for 'Failed' records?",
+      "question": "Which vehicles have the highest total *?",
       "sql_lines": [
-        "SELECT vehicle_id, COUNT(*) AS record_count, SUM(route_distance_km) AS total_route_distance_km",
+        "SELECT vehicle_name, SUM(*) AS record_count, SUM(route_distance_km) AS total_route_distance_km",
         "FROM {fqn}.fleet_operations",
-        "WHERE delivery_status = 'Failed' GROUP BY vehicle_id ORDER BY total_route_distance_km DESC"
+        "WHERE delivery_status = 'Failed'",
+        "GROUP BY vehicle_name",
+        "ORDER BY total_route_distance_km DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -923,16 +926,16 @@
       ]
     },
     {
-      "question": "How has unique operations changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT operation_date, MEASURE(operation_count) AS operation_count",
-        "FROM {fqn}.fleet_operations_metrics",
-        "GROUP BY ALL",
-        "ORDER BY operation_date"
+        "SELECT DATE_TRUNC('month', operation_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.fleet_operations",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "What is the monthly trend in highest monthly revenue?",
+      "question": "What has been the peak monthly_revenue each month?",
       "sql_lines": [
         "SELECT report_month, MEASURE(max_monthly_revenue) AS max_monthly_revenue",
         "FROM {fqn}.fleet_kpi_monthly_metrics",
@@ -941,36 +944,42 @@
       ]
     },
     {
-      "question": "How has total monthly revenue in usd changed over time?",
+      "question": "Which vehicles have the highest total total route distance in kilometers?",
       "sql_lines": [
-        "SELECT report_month, MEASURE(total_monthly_revenue) AS total_monthly_revenue",
-        "FROM {fqn}.fleet_kpi_monthly_metrics",
-        "GROUP BY ALL",
-        "ORDER BY report_month"
-      ]
-    },
-    {
-      "question": "What are the top vehicle asset identifier by total total route distance in kilometers?",
-      "sql_lines": [
-        "SELECT vehicle_id, SUM(route_distance_km) AS total_route_distance_km",
+        "SELECT vehicle_name, SUM(route_distance_km) AS total_metric",
         "FROM {fqn}.fleet_operations",
-        "GROUP BY vehicle_id ORDER BY total_route_distance_km DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the average dispatched hours as percentage of available hours by human-readable vehicle name?",
+      "question": "Which vehicle class: heavy duty, medium duty, light duty, sprinters have the highest total cargo weight in kilograms?",
+      "sql_lines": [
+        "SELECT vehicle_class, SUM(cargo_weight_kg) AS total_metric",
+        "FROM {fqn}.fleet_operations",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which vehicles have the best dispatched hours of available hours?",
       "sql_lines": [
         "SELECT vehicle_name, AVG(utilization_pct) AS avg_utilization_pct",
         "FROM {fqn}.vehicle_utilization_snapshots",
-        "GROUP BY vehicle_name ORDER BY avg_utilization_pct DESC"
+        "GROUP BY vehicle_name",
+        "ORDER BY avg_utilization_pct DESC"
       ]
     },
     {
-      "question": "How many records are there per first day of reporting month?",
+      "question": "Which depots have the most idle hours?",
       "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
-        "FROM {fqn}.fleet_kpi_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "SELECT depot_name, SUM(idle_hours) AS total_idle_hours",
+        "FROM {fqn}.dispatch_events",
+        "GROUP BY depot_name",
+        "ORDER BY total_idle_hours DESC",
+        "LIMIT 10"
       ]
     }
   ]

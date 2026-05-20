@@ -2,8 +2,8 @@
   "company_name": "BuildBid Engineering",
   "industry": "Construction & Engineering",
   "use_case": "Engineering bid creation and cost estimation analytics",
-  "space_title": "BuildBid Engineering - Bid Creation & Cost Estimation 📝",
-  "space_description": "**Subindustry:** Construction & Engineering\n\n**Use case:** Engineering Bid Creation & Cost Estimation\n\nBuildBid Engineering — EPC bid analytics across 20 active pursuits in bridges, highways, commercial, water, tunnels, industrial, and energy. Estimating Leads and Cost Engineers use this space to triangulate labor/material/equipment build-ups and competitive markup; VP Construction and the CFO use it to track win rate, pipeline coverage, and estimate accuracy against booked margin.\n\n**Key KPIs**\n- Bid win rate (%) — industry benchmark 20-35% on hard-bid public work, 40-60% on negotiated\n- Estimate accuracy (%) — target >90% vs. as-built (AACE Class 2 estimates)\n- Bid markup / target margin (%) — typical 8-15% on competitive lump-sum work\n- Average competitors per bid — directional pricing pressure indicator\n- Pipeline coverage ($) — target 3-4x trailing annual revenue\n- Cost mix (labor/material/equipment/subcontractor) — used for risk-loaded contingency\n- Contingency (%) — typical 3-10% depending on design maturity\n- Total bid value submitted ($) — top-of-funnel volume\n\n**Data sources**\n- `projects` — daily bid submissions: estimated cost, bid amount, target margin, result (Won/Lost/Pending/Withdrawn)\n- `bid_submissions` — weekly cost estimate snapshots with labor, material, equipment, subcontractor build-up and contingency\n- `cost_estimate_snapshots` — monthly bid-performance roll-ups: bids submitted/won, pipeline value, estimate accuracy, competitor count",
+  "space_title": "BuildBid Engineering - Bid Creation & Cost Estimation \ud83d\udcdd",
+  "space_description": "**Subindustry:** Construction & Engineering\n\n**Use case:** Engineering Bid Creation & Cost Estimation\n\nBuildBid Engineering \u2014 EPC bid analytics across 20 active pursuits in bridges, highways, commercial, water, tunnels, industrial, and energy. Estimating Leads and Cost Engineers use this space to triangulate labor/material/equipment build-ups and competitive markup; VP Construction and the CFO use it to track win rate, pipeline coverage, and estimate accuracy against booked margin.\n\n**Key KPIs**\n- Bid win rate (%) \u2014 industry benchmark 20-35% on hard-bid public work, 40-60% on negotiated\n- Estimate accuracy (%) \u2014 target >90% vs. as-built (AACE Class 2 estimates)\n- Bid markup / target margin (%) \u2014 typical 8-15% on competitive lump-sum work\n- Average competitors per bid \u2014 directional pricing pressure indicator\n- Pipeline coverage ($) \u2014 target 3-4x trailing annual revenue\n- Cost mix (labor/material/equipment/subcontractor) \u2014 used for risk-loaded contingency\n- Contingency (%) \u2014 typical 3-10% depending on design maturity\n- Total bid value submitted ($) \u2014 top-of-funnel volume\n\n**Data sources**\n- `projects` \u2014 daily bid submissions: estimated cost, bid amount, target margin, result (Won/Lost/Pending/Withdrawn)\n- `bid_submissions` \u2014 weekly cost estimate snapshots with labor, material, equipment, subcontractor build-up and contingency\n- `cost_estimate_snapshots` \u2014 monthly bid-performance roll-ups: bids submitted/won, pipeline value, estimate accuracy, competitor count",
   "schema_basename": "ce_bid_creation",
   "tables": [
     {
@@ -798,10 +798,10 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports the bid-creation function at an EPC contractor — Estimating Leads, Cost Engineers, the VP of Construction, and the CFO collaborate here to build, price, and review proposals across bridges, highways, commercial buildings, water/wastewater, tunnels, industrial, and energy work. Bid economics are driven by labor productivity, material indices, equipment time on site, subcontractor coverage, contingency, and target margin. Pipeline coverage and win rate by project_type and region steer go/no-go decisions.\n\nMETRIC DEFINITIONS\n- Bid win rate = won_count / bid_count; industry benchmark 20-35% hard-bid, 40-60% negotiated.\n- Estimate accuracy = estimate_accuracy_pct on cost_estimate_snapshots; AACE Class 2 target >90%.\n- Bid markup / target margin = target_margin_pct on projects; typical 8-15% on competitive lump-sum.\n- Total direct cost = labor_cost_usd + material_cost_usd + equipment_cost_usd + subcontractor_cost_usd from bid_submissions.\n- Contingency = contingency_pct on bid_submissions; typical 3-10% depending on design maturity.\n- Pipeline value = pipeline_value_usd on cost_estimate_snapshots; target coverage 3-4x trailing annual revenue.\n- Competitive intensity = avg_competitors on cost_estimate_snapshots; >5 suggests commoditized lane.\n- Bid volume = SUM(bid_amount_usd) — top-of-funnel pursuit dollars.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - bid_kpi_monthly (source: projects) — dims: bid_date, project_type, region, bid_result; measures: total_bid_amount, total_estimated_cost, avg_target_margin, bid_count, won_count, unique_project_count, max_estimated_cost.\n  - pipeline_kpi_monthly (source: cost_estimate_snapshots) — dims: perf_month, project_type, region; measures: total_bids_submitted, total_bids_won, total_pipeline, avg_estimate_accuracy, avg_competitors, unique_project_count, max_bids_submitted.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. project_id, project_name, labor_cost_usd, material_cost_usd, contingency_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports the bid-creation function at an EPC contractor \u2014 Estimating Leads, Cost Engineers, the VP of Construction, and the CFO collaborate here to build, price, and review proposals across bridges, highways, commercial buildings, water/wastewater, tunnels, industrial, and energy work. Bid economics are driven by labor productivity, material indices, equipment time on site, subcontractor coverage, contingency, and target margin. Pipeline coverage and win rate by project_type and region steer go/no-go decisions.\n\nMETRIC DEFINITIONS\n- Bid win rate = won_count / bid_count; industry benchmark 20-35% hard-bid, 40-60% negotiated.\n- Estimate accuracy = estimate_accuracy_pct on cost_estimate_snapshots; AACE Class 2 target >90%.\n- Bid markup / target margin = target_margin_pct on projects; typical 8-15% on competitive lump-sum.\n- Total direct cost = labor_cost_usd + material_cost_usd + equipment_cost_usd + subcontractor_cost_usd from bid_submissions.\n- Contingency = contingency_pct on bid_submissions; typical 3-10% depending on design maturity.\n- Pipeline value = pipeline_value_usd on cost_estimate_snapshots; target coverage 3-4x trailing annual revenue.\n- Competitive intensity = avg_competitors on cost_estimate_snapshots; >5 suggests commoditized lane.\n- Bid volume = SUM(bid_amount_usd) \u2014 top-of-funnel pursuit dollars.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - bid_kpi_monthly (source: projects) \u2014 dims: bid_date, project_type, region, bid_result; measures: total_bid_amount, total_estimated_cost, avg_target_margin, bid_count, won_count, unique_project_count, max_estimated_cost.\n  - pipeline_kpi_monthly (source: cost_estimate_snapshots) \u2014 dims: perf_month, project_type, region; measures: total_bids_submitted, total_bids_won, total_pipeline, avg_estimate_accuracy, avg_competitors, unique_project_count, max_bids_submitted.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. project_id, project_name, labor_cost_usd, material_cost_usd, contingency_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly bid win count and total bid value trended over the trailing 12 months.",
-    "Top 10 project types by win rate this year — and how does that compare to average target margin?",
+    "Top 10 project types by win rate this year \u2014 and how does that compare to average target margin?",
     "Which regions have the lowest estimate accuracy over the last 6 months, and what's the total pipeline value at risk?",
     "How has average competitors per bid trended monthly across the network?",
     "Top 10 projects by total bid value submitted this year, with bid result and target margin.",
@@ -810,12 +810,12 @@
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique projects?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT bid_date, MEASURE(unique_project_count) AS unique_project_count",
-        "FROM {fqn}.bid_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY bid_date"
+        "SELECT DATE_TRUNC('month', bid_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.projects",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -828,7 +828,7 @@
       ]
     },
     {
-      "question": "How has avg competitors per bid changed over time?",
+      "question": "How has average competitors per bid changed over time?",
       "sql_lines": [
         "SELECT perf_month, MEASURE(avg_competitors) AS avg_competitors",
         "FROM {fqn}.pipeline_kpi_monthly",
@@ -837,19 +837,21 @@
       ]
     },
     {
-      "question": "What is the trend of total estimated project cost usd over time?",
+      "question": "How has total estimated project cost trended over time?",
       "sql_lines": [
         "SELECT bid_date, SUM(estimated_cost_usd) AS total_estimated_cost_usd",
         "FROM {fqn}.projects",
-        "GROUP BY bid_date ORDER BY bid_date"
+        "GROUP BY bid_date",
+        "ORDER BY bid_date"
       ]
     },
     {
-      "question": "What is the trend of total labor cost usd over time?",
+      "question": "How has total labor cost trended over time?",
       "sql_lines": [
         "SELECT estimate_date, SUM(labor_cost_usd) AS total_labor_cost_usd",
         "FROM {fqn}.bid_submissions",
-        "GROUP BY estimate_date ORDER BY estimate_date"
+        "GROUP BY estimate_date",
+        "ORDER BY estimate_date"
       ]
     },
     {
@@ -969,12 +971,12 @@
       ]
     },
     {
-      "question": "How has unique bids changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT bid_date, MEASURE(bid_count) AS bid_count",
-        "FROM {fqn}.bid_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY bid_date"
+        "SELECT DATE_TRUNC('month', bid_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.projects",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -987,20 +989,23 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total bids submitted?",
+      "question": "Which projects have the highest total estimated project cost?",
       "sql_lines": [
-        "SELECT perf_month, MEASURE(total_bids_submitted) AS total_bids_submitted",
-        "FROM {fqn}.pipeline_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY perf_month"
+        "SELECT project_name, SUM(estimated_cost_usd) AS total_metric",
+        "FROM {fqn}.projects",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What are the top project id by total estimated project cost usd?",
+      "question": "Which project types have the best average target margin 0-100?",
       "sql_lines": [
-        "SELECT project_id, SUM(estimated_cost_usd) AS total_estimated_cost_usd",
+        "SELECT project_type, AVG(target_margin_pct) AS avg_metric",
         "FROM {fqn}.projects",
-        "GROUP BY project_id ORDER BY total_estimated_cost_usd DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -1012,11 +1017,13 @@
       ]
     },
     {
-      "question": "How many records are there per performance month?",
+      "question": "Which project types have the highest average estimate accuracy?",
       "sql_lines": [
-        "SELECT perf_month, COUNT(*) AS record_count",
-        "FROM {fqn}.cost_estimate_snapshots",
-        "GROUP BY perf_month ORDER BY perf_month"
+        "SELECT project_type, MEASURE(avg_estimate_accuracy) AS avg_estimate_accuracy",
+        "FROM {fqn}.pipeline_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_estimate_accuracy DESC",
+        "LIMIT 10"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "company_name": "CargoSight Analytics",
   "industry": "Logistics",
   "use_case": "Load demand forecasting and shipment volume prediction",
-  "space_title": "CargoSight Analytics - Load Demand & Shipment Forecasting 📈",
-  "space_description": "**Subindustry:** Logistics\n\n**Use case:** Load Demand Forecasting & Shipment Volume Prediction\n\nCargoSight Analytics — lane-level demand and capacity analytics across 20 shipping lanes (Domestic FTL, Domestic LTL, Cross-Border, Intermodal) and 8 distribution hubs. The S&OP Lead and Demand Planner use it to track forecast accuracy and reposition capacity; the VP Logistics monitors lane utilization and backlog risk; the CFO uses delivered freight revenue and freight charge trends for revenue assurance.\n\n**Key KPIs**\n- Forecast volume accuracy (actual / forecasted shipments) — target 95–105%; MAPE goal <10% for established lanes\n- Capacity utilization % — lane fill rate; >85% on cross-border lanes signals capacity tightness\n- Backlog orders — orders awaiting capacity; leading indicator of customer escalations\n- Delivered freight revenue (USD) — top-line per lane / hub\n- On-time delivery rate — delivered / total orders\n- Average transit days — service-level metric for delivered shipments\n- Average wait hours for capacity — dock / hub throughput pressure\n- Delayed order count — service-quality signal by lane category\n\n**Data sources**\n- `shipment_orders` — daily order-level records: lane, hub, weight, freight charge, transit days, status\n- `demand_forecasts` — monthly forecast vs actual by lane and hub (shipments + weight) with model version\n- `capacity_snapshots` — weekly per-lane capacity, utilization %, backlog orders, and wait hours",
+  "space_title": "CargoSight Analytics - Load Demand & Shipment Forecasting \ud83d\udcc8",
+  "space_description": "**Subindustry:** Logistics\n\n**Use case:** Load Demand Forecasting & Shipment Volume Prediction\n\nCargoSight Analytics \u2014 lane-level demand and capacity analytics across 20 shipping lanes (Domestic FTL, Domestic LTL, Cross-Border, Intermodal) and 8 distribution hubs. The S&OP Lead and Demand Planner use it to track forecast accuracy and reposition capacity; the VP Logistics monitors lane utilization and backlog risk; the CFO uses delivered freight revenue and freight charge trends for revenue assurance.\n\n**Key KPIs**\n- Forecast volume accuracy (actual / forecasted shipments) \u2014 target 95\u2013105%; MAPE goal <10% for established lanes\n- Capacity utilization % \u2014 lane fill rate; >85% on cross-border lanes signals capacity tightness\n- Backlog orders \u2014 orders awaiting capacity; leading indicator of customer escalations\n- Delivered freight revenue (USD) \u2014 top-line per lane / hub\n- On-time delivery rate \u2014 delivered / total orders\n- Average transit days \u2014 service-level metric for delivered shipments\n- Average wait hours for capacity \u2014 dock / hub throughput pressure\n- Delayed order count \u2014 service-quality signal by lane category\n\n**Data sources**\n- `shipment_orders` \u2014 daily order-level records: lane, hub, weight, freight charge, transit days, status\n- `demand_forecasts` \u2014 monthly forecast vs actual by lane and hub (shipments + weight) with model version\n- `capacity_snapshots` \u2014 weekly per-lane capacity, utilization %, backlog orders, and wait hours",
   "schema_basename": "load_forecasting",
   "tables": [
     {
@@ -727,13 +727,13 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports load demand forecasting and shipment volume prediction across 20 shipping lanes (Domestic FTL, Domestic LTL, Cross-Border, Intermodal) and 8 distribution hubs. Stakeholders include the S&OP Lead and Demand Planner (forecast accuracy, MAPE by lane), VP Logistics (lane utilization, backlog risk), Capacity Planner (wait hours, dock pressure), and CFO (delivered freight revenue and on-time delivery).\n\nMETRIC DEFINITIONS\n- Forecast volume accuracy = SUM(actual_shipments) / SUM(forecasted_shipments); 0.95–1.05 is healthy\n- Forecast error (shipments) = actual_shipments - forecasted_shipments; under-forecast (positive) drives expedites, over-forecast (negative) leaves capacity stranded\n- Capacity utilization = capacity_utilization_pct on capacity_snapshots; >85% on cross-border signals tightness, <50% indicates over-capacity\n- Backlog = backlog_orders; rising backlog plus high utilization = capacity shortfall\n- On-time delivery rate = delivered_order_count / total_order_count on shipment_orders\n- Average transit days = avg_transit_days for delivered orders only\n- Delivered freight revenue = SUM(freight_charge_usd) FILTER (order_status = 'Delivered')\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - shipment_orders_metrics (source: shipment_orders) — dims: order_date, lane_category, origin_hub, order_status; measures: total_freight_revenue, total_weight_delivered_lbs, delivered_order_count, total_order_count, delayed_order_count, avg_transit_days, unique_lane_count, max_weight_lbs.\n  - demand_forecasts_metrics (source: demand_forecasts) — dims: forecast_month, lane_category, hub_code, model_version; measures: total_forecasted_shipments, total_actual_shipments, total_forecasted_weight_tons, total_actual_weight_tons, forecast_record_count, unique_lane_count, max_forecasted_shipments.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. lane_id, lane_name, destination_hub, capacity_utilization_pct, backlog_orders, avg_wait_hours).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports load demand forecasting and shipment volume prediction across 20 shipping lanes (Domestic FTL, Domestic LTL, Cross-Border, Intermodal) and 8 distribution hubs. Stakeholders include the S&OP Lead and Demand Planner (forecast accuracy, MAPE by lane), VP Logistics (lane utilization, backlog risk), Capacity Planner (wait hours, dock pressure), and CFO (delivered freight revenue and on-time delivery).\n\nMETRIC DEFINITIONS\n- Forecast volume accuracy = SUM(actual_shipments) / SUM(forecasted_shipments); 0.95\u20131.05 is healthy\n- Forecast error (shipments) = actual_shipments - forecasted_shipments; under-forecast (positive) drives expedites, over-forecast (negative) leaves capacity stranded\n- Capacity utilization = capacity_utilization_pct on capacity_snapshots; >85% on cross-border signals tightness, <50% indicates over-capacity\n- Backlog = backlog_orders; rising backlog plus high utilization = capacity shortfall\n- On-time delivery rate = delivered_order_count / total_order_count on shipment_orders\n- Average transit days = avg_transit_days for delivered orders only\n- Delivered freight revenue = SUM(freight_charge_usd) FILTER (order_status = 'Delivered')\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - shipment_orders_metrics (source: shipment_orders) \u2014 dims: order_date, lane_category, origin_hub, order_status; measures: total_freight_revenue, total_weight_delivered_lbs, delivered_order_count, total_order_count, delayed_order_count, avg_transit_days, unique_lane_count, max_weight_lbs.\n  - demand_forecasts_metrics (source: demand_forecasts) \u2014 dims: forecast_month, lane_category, hub_code, model_version; measures: total_forecasted_shipments, total_actual_shipments, total_forecasted_weight_tons, total_actual_weight_tons, forecast_record_count, unique_lane_count, max_forecasted_shipments.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. lane_id, lane_name, destination_hub, capacity_utilization_pct, backlog_orders, avg_wait_hours).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly forecasted vs actual shipments by lane category for the trailing 12 months.",
     "How has delivered freight revenue trended month-over-month by origin hub?",
     "Top 10 lanes by total actual shipments last quarter and what was their forecast accuracy?",
-    "Which lane categories have the highest delayed order count this quarter — where is service quality slipping?",
-    "Top 10 lanes by average capacity utilization with backlog orders greater than 10 — where are we capacity-constrained?",
+    "Which lane categories have the highest delayed order count this quarter \u2014 where is service quality slipping?",
+    "Top 10 lanes by average capacity utilization with backlog orders greater than 10 \u2014 where are we capacity-constrained?",
     "How does average transit days for delivered orders compare across Domestic FTL, LTL, Cross-Border, and Intermodal?",
     "What is the monthly forecast accuracy ratio (actual / forecasted shipments) by model version?"
   ],
@@ -757,7 +757,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest forecasted shipments?",
+      "question": "What has been the peak predicted shipment count for month each month?",
       "sql_lines": [
         "SELECT forecast_month, MEASURE(max_forecasted_shipments) AS max_forecasted_shipments",
         "FROM {fqn}.demand_forecasts_metrics",
@@ -766,20 +766,23 @@
       ]
     },
     {
-      "question": "How has unique forecast records changed over time?",
+      "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_record_count) AS forecast_record_count",
-        "FROM {fqn}.demand_forecasts_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "SELECT DATE_TRUNC('month', forecast_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How does total shipment weight in pounds break down by shipping lane identifier for 'Delayed' records?",
+      "question": "Which lanes have the highest total *?",
       "sql_lines": [
-        "SELECT lane_id, COUNT(*) AS record_count, SUM(weight_lbs) AS total_weight_lbs",
+        "SELECT lane_name, SUM(*) AS record_count, SUM(weight_lbs) AS total_weight_lbs",
         "FROM {fqn}.shipment_orders",
-        "WHERE order_status = 'Delayed' GROUP BY lane_id ORDER BY total_weight_lbs DESC"
+        "WHERE order_status = 'Delayed'",
+        "GROUP BY lane_name",
+        "ORDER BY total_weight_lbs DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -920,45 +923,52 @@
       ]
     },
     {
-      "question": "What is the monthly trend in unique forecast records?",
+      "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_record_count) AS forecast_record_count",
-        "FROM {fqn}.demand_forecasts_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
-      ]
-    },
-    {
-      "question": "How has unique lanes changed over time?",
-      "sql_lines": [
-        "SELECT forecast_month, MEASURE(unique_lane_count) AS unique_lane_count",
-        "FROM {fqn}.demand_forecasts_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
-      ]
-    },
-    {
-      "question": "What are the top shipping lane identifier by total shipment weight in pounds?",
-      "sql_lines": [
-        "SELECT lane_id, SUM(weight_lbs) AS total_weight_lbs",
-        "FROM {fqn}.shipment_orders",
-        "GROUP BY lane_id ORDER BY total_weight_lbs DESC LIMIT 10"
-      ]
-    },
-    {
-      "question": "How many records are there per month being forecasted?",
-      "sql_lines": [
-        "SELECT forecast_month, COUNT(*) AS record_count",
+        "SELECT DATE_TRUNC('month', forecast_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
         "FROM {fqn}.demand_forecasts",
-        "GROUP BY forecast_month ORDER BY forecast_month"
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How many records are there per weekly snapshot date?",
+      "question": "Which lanes have the highest total shipment weight in pounds?",
       "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "SELECT lane_name, SUM(weight_lbs) AS total_metric",
+        "FROM {fqn}.shipment_orders",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which lane category: domestic ftl, domestic ltl, cross-border, intermodals have the highest total freight charge?",
+      "sql_lines": [
+        "SELECT lane_category, SUM(freight_charge_usd) AS total_metric",
+        "FROM {fqn}.shipment_orders",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which lane categorys have the highest number of forecast records?",
+      "sql_lines": [
+        "SELECT lane_category, MEASURE(forecast_record_count) AS forecast_record_count",
+        "FROM {fqn}.demand_forecasts_metrics",
+        "GROUP BY ALL",
+        "ORDER BY forecast_record_count DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which lanes have the highest average capacity utilization percentage?",
+      "sql_lines": [
+        "SELECT lane_name, AVG(capacity_utilization_pct) AS avg_metric",
         "FROM {fqn}.capacity_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

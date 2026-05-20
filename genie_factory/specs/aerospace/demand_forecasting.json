@@ -2,8 +2,8 @@
   "company_name": "AeroParts Supply",
   "industry": "Aerospace",
   "use_case": "Aerospace aftermarket parts demand forecasting and backlog management",
-  "space_title": "AeroParts Supply - Demand Forecasting & Backlog 📈",
-  "space_description": "**Subindustry:** Aerospace\n\n**Use case:** Aftermarket Demand Forecasting & Backlog\n\nAeroParts Supply — aftermarket parts demand and backlog analytics across 20 aerospace SKUs and 5 customer segments (Airline, MRO, Military, OEM, Leasing). Demand Planners use this space to monitor forecast accuracy and bias; Aftermarket Program Managers use it to manage backlog aging and fill rates; the VP of Supply Chain uses it to size safety stock and defend lead-time commitments to customers.\n\n**Key KPIs**\n- Forecast accuracy / MAPE — aero aftermarket benchmark 20-30% (intermittent demand), <15% on rotables\n- Forecast bias (over- vs. under-forecast count)\n- Fill rate % (target >95% on AOG critical parts)\n- On-time delivery % (industry benchmark 90-95%)\n- Backlog value (USD) and aging buckets\n- Average lead time (days) by part category\n- Inventory turns (target 4-6x for aftermarket)\n- Total aftermarket revenue (USD)\n\n**Data sources**\n- `aftermarket_orders` — daily order line items with quantity, price, lead time, status\n- `demand_forecasts` — monthly forecast vs. actuals by part and customer segment with error %\n- `demand_kpi_monthly` — monthly summary with fill rate, backlog value, lead time, inventory turns",
+  "space_title": "AeroParts Supply - Demand Forecasting & Backlog \ud83d\udcc8",
+  "space_description": "**Subindustry:** Aerospace\n\n**Use case:** Aftermarket Demand Forecasting & Backlog\n\nAeroParts Supply \u2014 aftermarket parts demand and backlog analytics across 20 aerospace SKUs and 5 customer segments (Airline, MRO, Military, OEM, Leasing). Demand Planners use this space to monitor forecast accuracy and bias; Aftermarket Program Managers use it to manage backlog aging and fill rates; the VP of Supply Chain uses it to size safety stock and defend lead-time commitments to customers.\n\n**Key KPIs**\n- Forecast accuracy / MAPE \u2014 aero aftermarket benchmark 20-30% (intermittent demand), <15% on rotables\n- Forecast bias (over- vs. under-forecast count)\n- Fill rate % (target >95% on AOG critical parts)\n- On-time delivery % (industry benchmark 90-95%)\n- Backlog value (USD) and aging buckets\n- Average lead time (days) by part category\n- Inventory turns (target 4-6x for aftermarket)\n- Total aftermarket revenue (USD)\n\n**Data sources**\n- `aftermarket_orders` \u2014 daily order line items with quantity, price, lead time, status\n- `demand_forecasts` \u2014 monthly forecast vs. actuals by part and customer segment with error %\n- `demand_kpi_monthly` \u2014 monthly summary with fill rate, backlog value, lead time, inventory turns",
   "schema_basename": "aerospace_demand_forecast",
   "tables": [
     {
@@ -687,24 +687,24 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports aftermarket demand forecasting for an aerospace parts distributor selling 20 SKUs across rotables, expendables, repairables, and consumables to 5 customer segments (Airline, MRO, Military, OEM, Leasing). Stakeholders include Demand Planners (forecast accuracy, MAPE, bias), Aftermarket Program Managers (fill rate, backlog, lead time), and the VP of Supply Chain (revenue, OTD, working capital).\n\nMETRIC DEFINITIONS\n- Forecast error % = avg_forecast_error_pct; aero aftermarket benchmark 20-30% MAPE (intermittent demand)\n- Forecast bias = over_forecast_count vs. (forecast_count - over_forecast_count)\n- Fill rate (target >95%) = on health_monthly fill_rate_pct\n- On-time delivery % (target 90-95%)\n- Backlog units = total_backlog_units from order_metrics where order_status = 'Backlog'\n- Lead time benchmark: rotables 21-45 days, expendables 14-30 days, AOG <24h ship\n- Inventory turns target 4-6x; below 2x indicates obsolescence risk\n- Total aftermarket revenue = total_order_revenue\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - order_metrics (source: aftermarket_orders) — dims: order_date, part_category, customer_segment, order_status; measures: total_order_revenue, total_backlog_units, total_order_count, avg_lead_time_days, shipped_order_count, max_order_quantity.\n  - forecast_metrics (source: demand_forecasts) — dims: forecast_month, part_category, model_version; measures: avg_forecast_error_pct, total_forecasted_units, total_actual_units, forecast_count, over_forecast_count, max_forecasted_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. part_number, part_name, unit_price_usd, fill_rate_pct, backlog_value_usd, inventory_turns).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports aftermarket demand forecasting for an aerospace parts distributor selling 20 SKUs across rotables, expendables, repairables, and consumables to 5 customer segments (Airline, MRO, Military, OEM, Leasing). Stakeholders include Demand Planners (forecast accuracy, MAPE, bias), Aftermarket Program Managers (fill rate, backlog, lead time), and the VP of Supply Chain (revenue, OTD, working capital).\n\nMETRIC DEFINITIONS\n- Forecast error % = avg_forecast_error_pct; aero aftermarket benchmark 20-30% MAPE (intermittent demand)\n- Forecast bias = over_forecast_count vs. (forecast_count - over_forecast_count)\n- Fill rate (target >95%) = on health_monthly fill_rate_pct\n- On-time delivery % (target 90-95%)\n- Backlog units = total_backlog_units from order_metrics where order_status = 'Backlog'\n- Lead time benchmark: rotables 21-45 days, expendables 14-30 days, AOG <24h ship\n- Inventory turns target 4-6x; below 2x indicates obsolescence risk\n- Total aftermarket revenue = total_order_revenue\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - order_metrics (source: aftermarket_orders) \u2014 dims: order_date, part_category, customer_segment, order_status; measures: total_order_revenue, total_backlog_units, total_order_count, avg_lead_time_days, shipped_order_count, max_order_quantity.\n  - forecast_metrics (source: demand_forecasts) \u2014 dims: forecast_month, part_category, model_version; measures: avg_forecast_error_pct, total_forecasted_units, total_actual_units, forecast_count, over_forecast_count, max_forecasted_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. part_number, part_name, unit_price_usd, fill_rate_pct, backlog_value_usd, inventory_turns).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "Top 10 parts by total backlog units — and which customer segments do they ship to?",
+    "Top 10 parts by total backlog units \u2014 and which customer segments do they ship to?",
     "Show monthly trend in average forecast error % by part category over the trailing 12 months.",
     "Which customer segments drive the most aftermarket revenue this year?",
-    "Top 10 parts by total order revenue — what is their average lead time?",
+    "Top 10 parts by total order revenue \u2014 what is their average lead time?",
     "How has on-time delivery % trended month-over-month by part category?",
     "Which part categories show forecast over-forecast bias, and by how much?",
     "Show the monthly trend in total shipped order count across the network."
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique total orders?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_order_count) AS total_order_count",
-        "FROM {fqn}.order_metrics",
-        "GROUP BY ALL",
-        "ORDER BY order_date"
+        "SELECT DATE_TRUNC('month', order_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.aftermarket_orders",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -717,7 +717,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest forecasted units?",
+      "question": "What has been the peak forecasted demand units each month?",
       "sql_lines": [
         "SELECT forecast_month, MEASURE(max_forecasted_units) AS max_forecasted_units",
         "FROM {fqn}.forecast_metrics",
@@ -726,11 +726,14 @@
       ]
     },
     {
-      "question": "How does total units ordered break down by part number identifier for 'Backlog' records?",
+      "question": "Which part have the highest total *?",
       "sql_lines": [
-        "SELECT part_number, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
+        "SELECT part_name, SUM(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.aftermarket_orders",
-        "WHERE order_status = 'Backlog' GROUP BY part_number ORDER BY total_order_quantity DESC"
+        "WHERE order_status = 'Backlog'",
+        "GROUP BY part_name",
+        "ORDER BY total_order_quantity DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -884,20 +887,22 @@
       ]
     },
     {
-      "question": "How has unique forecasts changed over time?",
+      "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
-        "FROM {fqn}.forecast_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "SELECT DATE_TRUNC('month', forecast_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "What are the top part number identifier by total units ordered?",
+      "question": "Which part have the highest total units ordered?",
       "sql_lines": [
-        "SELECT part_number, SUM(order_quantity) AS total_order_quantity",
+        "SELECT part_name, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.aftermarket_orders",
-        "GROUP BY part_number ORDER BY total_order_quantity DESC LIMIT 10"
+        "GROUP BY part_name",
+        "ORDER BY total_order_quantity DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -909,11 +914,13 @@
       ]
     },
     {
-      "question": "How many records are there per first day of report month?",
+      "question": "Which part numbers have the highest average order fill rate percentage?",
       "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
+        "SELECT part_number, AVG(fill_rate_pct) AS avg_metric",
         "FROM {fqn}.demand_kpi_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

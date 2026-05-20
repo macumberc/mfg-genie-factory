@@ -2,8 +2,8 @@
   "company_name": "ChipArchitect Labs",
   "industry": "Computer & Electronic",
   "use_case": "System-on-chip design space simulation and optimization",
-  "space_title": "ChipArchitect Labs - SoC Design Space Simulation 🧪",
-  "space_description": "**Subindustry:** Computer & Electronic\n\n**Use case:** SoC Design Space Simulation & PPA Optimization\n\nChipArchitect Labs — pre-silicon design-space exploration (DSE) analytics for the SoC Design Lead, VP Engineering, and Program Management office. Design teams use this space to compare PPA tradeoffs across design families, process nodes, and voltage/frequency sweeps; PMO and finance use it to track simulation compute spend, convergence efficiency, and schedule risk against tape-out gates.\n\n**Key KPIs**\n- Convergence rate (%) — share of runs that meet timing/power/area constraints\n- PPA improvement (%) — generation-on-generation power-performance-area lift\n- Best frequency (GHz) — peak achievable clock under target voltage/power\n- Best power (mW) — minimum power at target frequency, drives leakage budget\n- Pareto-optimal points found — DSE coverage; richer Pareto = more design optionality\n- Timing slack (ns) — closure margin; negative slack = violation\n- Total simulation hours — compute spend; modern DSE frameworks cut iterations 75-90%\n- Target met rate — share of optimization runs that meet PPA spec\n\n**Data sources**\n- `simulation_runs` — per-run RTL/synthesis simulation results with frequency, power, area, timing slack, convergence status\n- `parameter_sweeps` — voltage/frequency parameter-sweep snapshots with thermal, leakage, Pareto-optimal flag\n- `optimization_monthly` — monthly DSE rollup with convergence rate, best PPA, Pareto count, target-met, compute hours",
+  "space_title": "ChipArchitect Labs - SoC Design Space Simulation \ud83e\uddea",
+  "space_description": "**Subindustry:** Computer & Electronic\n\n**Use case:** SoC Design Space Simulation & PPA Optimization\n\nChipArchitect Labs \u2014 pre-silicon design-space exploration (DSE) analytics for the SoC Design Lead, VP Engineering, and Program Management office. Design teams use this space to compare PPA tradeoffs across design families, process nodes, and voltage/frequency sweeps; PMO and finance use it to track simulation compute spend, convergence efficiency, and schedule risk against tape-out gates.\n\n**Key KPIs**\n- Convergence rate (%) \u2014 share of runs that meet timing/power/area constraints\n- PPA improvement (%) \u2014 generation-on-generation power-performance-area lift\n- Best frequency (GHz) \u2014 peak achievable clock under target voltage/power\n- Best power (mW) \u2014 minimum power at target frequency, drives leakage budget\n- Pareto-optimal points found \u2014 DSE coverage; richer Pareto = more design optionality\n- Timing slack (ns) \u2014 closure margin; negative slack = violation\n- Total simulation hours \u2014 compute spend; modern DSE frameworks cut iterations 75-90%\n- Target met rate \u2014 share of optimization runs that meet PPA spec\n\n**Data sources**\n- `simulation_runs` \u2014 per-run RTL/synthesis simulation results with frequency, power, area, timing slack, convergence status\n- `parameter_sweeps` \u2014 voltage/frequency parameter-sweep snapshots with thermal, leakage, Pareto-optimal flag\n- `optimization_monthly` \u2014 monthly DSE rollup with convergence rate, best PPA, Pareto count, target-met, compute hours",
   "schema_basename": "ce_design_sim_soc",
   "tables": [
     {
@@ -746,21 +746,21 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports SoC Design Space Simulation for a fabless silicon design house running multi-objective PPA exploration across several design families and process nodes. Stakeholders include the SoC Design Lead (PPA tradeoffs, timing closure, Pareto coverage), VP Engineering (convergence rate, tape-out readiness, target-met rate) and the PMO / CFO (simulation compute spend, schedule risk).\n\nMETRIC DEFINITIONS\n- Convergence rate = convergence_rate_pct on optimization_monthly; modern attention-driven DSE frameworks cut iterations 75-90% vs baseline.\n- PPA improvement = ppa_improvement_pct; generation-on-generation lift in power-performance-area composite.\n- Best frequency = best_frequency_ghz; best power = best_power_mw on optimization_monthly.\n- Timing slack = timing_slack_ns on simulation_runs; negative = violation, blocks tape-out.\n- Convergence status = convergence_status on simulation_runs (Converged / Partial / Failed).\n- Pareto-optimal points = pareto_optimal flag on parameter_sweeps; richer Pareto frontier = more design optionality.\n- Simulation compute = total_sim_hours on optimization_monthly; primary EDA cost driver.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - simulation_runs_metrics (source: simulation_runs) — dims: run_date, design_family, process_node, convergence_status; measures: total_simulations, avg_clock_freq_ghz, avg_power_mw, converged_count, total_area_mm2, total_timing_slack_ns, max_clock_freq_ghz.\n  - optimization_metrics (source: optimization_monthly) — dims: opt_month, design_family; measures: avg_convergence_rate, total_pareto_points, total_sim_hours, avg_ppa_improvement, total_best_power_mw, total_best_frequency_ghz, max_convergence_rate_percent.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. soc_design, voltage_v, leakage_power_mw, pareto_optimal, target_met).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports SoC Design Space Simulation for a fabless silicon design house running multi-objective PPA exploration across several design families and process nodes. Stakeholders include the SoC Design Lead (PPA tradeoffs, timing closure, Pareto coverage), VP Engineering (convergence rate, tape-out readiness, target-met rate) and the PMO / CFO (simulation compute spend, schedule risk).\n\nMETRIC DEFINITIONS\n- Convergence rate = convergence_rate_pct on optimization_monthly; modern attention-driven DSE frameworks cut iterations 75-90% vs baseline.\n- PPA improvement = ppa_improvement_pct; generation-on-generation lift in power-performance-area composite.\n- Best frequency = best_frequency_ghz; best power = best_power_mw on optimization_monthly.\n- Timing slack = timing_slack_ns on simulation_runs; negative = violation, blocks tape-out.\n- Convergence status = convergence_status on simulation_runs (Converged / Partial / Failed).\n- Pareto-optimal points = pareto_optimal flag on parameter_sweeps; richer Pareto frontier = more design optionality.\n- Simulation compute = total_sim_hours on optimization_monthly; primary EDA cost driver.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - simulation_runs_metrics (source: simulation_runs) \u2014 dims: run_date, design_family, process_node, convergence_status; measures: total_simulations, avg_clock_freq_ghz, avg_power_mw, converged_count, total_area_mm2, total_timing_slack_ns, max_clock_freq_ghz.\n  - optimization_metrics (source: optimization_monthly) \u2014 dims: opt_month, design_family; measures: avg_convergence_rate, total_pareto_points, total_sim_hours, avg_ppa_improvement, total_best_power_mw, total_best_frequency_ghz, max_convergence_rate_percent.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. soc_design, voltage_v, leakage_power_mw, pareto_optimal, target_met).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly convergence rate and PPA improvement by design family for the trailing 12 months.",
     "Which 10 SoC designs have the highest total simulation hours this quarter, and what's the convergence rate?",
     "How has the count of Pareto-optimal points trended month-over-month by design family?",
-    "Top 10 design families by best achievable frequency at lowest power — what's the energy efficiency picture?",
+    "Top 10 design families by best achievable frequency at lowest power \u2014 what's the energy efficiency picture?",
     "Which design families have the highest share of timing-violation runs, and how much simulation compute is being burned on failed sweeps?",
     "What is the total simulation compute spend by process node, and how does target-met rate compare across nodes?",
     "How has average best frequency and best power trended month-over-month across the SoC roadmap?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in highest clock freq ghz?",
+      "question": "How has total simulated clock frequency in ghz trended over time?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(max_clock_freq_ghz) AS max_clock_freq_ghz",
+        "SELECT run_date, MEASURE(avg_clock_freq_ghz) AS avg_clock_freq_ghz",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
         "ORDER BY run_date"
@@ -794,11 +794,14 @@
       ]
     },
     {
-      "question": "How does total simulated clock frequency in ghz break down by soc design identifier for 'Converged' records?",
+      "question": "Which soc design identifiers have the highest total *?",
       "sql_lines": [
-        "SELECT soc_design, COUNT(*) AS record_count, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
+        "SELECT soc_design, SUM(*) AS record_count, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
         "FROM {fqn}.simulation_runs",
-        "WHERE convergence_status = 'Converged' GROUP BY soc_design ORDER BY total_clock_freq_ghz DESC"
+        "WHERE convergence_status = 'Converged'",
+        "GROUP BY soc_design",
+        "ORDER BY total_clock_freq_ghz DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -927,16 +930,16 @@
       ]
     },
     {
-      "question": "How has unique total simulationss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_simulations) AS total_simulations",
-        "FROM {fqn}.simulation_runs_metrics",
-        "GROUP BY ALL",
-        "ORDER BY run_date"
+        "SELECT DATE_TRUNC('month', run_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.simulation_runs",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "What is the monthly trend in highest convergence rate percent?",
+      "question": "What has been the peak convergence_rate_percent each month?",
       "sql_lines": [
         "SELECT opt_month, MEASURE(max_convergence_rate_percent) AS max_convergence_rate_percent",
         "FROM {fqn}.optimization_metrics",
@@ -954,27 +957,33 @@
       ]
     },
     {
-      "question": "What are the top soc design identifier by total simulated clock frequency in ghz?",
+      "question": "Which chip designs have the highest peak clock frequency?",
       "sql_lines": [
-        "SELECT soc_design, SUM(clock_freq_ghz) AS total_clock_freq_ghz",
+        "SELECT design_name, MAX(clock_frequency_ghz) AS peak_clock",
         "FROM {fqn}.simulation_runs",
-        "GROUP BY soc_design ORDER BY total_clock_freq_ghz DESC LIMIT 10"
+        "GROUP BY design_name",
+        "ORDER BY peak_clock DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per date of the parameter sweep?",
+      "question": "Which soc design identifiers have the highest total supply voltage in volts?",
       "sql_lines": [
-        "SELECT sweep_date, COUNT(*) AS record_count",
+        "SELECT soc_design, SUM(voltage_v) AS total_metric",
         "FROM {fqn}.parameter_sweeps",
-        "GROUP BY sweep_date ORDER BY sweep_date"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per month of the optimization record?",
+      "question": "Which soc design identifiers have the highest average convergence rate percentage?",
       "sql_lines": [
-        "SELECT opt_month, COUNT(*) AS record_count",
-        "FROM {fqn}.optimization_monthly",
-        "GROUP BY opt_month ORDER BY opt_month"
+        "SELECT soc_design, MEASURE(avg_convergence_rate) AS avg_convergence_rate",
+        "FROM {fqn}.optimization_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_convergence_rate DESC",
+        "LIMIT 10"
       ]
     }
   ]

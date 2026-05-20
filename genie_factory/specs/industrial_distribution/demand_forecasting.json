@@ -2,8 +2,8 @@
   "company_name": "DistroForecast Systems",
   "industry": "Industrial Distribution",
   "use_case": "Industrial product demand forecasting and order backlog management",
-  "space_title": "DistroForecast Systems - Demand Forecasting & Backlog 📈",
-  "space_description": "**Subindustry:** Industrial Distribution\n\n**Use case:** Demand Forecasting & Backlog Management\n\nDistroForecast Systems — demand planning analytics across 20 industrial SKUs spanning fasteners, bearings, valves, electrical, and safety. Category Managers and Supply Planners use this space to monitor forecast accuracy and backlog day-to-day; Branch Managers and the CFO use it to track open-order revenue, fill rate, and the working-capital tied up in backorders.\n\n**Key KPIs**\n- Forecast accuracy / MAPE (%) — best-in-class industrial distributors run 10-20% MAPE\n- Fill rate (%) — line/case-fill target ≥97% for MRO distribution\n- Order backlog units and open-order value ($) — working-capital and revenue-at-risk signal\n- Backorder rate (%) — lost-sales and customer-churn leading indicator\n- Lead time (days) — commitment vs. actual time-to-ship\n- Forecast bias (units) — systematic over/under-forecasting by category\n- Customer satisfaction score (1-5) — service-level outcome\n- Days-to-ship — fulfillment cycle metric\n\n**Data sources**\n- `product_skus` — daily sales orders with quantity, price, lead time, status\n- `sales_orders` — weekly pipeline snapshot: open-order value, fill rate, backorders, satisfaction\n- `demand_forecasts` — monthly forecast vs. actual with MAPE and confidence intervals by SKU",
+  "space_title": "DistroForecast Systems - Demand Forecasting & Backlog \ud83d\udcc8",
+  "space_description": "**Subindustry:** Industrial Distribution\n\n**Use case:** Demand Forecasting & Backlog Management\n\nDistroForecast Systems \u2014 demand planning analytics across 20 industrial SKUs spanning fasteners, bearings, valves, electrical, and safety. Category Managers and Supply Planners use this space to monitor forecast accuracy and backlog day-to-day; Branch Managers and the CFO use it to track open-order revenue, fill rate, and the working-capital tied up in backorders.\n\n**Key KPIs**\n- Forecast accuracy / MAPE (%) \u2014 best-in-class industrial distributors run 10-20% MAPE\n- Fill rate (%) \u2014 line/case-fill target \u226597% for MRO distribution\n- Order backlog units and open-order value ($) \u2014 working-capital and revenue-at-risk signal\n- Backorder rate (%) \u2014 lost-sales and customer-churn leading indicator\n- Lead time (days) \u2014 commitment vs. actual time-to-ship\n- Forecast bias (units) \u2014 systematic over/under-forecasting by category\n- Customer satisfaction score (1-5) \u2014 service-level outcome\n- Days-to-ship \u2014 fulfillment cycle metric\n\n**Data sources**\n- `product_skus` \u2014 daily sales orders with quantity, price, lead time, status\n- `sales_orders` \u2014 weekly pipeline snapshot: open-order value, fill rate, backorders, satisfaction\n- `demand_forecasts` \u2014 monthly forecast vs. actual with MAPE and confidence intervals by SKU",
   "schema_basename": "distro_demand_forecast",
   "tables": [
     {
@@ -797,11 +797,11 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Demand Forecasting & Backlog Management for an industrial distributor selling 20 MRO/OEM SKUs across fasteners, bearings, valves, electrical, and safety into MRO, OEM, Contractor, and Government segments. Stakeholders include the Category Manager (forecast accuracy, mix), Supply Planner (backlog, lead time), Branch Manager (fill rate, satisfaction), and CFO (open-order value, backorder exposure).\n\nMETRIC DEFINITIONS\n- Forecast accuracy / MAPE = avg_forecast_error (forecast_error_pct); best-in-class industrial distributors: 10-20% MAPE\n- Forecast bias = forecasted_units - actual_units; persistent positive bias indicates over-forecast and inventory build\n- Fill rate = fill_rate_pct on sales_orders; MRO target ≥97%\n- Backorder volume = backorder_units (sales_orders) and backordered_count of orders (demand_kpi_monthly)\n- Open-order value = open_order_value_usd; revenue-at-risk in the pipeline\n- Lead time = lead_time_days (promised); compare to avg_days_to_ship for commitment vs. actual\n- Customer satisfaction = customer_satisfaction_score (1-5); <3.5 is a churn warning\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - demand_kpi_monthly (source: product_skus) — dims: order_date, product_category, customer_segment, order_status; measures: total_order_revenue, total_order_quantity, total_order_count, backordered_count, avg_lead_time, max_order_quantity.\n  - forecast_accuracy_monthly (source: demand_forecasts) — dims: forecast_month, product_category, model_version; measures: total_forecasted_units, total_actual_units, avg_forecast_error, forecast_count, over_forecast_count, max_forecasted_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. sku, product_name, open_order_value_usd, fill_rate_pct, customer_satisfaction_score).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Demand Forecasting & Backlog Management for an industrial distributor selling 20 MRO/OEM SKUs across fasteners, bearings, valves, electrical, and safety into MRO, OEM, Contractor, and Government segments. Stakeholders include the Category Manager (forecast accuracy, mix), Supply Planner (backlog, lead time), Branch Manager (fill rate, satisfaction), and CFO (open-order value, backorder exposure).\n\nMETRIC DEFINITIONS\n- Forecast accuracy / MAPE = avg_forecast_error (forecast_error_pct); best-in-class industrial distributors: 10-20% MAPE\n- Forecast bias = forecasted_units - actual_units; persistent positive bias indicates over-forecast and inventory build\n- Fill rate = fill_rate_pct on sales_orders; MRO target \u226597%\n- Backorder volume = backorder_units (sales_orders) and backordered_count of orders (demand_kpi_monthly)\n- Open-order value = open_order_value_usd; revenue-at-risk in the pipeline\n- Lead time = lead_time_days (promised); compare to avg_days_to_ship for commitment vs. actual\n- Customer satisfaction = customer_satisfaction_score (1-5); <3.5 is a churn warning\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - demand_kpi_monthly (source: product_skus) \u2014 dims: order_date, product_category, customer_segment, order_status; measures: total_order_revenue, total_order_quantity, total_order_count, backordered_count, avg_lead_time, max_order_quantity.\n  - forecast_accuracy_monthly (source: demand_forecasts) \u2014 dims: forecast_month, product_category, model_version; measures: total_forecasted_units, total_actual_units, avg_forecast_error, forecast_count, over_forecast_count, max_forecasted_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. sku, product_name, open_order_value_usd, fill_rate_pct, customer_satisfaction_score).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly total order revenue by product category for the trailing 12 months.",
     "Which product categories have the worst forecast accuracy (highest avg forecast error) over the last 6 months?",
-    "Top 10 SKUs by open order value USD this week — and what is their fill rate?",
+    "Top 10 SKUs by open order value USD this week \u2014 and what is their fill rate?",
     "How has the monthly backordered order count trended across customer segments?",
     "Which SKUs have the largest forecast bias (forecasted vs actual units) in the latest model version?",
     "What is the average lead time and days-to-ship by customer segment for shipped orders?",
@@ -809,7 +809,7 @@
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in highest order quantity?",
+      "question": "What has been the peak units ordered each month?",
       "sql_lines": [
         "SELECT order_date, MEASURE(max_order_quantity) AS max_order_quantity",
         "FROM {fqn}.demand_kpi_monthly",
@@ -818,7 +818,7 @@
       ]
     },
     {
-      "question": "How has total order revenue usd changed over time?",
+      "question": "How has total order revenue trended over time?",
       "sql_lines": [
         "SELECT order_date, MEASURE(total_order_revenue) AS total_order_revenue",
         "FROM {fqn}.demand_kpi_monthly",
@@ -827,7 +827,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest forecasted units?",
+      "question": "What has been the peak model-predicted demand units each month?",
       "sql_lines": [
         "SELECT forecast_month, MEASURE(max_forecasted_units) AS max_forecasted_units",
         "FROM {fqn}.forecast_accuracy_monthly",
@@ -853,11 +853,12 @@
       ]
     },
     {
-      "question": "What is the trend of total total open order value in usd over time?",
+      "question": "How has total total open order value in trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(open_order_value_usd) AS total_open_order_value_usd",
         "FROM {fqn}.sales_orders",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
@@ -976,12 +977,12 @@
       ]
     },
     {
-      "question": "How has unique total orders changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_order_count) AS total_order_count",
-        "FROM {fqn}.demand_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY order_date"
+        "SELECT DATE_TRUNC('month', order_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.product_skus",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -994,20 +995,23 @@
       ]
     },
     {
-      "question": "How has unique forecasts changed over time?",
+      "question": "Which product sku codes have the highest total units ordered?",
       "sql_lines": [
-        "SELECT forecast_month, MEASURE(forecast_count) AS forecast_count",
-        "FROM {fqn}.forecast_accuracy_monthly",
-        "GROUP BY ALL",
-        "ORDER BY forecast_month"
+        "SELECT sku, SUM(order_quantity) AS total_metric",
+        "FROM {fqn}.product_skus",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What are the top product sku code by total units ordered?",
+      "question": "Which products have the highest total unit price?",
       "sql_lines": [
-        "SELECT sku, SUM(order_quantity) AS total_order_quantity",
+        "SELECT product_name, SUM(unit_price_usd) AS total_metric",
         "FROM {fqn}.product_skus",
-        "GROUP BY sku ORDER BY total_order_quantity DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -1019,11 +1023,13 @@
       ]
     },
     {
-      "question": "How many records are there per forecast month (first day)?",
+      "question": "Which product skus have the highest average forecast error percentage?",
       "sql_lines": [
-        "SELECT forecast_month, COUNT(*) AS record_count",
-        "FROM {fqn}.demand_forecasts",
-        "GROUP BY forecast_month ORDER BY forecast_month"
+        "SELECT sku, MEASURE(avg_forecast_error) AS avg_forecast_error",
+        "FROM {fqn}.forecast_accuracy_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_forecast_error DESC",
+        "LIMIT 10"
       ]
     }
   ]

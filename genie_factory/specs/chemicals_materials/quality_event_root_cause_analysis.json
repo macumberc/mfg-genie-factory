@@ -2,8 +2,8 @@
   "company_name": "PureChem Analytics",
   "industry": "Chemicals & Materials",
   "use_case": "Quality event tracking and root cause analysis for chemical manufacturing",
-  "space_title": "PureChem Analytics - Quality Event Root Cause Analysis 🔍",
-  "space_description": "**Subindustry:** Chemicals & Materials\n\n**Use case:** Quality Event Tracking & Root Cause Analysis\n\nPureChem Analytics — quality event, deviation, and CAPA analytics across 20 chemicals (acids, bases, solvents, polymers, specialty) and 6 production lines. The Quality Director uses this space to manage deviation aging, CAPA effectiveness, and audit readiness; the Plant Manager investigates equipment- vs. process- vs. material-driven root causes; the CFO tracks cost-of-quality (COQ) as a leading indicator of margin leakage (industry COQ typically runs 5-10% of revenue in basic chemicals).\n\n**Key KPIs**\n- Critical event count — escalation and regulatory reporting trigger\n- Total cost of quality ($) — direct margin impact; benchmark 5-10% of revenue\n- CAPA closure rate (%) — target ≥ 90% closed-effective within 90 days\n- Average resolution time (days) — target ≤ 30 days for major deviations\n- Batch pass rate / first-pass yield (%) — target ≥ 95% on-spec\n- Root-cause mix (Equipment / Process / Material / Human Error / Environmental) — capex vs. training priority signal\n- Open / In-Progress event backlog — quality system health indicator\n- Temperature deviation magnitude — process-stability leading indicator\n\n**Data sources**\n- `quality_events` — individual deviation records with severity, root cause, COQ, CAPA status\n- `batch_records` — weekly batch outcomes with yield, purity, temperature deviation, pass/fail\n- `quality_kpi_monthly` — monthly rollups: event counts, CAPA closure rate, COQ, batch pass rate",
+  "space_title": "PureChem Analytics - Quality Event Root Cause Analysis \ud83d\udd0d",
+  "space_description": "**Subindustry:** Chemicals & Materials\n\n**Use case:** Quality Event Tracking & Root Cause Analysis\n\nPureChem Analytics \u2014 quality event, deviation, and CAPA analytics across 20 chemicals (acids, bases, solvents, polymers, specialty) and 6 production lines. The Quality Director uses this space to manage deviation aging, CAPA effectiveness, and audit readiness; the Plant Manager investigates equipment- vs. process- vs. material-driven root causes; the CFO tracks cost-of-quality (COQ) as a leading indicator of margin leakage (industry COQ typically runs 5-10% of revenue in basic chemicals).\n\n**Key KPIs**\n- Critical event count \u2014 escalation and regulatory reporting trigger\n- Total cost of quality ($) \u2014 direct margin impact; benchmark 5-10% of revenue\n- CAPA closure rate (%) \u2014 target \u2265 90% closed-effective within 90 days\n- Average resolution time (days) \u2014 target \u2264 30 days for major deviations\n- Batch pass rate / first-pass yield (%) \u2014 target \u2265 95% on-spec\n- Root-cause mix (Equipment / Process / Material / Human Error / Environmental) \u2014 capex vs. training priority signal\n- Open / In-Progress event backlog \u2014 quality system health indicator\n- Temperature deviation magnitude \u2014 process-stability leading indicator\n\n**Data sources**\n- `quality_events` \u2014 individual deviation records with severity, root cause, COQ, CAPA status\n- `batch_records` \u2014 weekly batch outcomes with yield, purity, temperature deviation, pass/fail\n- `quality_kpi_monthly` \u2014 monthly rollups: event counts, CAPA closure rate, COQ, batch pass rate",
   "schema_basename": "quality_rca",
   "tables": [
     {
@@ -761,14 +761,14 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports quality event tracking, deviation investigation, and CAPA effectiveness analysis for a multi-line chemical manufacturer (acids, bases, solvents, polymers, specialty). Quality leadership is accountable to ISO 9001 / responsible-care audit readiness, FDA-grade GMP for pharma-adjacent products, and customer complaints. Cost-of-quality (COQ) for chemicals manufacturers typically runs 5-10% of revenue — making it a primary CFO-visible margin lever.\n\nMETRIC DEFINITIONS\n- Total quality events = COUNT(DISTINCT event_id); track aging and severity mix\n- Critical event count = events with severity = 'Critical'; regulatory reporting threshold\n- Total cost of quality = SUM(cost_of_quality_usd); industry benchmark 5-10% of revenue\n- Average resolution days = AVG(resolution_days); target ≤ 30 days for major, ≤ 60 for critical\n- CAPA closure rate = closed_effective_count / total_quality_events; target ≥ 90%\n- Batch pass rate (first-pass yield) = AVG(batch_pass_rate_pct); target ≥ 95% on-spec\n- Open event count = events in 'Open' or 'In Progress'; backlog health\n- Temperature deviation = ABS(temperature_deviation_c); >3°C signals process instability\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - quality_events_metrics (source: quality_events) — dims: event_date, product_category, production_line, event_type, severity, root_cause_category; measures: total_quality_events, critical_event_count, total_cost_of_quality_usd, avg_resolution_days, closed_effective_count, open_event_count, unique_product_count, max_cost_of_quality.\n  - quality_kpi_monthly_metrics (source: quality_kpi_monthly) — dims: report_month, product_category, product_id; measures: total_monthly_events, total_critical_events, avg_capa_closure_rate, total_monthly_coq_usd, avg_batch_pass_rate, total_avg_resolution_days, max_total_events.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_name, batch_id, yield_pct, purity_pct, temperature_deviation_c, capa_status).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports quality event tracking, deviation investigation, and CAPA effectiveness analysis for a multi-line chemical manufacturer (acids, bases, solvents, polymers, specialty). Quality leadership is accountable to ISO 9001 / responsible-care audit readiness, FDA-grade GMP for pharma-adjacent products, and customer complaints. Cost-of-quality (COQ) for chemicals manufacturers typically runs 5-10% of revenue \u2014 making it a primary CFO-visible margin lever.\n\nMETRIC DEFINITIONS\n- Total quality events = COUNT(DISTINCT event_id); track aging and severity mix\n- Critical event count = events with severity = 'Critical'; regulatory reporting threshold\n- Total cost of quality = SUM(cost_of_quality_usd); industry benchmark 5-10% of revenue\n- Average resolution days = AVG(resolution_days); target \u2264 30 days for major, \u2264 60 for critical\n- CAPA closure rate = closed_effective_count / total_quality_events; target \u2265 90%\n- Batch pass rate (first-pass yield) = AVG(batch_pass_rate_pct); target \u2265 95% on-spec\n- Open event count = events in 'Open' or 'In Progress'; backlog health\n- Temperature deviation = ABS(temperature_deviation_c); >3\u00b0C signals process instability\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - quality_events_metrics (source: quality_events) \u2014 dims: event_date, product_category, production_line, event_type, severity, root_cause_category; measures: total_quality_events, critical_event_count, total_cost_of_quality_usd, avg_resolution_days, closed_effective_count, open_event_count, unique_product_count, max_cost_of_quality.\n  - quality_kpi_monthly_metrics (source: quality_kpi_monthly) \u2014 dims: report_month, product_category, product_id; measures: total_monthly_events, total_critical_events, avg_capa_closure_rate, total_monthly_coq_usd, avg_batch_pass_rate, total_avg_resolution_days, max_total_events.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_name, batch_id, yield_pct, purity_pct, temperature_deviation_c, capa_status).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly total cost of quality by product category for the trailing 12 months.",
-    "Top 10 products by cost of quality this year — and what is the dominant root cause?",
+    "Top 10 products by cost of quality this year \u2014 and what is the dominant root cause?",
     "How has critical event count trended month-over-month across production lines?",
     "Which root cause categories have the highest open / in-progress event backlog?",
     "What is the average CAPA closure rate by product category over the last 6 months?",
-    "Top 10 production lines by total quality events — and how do their batch pass rates compare?",
+    "Top 10 production lines by total quality events \u2014 and how do their batch pass rates compare?",
     "Which products have a batch pass rate below 90%, and what is the COQ dollar exposure?"
   ],
   "example_sqls": [
@@ -782,12 +782,12 @@
       ]
     },
     {
-      "question": "How has unique total quality eventss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_quality_events) AS total_quality_events",
-        "FROM {fqn}.quality_events_metrics",
-        "GROUP BY ALL",
-        "ORDER BY event_date"
+        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.quality_events",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -800,11 +800,14 @@
       ]
     },
     {
-      "question": "How does total estimated cost of the quality event in usd break down by chemical product identifier for 'Open' records?",
+      "question": "Which chemical products have the highest total *?",
       "sql_lines": [
-        "SELECT product_id, COUNT(*) AS record_count, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
+        "SELECT product_name, SUM(*) AS record_count, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",
-        "WHERE capa_status = 'Open' GROUP BY product_id ORDER BY total_cost_of_quality_usd DESC"
+        "WHERE capa_status = 'Open'",
+        "GROUP BY product_name",
+        "ORDER BY total_cost_of_quality_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -956,7 +959,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest total events?",
+      "question": "What has been the peak total quality events in the month each month?",
       "sql_lines": [
         "SELECT report_month, MEASURE(max_total_events) AS max_total_events",
         "FROM {fqn}.quality_kpi_monthly_metrics",
@@ -974,11 +977,13 @@
       ]
     },
     {
-      "question": "What are the top chemical product identifier by total estimated cost of the quality event in usd?",
+      "question": "Which chemical products have the highest total cost of quality for the month?",
       "sql_lines": [
-        "SELECT product_id, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
+        "SELECT product_name, SUM(cost_of_quality_usd) AS total_cost_of_quality_usd",
         "FROM {fqn}.quality_events",
-        "GROUP BY product_id ORDER BY total_cost_of_quality_usd DESC LIMIT 10"
+        "GROUP BY product_name",
+        "ORDER BY total_cost_of_quality_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -990,11 +995,13 @@
       ]
     },
     {
-      "question": "How many records are there per first day of reporting month?",
+      "question": "Which chemical products have the highest average capa closure rate?",
       "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
-        "FROM {fqn}.quality_kpi_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "SELECT product_name, MEASURE(avg_capa_closure_rate) AS avg_capa_closure_rate",
+        "FROM {fqn}.quality_kpi_monthly_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_capa_closure_rate DESC",
+        "LIMIT 10"
       ]
     }
   ]

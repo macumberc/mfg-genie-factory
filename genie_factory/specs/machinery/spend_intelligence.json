@@ -2,8 +2,8 @@
   "company_name": "SpendLens Manufacturing",
   "industry": "Machinery",
   "use_case": "Procurement spend intelligence and supplier performance analytics",
-  "space_title": "SpendLens Manufacturing - Spend Intelligence 💰",
-  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Procurement Spend Intelligence & Supplier Performance\n\nSpendLens Manufacturing — direct- and indirect-spend analytics across supplier base and spend categories. Category Managers and Sourcing leads run quarterly category reviews and supplier scorecards; the CPO and CFO use it to drive realized savings, eliminate maverick spend, and de-risk concentration in the supplier portfolio.\n\n**Key KPIs**\n- Realized savings ($) — typical 3–5% of addressable spend, leaders 5–8%\n- Maverick spend (%) — leaders <5%, average 20–30%\n- On-time delivery (%) — supplier target ≥95%\n- Quality acceptance (%) — supplier target ≥98%\n- Contract compliance (%) — target ≥85%\n- PO cycle time (days) — efficiency lever, target <7 days\n- Supplier diversity spend (%) — ESG and corporate-goal metric\n- Cost avoidance ($) — value beyond hard savings\n\n**Data sources**\n- `procurement_transactions` — PO records with supplier, category, amount, delivery status, quality, maverick flag\n- `supplier_snapshots` — monthly supplier scorecards with OTD, quality, lead time, price variance, compliance\n- `spend_kpi_monthly` — monthly total spend, realized savings, maverick spend %, PO cycle time, diversity, cost avoidance",
+  "space_title": "SpendLens Manufacturing - Spend Intelligence \ud83d\udcb0",
+  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Procurement Spend Intelligence & Supplier Performance\n\nSpendLens Manufacturing \u2014 direct- and indirect-spend analytics across supplier base and spend categories. Category Managers and Sourcing leads run quarterly category reviews and supplier scorecards; the CPO and CFO use it to drive realized savings, eliminate maverick spend, and de-risk concentration in the supplier portfolio.\n\n**Key KPIs**\n- Realized savings ($) \u2014 typical 3\u20135% of addressable spend, leaders 5\u20138%\n- Maverick spend (%) \u2014 leaders <5%, average 20\u201330%\n- On-time delivery (%) \u2014 supplier target \u226595%\n- Quality acceptance (%) \u2014 supplier target \u226598%\n- Contract compliance (%) \u2014 target \u226585%\n- PO cycle time (days) \u2014 efficiency lever, target <7 days\n- Supplier diversity spend (%) \u2014 ESG and corporate-goal metric\n- Cost avoidance ($) \u2014 value beyond hard savings\n\n**Data sources**\n- `procurement_transactions` \u2014 PO records with supplier, category, amount, delivery status, quality, maverick flag\n- `supplier_snapshots` \u2014 monthly supplier scorecards with OTD, quality, lead time, price variance, compliance\n- `spend_kpi_monthly` \u2014 monthly total spend, realized savings, maverick spend %, PO cycle time, diversity, cost avoidance",
   "schema_basename": "mach_spend_intel",
   "tables": [
     {
@@ -843,33 +843,33 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports procurement spend intelligence and supplier performance at SpendLens. Stakeholders: Category Manager and Sourcing leads (supplier scorecards, contract leakage, category cube), CPO (realized savings, maverick spend, supplier risk), and CFO (procurement cost avoidance, working capital terms, ESG / diversity commitments).\n\nMETRIC DEFINITIONS\n- Realized savings = SUM(savings_usd); typical 3–5% of addressable spend, leaders 5–8%.\n- Maverick spend = AVG(maverick_spend_pct); leaders <5%, average 20–30%.\n- On-time delivery = AVG(on_time_delivery_pct); supplier target ≥95%.\n- Quality acceptance = AVG(quality_acceptance_pct); supplier target ≥98%.\n- Contract compliance = AVG(contract_compliance_pct); target ≥85%.\n- PO cycle time = AVG(po_cycle_time_days); target <7 days.\n- Diversity spend = AVG(supplier_diversity_pct); corporate ESG goal.\n- Cost avoidance = SUM(cost_avoidance_usd); supplements hard savings.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - procurement_metrics (source: procurement_transactions) — dims: po_date, spend_category, delivery_status; measures: total_po_amount, total_po_count, maverick_po_count, late_delivery_count, total_invoice_amount, unique_supplier_count.\n  - spend_kpi_metrics (source: spend_kpi_monthly) — dims: kpi_month, spend_category; measures: total_spend, total_savings, avg_maverick_pct, total_cost_avoidance, total_supplier_diversity_percent, unique_supplier_count.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. supplier_id, supplier_score, price_variance_pct, quality_accepted, maverick_spend, payment_terms_days).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports procurement spend intelligence and supplier performance at SpendLens. Stakeholders: Category Manager and Sourcing leads (supplier scorecards, contract leakage, category cube), CPO (realized savings, maverick spend, supplier risk), and CFO (procurement cost avoidance, working capital terms, ESG / diversity commitments).\n\nMETRIC DEFINITIONS\n- Realized savings = SUM(savings_usd); typical 3\u20135% of addressable spend, leaders 5\u20138%.\n- Maverick spend = AVG(maverick_spend_pct); leaders <5%, average 20\u201330%.\n- On-time delivery = AVG(on_time_delivery_pct); supplier target \u226595%.\n- Quality acceptance = AVG(quality_acceptance_pct); supplier target \u226598%.\n- Contract compliance = AVG(contract_compliance_pct); target \u226585%.\n- PO cycle time = AVG(po_cycle_time_days); target <7 days.\n- Diversity spend = AVG(supplier_diversity_pct); corporate ESG goal.\n- Cost avoidance = SUM(cost_avoidance_usd); supplements hard savings.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - procurement_metrics (source: procurement_transactions) \u2014 dims: po_date, spend_category, delivery_status; measures: total_po_amount, total_po_count, maverick_po_count, late_delivery_count, total_invoice_amount, unique_supplier_count.\n  - spend_kpi_metrics (source: spend_kpi_monthly) \u2014 dims: kpi_month, spend_category; measures: total_spend, total_savings, avg_maverick_pct, total_cost_avoidance, total_supplier_diversity_percent, unique_supplier_count.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. supplier_id, supplier_score, price_variance_pct, quality_accepted, maverick_spend, payment_terms_days).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "Top 10 spend categories by total spend this year — where is procurement leverage concentrated?",
+    "Top 10 spend categories by total spend this year \u2014 where is procurement leverage concentrated?",
     "What is the monthly trend in realized savings vs maverick spend percentage over the trailing 12 months?",
     "Which suppliers have on-time delivery below the 95% target this quarter?",
-    "Rank spend categories by realized savings — which exceed the 5% best-in-class benchmark?",
+    "Rank spend categories by realized savings \u2014 which exceed the 5% best-in-class benchmark?",
     "Show monthly trend in cost avoidance vs total spend across the supplier base.",
-    "Top 10 suppliers by supplier score — and how does that correlate with total spend?",
+    "Top 10 suppliers by supplier score \u2014 and how does that correlate with total spend?",
     "Which categories have the highest maverick spend percentage, and what is the off-contract dollar value?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique total pos?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT po_date, MEASURE(total_po_count) AS total_po_count",
-        "FROM {fqn}.procurement_metrics",
-        "GROUP BY ALL",
-        "ORDER BY po_date"
+        "SELECT DATE_TRUNC('month', po_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.procurement_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How has unique suppliers changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT po_date, MEASURE(unique_supplier_count) AS unique_supplier_count",
-        "FROM {fqn}.procurement_metrics",
-        "GROUP BY ALL",
-        "ORDER BY po_date"
+        "SELECT DATE_TRUNC('month', po_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.procurement_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -882,7 +882,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total supplier diversity pct?",
+      "question": "How has average supplier diversity percent trended by month?",
       "sql_lines": [
         "SELECT kpi_month, MEASURE(total_supplier_diversity_percent) AS total_supplier_diversity_percent",
         "FROM {fqn}.spend_kpi_metrics",
@@ -891,11 +891,14 @@
       ]
     },
     {
-      "question": "How does total purchase order amount in usd break down by supplier identifier for 'On Time' records?",
+      "question": "Which spend categorys have the highest total *?",
       "sql_lines": [
-        "SELECT supplier_id, COUNT(*) AS record_count, SUM(po_amount_usd) AS total_po_amount_usd",
+        "SELECT spend_category, SUM(*) AS record_count, SUM(po_amount_usd) AS total_po_amount_usd",
         "FROM {fqn}.procurement_transactions",
-        "WHERE delivery_status = 'On Time' GROUP BY supplier_id ORDER BY total_po_amount_usd DESC"
+        "WHERE delivery_status = 'On Time'",
+        "GROUP BY spend_category",
+        "ORDER BY total_po_amount_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -1032,12 +1035,12 @@
       ]
     },
     {
-      "question": "What is the monthly trend in unique suppliers?",
+      "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(unique_supplier_count) AS unique_supplier_count",
-        "FROM {fqn}.spend_kpi_metrics",
-        "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
+        "FROM {fqn}.spend_kpi_monthly",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -1050,11 +1053,13 @@
       ]
     },
     {
-      "question": "What are the top supplier identifier by total purchase order amount in usd?",
+      "question": "Which spend categorys have the highest total purchase order amount?",
       "sql_lines": [
-        "SELECT supplier_id, SUM(po_amount_usd) AS total_po_amount_usd",
+        "SELECT spend_category, SUM(po_amount_usd) AS total_po_amount_usd",
         "FROM {fqn}.procurement_transactions",
-        "GROUP BY supplier_id ORDER BY total_po_amount_usd DESC LIMIT 10"
+        "GROUP BY spend_category",
+        "ORDER BY total_po_amount_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -1066,11 +1071,13 @@
       ]
     },
     {
-      "question": "How many records are there per month of kpi record?",
+      "question": "Which spend categorys have the highest average maverick spend percentage?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
-        "FROM {fqn}.spend_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "SELECT spend_category, MEASURE(avg_maverick_pct) AS avg_maverick_pct",
+        "FROM {fqn}.spend_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_maverick_pct DESC",
+        "LIMIT 10"
       ]
     }
   ]

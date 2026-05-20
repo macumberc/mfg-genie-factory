@@ -2,8 +2,8 @@
   "company_name": "ReservoirSight Analytics",
   "industry": "Oil & Gas Upstream",
   "use_case": "Reservoir management and production optimization",
-  "space_title": "ReservoirSight Analytics - Reservoir Management 🛢️",
-  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Reservoir Management & Production Optimization\n\nReservoirSight Analytics — subsurface and production analytics for 20 reservoirs spanning the Permian (Wolfcamp, Bone Spring, Spraberry), Eagle Ford, Williston (Bakken/Three Forks), Appalachian (Marcellus/Utica), Haynesville, DJ Basin (Niobrara), and Anadarko. Reservoir Engineers use this space day-to-day for decline-curve and water-cut surveillance; the Asset Manager and VP of Reserves use it to defend EUR, recovery factor, breakeven price, and infill-drilling capital allocation in monthly business reviews.\n\n**Key KPIs**\n- Oil rate (BOPD) and gas rate (MCF/day) — primary production volumes\n- Water cut % — sweep efficiency; >50% signals watered-out wells, >75% near-economic-limit\n- GOR (gas-oil ratio, SCF/BBL) — reservoir energy/phase indicator\n- Recovery factor % — shale typically 5-12%, conventional 25-50%\n- Annual decline rate % — shale wells often 30-50% Y1, 12-20% in later years\n- Cumulative oil (BBL) and estimated ultimate recovery (EUR)\n- OPEX per BOE — onshore US benchmark ~$8-15/BOE\n- Breakeven price (USD/BBL) — Permian Tier-1 ~$35-45, marginal acreage $55+\n\n**Data sources**\n- `production_readings` — daily oil/gas/water rates, pressure, temperature, lift method per reservoir\n- `reservoir_snapshots` — monthly cumulative oil, EUR, recovery factor, decline rate, water cut per reservoir\n- `reservoir_kpi_monthly` — monthly OPEX/BOE, breakeven price, monthly oil/gas volumes per reservoir",
+  "space_title": "ReservoirSight Analytics - Reservoir Management \ud83d\udee2\ufe0f",
+  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Reservoir Management & Production Optimization\n\nReservoirSight Analytics \u2014 subsurface and production analytics for 20 reservoirs spanning the Permian (Wolfcamp, Bone Spring, Spraberry), Eagle Ford, Williston (Bakken/Three Forks), Appalachian (Marcellus/Utica), Haynesville, DJ Basin (Niobrara), and Anadarko. Reservoir Engineers use this space day-to-day for decline-curve and water-cut surveillance; the Asset Manager and VP of Reserves use it to defend EUR, recovery factor, breakeven price, and infill-drilling capital allocation in monthly business reviews.\n\n**Key KPIs**\n- Oil rate (BOPD) and gas rate (MCF/day) \u2014 primary production volumes\n- Water cut % \u2014 sweep efficiency; >50% signals watered-out wells, >75% near-economic-limit\n- GOR (gas-oil ratio, SCF/BBL) \u2014 reservoir energy/phase indicator\n- Recovery factor % \u2014 shale typically 5-12%, conventional 25-50%\n- Annual decline rate % \u2014 shale wells often 30-50% Y1, 12-20% in later years\n- Cumulative oil (BBL) and estimated ultimate recovery (EUR)\n- OPEX per BOE \u2014 onshore US benchmark ~$8-15/BOE\n- Breakeven price (USD/BBL) \u2014 Permian Tier-1 ~$35-45, marginal acreage $55+\n\n**Data sources**\n- `production_readings` \u2014 daily oil/gas/water rates, pressure, temperature, lift method per reservoir\n- `reservoir_snapshots` \u2014 monthly cumulative oil, EUR, recovery factor, decline rate, water cut per reservoir\n- `reservoir_kpi_monthly` \u2014 monthly OPEX/BOE, breakeven price, monthly oil/gas volumes per reservoir",
   "schema_basename": "og_upstream_reservoir",
   "tables": [
     {
@@ -748,19 +748,19 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Reservoir Management for an upstream operator with 20 reservoirs across the Permian (Wolfcamp, Bone Spring, Spraberry, San Andres), Eagle Ford (incl. Austin Chalk), Williston (Bakken, Three Forks), Appalachian (Marcellus, Utica), Haynesville (Haynesville, Bossier), DJ (Niobrara), and Anadarko (Woodford, Springer). Stakeholders include the Reservoir Engineer (rates, pressure, water cut, decline), Asset Manager (recovery factor, EUR, OPEX/BOE), and CFO/VP Reserves (breakeven price, capital allocation across basins).\n\nMETRIC DEFINITIONS\n- Oil rate = oil_bpd (barrels per day); gas rate = gas_mcfpd; water rate = water_bpd.\n- Water cut % = water_cut_pct on reservoir_snapshots (or water_bpd/(oil_bpd+water_bpd) on production_readings). >50% watered-out, >75% near economic limit.\n- GOR (SCF/BBL) = gas_mcfpd*1000 / oil_bpd; rising GOR can indicate gas breakthrough.\n- Reservoir pressure = reservoir_pressure_psi; declining pressure drives lift method changes.\n- Recovery factor = recovery_factor_pct; shale 5-12%, conventional 25-50%.\n- Decline rate = decline_rate_pct (annual); shale wells often 30-50% Y1.\n- Cumulative oil = cumulative_oil_bbl; EUR = estimated_eur_bbl (BBL ultimately recoverable).\n- OPEX/BOE = opex_per_boe (USD); onshore US benchmark $8-15.\n- Breakeven = breakeven_price_usd (USD/BBL); Tier-1 Permian ~$35-45.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) — dims: reading_date, reservoir_id, formation, basin, lift_method; measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_reservoir_pressure, total_bottomhole_temp_f, max_oil_bpd.\n  - reservoir_snapshots_metrics (source: reservoir_snapshots) — dims: snapshot_date, reservoir_id, formation, basin; measures: avg_recovery_factor, avg_decline_rate, avg_water_cut, total_cumulative_oil, total_estimated_eur_bbl, max_cumulative_oil_bbl.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. reservoir_name, opex_per_boe, breakeven_price_usd, monthly_oil_bbl, decline_rate_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Reservoir Management for an upstream operator with 20 reservoirs across the Permian (Wolfcamp, Bone Spring, Spraberry, San Andres), Eagle Ford (incl. Austin Chalk), Williston (Bakken, Three Forks), Appalachian (Marcellus, Utica), Haynesville (Haynesville, Bossier), DJ (Niobrara), and Anadarko (Woodford, Springer). Stakeholders include the Reservoir Engineer (rates, pressure, water cut, decline), Asset Manager (recovery factor, EUR, OPEX/BOE), and CFO/VP Reserves (breakeven price, capital allocation across basins).\n\nMETRIC DEFINITIONS\n- Oil rate = oil_bpd (barrels per day); gas rate = gas_mcfpd; water rate = water_bpd.\n- Water cut % = water_cut_pct on reservoir_snapshots (or water_bpd/(oil_bpd+water_bpd) on production_readings). >50% watered-out, >75% near economic limit.\n- GOR (SCF/BBL) = gas_mcfpd*1000 / oil_bpd; rising GOR can indicate gas breakthrough.\n- Reservoir pressure = reservoir_pressure_psi; declining pressure drives lift method changes.\n- Recovery factor = recovery_factor_pct; shale 5-12%, conventional 25-50%.\n- Decline rate = decline_rate_pct (annual); shale wells often 30-50% Y1.\n- Cumulative oil = cumulative_oil_bbl; EUR = estimated_eur_bbl (BBL ultimately recoverable).\n- OPEX/BOE = opex_per_boe (USD); onshore US benchmark $8-15.\n- Breakeven = breakeven_price_usd (USD/BBL); Tier-1 Permian ~$35-45.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) \u2014 dims: reading_date, reservoir_id, formation, basin, lift_method; measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_reservoir_pressure, total_bottomhole_temp_f, max_oil_bpd.\n  - reservoir_snapshots_metrics (source: reservoir_snapshots) \u2014 dims: snapshot_date, reservoir_id, formation, basin; measures: avg_recovery_factor, avg_decline_rate, avg_water_cut, total_cumulative_oil, total_estimated_eur_bbl, max_cumulative_oil_bbl.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. reservoir_name, opex_per_boe, breakeven_price_usd, monthly_oil_bbl, decline_rate_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 reservoirs by average oil rate (BOPD) over the last 90 days.",
     "Show the monthly trend in average water cut and decline rate by basin for the trailing 12 months.",
     "Which reservoirs have water cut above 60% and what is their cumulative oil and recovery factor?",
     "What is the average OPEX per BOE and breakeven price by basin and formation this year?",
-    "Top 10 reservoirs by estimated ultimate recovery (EUR) — and how does that compare to cumulative oil produced?",
+    "Top 10 reservoirs by estimated ultimate recovery (EUR) \u2014 and how does that compare to cumulative oil produced?",
     "How has reservoir pressure trended month over month for Permian Basin wells?",
     "Which formations have the steepest annual decline rates, and what is their monthly oil volume?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in avg oil bpd?",
+      "question": "How has average oil barrels per day trended by month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
         "FROM {fqn}.production_readings_metrics",
@@ -769,7 +769,7 @@
       ]
     },
     {
-      "question": "How has avg gas mcfpd changed over time?",
+      "question": "How has average gas thousand cubic feet per day trended by month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_gas_mcfpd) AS avg_gas_mcfpd",
         "FROM {fqn}.production_readings_metrics",
@@ -778,7 +778,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total estimated eur bbl?",
+      "question": "How has total estimated ultimate recovery barrels trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_estimated_eur_bbl) AS total_estimated_eur_bbl",
         "FROM {fqn}.reservoir_snapshots_metrics",
@@ -787,31 +787,36 @@
       ]
     },
     {
-      "question": "What is the trend of total oil bpd over time?",
+      "question": "Which reservoirs have the best average oil barrels per day?",
       "sql_lines": [
-        "SELECT reading_date, SUM(oil_bpd) AS total_oil_bpd",
+        "SELECT reservoir_name, AVG(oil_bpd) AS avg_metric",
         "FROM {fqn}.production_readings",
-        "GROUP BY reading_date ORDER BY reading_date"
+        "GROUP BY reservoir_name",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the trend of total cumulative oil bbl over time?",
+      "question": "How has total cumulative oil barrels trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(cumulative_oil_bbl) AS total_cumulative_oil_bbl",
         "FROM {fqn}.reservoir_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
-      "question": "How many distinct kpi id are there per basin?",
+      "question": "How does average recovery factor compare across basins?",
       "sql_lines": [
-        "SELECT basin, COUNT(DISTINCT kpi_id) AS distinct_count",
-        "FROM {fqn}.reservoir_kpi_monthly",
-        "GROUP BY basin ORDER BY distinct_count DESC"
+        "SELECT basin, AVG(recovery_factor_pct) AS avg_recovery_factor",
+        "FROM {fqn}.reservoir_snapshots",
+        "GROUP BY basin",
+        "ORDER BY avg_recovery_factor DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How has avg reservoir pressure changed over time?",
+      "question": "How has average reservoir pressure changed over time?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_reservoir_pressure) AS avg_reservoir_pressure",
         "FROM {fqn}.production_readings_metrics",
@@ -910,25 +915,25 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in highest oil bpd?",
+      "question": "How has average oil barrels per day trended by month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_oil_bpd) AS max_oil_bpd",
+        "SELECT reading_date, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "How has total bottomhole temp f changed over time?",
+      "question": "How has average bottomhole temp f trended over time?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_bottomhole_temp_f) AS total_bottomhole_temp_f",
-        "FROM {fqn}.production_readings_metrics",
-        "GROUP BY ALL",
+        "SELECT reading_date, AVG(bottomhole_temp_f) AS avg_bottomhole_temp_f",
+        "FROM {fqn}.production_readings",
+        "GROUP BY reading_date",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "What is the monthly trend in highest cumulative oil bbl?",
+      "question": "What has been the peak cumulative oil barrels each month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(max_cumulative_oil_bbl) AS max_cumulative_oil_bbl",
         "FROM {fqn}.reservoir_snapshots_metrics",
@@ -946,27 +951,33 @@
       ]
     },
     {
-      "question": "What are the top reservoir id by total oil bpd?",
+      "question": "Which reservoirs have the highest average oil barrels per day?",
       "sql_lines": [
-        "SELECT reservoir_id, SUM(oil_bpd) AS total_oil_bpd",
+        "SELECT reservoir_name, AVG(oil_bpd) AS total_oil_bpd",
         "FROM {fqn}.production_readings",
-        "GROUP BY reservoir_id ORDER BY total_oil_bpd DESC LIMIT 10"
+        "GROUP BY reservoir_name",
+        "ORDER BY total_oil_bpd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the average recovery factor pct by reservoir name?",
+      "question": "Which reservoirs have the best recovery factor percentage?",
       "sql_lines": [
         "SELECT reservoir_name, AVG(recovery_factor_pct) AS avg_recovery_factor_pct",
         "FROM {fqn}.reservoir_snapshots",
-        "GROUP BY reservoir_name ORDER BY avg_recovery_factor_pct DESC"
+        "GROUP BY reservoir_name",
+        "ORDER BY avg_recovery_factor_pct DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per kpi month?",
+      "question": "How does opex per boe compare across formations?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT formation, SUM(opex_per_boe) AS total_metric",
         "FROM {fqn}.reservoir_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

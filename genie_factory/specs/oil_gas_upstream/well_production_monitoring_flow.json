@@ -2,8 +2,8 @@
   "company_name": "WellFlow Monitoring",
   "industry": "Oil & Gas Upstream",
   "use_case": "Well production monitoring and flow optimization",
-  "space_title": "WellFlow Monitoring - Well Production Monitoring 📊",
-  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Well Production Monitoring & Flow Optimization\n\nWellFlow Monitoring — daily well surveillance across 20 horizontal and vertical wells on 11 multi-well pads (Wolfcamp, Bone Spring, Spraberry, Eagle Ford, Niobrara, Bakken, Haynesville, Marcellus, Utica, Woodford, SCOOP, San Andres). Production Engineers use this space to triage low-rate and shut-in wells day-to-day; the Asset Manager and Field Superintendent use it to rank deferred-production opportunities, monitor lift efficiency, and benchmark pad-level LOE/BOE for monthly performance reviews.\n\n**Key KPIs**\n- Oil rate (BOPD), gas rate (MCF/day), water rate (BPD) — primary production volumes\n- Well uptime % — target ≥95%; <90% triggers root-cause review\n- Artificial lift efficiency % — ESP/rod pump fitness; <70% flags optimization\n- Water cut % — >60% prioritizes water-handling capacity, >75% near economic limit\n- GOR (SCF/BBL) — gas-oil ratio; rising GOR can indicate gas breakthrough\n- Tubing & casing pressure (PSI) — flow assurance indicators\n- Deferred oil (BBL) — production loss from downtime / chokes / shut-ins\n- LOE per BOE (USD) — lease operating expense; onshore US benchmark $6-12/BOE\n\n**Data sources**\n- `production_readings` — daily oil/gas/water rates, tubing & casing pressure, well status per well\n- `well_status_snapshots` — weekly cumulative oil, water cut, GOR, uptime, lift efficiency per well\n- `production_kpi_monthly` — monthly oil/gas volumes, deferred oil BBL, LOE/BOE per well and pad",
+  "space_title": "WellFlow Monitoring - Well Production Monitoring \ud83d\udcca",
+  "space_description": "**Subindustry:** Oil & Gas Upstream\n\n**Use case:** Well Production Monitoring & Flow Optimization\n\nWellFlow Monitoring \u2014 daily well surveillance across 20 horizontal and vertical wells on 11 multi-well pads (Wolfcamp, Bone Spring, Spraberry, Eagle Ford, Niobrara, Bakken, Haynesville, Marcellus, Utica, Woodford, SCOOP, San Andres). Production Engineers use this space to triage low-rate and shut-in wells day-to-day; the Asset Manager and Field Superintendent use it to rank deferred-production opportunities, monitor lift efficiency, and benchmark pad-level LOE/BOE for monthly performance reviews.\n\n**Key KPIs**\n- Oil rate (BOPD), gas rate (MCF/day), water rate (BPD) \u2014 primary production volumes\n- Well uptime % \u2014 target \u226595%; <90% triggers root-cause review\n- Artificial lift efficiency % \u2014 ESP/rod pump fitness; <70% flags optimization\n- Water cut % \u2014 >60% prioritizes water-handling capacity, >75% near economic limit\n- GOR (SCF/BBL) \u2014 gas-oil ratio; rising GOR can indicate gas breakthrough\n- Tubing & casing pressure (PSI) \u2014 flow assurance indicators\n- Deferred oil (BBL) \u2014 production loss from downtime / chokes / shut-ins\n- LOE per BOE (USD) \u2014 lease operating expense; onshore US benchmark $6-12/BOE\n\n**Data sources**\n- `production_readings` \u2014 daily oil/gas/water rates, tubing & casing pressure, well status per well\n- `well_status_snapshots` \u2014 weekly cumulative oil, water cut, GOR, uptime, lift efficiency per well\n- `production_kpi_monthly` \u2014 monthly oil/gas volumes, deferred oil BBL, LOE/BOE per well and pad",
   "schema_basename": "og_upstream_wellflow",
   "tables": [
     {
@@ -738,19 +738,19 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Well Production Monitoring for an upstream operator with 20 wells (mostly horizontals plus a few verticals) on 11 multi-well pads across the Wolfcamp, Bone Spring, Spraberry, Eagle Ford, Niobrara, Bakken/Three Forks, Haynesville, Marcellus, Utica, Woodford, SCOOP, and San Andres plays. Stakeholders include Production Engineers (rates, pressure, status, lift efficiency), Field Superintendents (pad-level uptime, deferred barrels), and the Asset Manager (LOE/BOE, water cut, cumulative oil).\n\nMETRIC DEFINITIONS\n- Oil rate = oil_bpd; gas rate = gas_mcfpd; water rate = water_bpd.\n- Tubing pressure = tubing_pressure_psi; casing pressure = casing_pressure_psi (flow-assurance signals).\n- Well status = well_status (Flowing / Shut-In / Workover / Completion / Abandoned); only Flowing produces revenue.\n- Water cut = water_cut_pct (weekly snapshot); >60% prioritize water handling, >75% near economic limit.\n- GOR (SCF/BBL) = gor_scf_bbl; rising GOR can indicate gas breakthrough or reservoir-energy decline.\n- Uptime = uptime_pct; target ≥95%, <90% flag for root-cause.\n- Lift efficiency = artificial_lift_efficiency_pct; <70% flags ESP/rod-pump optimization opportunity.\n- Deferred oil = deferred_oil_bbl (BBL not produced due to downtime/chokes).\n- LOE/BOE = loe_per_boe (USD); onshore US benchmark $6-12/BOE.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) — dims: reading_date, well_id, well_type, pad_name, well_status; measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_tubing_pressure, total_casing_pressure_psi, max_oil_bpd.\n  - well_status_snapshots_metrics (source: well_status_snapshots) — dims: snapshot_date, well_id, well_type, pad_name; measures: avg_water_cut, avg_uptime_pct, avg_lift_efficiency, total_cumulative_oil, total_gor_scf_bbl, max_cumulative_oil_bbl.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. well_name, deferred_oil_bbl, loe_per_boe, monthly_oil_bbl, gor_scf_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Well Production Monitoring for an upstream operator with 20 wells (mostly horizontals plus a few verticals) on 11 multi-well pads across the Wolfcamp, Bone Spring, Spraberry, Eagle Ford, Niobrara, Bakken/Three Forks, Haynesville, Marcellus, Utica, Woodford, SCOOP, and San Andres plays. Stakeholders include Production Engineers (rates, pressure, status, lift efficiency), Field Superintendents (pad-level uptime, deferred barrels), and the Asset Manager (LOE/BOE, water cut, cumulative oil).\n\nMETRIC DEFINITIONS\n- Oil rate = oil_bpd; gas rate = gas_mcfpd; water rate = water_bpd.\n- Tubing pressure = tubing_pressure_psi; casing pressure = casing_pressure_psi (flow-assurance signals).\n- Well status = well_status (Flowing / Shut-In / Workover / Completion / Abandoned); only Flowing produces revenue.\n- Water cut = water_cut_pct (weekly snapshot); >60% prioritize water handling, >75% near economic limit.\n- GOR (SCF/BBL) = gor_scf_bbl; rising GOR can indicate gas breakthrough or reservoir-energy decline.\n- Uptime = uptime_pct; target \u226595%, <90% flag for root-cause.\n- Lift efficiency = artificial_lift_efficiency_pct; <70% flags ESP/rod-pump optimization opportunity.\n- Deferred oil = deferred_oil_bbl (BBL not produced due to downtime/chokes).\n- LOE/BOE = loe_per_boe (USD); onshore US benchmark $6-12/BOE.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) \u2014 dims: reading_date, well_id, well_type, pad_name, well_status; measures: avg_oil_bpd, avg_gas_mcfpd, avg_water_bpd, avg_tubing_pressure, total_casing_pressure_psi, max_oil_bpd.\n  - well_status_snapshots_metrics (source: well_status_snapshots) \u2014 dims: snapshot_date, well_id, well_type, pad_name; measures: avg_water_cut, avg_uptime_pct, avg_lift_efficiency, total_cumulative_oil, total_gor_scf_bbl, max_cumulative_oil_bbl.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. well_name, deferred_oil_bbl, loe_per_boe, monthly_oil_bbl, gor_scf_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 wells by average oil rate (BOPD) over the last 90 days.",
     "Show the monthly trend in total deferred oil BBL by pad for the trailing 12 months.",
     "Which wells have uptime below 90% or lift efficiency below 70%, and what pad are they on?",
     "What is the average LOE per BOE by pad and well type year to date?",
-    "Top 10 wells by water cut % — and how does that compare to last quarter?",
+    "Top 10 wells by water cut % \u2014 and how does that compare to last quarter?",
     "How has average GOR trended month over month across horizontal wells?",
     "Which pads have the most shut-in or workover wells right now, and what is the deferred oil impact?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in avg oil bpd?",
+      "question": "How has average oil barrels per day trended by month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
         "FROM {fqn}.production_readings_metrics",
@@ -759,7 +759,7 @@
       ]
     },
     {
-      "question": "How has avg gas mcfpd changed over time?",
+      "question": "How has average gas mcf/day trended by month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_gas_mcfpd) AS avg_gas_mcfpd",
         "FROM {fqn}.production_readings_metrics",
@@ -768,7 +768,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total gor scf bbl?",
+      "question": "How has total gor scf/barrels trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_gor_scf_bbl) AS total_gor_scf_bbl",
         "FROM {fqn}.well_status_snapshots_metrics",
@@ -777,31 +777,37 @@
       ]
     },
     {
-      "question": "How does total oil bpd break down by well id for 'Flowing' records?",
+      "question": "Which currently-flowing wells are producing the most oil?",
       "sql_lines": [
-        "SELECT well_id, COUNT(*) AS record_count, SUM(oil_bpd) AS total_oil_bpd",
-        "FROM {fqn}.production_readings",
-        "WHERE well_status = 'Flowing' GROUP BY well_id ORDER BY total_oil_bpd DESC"
+        "SELECT well_name, AVG(oil_bpd) AS avg_oil_bpd",
+        "FROM {fqn}.well_production",
+        "WHERE well_status = 'Flowing'",
+        "GROUP BY well_name",
+        "ORDER BY avg_oil_bpd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the trend of total cumulative oil bbl over time?",
+      "question": "How has total cumulative oil barrels trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(cumulative_oil_bbl) AS total_cumulative_oil_bbl",
         "FROM {fqn}.well_status_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
-      "question": "How many distinct kpi id are there per pad name?",
+      "question": "How does average daily oil production compare across pads?",
       "sql_lines": [
-        "SELECT pad_name, COUNT(DISTINCT kpi_id) AS distinct_count",
-        "FROM {fqn}.production_kpi_monthly",
-        "GROUP BY pad_name ORDER BY distinct_count DESC"
+        "SELECT pad_name, AVG(oil_bpd) AS avg_oil_bpd",
+        "FROM {fqn}.well_production",
+        "GROUP BY pad_name",
+        "ORDER BY avg_oil_bpd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How has avg tubing pressure changed over time?",
+      "question": "How has average tubing pressure changed over time?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_tubing_pressure) AS avg_tubing_pressure",
         "FROM {fqn}.production_readings_metrics",
@@ -901,25 +907,25 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in highest oil bpd?",
+      "question": "How has average oil barrels per day trended by month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_oil_bpd) AS max_oil_bpd",
+        "SELECT reading_date, MEASURE(avg_oil_bpd) AS avg_oil_bpd",
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "How has total casing pressure psi changed over time?",
+      "question": "How has average casing pressure pressure (psi) trended over time?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_casing_pressure_psi) AS total_casing_pressure_psi",
-        "FROM {fqn}.production_readings_metrics",
-        "GROUP BY ALL",
+        "SELECT reading_date, AVG(casing_pressure_psi) AS avg_casing_pressure_psi",
+        "FROM {fqn}.production_readings",
+        "GROUP BY reading_date",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "What is the monthly trend in highest cumulative oil bbl?",
+      "question": "What has been the peak cumulative oil barrels each month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(max_cumulative_oil_bbl) AS max_cumulative_oil_bbl",
         "FROM {fqn}.well_status_snapshots_metrics",
@@ -928,7 +934,7 @@
       ]
     },
     {
-      "question": "How has total cumulative oil bbl changed over time?",
+      "question": "How has total cumulative oil trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_cumulative_oil) AS total_cumulative_oil",
         "FROM {fqn}.well_status_snapshots_metrics",
@@ -937,27 +943,33 @@
       ]
     },
     {
-      "question": "What are the top well id by total oil bpd?",
+      "question": "Which wells have the highest average oil barrels per day?",
       "sql_lines": [
-        "SELECT well_id, SUM(oil_bpd) AS total_oil_bpd",
+        "SELECT well_name, AVG(oil_bpd) AS total_oil_bpd",
         "FROM {fqn}.production_readings",
-        "GROUP BY well_id ORDER BY total_oil_bpd DESC LIMIT 10"
+        "GROUP BY well_name",
+        "ORDER BY total_oil_bpd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the average water cut pct by well name?",
+      "question": "Which wells have the highest average water cut percentage?",
       "sql_lines": [
         "SELECT well_name, AVG(water_cut_pct) AS avg_water_cut_pct",
         "FROM {fqn}.well_status_snapshots",
-        "GROUP BY well_name ORDER BY avg_water_cut_pct DESC"
+        "GROUP BY well_name",
+        "ORDER BY avg_water_cut_pct DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per kpi month?",
+      "question": "Which pads have the highest total deferred oil barrels?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT pad_name, SUM(deferred_oil_bbl) AS total_metric",
         "FROM {fqn}.production_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

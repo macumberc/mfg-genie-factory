@@ -2,8 +2,8 @@
   "company_name": "WaferVault Systems",
   "industry": "Semiconductor",
   "use_case": "Salable inventory optimization across wafer, die, and finished goods stock",
-  "space_title": "WaferVault - Salable Inventory Optimization 📦",
-  "space_description": "**Subindustry:** Semiconductor\n\n**Use case:** Salable Inventory Optimization Across Wafer / Die / Finished Goods\n\nWaferVault Systems — multi-stage inventory analytics covering 20 products across wafer bank, die bank, WIP, and finished-goods stages. Inventory Planning and Operations use this space to balance buffer stock against scrap and aging exposure; the CFO and Supply Chain VP use it to size E&O reserves, monitor inventory turns versus the semi-industry median of 3–4x, and protect fill rate during cycle turns.\n\n**Key KPIs**\n- Inventory turns — annualized COGS / avg inventory; semi median 3–4x, top-quartile 5x+\n- Days of supply — days to deplete at current demand; healthy 90–120, alarms above 180\n- Excess exposure (USD) — value of inventory above demand cover; reserve trigger\n- Obsolete exposure (USD) — value of E&O write-down candidates; CFO disclosure item\n- Fill rate % — share of demand shipped on time; target 95%+\n- Inventory value (USD) — working-capital tied up across stages\n- Available-to-sell units — uncommitted salable inventory by SKU\n- Scrap transaction count — yield loss and obsolescence signal\n\n**Data sources**\n- `inventory_transactions` — daily receipts, shipments, transfers, and scrap by stock stage\n- `inventory_snapshots` — weekly on-hand, committed, and available-to-sell positions with aging\n- `inventory_kpi_monthly` — monthly turns, days of supply, excess/obsolete exposure, fill rate",
+  "space_title": "WaferVault - Salable Inventory Optimization \ud83d\udce6",
+  "space_description": "**Subindustry:** Semiconductor\n\n**Use case:** Salable Inventory Optimization Across Wafer / Die / Finished Goods\n\nWaferVault Systems \u2014 multi-stage inventory analytics covering 20 products across wafer bank, die bank, WIP, and finished-goods stages. Inventory Planning and Operations use this space to balance buffer stock against scrap and aging exposure; the CFO and Supply Chain VP use it to size E&O reserves, monitor inventory turns versus the semi-industry median of 3\u20134x, and protect fill rate during cycle turns.\n\n**Key KPIs**\n- Inventory turns \u2014 annualized COGS / avg inventory; semi median 3\u20134x, top-quartile 5x+\n- Days of supply \u2014 days to deplete at current demand; healthy 90\u2013120, alarms above 180\n- Excess exposure (USD) \u2014 value of inventory above demand cover; reserve trigger\n- Obsolete exposure (USD) \u2014 value of E&O write-down candidates; CFO disclosure item\n- Fill rate % \u2014 share of demand shipped on time; target 95%+\n- Inventory value (USD) \u2014 working-capital tied up across stages\n- Available-to-sell units \u2014 uncommitted salable inventory by SKU\n- Scrap transaction count \u2014 yield loss and obsolescence signal\n\n**Data sources**\n- `inventory_transactions` \u2014 daily receipts, shipments, transfers, and scrap by stock stage\n- `inventory_snapshots` \u2014 weekly on-hand, committed, and available-to-sell positions with aging\n- `inventory_kpi_monthly` \u2014 monthly turns, days of supply, excess/obsolete exposure, fill rate",
   "schema_basename": "semiconductor_inventory_opt",
   "tables": [
     {
@@ -735,24 +735,24 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Salable Inventory Optimization for a fabless semiconductor company managing 20 products across four stock stages: Wafer Bank, Die Bank, WIP, and Finished Goods. Stakeholders include Inventory Planning (turns, days of supply), Operations (fill rate, scrap), and the CFO (E&O reserve, working capital). Semi inventory is highly capital-intensive — a single 12-inch wafer at 5nm can carry ~$15k–$20k cost, so days-of-supply discipline directly hits free cash flow.\n\nMETRIC DEFINITIONS\n- Inventory turns = inventory_turns; semi median 3–4x, top-quartile 5x+\n- Days of supply = days_of_supply; healthy 90–120, alarm >180\n- Excess exposure = excess_exposure_usd (value above demand cover)\n- Obsolete exposure = obsolete_exposure_usd (E&O reserve candidate)\n- Fill rate = fill_rate_pct; target 95%+\n- On-hand = on_hand_units; Committed = committed_units; ATS = available_to_sell\n- Inventory value = inventory_value_usd by warehouse/stage\n- Aging buckets in inventory_snapshots: <30, 30–60, 60–90, 90–180, >180 days\n- Scrap transaction = transaction_type = 'Scrap'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - inventory_transaction_metrics (source: inventory_transactions) — dims: transaction_date, product_line, transaction_type, warehouse_location, stock_stage; measures: total_transactions, total_transaction_value_usd, total_units_moved, scrap_transaction_count, avg_unit_cost_usd, unique_product_count, max_quantity_units.\n  - inventory_snapshot_metrics (source: inventory_snapshots) — dims: snapshot_date, product_line, warehouse_location, aging_bucket; measures: total_on_hand_units, total_available_to_sell, total_inventory_value_usd, avg_committed_units, unique_product_count, max_on_hand_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_id, product_name, inventory_turns, days_of_supply, excess_exposure_usd, obsolete_exposure_usd, fill_rate_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Salable Inventory Optimization for a fabless semiconductor company managing 20 products across four stock stages: Wafer Bank, Die Bank, WIP, and Finished Goods. Stakeholders include Inventory Planning (turns, days of supply), Operations (fill rate, scrap), and the CFO (E&O reserve, working capital). Semi inventory is highly capital-intensive \u2014 a single 12-inch wafer at 5nm can carry ~$15k\u2013$20k cost, so days-of-supply discipline directly hits free cash flow.\n\nMETRIC DEFINITIONS\n- Inventory turns = inventory_turns; semi median 3\u20134x, top-quartile 5x+\n- Days of supply = days_of_supply; healthy 90\u2013120, alarm >180\n- Excess exposure = excess_exposure_usd (value above demand cover)\n- Obsolete exposure = obsolete_exposure_usd (E&O reserve candidate)\n- Fill rate = fill_rate_pct; target 95%+\n- On-hand = on_hand_units; Committed = committed_units; ATS = available_to_sell\n- Inventory value = inventory_value_usd by warehouse/stage\n- Aging buckets in inventory_snapshots: <30, 30\u201360, 60\u201390, 90\u2013180, >180 days\n- Scrap transaction = transaction_type = 'Scrap'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - inventory_transaction_metrics (source: inventory_transactions) \u2014 dims: transaction_date, product_line, transaction_type, warehouse_location, stock_stage; measures: total_transactions, total_transaction_value_usd, total_units_moved, scrap_transaction_count, avg_unit_cost_usd, unique_product_count, max_quantity_units.\n  - inventory_snapshot_metrics (source: inventory_snapshots) \u2014 dims: snapshot_date, product_line, warehouse_location, aging_bucket; measures: total_on_hand_units, total_available_to_sell, total_inventory_value_usd, avg_committed_units, unique_product_count, max_on_hand_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. product_id, product_name, inventory_turns, days_of_supply, excess_exposure_usd, obsolete_exposure_usd, fill_rate_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Which 10 products have the highest excess exposure in USD this month?",
     "Show monthly total inventory value by warehouse location for the trailing 12 months.",
-    "Which product lines have the worst inventory turns this quarter — where is working capital trapped?",
-    "Top 10 products by obsolete exposure — what is the E&O reserve we should be carrying?",
-    "How has scrap transaction count trended monthly by stock stage — where are we losing yield to scrap?",
-    "Which products have more than 180 days of supply and aging-bucket >90 days — write-down candidates?",
+    "Which product lines have the worst inventory turns this quarter \u2014 where is working capital trapped?",
+    "Top 10 products by obsolete exposure \u2014 what is the E&O reserve we should be carrying?",
+    "How has scrap transaction count trended monthly by stock stage \u2014 where are we losing yield to scrap?",
+    "Which products have more than 180 days of supply and aging-bucket >90 days \u2014 write-down candidates?",
     "What is the trailing 12-month fill rate by product line, and which lines are below the 95% target?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique products?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(unique_product_count) AS unique_product_count",
-        "FROM {fqn}.inventory_transaction_metrics",
-        "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -765,7 +765,7 @@
       ]
     },
     {
-      "question": "How has average unit cost in usd changed over time?",
+      "question": "How has total unit cost in trended over time?",
       "sql_lines": [
         "SELECT transaction_date, MEASURE(avg_unit_cost_usd) AS avg_unit_cost_usd",
         "FROM {fqn}.inventory_transaction_metrics",
@@ -918,12 +918,12 @@
       ]
     },
     {
-      "question": "How has unique total transactionss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
-        "FROM {fqn}.inventory_transaction_metrics",
-        "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -936,36 +936,43 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total units on hand?",
+      "question": "Which products have the highest total unit cost?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_on_hand_units) AS total_on_hand_units",
+        "SELECT product_name, SUM(unit_cost_usd) AS total_metric",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which products have the highest total transaction quantity in units?",
+      "sql_lines": [
+        "SELECT product_name, SUM(quantity_units) AS total_quantity_units",
+        "FROM {fqn}.inventory_transactions",
+        "GROUP BY product_name",
+        "ORDER BY total_quantity_units DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which products have the highest average committed units per snapshot?",
+      "sql_lines": [
+        "SELECT product_name, MEASURE(avg_committed_units) AS avg_committed_units",
         "FROM {fqn}.inventory_snapshot_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY avg_committed_units DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What are the top product identifier by total transaction quantity in units?",
+      "question": "Which products have the highest total annualized inventory turn rate?",
       "sql_lines": [
-        "SELECT product_id, SUM(quantity_units) AS total_quantity_units",
-        "FROM {fqn}.inventory_transactions",
-        "GROUP BY product_id ORDER BY total_quantity_units DESC LIMIT 10"
-      ]
-    },
-    {
-      "question": "How many records are there per week-ending date of snapshot?",
-      "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
-        "FROM {fqn}.inventory_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
-      ]
-    },
-    {
-      "question": "How many records are there per month of kpi measurement?",
-      "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT product_name, SUM(inventory_turns) AS total_metric",
         "FROM {fqn}.inventory_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

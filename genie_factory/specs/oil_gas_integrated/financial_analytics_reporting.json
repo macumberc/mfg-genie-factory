@@ -2,8 +2,8 @@
   "company_name": "PetroLedger Corp",
   "industry": "Oil & Gas Integrated",
   "use_case": "Financial analytics and reporting for integrated oil and gas operations",
-  "space_title": "PetroLedger Corp - Financial Analytics & Reporting 💰",
-  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Financial Analytics & Reporting\n\nPetroLedger Corp — corporate financial analytics across 20 cost centers spanning Upstream, Downstream, Midstream, and Corporate divisions globally. FP&A and Controllership use this space to track revenue vs. plan, OPEX/CAPEX variance, and division-level EBITDA day-to-day; the CFO and divisional VPs use it to monitor operating margin, ROIC, OPEX per BOE, and budget adherence ahead of board and investor reporting cycles.\n\n**Key KPIs**\n- Revenue ($MM) — top-line, actual vs. planned\n- EBITDA ($MM) — earnings before interest, taxes, depreciation, amortization\n- Operating margin (%) — IOC top-quartile >20% in mid-cycle environments\n- ROIC (%) — capital efficiency; IOC target 8-12%\n- OPEX per BOE ($/BOE) — lifting cost benchmark; majors target <12 $/BOE upstream\n- Budget variance (%) — actual vs. plan at cost center / GL category\n- Total CAPEX ($MM) — capital deployed by division\n- G&A spend ($MM) — overhead trend\n\n**Data sources**\n- `financial_transactions` — daily revenue, OPEX, CAPEX, D&A, G&A by cost center and GL category\n- `budget_snapshots` — monthly planned vs. actual revenue and OPEX, plus EBITDA\n- `financial_kpi_monthly` — operating margin, ROIC, OPEX/BOE, headcount by cost center",
+  "space_title": "PetroLedger Corp - Financial Analytics & Reporting \ud83d\udcb0",
+  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Financial Analytics & Reporting\n\nPetroLedger Corp \u2014 corporate financial analytics across 20 cost centers spanning Upstream, Downstream, Midstream, and Corporate divisions globally. FP&A and Controllership use this space to track revenue vs. plan, OPEX/CAPEX variance, and division-level EBITDA day-to-day; the CFO and divisional VPs use it to monitor operating margin, ROIC, OPEX per BOE, and budget adherence ahead of board and investor reporting cycles.\n\n**Key KPIs**\n- Revenue ($MM) \u2014 top-line, actual vs. planned\n- EBITDA ($MM) \u2014 earnings before interest, taxes, depreciation, amortization\n- Operating margin (%) \u2014 IOC top-quartile >20% in mid-cycle environments\n- ROIC (%) \u2014 capital efficiency; IOC target 8-12%\n- OPEX per BOE ($/BOE) \u2014 lifting cost benchmark; majors target <12 $/BOE upstream\n- Budget variance (%) \u2014 actual vs. plan at cost center / GL category\n- Total CAPEX ($MM) \u2014 capital deployed by division\n- G&A spend ($MM) \u2014 overhead trend\n\n**Data sources**\n- `financial_transactions` \u2014 daily revenue, OPEX, CAPEX, D&A, G&A by cost center and GL category\n- `budget_snapshots` \u2014 monthly planned vs. actual revenue and OPEX, plus EBITDA\n- `financial_kpi_monthly` \u2014 operating margin, ROIC, OPEX/BOE, headcount by cost center",
   "schema_basename": "og_integrated_finance",
   "tables": [
     {
@@ -727,19 +727,19 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Financial Analytics and Reporting for an integrated oil & gas major running 20 cost centers across Upstream (GoM / Permian / Alaska / North Sea / West Africa / LNG), Downstream (refining / petchem / retail / lubricants / renewable fuels), Midstream (pipelines / NGL / marine / storage), and Corporate functions. Stakeholders include FP&A and Controllership (revenue vs. plan, variance, EBITDA), the CFO (margin, ROIC, lifting cost), and divisional VPs (cost-center performance vs. budget).\n\nMETRIC DEFINITIONS\n- Revenue / OPEX / CAPEX = amount_usd on financial_transactions, filtered by account_type\n- Operating margin = operating_margin_pct on financial_kpi_monthly; IOC top-quartile >20% mid-cycle\n- ROIC = roic_pct on financial_kpi_monthly; IOC target 8-12% through the cycle\n- OPEX/BOE = opex_per_boe on financial_kpi_monthly; majors target <12 USD/BOE upstream lifting cost\n- EBITDA = ebitda_usd on budget_snapshots\n- Budget variance = (actual - planned) / planned on budget_snapshots (revenue or opex)\n- GL categories = Production / Exploration / Refining / Marketing / Transportation / Admin\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - financial_transactions_metrics (source: financial_transactions) — dims: transaction_date, cost_center_id, division, region, account_type, gl_category; measures: total_amount_usd, total_budget_usd, total_transactions, avg_transaction_usd, max_amount.\n  - budget_snapshots_metrics (source: budget_snapshots) — dims: snapshot_month, cost_center_id, division, region; measures: total_actual_revenue, total_planned_revenue, total_actual_opex, total_ebitda, total_planned_opex, max_planned_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. cost_center_name, operating_margin_pct, roic_pct, opex_per_boe, headcount).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Financial Analytics and Reporting for an integrated oil & gas major running 20 cost centers across Upstream (GoM / Permian / Alaska / North Sea / West Africa / LNG), Downstream (refining / petchem / retail / lubricants / renewable fuels), Midstream (pipelines / NGL / marine / storage), and Corporate functions. Stakeholders include FP&A and Controllership (revenue vs. plan, variance, EBITDA), the CFO (margin, ROIC, lifting cost), and divisional VPs (cost-center performance vs. budget).\n\nMETRIC DEFINITIONS\n- Revenue / OPEX / CAPEX = amount_usd on financial_transactions, filtered by account_type\n- Operating margin = operating_margin_pct on financial_kpi_monthly; IOC top-quartile >20% mid-cycle\n- ROIC = roic_pct on financial_kpi_monthly; IOC target 8-12% through the cycle\n- OPEX/BOE = opex_per_boe on financial_kpi_monthly; majors target <12 USD/BOE upstream lifting cost\n- EBITDA = ebitda_usd on budget_snapshots\n- Budget variance = (actual - planned) / planned on budget_snapshots (revenue or opex)\n- GL categories = Production / Exploration / Refining / Marketing / Transportation / Admin\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - financial_transactions_metrics (source: financial_transactions) \u2014 dims: transaction_date, cost_center_id, division, region, account_type, gl_category; measures: total_amount_usd, total_budget_usd, total_transactions, avg_transaction_usd, max_amount.\n  - budget_snapshots_metrics (source: budget_snapshots) \u2014 dims: snapshot_month, cost_center_id, division, region; measures: total_actual_revenue, total_planned_revenue, total_actual_opex, total_ebitda, total_planned_opex, max_planned_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. cost_center_name, operating_margin_pct, roic_pct, opex_per_boe, headcount).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 cost centers by total actual revenue this year.",
     "Show monthly EBITDA by division for the trailing 12 months.",
     "Which cost centers are over budget on OPEX, and by what percentage?",
     "What is operating margin by division for the most recent quarter?",
-    "Top 10 cost centers by ROIC — and how does Upstream compare to Downstream?",
+    "Top 10 cost centers by ROIC \u2014 and how does Upstream compare to Downstream?",
     "How has OPEX per BOE trended month-over-month across the Upstream division?",
     "What is total revenue variance percent (actual vs. planned) by region for the trailing 12 months?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in total transaction amount in usd?",
+      "question": "How has total transaction amount in trended over time?",
       "sql_lines": [
         "SELECT transaction_date, MEASURE(total_amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions_metrics",
@@ -748,7 +748,7 @@
       ]
     },
     {
-      "question": "How has total budgeted amount in usd changed over time?",
+      "question": "How has total budget trended over time?",
       "sql_lines": [
         "SELECT transaction_date, MEASURE(total_budget_usd) AS total_budget_usd",
         "FROM {fqn}.financial_transactions_metrics",
@@ -757,7 +757,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total planned revenue in usd?",
+      "question": "How has total planned revenue trended over time?",
       "sql_lines": [
         "SELECT snapshot_month, MEASURE(total_planned_revenue) AS total_planned_revenue",
         "FROM {fqn}.budget_snapshots_metrics",
@@ -766,19 +766,21 @@
       ]
     },
     {
-      "question": "What is the trend of total transaction amount in usd over time?",
+      "question": "How has total transaction amount in trended over time?",
       "sql_lines": [
         "SELECT transaction_date, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
-        "GROUP BY transaction_date ORDER BY transaction_date"
+        "GROUP BY transaction_date",
+        "ORDER BY transaction_date"
       ]
     },
     {
-      "question": "What is the trend of total planned monthly revenue in usd over time?",
+      "question": "How has total planned monthly revenue in trended over time?",
       "sql_lines": [
         "SELECT snapshot_month, SUM(planned_revenue_usd) AS total_planned_revenue_usd",
         "FROM {fqn}.budget_snapshots",
-        "GROUP BY snapshot_month ORDER BY snapshot_month"
+        "GROUP BY snapshot_month",
+        "ORDER BY snapshot_month"
       ]
     },
     {
@@ -790,12 +792,12 @@
       ]
     },
     {
-      "question": "How has unique total transactionss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
-        "FROM {fqn}.financial_transactions_metrics",
-        "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     }
   ],
@@ -901,12 +903,12 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in unique total transactionss?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_transactions) AS total_transactions",
-        "FROM {fqn}.financial_transactions_metrics",
-        "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.financial_transactions",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -919,7 +921,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest planned revenue?",
+      "question": "What has been the peak planned_revenue each month?",
       "sql_lines": [
         "SELECT snapshot_month, MEASURE(max_planned_revenue) AS max_planned_revenue",
         "FROM {fqn}.budget_snapshots_metrics",
@@ -928,7 +930,7 @@
       ]
     },
     {
-      "question": "How has total actual revenue in usd changed over time?",
+      "question": "How has total actual revenue trended over time?",
       "sql_lines": [
         "SELECT snapshot_month, MEASURE(total_actual_revenue) AS total_actual_revenue",
         "FROM {fqn}.budget_snapshots_metrics",
@@ -937,27 +939,33 @@
       ]
     },
     {
-      "question": "What are the top cost center identifier by total transaction amount in usd?",
+      "question": "Which cost centers have the highest total transaction amount?",
       "sql_lines": [
-        "SELECT cost_center_id, SUM(amount_usd) AS total_amount_usd",
+        "SELECT cost_center_name, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
-        "GROUP BY cost_center_id ORDER BY total_amount_usd DESC LIMIT 10"
+        "GROUP BY cost_center_name",
+        "ORDER BY total_amount_usd DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per first day of the snapshot month?",
+      "question": "Which cost centers have the highest total actual revenue?",
       "sql_lines": [
-        "SELECT snapshot_month, COUNT(*) AS record_count",
-        "FROM {fqn}.budget_snapshots",
-        "GROUP BY snapshot_month ORDER BY snapshot_month"
+        "SELECT cost_center_name, MEASURE(total_actual_revenue) AS total_actual_revenue",
+        "FROM {fqn}.budget_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_actual_revenue DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per first day of the kpi month?",
+      "question": "Which divisions have the highest average operating margin percentage?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT division, AVG(operating_margin_pct) AS avg_metric",
         "FROM {fqn}.financial_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

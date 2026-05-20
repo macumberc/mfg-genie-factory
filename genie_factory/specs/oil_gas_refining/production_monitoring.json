@@ -2,8 +2,8 @@
   "company_name": "RefineOps Central",
   "industry": "Oil & Gas Refining",
   "use_case": "Production monitoring and throughput optimization for refinery operations",
-  "space_title": "RefineOps Central - Production Monitoring 📊",
-  "space_description": "**Subindustry:** Oil & Gas Refining\n\n**Use case:** Production Monitoring & Throughput Optimization\n\nRefineOps Central — production and throughput analytics across 20 process units spanning Primary (Crude/Vacuum), Conversion (FCC, Hydrocracker, Reformer, Alkylation, Coker), Treating, Blending, Gas Processing, and Utilities. Refinery Managers and COOs use this space to drive utilization toward the 92%+ top-quartile mechanical utilization benchmark, lift conversion-unit yields, and convert unplanned downtime hours into actionable maintenance and ops decisions. Operations Planning uses it to balance hydrocracker severity against margin per barrel.\n\n**Key KPIs**\n- Unit utilization (%) — top-quartile refiners run 92%+ mechanical utilization\n- Throughput (BPD) by unit and refinery section\n- Product yield (%) — FCC gasoline 50%+, hydrocracker distillate 60%+\n- Mechanical availability (%) — target >96%\n- Energy intensity (BTU/bbl)\n- Gross margin and OPEX per barrel\n- Unplanned downtime hours by section\n- Feed quality (API gravity) impact on conversion yield\n\n**Data sources**\n- `throughput_readings` — daily unit throughput, utilization, yield, feed quality, run status\n- `production_snapshots` — weekly product output, downtime, energy intensity\n- `throughput_kpi_monthly` — monthly availability, gross margin per bbl, OPEX per bbl",
+  "space_title": "RefineOps Central - Production Monitoring \ud83d\udcca",
+  "space_description": "**Subindustry:** Oil & Gas Refining\n\n**Use case:** Production Monitoring & Throughput Optimization\n\nRefineOps Central \u2014 production and throughput analytics across 20 process units spanning Primary (Crude/Vacuum), Conversion (FCC, Hydrocracker, Reformer, Alkylation, Coker), Treating, Blending, Gas Processing, and Utilities. Refinery Managers and COOs use this space to drive utilization toward the 92%+ top-quartile mechanical utilization benchmark, lift conversion-unit yields, and convert unplanned downtime hours into actionable maintenance and ops decisions. Operations Planning uses it to balance hydrocracker severity against margin per barrel.\n\n**Key KPIs**\n- Unit utilization (%) \u2014 top-quartile refiners run 92%+ mechanical utilization\n- Throughput (BPD) by unit and refinery section\n- Product yield (%) \u2014 FCC gasoline 50%+, hydrocracker distillate 60%+\n- Mechanical availability (%) \u2014 target >96%\n- Energy intensity (BTU/bbl)\n- Gross margin and OPEX per barrel\n- Unplanned downtime hours by section\n- Feed quality (API gravity) impact on conversion yield\n\n**Data sources**\n- `throughput_readings` \u2014 daily unit throughput, utilization, yield, feed quality, run status\n- `production_snapshots` \u2014 weekly product output, downtime, energy intensity\n- `throughput_kpi_monthly` \u2014 monthly availability, gross margin per bbl, OPEX per bbl",
   "schema_basename": "og_refining_production",
   "tables": [
     {
@@ -690,7 +690,7 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Production Monitoring across the full refinery flow: Primary (CDU/VDU), Conversion (FCC, Hydrocracker, Reformer, Alkylation, Coker), Treating, Blending, Gas Processing, and Utilities. Stakeholders include the Refinery Manager / COO (throughput, utilization, availability), Operations Planning (yield and severity tradeoffs), and the CFO (margin and OPEX per barrel).\n\nMETRIC DEFINITIONS\n- Utilization = utilization_pct; refining industry top-quartile mechanical utilization is 92%+\n- Mechanical availability = availability_pct on throughput_kpi_monthly; world-class target >96%\n- Yield = yield_pct; FCC gasoline yield 45-55%, hydrocracker distillate yield 60-75%, reformate yield ~85%\n- Throughput = throughput_bpd at unit level; CDU capacity defines refinery nameplate\n- Energy intensity = energy_intensity_btu_bbl; lower is better, ~80k-120k BTU/bbl is competitive\n- Gross margin = gross_margin_per_bbl; varies with crude slate and product mix, $5-$15/bbl typical\n- OPEX = opex_per_bbl; world-class refiners run $3-$5/bbl ex-energy\n- Feed API = feed_quality_api; lighter crudes (>32 API) yield more gasoline; heavier (<25 API) drives coker and hydrocracker loads\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - throughput_readings_metrics (source: throughput_readings) — dims: reading_date, unit_id, refinery_section, product_stream, status; measures: avg_throughput_bpd, avg_utilization_pct, avg_yield_pct, total_readings, total_feed_quality_api, max_throughput_bpd.\n  - production_snapshots_metrics (source: production_snapshots) — dims: snapshot_date, unit_id, refinery_section; measures: total_product_bbl, total_downtime_hours, avg_energy_intensity, avg_throughput, total_avg_utilization_percent, max_avg_throughput_bpd.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. unit_name, feed_quality_api at row level, availability_pct, gross_margin_per_bbl, opex_per_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Production Monitoring across the full refinery flow: Primary (CDU/VDU), Conversion (FCC, Hydrocracker, Reformer, Alkylation, Coker), Treating, Blending, Gas Processing, and Utilities. Stakeholders include the Refinery Manager / COO (throughput, utilization, availability), Operations Planning (yield and severity tradeoffs), and the CFO (margin and OPEX per barrel).\n\nMETRIC DEFINITIONS\n- Utilization = utilization_pct; refining industry top-quartile mechanical utilization is 92%+\n- Mechanical availability = availability_pct on throughput_kpi_monthly; world-class target >96%\n- Yield = yield_pct; FCC gasoline yield 45-55%, hydrocracker distillate yield 60-75%, reformate yield ~85%\n- Throughput = throughput_bpd at unit level; CDU capacity defines refinery nameplate\n- Energy intensity = energy_intensity_btu_bbl; lower is better, ~80k-120k BTU/bbl is competitive\n- Gross margin = gross_margin_per_bbl; varies with crude slate and product mix, $5-$15/bbl typical\n- OPEX = opex_per_bbl; world-class refiners run $3-$5/bbl ex-energy\n- Feed API = feed_quality_api; lighter crudes (>32 API) yield more gasoline; heavier (<25 API) drives coker and hydrocracker loads\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - throughput_readings_metrics (source: throughput_readings) \u2014 dims: reading_date, unit_id, refinery_section, product_stream, status; measures: avg_throughput_bpd, avg_utilization_pct, avg_yield_pct, total_readings, total_feed_quality_api, max_throughput_bpd.\n  - production_snapshots_metrics (source: production_snapshots) \u2014 dims: snapshot_date, unit_id, refinery_section; measures: total_product_bbl, total_downtime_hours, avg_energy_intensity, avg_throughput, total_avg_utilization_percent, max_avg_throughput_bpd.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. unit_name, feed_quality_api at row level, availability_pct, gross_margin_per_bbl, opex_per_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 process units by total product output (barrels) over the last 12 months.",
     "Show monthly trend of average unit utilization for the trailing 12 months.",
@@ -711,7 +711,7 @@
       ]
     },
     {
-      "question": "How has average throughput bpd changed over time?",
+      "question": "How has average average throughput barrels per day trended by month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
         "FROM {fqn}.throughput_readings_metrics",
@@ -720,11 +720,11 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total downtime hours?",
+      "question": "How has average downtime hours in period trended over time?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(total_downtime_hours) AS total_downtime_hours",
-        "FROM {fqn}.production_snapshots_metrics",
-        "GROUP BY ALL",
+        "SELECT snapshot_date, AVG(downtime_hours) AS avg_downtime_hours",
+        "FROM {fqn}.production_snapshots",
+        "GROUP BY snapshot_date",
         "ORDER BY snapshot_date"
       ]
     },
@@ -737,28 +737,30 @@
       ]
     },
     {
-      "question": "What is the trend of total average throughput bpd over time?",
+      "question": "How has average average throughput barrels per day trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, SUM(avg_throughput_bpd) AS total_avg_throughput_bpd",
+        "SELECT snapshot_date, AVG(avg_throughput_bpd) AS total_avg_throughput_bpd",
         "FROM {fqn}.production_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
-      "question": "How has the average unit availability pct changed over time?",
+      "question": "How has average unit availability percentage trended by month?",
       "sql_lines": [
         "SELECT kpi_month, AVG(availability_pct) AS avg_availability_pct",
         "FROM {fqn}.throughput_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY kpi_month",
+        "ORDER BY kpi_month"
       ]
     },
     {
-      "question": "How has unique total readingss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
-        "FROM {fqn}.throughput_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.throughput_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     }
   ],
@@ -854,34 +856,34 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in unique total readingss?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_readings) AS total_readings",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.throughput_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
+      ]
+    },
+    {
+      "question": "How has average throughput in barrels per day trended by month?",
+      "sql_lines": [
+        "SELECT reading_date, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
         "ORDER BY reading_date"
       ]
     },
     {
-      "question": "How has highest throughput bpd changed over time?",
+      "question": "How has average throughput barrels per day trended by month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_throughput_bpd) AS max_throughput_bpd",
-        "FROM {fqn}.throughput_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
-      ]
-    },
-    {
-      "question": "What is the monthly trend in highest avg throughput bpd?",
-      "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_avg_throughput_bpd) AS max_avg_throughput_bpd",
+        "SELECT snapshot_date, MEASURE(avg_throughput) AS avg_throughput",
         "FROM {fqn}.production_snapshots_metrics",
         "GROUP BY ALL",
         "ORDER BY snapshot_date"
       ]
     },
     {
-      "question": "How has total product output bbl changed over time?",
+      "question": "How has total total product output in barrels trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(total_product_bbl) AS total_product_bbl",
         "FROM {fqn}.production_snapshots_metrics",
@@ -898,19 +900,23 @@
       ]
     },
     {
-      "question": "What is the average average utilization pct by process unit name?",
+      "question": "Which process units have the best average utilization percentage?",
       "sql_lines": [
         "SELECT unit_name, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
         "FROM {fqn}.production_snapshots",
-        "GROUP BY unit_name ORDER BY avg_avg_utilization_pct DESC"
+        "GROUP BY unit_name",
+        "ORDER BY avg_avg_utilization_pct DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per kpi month?",
+      "question": "Which sections have the highest average unit availability percentage?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT refinery_section, AVG(availability_pct) AS avg_metric",
         "FROM {fqn}.throughput_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

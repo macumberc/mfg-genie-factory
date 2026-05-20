@@ -2,8 +2,8 @@
   "company_name": "FoodPlan Analytics",
   "industry": "Food & Beverage",
   "use_case": "Scenario planning and business simulation for food product portfolios",
-  "space_title": "FoodPlan Analytics - Scenario Planning & Simulation 🎯",
-  "space_description": "**Subindustry:** Food & Beverage\n\n**Use case:** Scenario Planning & Business Simulation\n\nFoodPlan Analytics — portfolio scenario planning and pricing simulation across 20 product categories, multiple consumer segments, and retail/foodservice/e-commerce channels. S&OP and Revenue Growth Management teams use this space to stress-test COGS inflation, demand elasticity, and competitive pressure week-to-week; the VP of Strategy and CFO use it to allocate investment, quantify revenue-at-risk, and rank optimal price moves heading into the annual operating plan.\n\n**Key KPIs**\n- Total simulated revenue ($) — top-line under each scenario set\n- Average simulated margin (%) — contribution margin after COGS shocks\n- Revenue at risk ($) — downside exposure across disruption scenarios\n- Optimal price change (%) — RGM recommendation; CPG elasticity typically -0.3 to -0.6\n- Confidence level (%) — statistical confidence on outcome bands\n- Invest count — categories flagged Invest investment priority\n- Disruption scenario count — adverse runs in the trailing period\n- Market share (%) — competitive position by segment / channel\n\n**Data sources**\n- `product_categories` — daily simulation runs with scenario type, simulated revenue, margin, price change\n- `scenario_runs` — weekly market conditions with input cost index, consumer sentiment, competitive pressure, elasticity\n- `market_snapshots` — monthly outcomes with expected revenue, revenue-at-risk, optimal price change, investment priority",
+  "space_title": "FoodPlan Analytics - Scenario Planning & Simulation \ud83c\udfaf",
+  "space_description": "**Subindustry:** Food & Beverage\n\n**Use case:** Scenario Planning & Business Simulation\n\nFoodPlan Analytics \u2014 portfolio scenario planning and pricing simulation across 20 product categories, multiple consumer segments, and retail/foodservice/e-commerce channels. S&OP and Revenue Growth Management teams use this space to stress-test COGS inflation, demand elasticity, and competitive pressure week-to-week; the VP of Strategy and CFO use it to allocate investment, quantify revenue-at-risk, and rank optimal price moves heading into the annual operating plan.\n\n**Key KPIs**\n- Total simulated revenue ($) \u2014 top-line under each scenario set\n- Average simulated margin (%) \u2014 contribution margin after COGS shocks\n- Revenue at risk ($) \u2014 downside exposure across disruption scenarios\n- Optimal price change (%) \u2014 RGM recommendation; CPG elasticity typically -0.3 to -0.6\n- Confidence level (%) \u2014 statistical confidence on outcome bands\n- Invest count \u2014 categories flagged Invest investment priority\n- Disruption scenario count \u2014 adverse runs in the trailing period\n- Market share (%) \u2014 competitive position by segment / channel\n\n**Data sources**\n- `product_categories` \u2014 daily simulation runs with scenario type, simulated revenue, margin, price change\n- `scenario_runs` \u2014 weekly market conditions with input cost index, consumer sentiment, competitive pressure, elasticity\n- `market_snapshots` \u2014 monthly outcomes with expected revenue, revenue-at-risk, optimal price change, investment priority",
   "schema_basename": "fb_scenario_planning",
   "tables": [
     {
@@ -811,24 +811,24 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Scenario Planning & Business Simulation for a multi-category food & beverage portfolio under COGS volatility (commodity inflation, labor, freight), shifting consumer sentiment, and competitive pricing pressure. Stakeholders include the S&OP and Revenue Growth Management leaders (price simulation, demand elasticity), the VP of Strategy (portfolio mix, investment priority), and the CFO (revenue at risk, contribution margin). Scenario_type is Base / Optimistic / Pessimistic / Disruption; investment_priority is Invest / Maintain / Harvest / Divest (BCG growth-share matrix).\n\nMETRIC DEFINITIONS\n- Total simulated revenue = SUM(simulated_revenue_usd); top-line across scenario runs\n- Avg simulated margin = AVG(simulated_margin_pct); CPG healthy contribution margin 25-40%\n- Revenue at risk = SUM(revenue_at_risk_usd); downside scenario exposure\n- Optimal price change = AVG(optimal_price_change_pct); CPG elasticity typically -0.3 to -0.6 (10% price rise → 3-6% volume loss)\n- Confidence level = AVG(confidence_level_pct); statistical band 70-95%\n- Invest count = COUNT(investment_priority = 'Invest')\n- Disruption count = COUNT(scenario_type='Disruption')\n- Market share = AVG(market_share_pct) on scenario_runs\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - scenario_kpi_monthly (source: product_categories) — dims: run_date, segment, channel, scenario_type; measures: avg_simulated_revenue, avg_simulated_margin, total_simulated_revenue, run_count, disruption_count, total_price_change_percent, unique_category_count, max_simulated_revenue.\n  - portfolio_kpi_monthly (source: market_snapshots) — dims: outcome_month, segment, channel, investment_priority; measures: total_expected_revenue, total_revenue_at_risk, avg_optimal_price_change, avg_confidence, invest_count, unique_category_count, max_expected_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. category_id, category_name, input_cost_index, consumer_sentiment_index, demand_elasticity).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Scenario Planning & Business Simulation for a multi-category food & beverage portfolio under COGS volatility (commodity inflation, labor, freight), shifting consumer sentiment, and competitive pricing pressure. Stakeholders include the S&OP and Revenue Growth Management leaders (price simulation, demand elasticity), the VP of Strategy (portfolio mix, investment priority), and the CFO (revenue at risk, contribution margin). Scenario_type is Base / Optimistic / Pessimistic / Disruption; investment_priority is Invest / Maintain / Harvest / Divest (BCG growth-share matrix).\n\nMETRIC DEFINITIONS\n- Total simulated revenue = SUM(simulated_revenue_usd); top-line across scenario runs\n- Avg simulated margin = AVG(simulated_margin_pct); CPG healthy contribution margin 25-40%\n- Revenue at risk = SUM(revenue_at_risk_usd); downside scenario exposure\n- Optimal price change = AVG(optimal_price_change_pct); CPG elasticity typically -0.3 to -0.6 (10% price rise \u2192 3-6% volume loss)\n- Confidence level = AVG(confidence_level_pct); statistical band 70-95%\n- Invest count = COUNT(investment_priority = 'Invest')\n- Disruption count = COUNT(scenario_type='Disruption')\n- Market share = AVG(market_share_pct) on scenario_runs\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - scenario_kpi_monthly (source: product_categories) \u2014 dims: run_date, segment, channel, scenario_type; measures: avg_simulated_revenue, avg_simulated_margin, total_simulated_revenue, run_count, disruption_count, total_price_change_percent, unique_category_count, max_simulated_revenue.\n  - portfolio_kpi_monthly (source: market_snapshots) \u2014 dims: outcome_month, segment, channel, investment_priority; measures: total_expected_revenue, total_revenue_at_risk, avg_optimal_price_change, avg_confidence, invest_count, unique_category_count, max_expected_revenue.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. category_id, category_name, input_cost_index, consumer_sentiment_index, demand_elasticity).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show the monthly trend in total revenue at risk across all segments for the trailing 12 months.",
-    "Top 10 categories by expected revenue under base scenarios — what is the optimal price change for each?",
+    "Top 10 categories by expected revenue under base scenarios \u2014 what is the optimal price change for each?",
     "Which channels show the highest disruption count, and how does that affect average simulated margin?",
     "How has total simulated revenue trended month-over-month across consumer segments?",
-    "Top 10 categories flagged Invest investment priority — what is the projected revenue uplift?",
+    "Top 10 categories flagged Invest investment priority \u2014 what is the projected revenue uplift?",
     "Which segments have the highest demand elasticity (most price-sensitive), and what are the recommended price moves?",
     "What is the monthly trend in average simulated margin, and which scenario types are pulling it down?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique categorys?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(unique_category_count) AS unique_category_count",
-        "FROM {fqn}.scenario_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY run_date"
+        "SELECT DATE_TRUNC('month', run_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.product_categories",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -841,7 +841,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest expected revenue?",
+      "question": "What has been the peak expected_revenue each month?",
       "sql_lines": [
         "SELECT outcome_month, MEASURE(max_expected_revenue) AS max_expected_revenue",
         "FROM {fqn}.portfolio_kpi_monthly",
@@ -859,11 +859,12 @@
       ]
     },
     {
-      "question": "What is the trend of total simulated revenue usd over time?",
+      "question": "How has total simulated revenue trended over time?",
       "sql_lines": [
         "SELECT run_date, SUM(simulated_revenue_usd) AS total_simulated_revenue_usd",
         "FROM {fqn}.product_categories",
-        "GROUP BY run_date ORDER BY run_date"
+        "GROUP BY run_date",
+        "ORDER BY run_date"
       ]
     },
     {
@@ -875,11 +876,12 @@
       ]
     },
     {
-      "question": "How has the average recommended price change pct changed over time?",
+      "question": "How has average recommended price change percentage trended by month?",
       "sql_lines": [
         "SELECT outcome_month, AVG(optimal_price_change_pct) AS avg_optimal_price_change_pct",
         "FROM {fqn}.market_snapshots",
-        "GROUP BY outcome_month ORDER BY outcome_month"
+        "GROUP BY outcome_month",
+        "ORDER BY outcome_month"
       ]
     }
   ],
@@ -982,12 +984,12 @@
       ]
     },
     {
-      "question": "How has unique runs changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(run_count) AS run_count",
-        "FROM {fqn}.scenario_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY run_date"
+        "SELECT DATE_TRUNC('month', run_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.product_categories",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -1000,36 +1002,43 @@
       ]
     },
     {
-      "question": "How has unique categorys changed over time?",
+      "question": "Which categorys have the highest total simulated revenue?",
       "sql_lines": [
-        "SELECT outcome_month, MEASURE(unique_category_count) AS unique_category_count",
-        "FROM {fqn}.portfolio_kpi_monthly",
-        "GROUP BY ALL",
-        "ORDER BY outcome_month"
-      ]
-    },
-    {
-      "question": "What are the top category id by total simulated revenue usd?",
-      "sql_lines": [
-        "SELECT category_id, SUM(simulated_revenue_usd) AS total_simulated_revenue_usd",
+        "SELECT category_name, SUM(simulated_revenue_usd) AS total_metric",
         "FROM {fqn}.product_categories",
-        "GROUP BY category_id ORDER BY total_simulated_revenue_usd DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What is the average input cost index (100=baseline) by segment?",
+      "question": "Which segments have the best average simulated margin 0-100?",
+      "sql_lines": [
+        "SELECT segment, AVG(simulated_margin_pct) AS avg_metric",
+        "FROM {fqn}.product_categories",
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which segments have the highest average input cost index?",
       "sql_lines": [
         "SELECT segment, AVG(input_cost_index) AS avg_input_cost_index",
         "FROM {fqn}.scenario_runs",
-        "GROUP BY segment ORDER BY avg_input_cost_index DESC"
+        "GROUP BY segment",
+        "ORDER BY avg_input_cost_index DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per outcome month?",
+      "question": "Which segments have the highest average optimal price change?",
       "sql_lines": [
-        "SELECT outcome_month, COUNT(*) AS record_count",
-        "FROM {fqn}.market_snapshots",
-        "GROUP BY outcome_month ORDER BY outcome_month"
+        "SELECT segment, MEASURE(avg_optimal_price_change) AS avg_optimal_price_change",
+        "FROM {fqn}.portfolio_kpi_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_optimal_price_change DESC",
+        "LIMIT 10"
       ]
     }
   ]

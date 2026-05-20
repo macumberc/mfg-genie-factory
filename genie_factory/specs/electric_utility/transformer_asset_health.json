@@ -2,8 +2,8 @@
   "company_name": "GridGuard Utilities",
   "industry": "Electric Utility",
   "use_case": "Transformer asset health monitoring and failure prediction",
-  "space_title": "GridGuard Utilities - Transformer Asset Health ⚡",
-  "space_description": "**Subindustry:** Electric Utility\n\n**Use case:** Transformer Asset Health & Failure Prediction\n\nGridGuard Utilities — power transformer fleet analytics across 20 assets and 12 substations spanning 69kV–345kV. Asset managers and substation engineers use this space day-to-day to triage DGA alerts, oil temperature excursions, and load-driven thermal stress; T&D VPs and CFOs use it to rank replacement candidates by remaining useful life, forecast maintenance spend, and quantify reliability exposure tied to aging critical assets.\n\n**Key KPIs**\n- Transformer health index (0-100) — composite score; <50 triggers inspection, <30 replacement review\n- Dissolved gas (ppm) — IEEE C57.104 thresholds: >500 ppm Watch, >1000 ppm Warning, >2500 ppm Critical\n- Top oil temperature (°C) — sustained >95°C accelerates insulation aging (Arrhenius)\n- Load factor (% of rated capacity) — >100% triggers loss-of-life concerns\n- Critical alert count — operational backlog for asset engineering\n- Forecasted maintenance cost ($) — 12-month capex/opex planning input\n- Remaining useful life (years) — drives replacement prioritization\n- Total repair cost & customer-minutes — reliability $ exposure per event\n\n**Data sources**\n- `sensor_readings` — daily DGA, oil temp, load %, vibration, health index, alert level per transformer\n- `failure_events` — failure / corrective / preventive event log with root cause, outage hours, repair cost, customers affected\n- `health_monthly` — monthly per-asset rollup: avg health, failures, forecasted maintenance, remaining life, risk tier",
+  "space_title": "GridGuard Utilities - Transformer Asset Health \u26a1",
+  "space_description": "**Subindustry:** Electric Utility\n\n**Use case:** Transformer Asset Health & Failure Prediction\n\nGridGuard Utilities \u2014 power transformer fleet analytics across 20 assets and 12 substations spanning 69kV\u2013345kV. Asset managers and substation engineers use this space day-to-day to triage DGA alerts, oil temperature excursions, and load-driven thermal stress; T&D VPs and CFOs use it to rank replacement candidates by remaining useful life, forecast maintenance spend, and quantify reliability exposure tied to aging critical assets.\n\n**Key KPIs**\n- Transformer health index (0-100) \u2014 composite score; <50 triggers inspection, <30 replacement review\n- Dissolved gas (ppm) \u2014 IEEE C57.104 thresholds: >500 ppm Watch, >1000 ppm Warning, >2500 ppm Critical\n- Top oil temperature (\u00b0C) \u2014 sustained >95\u00b0C accelerates insulation aging (Arrhenius)\n- Load factor (% of rated capacity) \u2014 >100% triggers loss-of-life concerns\n- Critical alert count \u2014 operational backlog for asset engineering\n- Forecasted maintenance cost ($) \u2014 12-month capex/opex planning input\n- Remaining useful life (years) \u2014 drives replacement prioritization\n- Total repair cost & customer-minutes \u2014 reliability $ exposure per event\n\n**Data sources**\n- `sensor_readings` \u2014 daily DGA, oil temp, load %, vibration, health index, alert level per transformer\n- `failure_events` \u2014 failure / corrective / preventive event log with root cause, outage hours, repair cost, customers affected\n- `health_monthly` \u2014 monthly per-asset rollup: avg health, failures, forecasted maintenance, remaining life, risk tier",
   "schema_basename": "utility_transformer_health",
   "tables": [
     {
@@ -856,11 +856,11 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports transformer asset health and failure prediction for an electric utility operating 20 transformers across 12 substations. Stakeholders include the T&D VP (reliability exposure), Asset Management (replacement prioritization, RUL), Substation Engineering (DGA / thermal alerts), and Finance (repair spend, forecasted maintenance budget).\n\nMETRIC DEFINITIONS\n- Health index = health_index (0-100; <50 = inspect, <30 = replace candidate)\n- Dissolved gas = dissolved_gas_ppm; IEEE C57.104: <500 Normal, 500-1000 Watch, 1000-2500 Warning, >2500 Critical\n- Top oil temperature = oil_temp_celsius; sustained >95°C drives insulation loss-of-life (Arrhenius doubling per 7-8°C)\n- Transformer load = load_pct of nameplate; >100% accelerates aging\n- Critical alert count = sensor_readings with alert_level = 'Critical'\n- Forecasted maintenance cost = forecasted_maintenance_cost_usd (next-quarter projection)\n- Remaining useful life = remaining_useful_life_years from health_monthly\n- Repair cost / outage hours / customers affected = financial and reliability impact per failure_events row\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - sensor_readings_metrics (source: sensor_readings) — dims: reading_date, substation, voltage_class, alert_level; measures: avg_health_index, avg_oil_temp, max_dissolved_gas_ppm, avg_load_pct, critical_alert_count, reading_count, total_vibration_mm_s, unique_transformer_count, max_oil_temp_celsius.\n  - failure_events_metrics (source: failure_events) — dims: event_date, substation, voltage_class, event_type, root_cause; measures: total_failure_events, total_repair_cost_usd, avg_outage_hours, total_customers_affected, total_event_count, unique_transformer_count, max_outage_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. transformer_id, transformer_name, remaining_useful_life_years, forecasted_maintenance_cost_usd, risk_tier).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports transformer asset health and failure prediction for an electric utility operating 20 transformers across 12 substations. Stakeholders include the T&D VP (reliability exposure), Asset Management (replacement prioritization, RUL), Substation Engineering (DGA / thermal alerts), and Finance (repair spend, forecasted maintenance budget).\n\nMETRIC DEFINITIONS\n- Health index = health_index (0-100; <50 = inspect, <30 = replace candidate)\n- Dissolved gas = dissolved_gas_ppm; IEEE C57.104: <500 Normal, 500-1000 Watch, 1000-2500 Warning, >2500 Critical\n- Top oil temperature = oil_temp_celsius; sustained >95\u00b0C drives insulation loss-of-life (Arrhenius doubling per 7-8\u00b0C)\n- Transformer load = load_pct of nameplate; >100% accelerates aging\n- Critical alert count = sensor_readings with alert_level = 'Critical'\n- Forecasted maintenance cost = forecasted_maintenance_cost_usd (next-quarter projection)\n- Remaining useful life = remaining_useful_life_years from health_monthly\n- Repair cost / outage hours / customers affected = financial and reliability impact per failure_events row\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - sensor_readings_metrics (source: sensor_readings) \u2014 dims: reading_date, substation, voltage_class, alert_level; measures: avg_health_index, avg_oil_temp, max_dissolved_gas_ppm, avg_load_pct, critical_alert_count, reading_count, total_vibration_mm_s, unique_transformer_count, max_oil_temp_celsius.\n  - failure_events_metrics (source: failure_events) \u2014 dims: event_date, substation, voltage_class, event_type, root_cause; measures: total_failure_events, total_repair_cost_usd, avg_outage_hours, total_customers_affected, total_event_count, unique_transformer_count, max_outage_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. transformer_id, transformer_name, remaining_useful_life_years, forecasted_maintenance_cost_usd, risk_tier).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Which 10 transformers have the lowest average health index over the last 90 days?",
     "Show monthly trend of critical alert count by substation for the trailing 12 months.",
-    "Top 10 transformers by maximum dissolved gas reading — which are above the 1000 ppm Warning threshold?",
+    "Top 10 transformers by maximum dissolved gas reading \u2014 which are above the 1000 ppm Warning threshold?",
     "What is total repair cost and customers affected by root cause for the trailing 12 months?",
     "Which transformers have the lowest remaining useful life, and what is the forecasted maintenance cost for each?",
     "How has average oil temperature trended month-over-month for 345kV assets during summer months?",
@@ -868,12 +868,12 @@
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique transformers?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(unique_transformer_count) AS unique_transformer_count",
-        "FROM {fqn}.sensor_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -920,11 +920,13 @@
       ]
     },
     {
-      "question": "How has the average average health index for the month (0-100) changed over time?",
+      "question": "Which substations have the highest average transformer health index?",
       "sql_lines": [
-        "SELECT report_month, AVG(avg_health_index) AS avg_avg_health_index",
-        "FROM {fqn}.health_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "SELECT substation, AVG(health_index) AS avg_health",
+        "FROM {fqn}.transformer_snapshots",
+        "GROUP BY substation",
+        "ORDER BY avg_health DESC",
+        "LIMIT 10"
       ]
     }
   ],
@@ -1037,12 +1039,12 @@
       ]
     },
     {
-      "question": "How has unique readings changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(reading_count) AS reading_count",
-        "FROM {fqn}.sensor_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -1055,36 +1057,43 @@
       ]
     },
     {
-      "question": "How has unique total events changed over time?",
+      "question": "Which transformer have the best average top oil temperature in celsius?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_event_count) AS total_event_count",
+        "SELECT transformer_name, AVG(oil_temp_celsius) AS avg_metric",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY avg_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which substation where transformer is installeds have the highest total total dissolved gas in oil?",
+      "sql_lines": [
+        "SELECT substation, SUM(dissolved_gas_ppm) AS total_metric",
+        "FROM {fqn}.sensor_readings",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which substations have the highest average outage duration in hours?",
+      "sql_lines": [
+        "SELECT substation, MEASURE(avg_outage_hours) AS avg_outage_hours",
         "FROM {fqn}.failure_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY avg_outage_hours DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "What are the top transformer asset identifier by total top oil temperature in celsius?",
+      "question": "Which substations have the highest total average health index for the month?",
       "sql_lines": [
-        "SELECT transformer_id, SUM(oil_temp_celsius) AS total_oil_temp_celsius",
-        "FROM {fqn}.sensor_readings",
-        "GROUP BY transformer_id ORDER BY total_oil_temp_celsius DESC LIMIT 10"
-      ]
-    },
-    {
-      "question": "How many records are there per date of failure or maintenance event?",
-      "sql_lines": [
-        "SELECT event_date, COUNT(*) AS record_count",
-        "FROM {fqn}.failure_events",
-        "GROUP BY event_date ORDER BY event_date"
-      ]
-    },
-    {
-      "question": "How many records are there per first day of the report month?",
-      "sql_lines": [
-        "SELECT report_month, COUNT(*) AS record_count",
+        "SELECT substation, SUM(avg_health_index) AS total_metric",
         "FROM {fqn}.health_monthly",
-        "GROUP BY report_month ORDER BY report_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

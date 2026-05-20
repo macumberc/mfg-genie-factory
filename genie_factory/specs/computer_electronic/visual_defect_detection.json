@@ -2,8 +2,8 @@
   "company_name": "VisionTech Electronics",
   "industry": "Computer & Electronic",
   "use_case": "Visual defect detection and classification in electronics manufacturing",
-  "space_title": "VisionTech Electronics - Visual Defect Detection 🔬",
-  "space_description": "**Subindustry:** Computer & Electronic\n\n**Use case:** Visual Defect Detection & Classification\n\nVisionTech Electronics — AOI/SPI-driven quality analytics across PCBA production lines, supporting VP Manufacturing, VP Quality, and Plant Quality Engineers. Operations uses this space day-to-day to track defect-type Pareto, station yield, and false-call drag on throughput; quality and finance teams use it to size scrap/rework exposure, drive model retraining priorities, and rank product lines for capex on next-gen 3D AOI.\n\n**Key KPIs**\n- Defect rate (PPM) — world-class AOI targets <100 PPM escape, <2000 PPM false-fail\n- Actual pass rate (%) — first-pass yield; gap-to-target drives capacity loss\n- Classification accuracy (%) — vision model precision, retraining trigger\n- False positive / false negative counts — operator drag and escape risk\n- Scrap cost ($) — non-recoverable cost of quality\n- Rework cost ($) — recoverable cost of quality, labour-intensive\n- Average inspection confidence — model certainty, retraining signal\n- Forecast defect rate (PPM) — forward-looking quality risk\n\n**Data sources**\n- `inspection_events` — per-board AOI/SPI inspection records with defect type, station, confidence, result\n- `defect_classification_snapshots` — weekly model-performance snapshots (accuracy, FP/FN, model version)\n- `detection_kpi_monthly` — monthly pass-rate, defect PPM, scrap/rework $, forecast PPM",
+  "space_title": "VisionTech Electronics - Visual Defect Detection \ud83d\udd2c",
+  "space_description": "**Subindustry:** Computer & Electronic\n\n**Use case:** Visual Defect Detection & Classification\n\nVisionTech Electronics \u2014 AOI/SPI-driven quality analytics across PCBA production lines, supporting VP Manufacturing, VP Quality, and Plant Quality Engineers. Operations uses this space day-to-day to track defect-type Pareto, station yield, and false-call drag on throughput; quality and finance teams use it to size scrap/rework exposure, drive model retraining priorities, and rank product lines for capex on next-gen 3D AOI.\n\n**Key KPIs**\n- Defect rate (PPM) \u2014 world-class AOI targets <100 PPM escape, <2000 PPM false-fail\n- Actual pass rate (%) \u2014 first-pass yield; gap-to-target drives capacity loss\n- Classification accuracy (%) \u2014 vision model precision, retraining trigger\n- False positive / false negative counts \u2014 operator drag and escape risk\n- Scrap cost ($) \u2014 non-recoverable cost of quality\n- Rework cost ($) \u2014 recoverable cost of quality, labour-intensive\n- Average inspection confidence \u2014 model certainty, retraining signal\n- Forecast defect rate (PPM) \u2014 forward-looking quality risk\n\n**Data sources**\n- `inspection_events` \u2014 per-board AOI/SPI inspection records with defect type, station, confidence, result\n- `defect_classification_snapshots` \u2014 weekly model-performance snapshots (accuracy, FP/FN, model version)\n- `detection_kpi_monthly` \u2014 monthly pass-rate, defect PPM, scrap/rework $, forecast PPM",
   "schema_basename": "ce_visual_defect",
   "tables": [
     {
@@ -748,21 +748,21 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Visual Defect Detection for a high-volume PCBA manufacturer running multiple SMT lines instrumented with AOI and SPI. Stakeholders include the VP Quality (defect Pareto, accuracy, escape PPM), the Plant Manager (pass rate, station throughput, false-call drag) and the CFO (scrap and rework cost of quality, forecast PPM).\n\nMETRIC DEFINITIONS\n- Defect rate = defect_rate_ppm on detection_kpi_monthly; AOI industry targets <100 PPM escape and <2000 PPM false-fail.\n- Pass rate = actual_pass_rate_pct vs target_pass_rate_pct; world-class FPY ~98-99%+ on AOI.\n- Classification accuracy = classification_accuracy_pct on defect_classification_snapshots; >98% is healthy for modern 3D AOI.\n- Inspection confidence = confidence_score on inspection_events; low confidence drives manual re-inspect labour.\n- False call burden = false_positive_count on defect_classification_snapshots; primary operational constraint on AOI throughput.\n- Escapes = false_negative_count on defect_classification_snapshots; downstream warranty / field failure risk.\n- Cost of quality = scrap_cost_usd + rework_cost_usd on detection_kpi_monthly.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - inspection_events_metrics (source: inspection_events) — dims: inspection_date, product_line, inspection_station, defect_type, severity, result; measures: total_inspections, total_defects_found, avg_confidence_score, avg_inspection_time_sec, max_confidence_score.\n  - detection_kpi_metrics (source: detection_kpi_monthly) — dims: kpi_month, product_line; measures: avg_actual_pass_rate, avg_defect_rate_ppm, total_scrap_cost, total_rework_cost, total_target_pass_rate_percent, total_forecast_defect_rate_ppm, max_target_pass_rate_percent, total_total_units_inspected.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. component_model, model_version, false_positive_count, false_negative_count, classification_accuracy_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Visual Defect Detection for a high-volume PCBA manufacturer running multiple SMT lines instrumented with AOI and SPI. Stakeholders include the VP Quality (defect Pareto, accuracy, escape PPM), the Plant Manager (pass rate, station throughput, false-call drag) and the CFO (scrap and rework cost of quality, forecast PPM).\n\nMETRIC DEFINITIONS\n- Defect rate = defect_rate_ppm on detection_kpi_monthly; AOI industry targets <100 PPM escape and <2000 PPM false-fail.\n- Pass rate = actual_pass_rate_pct vs target_pass_rate_pct; world-class FPY ~98-99%+ on AOI.\n- Classification accuracy = classification_accuracy_pct on defect_classification_snapshots; >98% is healthy for modern 3D AOI.\n- Inspection confidence = confidence_score on inspection_events; low confidence drives manual re-inspect labour.\n- False call burden = false_positive_count on defect_classification_snapshots; primary operational constraint on AOI throughput.\n- Escapes = false_negative_count on defect_classification_snapshots; downstream warranty / field failure risk.\n- Cost of quality = scrap_cost_usd + rework_cost_usd on detection_kpi_monthly.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - inspection_events_metrics (source: inspection_events) \u2014 dims: inspection_date, product_line, inspection_station, defect_type, severity, result; measures: total_inspections, total_defects_found, avg_confidence_score, avg_inspection_time_sec, max_confidence_score.\n  - detection_kpi_metrics (source: detection_kpi_monthly) \u2014 dims: kpi_month, product_line; measures: avg_actual_pass_rate, avg_defect_rate_ppm, total_scrap_cost, total_rework_cost, total_target_pass_rate_percent, total_forecast_defect_rate_ppm, max_target_pass_rate_percent, total_total_units_inspected.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. component_model, model_version, false_positive_count, false_negative_count, classification_accuracy_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly defect PPM and actual pass rate by product line for the trailing 12 months.",
     "Which 10 product lines have the highest combined scrap and rework cost this year?",
     "How has classification accuracy trended month-over-month across vision model versions?",
-    "Top 10 product lines by false positive count this quarter — what's the operator-hour drag?",
+    "Top 10 product lines by false positive count this quarter \u2014 what's the operator-hour drag?",
     "Which product lines are forecast to miss their target pass rate in the next two months, and what's the projected PPM gap?",
     "What is the total cost of quality (scrap + rework) by product line, and how does it split between recoverable and non-recoverable?",
     "Which defect types account for the most critical-severity escapes over the last 90 days?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in highest confidence score?",
+      "question": "How has average model detection confidence score 0-1 trended by month?",
       "sql_lines": [
-        "SELECT inspection_date, MEASURE(max_confidence_score) AS max_confidence_score",
+        "SELECT inspection_date, MEASURE(avg_confidence_score) AS avg_confidence_score",
         "FROM {fqn}.inspection_events_metrics",
         "GROUP BY ALL",
         "ORDER BY inspection_date"
@@ -778,7 +778,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in total rework cost in usd?",
+      "question": "How has total rework cost trended over time?",
       "sql_lines": [
         "SELECT kpi_month, MEASURE(total_rework_cost) AS total_rework_cost",
         "FROM {fqn}.detection_kpi_metrics",
@@ -932,16 +932,16 @@
       ]
     },
     {
-      "question": "How has unique total inspectionss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT inspection_date, MEASURE(total_inspections) AS total_inspections",
-        "FROM {fqn}.inspection_events_metrics",
-        "GROUP BY ALL",
-        "ORDER BY inspection_date"
+        "SELECT DATE_TRUNC('month', inspection_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.inspection_events",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "What is the monthly trend in highest target pass rate percent?",
+      "question": "What has been the peak target_pass_rate_percent each month?",
       "sql_lines": [
         "SELECT kpi_month, MEASURE(max_target_pass_rate_percent) AS max_target_pass_rate_percent",
         "FROM {fqn}.detection_kpi_metrics",
@@ -950,7 +950,7 @@
       ]
     },
     {
-      "question": "How has total scrap cost in usd changed over time?",
+      "question": "How has total scrap cost trended over time?",
       "sql_lines": [
         "SELECT kpi_month, MEASURE(total_scrap_cost) AS total_scrap_cost",
         "FROM {fqn}.detection_kpi_metrics",
@@ -975,11 +975,13 @@
       ]
     },
     {
-      "question": "How many records are there per month of the kpi record?",
+      "question": "Which pcb or component models have the highest average actual first-pass yield percentage?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
-        "FROM {fqn}.detection_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "SELECT component_model, MEASURE(avg_actual_pass_rate) AS avg_actual_pass_rate",
+        "FROM {fqn}.detection_kpi_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_actual_pass_rate DESC",
+        "LIMIT 10"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "company_name": "CarbonTrack Midstream",
   "industry": "Oil & Gas Midstream",
   "use_case": "Automated carbon intensity reporting and emissions monitoring",
-  "space_title": "CarbonTrack Midstream - Carbon Intensity Reporting 🌱",
-  "space_description": "**Subindustry:** Oil & Gas Midstream\n\n**Use case:** Automated Carbon Intensity Reporting & Emissions Monitoring\n\nCarbonTrack Midstream — emissions and carbon-intensity analytics across compressor stations, pipeline segments, and processing facilities. Sustainability Officers and ESG leads use this space to assemble Scope 1 GHG inventory, methane intensity, and reduction-target tracking; EH&S and operations use it to triage leaks and prioritize LDAR (leak detection and repair) campaigns.\n\n**Key KPIs**\n- Total CO2e (metric tons) — Scope 1 inventory\n- Methane emissions (tons) — most material GHG for midstream\n- Carbon intensity (kg CO2e / boe) — industry leaders ~5-8 kg/boe\n- Methane intensity (%) — target <0.20% under EPA OOOOb/c & OGMP 2.0 Gold\n- Leak count — LDAR triggers and integrity events\n- Reduction target progress (tons) — vs. corporate decarb plan\n- Offset credits (tons) — voluntary or compliance offsets\n- Compliance status — Compliant / Warning / Non-Compliant vs. EPA/state thresholds\n\n**Data sources**\n- `emission_readings` — individual emission readings by source\n- `carbon_snapshots` — periodic monthly emissions, leaks, offsets\n- `carbon_kpi_monthly` — monthly intensity and compliance rollups",
+  "space_title": "CarbonTrack Midstream - Carbon Intensity Reporting \ud83c\udf31",
+  "space_description": "**Subindustry:** Oil & Gas Midstream\n\n**Use case:** Automated Carbon Intensity Reporting & Emissions Monitoring\n\nCarbonTrack Midstream \u2014 emissions and carbon-intensity analytics across compressor stations, pipeline segments, and processing facilities. Sustainability Officers and ESG leads use this space to assemble Scope 1 GHG inventory, methane intensity, and reduction-target tracking; EH&S and operations use it to triage leaks and prioritize LDAR (leak detection and repair) campaigns.\n\n**Key KPIs**\n- Total CO2e (metric tons) \u2014 Scope 1 inventory\n- Methane emissions (tons) \u2014 most material GHG for midstream\n- Carbon intensity (kg CO2e / boe) \u2014 industry leaders ~5-8 kg/boe\n- Methane intensity (%) \u2014 target <0.20% under EPA OOOOb/c & OGMP 2.0 Gold\n- Leak count \u2014 LDAR triggers and integrity events\n- Reduction target progress (tons) \u2014 vs. corporate decarb plan\n- Offset credits (tons) \u2014 voluntary or compliance offsets\n- Compliance status \u2014 Compliant / Warning / Non-Compliant vs. EPA/state thresholds\n\n**Data sources**\n- `emission_readings` \u2014 individual emission readings by source\n- `carbon_snapshots` \u2014 periodic monthly emissions, leaks, offsets\n- `carbon_kpi_monthly` \u2014 monthly intensity and compliance rollups",
   "schema_basename": "og_midstream_carbon",
   "tables": [
     {
@@ -668,7 +668,7 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Automated Carbon Intensity Reporting for a midstream operator subject to EPA OOOOb/c methane rules, Subpart W reporting, and voluntary frameworks (OGMP 2.0, GHG Protocol). Stakeholders include the Chief Sustainability Officer (corporate decarb plan, investor disclosures, CDP/TCFD/CSRD reporting), VP EH&S (LDAR program execution, leak repair backlog), and Operations (compressor-station emission factors, fugitive methane). Industry context: best-in-class midstream methane intensity is <0.20%; carbon intensity ~5-8 kg CO2e/boe; OGMP 2.0 Gold Standard requires Level 4-5 measurement-based reporting.\n\nMETRIC DEFINITIONS\n- Total CO2e = co2e_metric_tons on emission_readings; total_co2e_tons in metric view\n- Methane = methane_tons on emission_readings; primary GHG driver\n- Carbon intensity = carbon_intensity_kg_boe; industry-leading <8 kg/boe\n- Methane intensity = methane_intensity_pct on carbon_kpi_monthly; OGMP Gold target <0.20%\n- Leaks = leak_count on carbon_snapshots; LDAR campaign indicator\n- Reduction target = reduction_target_tons; vs. corporate net-zero plan\n- Offset credits = offset_credits_tons; voluntary or compliance offsets\n- Compliance status = compliance_status (Compliant / Warning / Non-Compliant vs. thresholds)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - emission_readings_metrics (source: emission_readings) — dims: reading_date, source_id, emission_category, facility_type, measurement_method; measures: total_co2e_tons, total_methane_tons, avg_carbon_intensity, total_throughput_boe, max_co2e_metric_tons.\n  - carbon_snapshots_metrics (source: carbon_snapshots) — dims: snapshot_date, source_id, emission_category, facility_type; measures: total_monthly_co2e, total_leaks, total_offset_credits, avg_reduction_target, max_monthly_co2e_tons.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. source_name, methane_intensity_pct, compliance_status, reduction_target_tons, measurement_method).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Automated Carbon Intensity Reporting for a midstream operator subject to EPA OOOOb/c methane rules, Subpart W reporting, and voluntary frameworks (OGMP 2.0, GHG Protocol). Stakeholders include the Chief Sustainability Officer (corporate decarb plan, investor disclosures, CDP/TCFD/CSRD reporting), VP EH&S (LDAR program execution, leak repair backlog), and Operations (compressor-station emission factors, fugitive methane). Industry context: best-in-class midstream methane intensity is <0.20%; carbon intensity ~5-8 kg CO2e/boe; OGMP 2.0 Gold Standard requires Level 4-5 measurement-based reporting.\n\nMETRIC DEFINITIONS\n- Total CO2e = co2e_metric_tons on emission_readings; total_co2e_tons in metric view\n- Methane = methane_tons on emission_readings; primary GHG driver\n- Carbon intensity = carbon_intensity_kg_boe; industry-leading <8 kg/boe\n- Methane intensity = methane_intensity_pct on carbon_kpi_monthly; OGMP Gold target <0.20%\n- Leaks = leak_count on carbon_snapshots; LDAR campaign indicator\n- Reduction target = reduction_target_tons; vs. corporate net-zero plan\n- Offset credits = offset_credits_tons; voluntary or compliance offsets\n- Compliance status = compliance_status (Compliant / Warning / Non-Compliant vs. thresholds)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - emission_readings_metrics (source: emission_readings) \u2014 dims: reading_date, source_id, emission_category, facility_type, measurement_method; measures: total_co2e_tons, total_methane_tons, avg_carbon_intensity, total_throughput_boe, max_co2e_metric_tons.\n  - carbon_snapshots_metrics (source: carbon_snapshots) \u2014 dims: snapshot_date, source_id, emission_category, facility_type; measures: total_monthly_co2e, total_leaks, total_offset_credits, avg_reduction_target, max_monthly_co2e_tons.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. source_name, methane_intensity_pct, compliance_status, reduction_target_tons, measurement_method).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly total CO2e by facility type for the trailing 12 months.",
     "Top 10 emission sources by total methane tons year-to-date.",
@@ -723,15 +723,16 @@
       ]
     },
     {
-      "question": "How has the average methane intensity pct changed over time?",
+      "question": "How has average methane intensity percentage trended by month?",
       "sql_lines": [
         "SELECT kpi_month, AVG(methane_intensity_pct) AS avg_methane_intensity_pct",
         "FROM {fqn}.carbon_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY kpi_month",
+        "ORDER BY kpi_month"
       ]
     },
     {
-      "question": "How has avg carbon intensity changed over time?",
+      "question": "How has average carbon intensity changed over time?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(avg_carbon_intensity) AS avg_carbon_intensity",
         "FROM {fqn}.emission_readings_metrics",
@@ -830,7 +831,7 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in highest co2e metric tons?",
+      "question": "What has been the peak co2 equivalent metric tons each month?",
       "sql_lines": [
         "SELECT reading_date, MEASURE(max_co2e_metric_tons) AS max_co2e_metric_tons",
         "FROM {fqn}.emission_readings_metrics",
@@ -848,7 +849,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest monthly co2e tons?",
+      "question": "What has been the peak monthly co2e tons each month?",
       "sql_lines": [
         "SELECT snapshot_date, MEASURE(max_monthly_co2e_tons) AS max_monthly_co2e_tons",
         "FROM {fqn}.carbon_snapshots_metrics",
@@ -874,19 +875,23 @@
       ]
     },
     {
-      "question": "How many records are there per snapshot date?",
+      "question": "Which categorys have the highest average reduction target?",
       "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
-        "FROM {fqn}.carbon_snapshots",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "SELECT emission_category, MEASURE(avg_reduction_target) AS avg_reduction_target",
+        "FROM {fqn}.carbon_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_reduction_target DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per kpi month?",
+      "question": "Which categorys have the highest total emissions tons?",
       "sql_lines": [
-        "SELECT kpi_month, COUNT(*) AS record_count",
+        "SELECT emission_category, SUM(total_emissions_tons) AS total_metric",
         "FROM {fqn}.carbon_kpi_monthly",
-        "GROUP BY kpi_month ORDER BY kpi_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

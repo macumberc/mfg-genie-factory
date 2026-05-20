@@ -2,8 +2,8 @@
   "company_name": "ChipFlow Supply",
   "industry": "Semiconductor",
   "use_case": "Semiconductor demand forecasting and order backlog management",
-  "space_title": "ChipFlow - Demand Forecasting 📈",
-  "space_description": "**Subindustry:** Semiconductor\n\n**Use case:** Semiconductor Demand Forecasting & Backlog Management\n\nChipFlow Supply — demand sensing and order-book analytics across 20 product SKUs sold through OEM Tier 1, OEM Tier 2, Distributor, Contract Manufacturer, and Direct Enterprise channels. Product end-markets span automotive (MCU-32 Automotive, PMIC Automotive), industrial controllers, consumer SoCs, and connectivity ICs. Sales Ops and Demand Planning use this space to monitor forecast accuracy and backlog aging; the Supply Chain VP and CFO use it to flag book-to-bill inflection points, segment-level demand softness, and SKUs at risk of allocation or write-down given semiconductor cycle volatility.\n\n**Key KPIs**\n- Forecast accuracy % — 1-MAPE on units forecast; world-class semis target 70%+, with leading-edge SKUs often 50-60%\n- Backlogged order count — orders past quoted lead time; leading indicator of capacity or yield issues\n- Book-to-bill ratio — bookings vs shipments; >1.0 indicates growing demand, <1.0 contraction\n- Lead time (days) — quoted vs achieved; semi industry median 12–26 weeks during shortage cycles\n- Weeks of supply — committed vs available inventory; healthy 8–16 weeks\n- Total order revenue (USD) — top-line demand signal\n- Forecast bias — chronic over/under bias by SKU category\n- Customer segment concentration — share of revenue at-risk by segment\n\n**Data sources**\n- `customer_orders` — daily customer orders with quantity, price, lead time, fulfillment status\n- `demand_forecasts` — weekly forecasted vs actual demand with model accuracy and bias\n- `inventory_positions` — monthly on-hand, committed, and available units with weeks of supply",
+  "space_title": "ChipFlow - Demand Forecasting \ud83d\udcc8",
+  "space_description": "**Subindustry:** Semiconductor\n\n**Use case:** Semiconductor Demand Forecasting & Backlog Management\n\nChipFlow Supply \u2014 demand sensing and order-book analytics across 20 product SKUs sold through OEM Tier 1, OEM Tier 2, Distributor, Contract Manufacturer, and Direct Enterprise channels. Product end-markets span automotive (MCU-32 Automotive, PMIC Automotive), industrial controllers, consumer SoCs, and connectivity ICs. Sales Ops and Demand Planning use this space to monitor forecast accuracy and backlog aging; the Supply Chain VP and CFO use it to flag book-to-bill inflection points, segment-level demand softness, and SKUs at risk of allocation or write-down given semiconductor cycle volatility.\n\n**Key KPIs**\n- Forecast accuracy % \u2014 1-MAPE on units forecast; world-class semis target 70%+, with leading-edge SKUs often 50-60%\n- Backlogged order count \u2014 orders past quoted lead time; leading indicator of capacity or yield issues\n- Book-to-bill ratio \u2014 bookings vs shipments; >1.0 indicates growing demand, <1.0 contraction\n- Lead time (days) \u2014 quoted vs achieved; semi industry median 12\u201326 weeks during shortage cycles\n- Weeks of supply \u2014 committed vs available inventory; healthy 8\u201316 weeks\n- Total order revenue (USD) \u2014 top-line demand signal\n- Forecast bias \u2014 chronic over/under bias by SKU category\n- Customer segment concentration \u2014 share of revenue at-risk by segment\n\n**Data sources**\n- `customer_orders` \u2014 daily customer orders with quantity, price, lead time, fulfillment status\n- `demand_forecasts` \u2014 weekly forecasted vs actual demand with model accuracy and bias\n- `inventory_positions` \u2014 monthly on-hand, committed, and available units with weeks of supply",
   "schema_basename": "semiconductor_demand_forecast",
   "tables": [
     {
@@ -741,24 +741,24 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Demand Forecasting and order-book management for a semiconductor distributor serving 20 SKUs across Automotive, Industrial, Consumer, and Data Center segments. Stakeholders include Demand Planning (forecast accuracy, bias), Sales Ops (backlog aging, lead time), and the Supply Chain VP (book-to-bill, weeks of supply, allocation risk). Semi cycles swing book-to-bill from 0.7 (downturn) to 1.3 (shortage), and lead-time inflation is the earliest predictor of cycle inflection.\n\nMETRIC DEFINITIONS\n- Forecast accuracy = avg_forecast_accuracy_pct (1-MAPE); semi target 70%+, leading-edge SKUs often 50–60%\n- Forecast bias = forecast_bias label (Over / Under / Neutral)\n- Backlog = fulfillment_status = 'Backlogged' (orders past quoted lead time)\n- Lead time = lead_time_days; healthy 56–84 days, shortage cycles 168–365 days\n- Weeks of supply = weeks_of_supply; healthy 8–16, >20 flags excess, <4 flags stockout risk\n- Order revenue = order_revenue_usd; top-line demand\n- Available to ship = available_units in inventory_positions\n- Customer segments: OEM Tier 1, OEM Tier 2, Distributor, Contract Manufacturer, Direct Enterprise\n- Regions: Asia Pacific, North America, Europe, Greater China, Rest of World\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - customer_order_metrics (source: customer_orders) — dims: order_date, product_category, customer_segment, fulfillment_status, region; measures: total_orders, total_order_revenue_usd, total_units_ordered, avg_lead_time_days, backlogged_order_count, total_unit_price, unique_sku_count, max_order_quantity.\n  - forecast_accuracy_metrics (source: demand_forecasts) — dims: forecast_date, product_category, forecast_bias, model_type; measures: avg_forecast_accuracy_pct, total_forecasted_units, total_actual_units, total_forecast_records, unique_sku_count, max_forecasted_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. sku_id, sku_name, on_hand_units, committed_units, available_units, weeks_of_supply, inventory_health).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Demand Forecasting and order-book management for a semiconductor distributor serving 20 SKUs across Automotive, Industrial, Consumer, and Data Center segments. Stakeholders include Demand Planning (forecast accuracy, bias), Sales Ops (backlog aging, lead time), and the Supply Chain VP (book-to-bill, weeks of supply, allocation risk). Semi cycles swing book-to-bill from 0.7 (downturn) to 1.3 (shortage), and lead-time inflation is the earliest predictor of cycle inflection.\n\nMETRIC DEFINITIONS\n- Forecast accuracy = avg_forecast_accuracy_pct (1-MAPE); semi target 70%+, leading-edge SKUs often 50\u201360%\n- Forecast bias = forecast_bias label (Over / Under / Neutral)\n- Backlog = fulfillment_status = 'Backlogged' (orders past quoted lead time)\n- Lead time = lead_time_days; healthy 56\u201384 days, shortage cycles 168\u2013365 days\n- Weeks of supply = weeks_of_supply; healthy 8\u201316, >20 flags excess, <4 flags stockout risk\n- Order revenue = order_revenue_usd; top-line demand\n- Available to ship = available_units in inventory_positions\n- Customer segments: OEM Tier 1, OEM Tier 2, Distributor, Contract Manufacturer, Direct Enterprise\n- Regions: Asia Pacific, North America, Europe, Greater China, Rest of World\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - customer_order_metrics (source: customer_orders) \u2014 dims: order_date, product_category, customer_segment, fulfillment_status, region; measures: total_orders, total_order_revenue_usd, total_units_ordered, avg_lead_time_days, backlogged_order_count, total_unit_price, unique_sku_count, max_order_quantity.\n  - forecast_accuracy_metrics (source: demand_forecasts) \u2014 dims: forecast_date, product_category, forecast_bias, model_type; measures: avg_forecast_accuracy_pct, total_forecasted_units, total_actual_units, total_forecast_records, unique_sku_count, max_forecasted_units.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. sku_id, sku_name, on_hand_units, committed_units, available_units, weeks_of_supply, inventory_health).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Which 10 SKUs have the highest backlogged order count, and what is our exposed revenue?",
     "Show monthly total order revenue by customer segment for the trailing 12 months.",
-    "Which product categories have the worst forecast accuracy this quarter — where do we need model retraining?",
-    "Rank the 5 customer regions by average lead time — where is lead-time inflation worst?",
-    "How has total units ordered trended monthly by product category — is book-to-bill turning?",
+    "Which product categories have the worst forecast accuracy this quarter \u2014 where do we need model retraining?",
+    "Rank the 5 customer regions by average lead time \u2014 where is lead-time inflation worst?",
+    "How has total units ordered trended monthly by product category \u2014 is book-to-bill turning?",
     "Which SKUs have less than 4 weeks of supply this month and are at stockout risk?",
     "What is the total forecasted vs actual units in the trailing 6 months, and which categories are chronically Over or Under?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in unique skus?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(unique_sku_count) AS unique_sku_count",
-        "FROM {fqn}.customer_order_metrics",
-        "GROUP BY ALL",
-        "ORDER BY order_date"
+        "SELECT DATE_TRUNC('month', order_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.customer_orders",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
@@ -771,7 +771,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest forecasted units?",
+      "question": "What has been the peak predicted demand in units each month?",
       "sql_lines": [
         "SELECT forecast_date, MEASURE(max_forecasted_units) AS max_forecasted_units",
         "FROM {fqn}.forecast_accuracy_metrics",
@@ -780,11 +780,14 @@
       ]
     },
     {
-      "question": "How does total number of units ordered break down by product sku identifier for 'Shipped' records?",
+      "question": "Which product skus have the highest total *?",
       "sql_lines": [
-        "SELECT sku_id, COUNT(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
+        "SELECT sku_name, SUM(*) AS record_count, SUM(order_quantity) AS total_order_quantity",
         "FROM {fqn}.customer_orders",
-        "WHERE fulfillment_status = 'Shipped' GROUP BY sku_id ORDER BY total_order_quantity DESC"
+        "WHERE fulfillment_status = 'Shipped'",
+        "GROUP BY sku_name",
+        "ORDER BY total_order_quantity DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -796,15 +799,17 @@
       ]
     },
     {
-      "question": "How many distinct unique inventory position record identifier are there per product category grouping?",
+      "question": "How many distinct forecasts does each product sku have?",
       "sql_lines": [
-        "SELECT product_category, COUNT(DISTINCT position_id) AS distinct_count",
+        "SELECT sku_name, COUNT(DISTINCT forecast) AS distinct_count",
         "FROM {fqn}.inventory_positions",
-        "GROUP BY product_category ORDER BY distinct_count DESC"
+        "GROUP BY 1",
+        "ORDER BY distinct_count DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How has total unit price usd changed over time?",
+      "question": "How has total unit price trended over time?",
       "sql_lines": [
         "SELECT order_date, MEASURE(total_unit_price) AS total_unit_price",
         "FROM {fqn}.customer_order_metrics",
@@ -926,54 +931,61 @@
       ]
     },
     {
-      "question": "How has unique total orderss changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_orders) AS total_orders",
-        "FROM {fqn}.customer_order_metrics",
-        "GROUP BY ALL",
-        "ORDER BY order_date"
-      ]
-    },
-    {
-      "question": "What is the monthly trend in unique total forecast recordss?",
-      "sql_lines": [
-        "SELECT forecast_date, MEASURE(total_forecast_records) AS total_forecast_records",
-        "FROM {fqn}.forecast_accuracy_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_date"
-      ]
-    },
-    {
-      "question": "How has unique skus changed over time?",
-      "sql_lines": [
-        "SELECT forecast_date, MEASURE(unique_sku_count) AS unique_sku_count",
-        "FROM {fqn}.forecast_accuracy_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_date"
-      ]
-    },
-    {
-      "question": "What are the top product sku identifier by total number of units ordered?",
-      "sql_lines": [
-        "SELECT sku_id, SUM(order_quantity) AS total_order_quantity",
+        "SELECT DATE_TRUNC('month', order_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
         "FROM {fqn}.customer_orders",
-        "GROUP BY sku_id ORDER BY total_order_quantity DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "What is the average forecast accuracy as percentage by human-readable product sku name?",
+      "question": "Which product skus have the highest total number of units ordered?",
+      "sql_lines": [
+        "SELECT sku_name, SUM(order_quantity) AS total_metric",
+        "FROM {fqn}.customer_orders",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which product category groupings have the highest total unit price?",
+      "sql_lines": [
+        "SELECT product_category, SUM(unit_price_usd) AS total_metric",
+        "FROM {fqn}.customer_orders",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "How does forecast accuracy compare across product categories?",
+      "sql_lines": [
+        "SELECT product_category, AVG(forecast_accuracy_pct) AS avg_accuracy",
+        "FROM {fqn}.demand_forecasts",
+        "GROUP BY product_category",
+        "ORDER BY avg_accuracy DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "Which product skus have the best forecast accuracy?",
       "sql_lines": [
         "SELECT sku_name, AVG(forecast_accuracy_pct) AS avg_forecast_accuracy_pct",
         "FROM {fqn}.demand_forecasts",
-        "GROUP BY sku_name ORDER BY avg_forecast_accuracy_pct DESC"
+        "GROUP BY sku_name",
+        "ORDER BY avg_forecast_accuracy_pct DESC"
       ]
     },
     {
-      "question": "How many records are there per month of inventory position?",
+      "question": "Which product skus have the highest total estimated weeks of supply at current demand rate?",
       "sql_lines": [
-        "SELECT position_month, COUNT(*) AS record_count",
+        "SELECT sku_name, SUM(weeks_of_supply) AS total_metric",
         "FROM {fqn}.inventory_positions",
-        "GROUP BY position_month ORDER BY position_month"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     }
   ]

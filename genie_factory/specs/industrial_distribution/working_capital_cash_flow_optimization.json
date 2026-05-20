@@ -2,8 +2,8 @@
   "company_name": "DistroCapital Finance",
   "industry": "Industrial Distribution",
   "use_case": "Working capital and cash flow optimization for industrial distribution",
-  "space_title": "DistroCapital Finance - Working Capital & Cash Flow 💰",
-  "space_description": "**Subindustry:** Industrial Distribution\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nDistroCapital Finance — treasury and working-capital analytics across 20 business units spanning pipe & valve, industrial supply, electrical, welding, safety, and corporate. The CFO and Treasurer use this space for cash position, DSO/DPO, and cash conversion cycle; Branch Managers and Segment GMs use it to track AR collections, AP timing, and inventory investment by region.\n\n**Key KPIs**\n- Cash conversion cycle (CCC) days — industrial distribution typical 60-90 days, best-in-class <45\n- DSO (Days Sales Outstanding) — target 30-45 days for B2B industrial\n- DPO (Days Payable Outstanding) — target 30-45 days; widen carefully to preserve vendor terms\n- Net cash flow ($) — inflow minus outflow over period\n- Current ratio — healthy 1.5-2.5x; <1.0 is a liquidity warning\n- AR balance and inventory investment ($) — capital tied up in operations\n- Liquidity status mix (Strong/Adequate/Tight/Critical) — risk concentration\n- Forecast variance (actual vs forecasted cash flow) — treasury planning accuracy\n\n**Data sources**\n- `business_units` — daily cash transactions (customer/vendor payments, payroll, transfers) with inflow/outflow and AR collected\n- `cash_transactions` — weekly working-capital snapshots: AR balance, AP balance, inventory investment, DSO, DPO\n- `working_capital_snapshots` — monthly forecast vs. actual cash flow with CCC, current ratio, and liquidity status",
+  "space_title": "DistroCapital Finance - Working Capital & Cash Flow \ud83d\udcb0",
+  "space_description": "**Subindustry:** Industrial Distribution\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nDistroCapital Finance \u2014 treasury and working-capital analytics across 20 business units spanning pipe & valve, industrial supply, electrical, welding, safety, and corporate. The CFO and Treasurer use this space for cash position, DSO/DPO, and cash conversion cycle; Branch Managers and Segment GMs use it to track AR collections, AP timing, and inventory investment by region.\n\n**Key KPIs**\n- Cash conversion cycle (CCC) days \u2014 industrial distribution typical 60-90 days, best-in-class <45\n- DSO (Days Sales Outstanding) \u2014 target 30-45 days for B2B industrial\n- DPO (Days Payable Outstanding) \u2014 target 30-45 days; widen carefully to preserve vendor terms\n- Net cash flow ($) \u2014 inflow minus outflow over period\n- Current ratio \u2014 healthy 1.5-2.5x; <1.0 is a liquidity warning\n- AR balance and inventory investment ($) \u2014 capital tied up in operations\n- Liquidity status mix (Strong/Adequate/Tight/Critical) \u2014 risk concentration\n- Forecast variance (actual vs forecasted cash flow) \u2014 treasury planning accuracy\n\n**Data sources**\n- `business_units` \u2014 daily cash transactions (customer/vendor payments, payroll, transfers) with inflow/outflow and AR collected\n- `cash_transactions` \u2014 weekly working-capital snapshots: AR balance, AP balance, inventory investment, DSO, DPO\n- `working_capital_snapshots` \u2014 monthly forecast vs. actual cash flow with CCC, current ratio, and liquidity status",
   "schema_basename": "distro_working_capital",
   "tables": [
     {
@@ -794,19 +794,19 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Working Capital & Cash Flow Optimization for an industrial distributor with 20 business units across pipe & valve, industrial supply, electrical, welding, safety, corporate, and digital segments in 8 US regions. Stakeholders include the CFO (CCC, liquidity), Treasurer (cash position, forecast variance), AR Manager (DSO, collections), AP Manager (DPO, vendor terms), and Segment GMs (working-capital efficiency by BU).\n\nMETRIC DEFINITIONS\n- Cash Conversion Cycle = avg_ccc_days (cash_conversion_cycle_days); industrial distribution typical 60-90 days, best-in-class <45\n- DSO = avg_dso (dso_days on cash_transactions); B2B industrial target 30-45 days\n- DPO = dpo_days (cash_transactions); target 30-45 days; widen carefully to preserve supplier terms\n- Net cash flow = total_cash_inflow - total_cash_outflow (net_cash_flow measure)\n- Current ratio = avg_current_ratio; healthy 1.5-2.5x, <1.0 = liquidity warning\n- Net working capital (NWC) = ar_balance + inventory_investment - ap_balance (use the `net working capital USD` snippet)\n- Forecast variance = actual_cash_flow_usd - forecasted_cash_flow_usd (use the `cash flow variance` snippet)\n- Liquidity status = liquidity_status band (Strong / Adequate / Tight / Critical)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cashflow_monthly (source: business_units) — dims: txn_date, business_segment, region, payment_type; measures: total_cash_inflow, total_cash_outflow, total_ar_collected, net_cash_flow, transaction_count, unique_bu_count, max_cash_inflow.\n  - working_capital_monthly (source: working_capital_snapshots) — dims: forecast_month, business_segment, region, liquidity_status; measures: total_forecasted_cf, total_actual_cf, avg_ccc_days, avg_current_ratio, critical_count, unique_bu_count, max_forecasted_cash_flow.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. bu_id, bu_name, ar_balance_usd, ap_balance_usd, inventory_investment_usd, dso_days, dpo_days).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Working Capital & Cash Flow Optimization for an industrial distributor with 20 business units across pipe & valve, industrial supply, electrical, welding, safety, corporate, and digital segments in 8 US regions. Stakeholders include the CFO (CCC, liquidity), Treasurer (cash position, forecast variance), AR Manager (DSO, collections), AP Manager (DPO, vendor terms), and Segment GMs (working-capital efficiency by BU).\n\nMETRIC DEFINITIONS\n- Cash Conversion Cycle = avg_ccc_days (cash_conversion_cycle_days); industrial distribution typical 60-90 days, best-in-class <45\n- DSO = avg_dso (dso_days on cash_transactions); B2B industrial target 30-45 days\n- DPO = dpo_days (cash_transactions); target 30-45 days; widen carefully to preserve supplier terms\n- Net cash flow = total_cash_inflow - total_cash_outflow (net_cash_flow measure)\n- Current ratio = avg_current_ratio; healthy 1.5-2.5x, <1.0 = liquidity warning\n- Net working capital (NWC) = ar_balance + inventory_investment - ap_balance (use the `net working capital USD` snippet)\n- Forecast variance = actual_cash_flow_usd - forecasted_cash_flow_usd (use the `cash flow variance` snippet)\n- Liquidity status = liquidity_status band (Strong / Adequate / Tight / Critical)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cashflow_monthly (source: business_units) \u2014 dims: txn_date, business_segment, region, payment_type; measures: total_cash_inflow, total_cash_outflow, total_ar_collected, net_cash_flow, transaction_count, unique_bu_count, max_cash_inflow.\n  - working_capital_monthly (source: working_capital_snapshots) \u2014 dims: forecast_month, business_segment, region, liquidity_status; measures: total_forecasted_cf, total_actual_cf, avg_ccc_days, avg_current_ratio, critical_count, unique_bu_count, max_forecasted_cash_flow.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. bu_id, bu_name, ar_balance_usd, ap_balance_usd, inventory_investment_usd, dso_days, dpo_days).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Show monthly net cash flow by business segment for the trailing 12 months.",
-    "Top 10 business units by AR balance USD this week — and what is their DSO?",
+    "Top 10 business units by AR balance USD this week \u2014 and what is their DSO?",
     "Which business segments have average cash conversion cycle above 75 days over the last quarter?",
     "How has the count of business units in Critical or Tight liquidity status trended month-over-month?",
     "What is the cash flow variance (actual minus forecast) by region for the latest month?",
-    "Top 10 business units by net working capital (AR + inventory − AP) this quarter.",
+    "Top 10 business units by net working capital (AR + inventory \u2212 AP) this quarter.",
     "Which regions have DSO above 45 days, and how does their current ratio compare?"
   ],
   "example_sqls": [
     {
-      "question": "What is the monthly trend in highest cash inflow?",
+      "question": "What has been the peak cash_inflow each month?",
       "sql_lines": [
         "SELECT txn_date, MEASURE(max_cash_inflow) AS max_cash_inflow",
         "FROM {fqn}.cashflow_monthly",
@@ -815,7 +815,7 @@
       ]
     },
     {
-      "question": "How has total cash inflow usd changed over time?",
+      "question": "How has total cash inflow trended over time?",
       "sql_lines": [
         "SELECT txn_date, MEASURE(total_cash_inflow) AS total_cash_inflow",
         "FROM {fqn}.cashflow_monthly",
@@ -833,19 +833,21 @@
       ]
     },
     {
-      "question": "What is the trend of total cash inflow in usd over time?",
+      "question": "How has total cash inflow in trended over time?",
       "sql_lines": [
         "SELECT txn_date, SUM(cash_inflow_usd) AS total_cash_inflow_usd",
         "FROM {fqn}.business_units",
-        "GROUP BY txn_date ORDER BY txn_date"
+        "GROUP BY txn_date",
+        "ORDER BY txn_date"
       ]
     },
     {
-      "question": "What is the trend of total total ar balance usd over time?",
+      "question": "How has total total ar balance trended over time?",
       "sql_lines": [
         "SELECT snapshot_date, SUM(ar_balance_usd) AS total_ar_balance_usd",
         "FROM {fqn}.cash_transactions",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
@@ -857,12 +859,12 @@
       ]
     },
     {
-      "question": "How has unique transactions changed over time?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(transaction_count) AS transaction_count",
-        "FROM {fqn}.cashflow_monthly",
-        "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "SELECT DATE_TRUNC('month', txn_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.business_units",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     }
   ],
@@ -956,21 +958,22 @@
   },
   "benchmarks": [
     {
-      "question": "What is the monthly trend in unique transactions?",
+      "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(transaction_count) AS transaction_count",
-        "FROM {fqn}.cashflow_monthly",
-        "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "SELECT DATE_TRUNC('month', txn_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "FROM {fqn}.business_units",
+        "GROUP BY 1",
+        "ORDER BY 1"
       ]
     },
     {
-      "question": "How has unique bus changed over time?",
+      "question": "Which business units have the highest total cash inflow?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(unique_bu_count) AS unique_bu_count",
-        "FROM {fqn}.cashflow_monthly",
-        "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "SELECT bu_name, SUM(cash_inflow_usd) AS total_metric",
+        "FROM {fqn}.business_units",
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
@@ -983,7 +986,7 @@
       ]
     },
     {
-      "question": "What is the monthly trend in highest forecasted cash flow?",
+      "question": "What has been the peak forecasted_cash_flow each month?",
       "sql_lines": [
         "SELECT forecast_month, MEASURE(max_forecasted_cash_flow) AS max_forecasted_cash_flow",
         "FROM {fqn}.working_capital_monthly",
@@ -992,27 +995,33 @@
       ]
     },
     {
-      "question": "What are the top business unit identifier by total cash inflow in usd?",
+      "question": "Which business segments have the highest total cash outflow?",
       "sql_lines": [
-        "SELECT bu_id, SUM(cash_inflow_usd) AS total_cash_inflow_usd",
+        "SELECT business_segment, SUM(cash_outflow_usd) AS total_metric",
         "FROM {fqn}.business_units",
-        "GROUP BY bu_id ORDER BY total_cash_inflow_usd DESC LIMIT 10"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per snapshot date?",
+      "question": "Which business segments have the highest total ar balance?",
       "sql_lines": [
-        "SELECT snapshot_date, COUNT(*) AS record_count",
+        "SELECT business_segment, SUM(ar_balance_usd) AS total_metric",
         "FROM {fqn}.cash_transactions",
-        "GROUP BY snapshot_date ORDER BY snapshot_date"
+        "GROUP BY 1",
+        "ORDER BY total_metric DESC",
+        "LIMIT 10"
       ]
     },
     {
-      "question": "How many records are there per forecast month?",
+      "question": "Which business segments have the highest average cash conversion cycle days?",
       "sql_lines": [
-        "SELECT forecast_month, COUNT(*) AS record_count",
-        "FROM {fqn}.working_capital_snapshots",
-        "GROUP BY forecast_month ORDER BY forecast_month"
+        "SELECT business_segment, MEASURE(avg_ccc_days) AS avg_ccc_days",
+        "FROM {fqn}.working_capital_monthly",
+        "GROUP BY ALL",
+        "ORDER BY avg_ccc_days DESC",
+        "LIMIT 10"
       ]
     }
   ]
