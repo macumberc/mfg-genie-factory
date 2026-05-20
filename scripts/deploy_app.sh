@@ -2,17 +2,28 @@
 # deploy_app.sh — Deploy the Mfg Genie Factory Databricks App
 #
 # Creates backend tables, grants SP permissions, and deploys the app.
-# Usage: ./scripts/deploy_app.sh [--profile PROFILE] [--app-name NAME]
+# Optionally also deploys the monthly refresh bundle (databricks.yml) so
+# the rolling-data-window cron job is registered in one go.
+#
+# Usage:
+#   ./scripts/deploy_app.sh [--profile PROFILE] [--app-name NAME]
+#                           [--with-refresh-bundle] [--bundle-profile PROFILE]
 #
 # Prerequisites: databricks CLI authenticated with the target workspace.
 
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 PROFILE="${DATABRICKS_PROFILE:-mfg-genie-factory}"
 APP_NAME="genie-factory"
 SCHEMA="genie_factory"
 BRANCH="main"
 WORKSPACE_PATH=""
+WITH_REFRESH_BUNDLE=false
+BUNDLE_PROFILE=""
+BUNDLE_TARGET="prod"
 
 # Parse args
 while [[ $# -gt 0 ]]; do
@@ -20,9 +31,17 @@ while [[ $# -gt 0 ]]; do
     --profile) PROFILE="$2"; shift 2 ;;
     --app-name) APP_NAME="$2"; shift 2 ;;
     --workspace-path) WORKSPACE_PATH="$2"; shift 2 ;;
+    --with-refresh-bundle) WITH_REFRESH_BUNDLE=true; shift ;;
+    --bundle-profile) BUNDLE_PROFILE="$2"; shift 2 ;;
+    --bundle-target) BUNDLE_TARGET="$2"; shift 2 ;;
     *) echo "Unknown arg: $1"; exit 1 ;;
   esac
 done
+
+# Bundle profile defaults to the app profile. Override with --bundle-profile
+# if the bundle workspace (hardcoded in databricks.yml) differs from the app
+# workspace.
+BUNDLE_PROFILE="${BUNDLE_PROFILE:-$PROFILE}"
 
 echo "=== Mfg Genie Factory Deploy ==="
 echo "Profile:  $PROFILE"
@@ -204,6 +223,17 @@ echo "--- Deploying app ---"
 databricks apps deploy "$APP_NAME" \
   --source-code-path "${WORKSPACE_PATH:-/Workspace/Users/$(databricks current-user me --profile "$PROFILE" 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin).get('userName',''))" 2>/dev/null)/$APP_NAME}" \
   --profile "$PROFILE"
+
+# -------------------------------------------------------------------------
+# 7. Deploy the monthly refresh bundle (optional)
+# -------------------------------------------------------------------------
+if [ "$WITH_REFRESH_BUNDLE" = true ]; then
+  echo ""
+  echo "--- Deploying monthly refresh bundle ---"
+  echo "Bundle profile: $BUNDLE_PROFILE   Target: $BUNDLE_TARGET"
+  (cd "$REPO_ROOT" && databricks bundle deploy --profile "$BUNDLE_PROFILE" --target "$BUNDLE_TARGET")
+  echo "  ✓ Monthly refresh job registered (cron: 0 0 6 1 * ? UTC — 1st of each month, 06:00 UTC)"
+fi
 
 echo ""
 echo "=== Done ==="
