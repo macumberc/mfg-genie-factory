@@ -778,7 +778,7 @@
     "Which 10 products have the lowest average lot yield over the trailing 12 months?",
     "Show monthly critical event count by fab location for the trailing 12 months.",
     "Which root cause categories account for the most wafers affected this quarter?",
-    "Top 10 product families by average defect density per cm² — which need yield-improvement focus?",
+    "Rank product families by average defect density per cm² — which need yield-improvement focus?",
     "How has average DPPM trended monthly across all fabs, and which fab is above the 100 DPPM threshold?",
     "Which products have the highest customer complaint volume in the trailing 6 months, and what is their first-pass yield?",
     "What is the monthly trend in grade C lot count by product family — where is yield slipping below 75%?"

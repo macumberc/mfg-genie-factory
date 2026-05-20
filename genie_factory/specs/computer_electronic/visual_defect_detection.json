@@ -751,7 +751,7 @@
     "Show monthly defect PPM and actual pass rate by product line for the trailing 12 months.",
     "Which 10 product lines have the highest combined scrap and rework cost this year?",
     "How has classification accuracy trended month-over-month across vision model versions?",
-    "Top 10 inspection stations by false positive count this quarter — what's the operator-hour drag?",
+    "Top 10 product lines by false positive count this quarter — what's the operator-hour drag?",
     "Which product lines are forecast to miss their target pass rate in the next two months, and what's the projected PPM gap?",
     "What is the total cost of quality (scrap + rework) by product line, and how does it split between recoverable and non-recoverable?",
     "Which defect types account for the most critical-severity escapes over the last 90 days?"

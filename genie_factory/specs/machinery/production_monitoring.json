@@ -746,7 +746,7 @@
     "Rank line types by average reject rate — where is scrap concentrated?",
     "What is the monthly trend in total energy consumption per good unit produced?",
     "Top 10 lines by lost throughput hours (downtime + changeover) over the last 90 days.",
-    "Compare night vs day shift OEE by line type — is there a shift-driven productivity gap?"
+    "Compare night vs day shift throughput, reject rate, and downtime by line type — is there a shift-driven productivity gap?"
   ],
   "example_sqls": [
     {

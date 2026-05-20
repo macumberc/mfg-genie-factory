@@ -786,8 +786,8 @@
     "Which assets have a 30-day failure probability above 25% and less than 90 days of remaining useful life?",
     "How has the share of emergency events versus preventive events trended month-over-month across the fleet?",
     "What is the total parts plus labor spend by failure component for the last quarter, and how does it compare to budget?",
-    "Top 10 asset types by average bearing temperature this month — flag any above 85 Celsius.",
-    "Show monthly maintenance budget versus actual spend by fleet for the upcoming 6 months."
+    "Rank the 6 asset types by average bearing temperature in the latest month of data — flag any above 85 Celsius.",
+    "Show monthly maintenance budget versus actual spend by fleet over the trailing 6 months."
   ],
   "example_sqls": [
     {

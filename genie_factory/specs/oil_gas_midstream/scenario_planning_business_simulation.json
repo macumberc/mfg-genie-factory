@@ -637,7 +637,7 @@
     "Top 10 scenarios by average NPV across all simulation runs.",
     "Show monthly trend of average projected EBITDA by scenario type for the trailing 12 months.",
     "Which scenarios have the highest regulatory risk score, and what is their projected throughput?",
-    "What is the total capex required across all expansion scenarios, by scenario type?",
+    "What is the total capex required across all Infrastructure scenarios, by scenario type?",
     "How has average regulatory risk trended month-over-month across the scenario portfolio?",
     "Top 10 scenarios by total throughput change percent.",
     "Which low-confidence scenarios have NPV above the portfolio average — and what is the risk score for each?"

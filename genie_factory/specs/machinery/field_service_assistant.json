@@ -732,7 +732,7 @@
     "Which issue categories drive the highest total service cost this quarter?",
     "Rank equipment types by SLA compliance — which are below the 95% target?",
     "Show monthly trend in average cost per ticket vs first-time fix rate across the install base.",
-    "Top 10 highest-priority tickets unresolved beyond SLA in the last 30 days.",
+    "Top 10 highest-priority tickets by resolution hours in the last 30 days.",
     "Which equipment types have the worst repeat visit rate, and what is the cost impact?"
   ],
   "example_sqls": [

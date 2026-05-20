@@ -783,7 +783,7 @@
     "Top 10 feeders by total outage count over the last 90 days — what is the leading cause for each?",
     "How has SAIDI minutes trended month-over-month by district?",
     "Which districts have the worst CAIDI in the most recent month, and how does that compare to the IEEE 1366 industry median of ~120 minutes?",
-    "Top 10 crew types by average response time — are any above the 30-minute P1 target?",
+    "Rank crew types by average response time — are any above the 30-minute P1 target?",
     "What is the storm outage count and total customers affected by district this year vs. last year?",
     "Show monthly trend of restoration rate within SLA by feeder type."
   ],
