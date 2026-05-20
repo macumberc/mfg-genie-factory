@@ -3,7 +3,7 @@
   "industry": "Industrial Distribution",
   "use_case": "Warehouse inventory optimization and stock level management",
   "space_title": "StockSmart Distribution - Inventory Optimization 📦",
-  "space_description": "Inventory analytics for StockSmart Distribution. Ask about stock levels, turnover rates, reorder points, and carrying costs across 20 warehouse-product combinations.",
+  "space_description": "**Subindustry:** Industrial Distribution\n\n**Use case:** Warehouse Inventory Optimization\n\nStockSmart Distribution — inventory analytics across 20 warehouse-product combinations spanning pipe fittings, power tools, abrasives, cutting tools, and welding consumables in 3 distribution centers. Branch Managers and Supply Planners use this space to manage day-to-day stock levels, reorder triggers, and stockouts; the CFO uses it to size the inventory investment and track carrying cost against turnover targets.\n\n**Key KPIs**\n- Inventory turnover ratio — industrial distribution benchmark 4-6 turns/year (best-in-class 6-8)\n- Fill rate (%) — MRO target ≥97%\n- Days of supply (DOH) — typically 30-60 days for fast movers, flag >120 as slow-moving\n- Stockout rate / days — direct lost-sales indicator\n- Carrying cost ($) — typically 20-30% of average inventory value annually\n- Inventory value at risk — overstock and obsolete SKU exposure\n- Below-reorder-point SKU count — replenishment urgency signal\n- GMROI proxy — turnover-driven gross-margin return on inventory investment\n\n**Data sources**\n- `warehouse_products` — daily inventory movements (receipts, issues, transfers, adjustments) with unit cost\n- `inventory_transactions` — weekly position snapshots: on-hand, reorder point, days-of-supply, carrying cost, stock status\n- `inventory_snapshots` — monthly performance: turnover ratio, stockout days, fill rate, optimization action",
   "schema_basename": "distro_inventory_opt",
   "tables": [
     {
@@ -307,7 +307,7 @@
           "sql_type": "DOUBLE",
           "comment": "Estimated days of stock remaining",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 85.0), 1)"
+          "generation_expr": "ROUND(5.0 + {qty_noise} * 200.0, 1)"
         },
         {
           "name": "carrying_cost_usd",
@@ -536,7 +536,8 @@
           "sql_type": "DOUBLE",
           "comment": "Inventory turnover ratio",
           "is_dimension": false,
-          "generation_expr": "ROUND(2.0 + ({qty_noise} * 18.0), 2)"
+          "generation_expr": "ROUND(2.0 + (({qty_noise} * {seasonal_mult}) * 18.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "stockout_days",
@@ -557,7 +558,8 @@
           "sql_type": "DOUBLE",
           "comment": "Order fill rate 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(82.0 + ({qty_noise} * 17.0), 2)"
+          "generation_expr": "ROUND(82.0 + (({qty_noise} * {seasonal_mult}) * 17.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "optimization_action",
@@ -852,15 +854,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The inventory_kpi_monthly view (source: inventory_transactions) has dimensions: snapshot_date, warehouse, product_category, stock_status. Measures: avg_on_hand_qty, total_carrying_cost, avg_days_of_supply, stockout_count, total_snapshot_count. The inventory_perf_monthly view (source: inventory_snapshots) has dimensions: perf_month, warehouse, product_category. Measures: avg_turnover_ratio, total_stockout_days, avg_fill_rate, total_monthly_carrying_cost, item_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. product_name, wp_id).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Warehouse Inventory Optimization for an industrial distributor running 3 distribution centers (Chicago, Houston, Atlanta) holding 20 warehouse-product combinations across pipe fittings, power tools, abrasives, cutting tools, and welding consumables. Stakeholders include the Supply Planner (reorder points, days-of-supply), Branch Manager (stockouts, fill rate), Category Manager (turnover, slow-moving SKUs), and CFO (carrying cost, inventory investment).\n\nMETRIC DEFINITIONS\n- Inventory turnover = avg_turnover_ratio (inventory_snapshots); industrial distribution benchmark 4-6 turns/year, best-in-class 6-8\n- Days of supply / DOH = avg_days_of_supply; flag >120 days as slow-moving\n- Fill rate = avg_fill_rate (fill_rate_pct on inventory_snapshots); MRO target ≥97%\n- Stockout count / days = stockout_count (snapshots in Stockout status) and total_stockout_days\n- Carrying cost = total_carrying_cost (weekly) and total_monthly_carrying_cost; typically 20-30% of inventory value/yr\n- Inventory value = on_hand_qty * unit_cost_usd (use the `inventory value USD` snippet)\n- Below reorder = on_hand_qty < reorder_point (use the `below reorder point` snippet)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - inventory_kpi_monthly (source: inventory_transactions) — dims: snapshot_date, warehouse, product_category, stock_status; measures: avg_on_hand_qty, total_carrying_cost, avg_days_of_supply, stockout_count, total_snapshot_count, unique_wp_count, max_on_hand_qty, total_reorder_point.\n  - inventory_perf_monthly (source: inventory_snapshots) — dims: perf_month, warehouse, product_category; measures: avg_turnover_ratio, total_stockout_days, avg_fill_rate, total_monthly_carrying_cost, item_count, max_turnover_ratio.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. wp_id, product_name, unit_cost_usd, reorder_point, optimization_action).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in stockout count?",
-    "How has unique total snapshots changed over time?",
-    "What is the monthly trend in unique wps?",
-    "How has highest on hand qty changed over time?",
-    "What is the monthly trend in unique items?",
-    "How has highest turnover ratio changed over time?",
-    "What is the monthly trend in total stockout days?"
+    "Show monthly inventory turnover ratio by product category for the trailing 12 months.",
+    "Top 10 warehouse-product combos with the most stockout days over the last 90 days.",
+    "Which warehouses have average days-of-supply above 120, and what is their total carrying cost?",
+    "How has fill rate trended month-over-month by warehouse across the network?",
+    "Which product categories were flagged for the 'Reduce' optimization action most often last quarter?",
+    "Top 10 SKUs by inventory value (on_hand_qty * unit_cost_usd) — and what is their turnover ratio?",
+    "Which warehouse-product combos are currently below reorder point, and how many units of supply remain?"
   ],
   "example_sqls": [
     {

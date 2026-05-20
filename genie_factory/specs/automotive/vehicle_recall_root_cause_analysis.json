@@ -3,7 +3,7 @@
   "industry": "Automotive",
   "use_case": "Vehicle recall root cause analysis and defect pattern identification",
   "space_title": "Apex Motor Group - Recall & Defect Analytics 🚨",
-  "space_description": "Recall and defect analytics for Apex Motor Group. Ask questions about recall events, warranty claims, component failure patterns, root cause categories, and repair outcomes across 20 vehicle models and 15 suppliers.",
+  "space_description": "**Subindustry:** Automotive\n\n**Use case:** Vehicle Recall Root Cause Analysis\n\nApex Motor Group — recall and warranty analytics covering 20 vehicle models, 15 tier-1 suppliers, and NHTSA campaign filings. Quality VPs, supplier-quality engineers, and warranty/CFO finance use this space to trace defects to root cause and supplier, quantify financial exposure, and prioritize remedy rollout against the 60-day NHTSA owner-notification clock.\n\n**Key KPIs**\n- Recall completion rate (%) — share of affected units repaired (NHTSA industry range 75–87%)\n- Average days to remedy — must beat NHTSA's 60-day final-notice rule\n- Critical recall count — campaigns with injury/fatality exposure\n- Units affected per campaign — fleet exposure and parts-supply impact\n- Total estimated recall cost ($) — financial impact (parts + labor + logistics)\n- Warranty claim cost per claim ($) — leading indicator of an emerging recall\n- Supplier defect concentration — share of recalls traced to a single tier-1\n- Open vs closed recall count — campaign-management workload\n\n**Data sources**\n- `recall_events` — NHTSA-filed campaigns with severity, root cause, supplier, remedy, cost, injuries\n- `warranty_claims` — dealership claim records with component, labor, parts, region, disposition\n- `recall_metrics_monthly` — rolled-up monthly recall volume, remedy timeline, satisfaction score",
   "schema_basename": "automotive_recalls",
   "tables": [
     {
@@ -78,14 +78,14 @@
           "sql_type": "STRING",
           "comment": "Free-text description of the defect",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.071 THEN 'Touchscreen may become unresponsive during operation' WHEN {status_noise} < 0.143 THEN 'Wiper motor may fail intermittently in heavy rain conditions' WHEN {status_noise} < 0.214 THEN 'Fuel line connector may develop micro-cracks causing vapor leak' WHEN {status_noise} < 0.286 THEN 'Transmission control module may cause unexpected downshift' WHEN {status_noise} < 0.357 THEN 'Brake caliper mounting bolt may loosen over time' WHEN {status_noise} < 0.429 THEN 'Front strut bearing may corrode prematurely in salt belt regions' WHEN {status_noise} < 0.500 THEN 'Daytime running light LED module may overheat and fail' WHEN {status_noise} < 0.571 THEN 'Wheel lug nuts may not maintain proper torque specification' WHEN {status_noise} < 0.643 THEN 'Power steering assist may reduce unexpectedly at low speed' WHEN {status_noise} < 0.714 THEN 'Seat belt pretensioner may not deploy in rear-end collision' WHEN {status_noise} < 0.786 THEN 'Battery management system may incorrectly report state of charge' WHEN {status_noise} < 0.857 THEN 'Forward collision warning may generate false alerts in fog' WHEN {status_noise} < 0.929 THEN 'Coolant thermostat housing may crack causing slow coolant loss' ELSE 'Side curtain airbag inflator may produce excessive force' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.071 THEN 'Touchscreen may become unresponsive during operation' WHEN {alt_status_noise} < 0.143 THEN 'Wiper motor may fail intermittently in heavy rain conditions' WHEN {alt_status_noise} < 0.214 THEN 'Fuel line connector may develop micro-cracks causing vapor leak' WHEN {alt_status_noise} < 0.286 THEN 'Transmission control module may cause unexpected downshift' WHEN {alt_status_noise} < 0.357 THEN 'Brake caliper mounting bolt may loosen over time' WHEN {alt_status_noise} < 0.429 THEN 'Front strut bearing may corrode prematurely in salt belt regions' WHEN {alt_status_noise} < 0.500 THEN 'Daytime running light LED module may overheat and fail' WHEN {alt_status_noise} < 0.571 THEN 'Wheel lug nuts may not maintain proper torque specification' WHEN {alt_status_noise} < 0.643 THEN 'Power steering assist may reduce unexpectedly at low speed' WHEN {alt_status_noise} < 0.714 THEN 'Seat belt pretensioner may not deploy in rear-end collision' WHEN {alt_status_noise} < 0.786 THEN 'Battery management system may incorrectly report state of charge' WHEN {alt_status_noise} < 0.857 THEN 'Forward collision warning may generate false alerts in fog' WHEN {alt_status_noise} < 0.929 THEN 'Coolant thermostat housing may crack causing slow coolant loss' ELSE 'Side curtain airbag inflator may produce excessive force' END"
         },
         {
           "name": "severity_level",
           "sql_type": "STRING",
           "comment": "Recall severity classification",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.44 THEN 'Minor' WHEN {status_noise} < 0.74 THEN 'Major' WHEN {status_noise} < 0.91 THEN 'Safety Advisory' ELSE 'Critical' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.44 THEN 'Minor' WHEN {alt_status_noise2} < 0.74 THEN 'Major' WHEN {alt_status_noise2} < 0.91 THEN 'Safety Advisory' ELSE 'Critical' END"
         },
         {
           "name": "units_affected",
@@ -113,14 +113,14 @@
           "sql_type": "STRING",
           "comment": "Root cause classification for the defect",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 100 < 11 THEN 'Calibration Drift' WHEN {seed} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {seed} % 100 < 33 THEN 'Assembly Error' WHEN {seed} % 100 < 44 THEN 'Inadequate Testing' WHEN {seed} % 100 < 55 THEN 'Environmental Degradation' WHEN {seed} % 100 < 65 THEN 'Design Deficiency' WHEN {seed} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {seed} % 100 < 84 THEN 'Material Specification Failure' WHEN {seed} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END"
+          "generation_expr": "CASE WHEN {id_seq} % 100 < 11 THEN 'Calibration Drift' WHEN {id_seq} % 100 < 22 THEN 'Supplier Quality Escape' WHEN {id_seq} % 100 < 33 THEN 'Assembly Error' WHEN {id_seq} % 100 < 44 THEN 'Inadequate Testing' WHEN {id_seq} % 100 < 55 THEN 'Environmental Degradation' WHEN {id_seq} % 100 < 65 THEN 'Design Deficiency' WHEN {id_seq} % 100 < 75 THEN 'Manufacturing Process Error' WHEN {id_seq} % 100 < 84 THEN 'Material Specification Failure' WHEN {id_seq} % 100 < 93 THEN 'Component Wear-Out' ELSE 'Software Bug' END"
         },
         {
           "name": "supplier_id",
           "sql_type": "STRING",
           "comment": "Tier-1 supplier identifier",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 15 = 0 THEN 'SUP-BOSCH' WHEN {seed} % 15 = 1 THEN 'SUP-DENSO' WHEN {seed} % 15 = 2 THEN 'SUP-MAGNA' WHEN {seed} % 15 = 3 THEN 'SUP-CONTI' WHEN {seed} % 15 = 4 THEN 'SUP-ZF' WHEN {seed} % 15 = 5 THEN 'SUP-AISIN' WHEN {seed} % 15 = 6 THEN 'SUP-LEAR' WHEN {seed} % 15 = 7 THEN 'SUP-APTIV' WHEN {seed} % 15 = 8 THEN 'SUP-VALEO' WHEN {seed} % 15 = 9 THEN 'SUP-HELLA' WHEN {seed} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {seed} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {seed} % 15 = 12 THEN 'SUP-MANDO' WHEN {seed} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END"
+          "generation_expr": "CASE WHEN {id_seq} % 15 = 0 THEN 'SUP-BOSCH' WHEN {id_seq} % 15 = 1 THEN 'SUP-DENSO' WHEN {id_seq} % 15 = 2 THEN 'SUP-MAGNA' WHEN {id_seq} % 15 = 3 THEN 'SUP-CONTI' WHEN {id_seq} % 15 = 4 THEN 'SUP-ZF' WHEN {id_seq} % 15 = 5 THEN 'SUP-AISIN' WHEN {id_seq} % 15 = 6 THEN 'SUP-LEAR' WHEN {id_seq} % 15 = 7 THEN 'SUP-APTIV' WHEN {id_seq} % 15 = 8 THEN 'SUP-VALEO' WHEN {id_seq} % 15 = 9 THEN 'SUP-HELLA' WHEN {id_seq} % 15 = 10 THEN 'SUP-YAZAKI' WHEN {id_seq} % 15 = 11 THEN 'SUP-SUMITOMO' WHEN {id_seq} % 15 = 12 THEN 'SUP-MANDO' WHEN {id_seq} % 15 = 13 THEN 'SUP-SCHAEFFLER' ELSE 'SUP-NEXTEER' END"
         },
         {
           "name": "days_to_remedy",
@@ -134,7 +134,7 @@
           "sql_type": "STRING",
           "comment": "Type of remedy applied to resolve the recall",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.31 THEN 'Repair' WHEN {status_noise} < 0.55 THEN 'Replace' WHEN {status_noise} < 0.78 THEN 'Software Update' WHEN {status_noise} < 0.91 THEN 'Inspection' ELSE 'Owner Notification' END"
+          "generation_expr": "CASE WHEN {alt_status_noise3} < 0.31 THEN 'Repair' WHEN {alt_status_noise3} < 0.55 THEN 'Replace' WHEN {alt_status_noise3} < 0.78 THEN 'Software Update' WHEN {alt_status_noise3} < 0.91 THEN 'Inspection' ELSE 'Owner Notification' END"
         },
         {
           "name": "injuries_reported",
@@ -155,7 +155,7 @@
           "sql_type": "STRING",
           "comment": "Current status of the recall campaign",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.57 THEN 'Closed' WHEN {status_noise} < 0.85 THEN 'In Progress' ELSE 'Open' END"
+          "generation_expr": "CASE WHEN {alt_status_noise4} < 0.57 THEN 'Closed' WHEN {alt_status_noise4} < 0.85 THEN 'In Progress' ELSE 'Open' END"
         }
       ],
       "seasonal_patterns": {
@@ -401,7 +401,7 @@
           "sql_type": "STRING",
           "comment": "Component code identifying the failed part",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {seed} % 30 = 0 THEN 'SU-BLJ' WHEN {seed} % 30 = 1 THEN 'PT-TBW' WHEN {seed} % 30 = 2 THEN 'BR-PAD' WHEN {seed} % 30 = 3 THEN 'EL-BCM' WHEN {seed} % 30 = 4 THEN 'EN-THR' WHEN {seed} % 30 = 5 THEN 'IN-TCH' WHEN {seed} % 30 = 6 THEN 'FS-INJ' WHEN {seed} % 30 = 7 THEN 'ST-RCK' WHEN {seed} % 30 = 8 THEN 'CL-RAD' WHEN {seed} % 30 = 9 THEN 'EX-LED' WHEN {seed} % 30 = 10 THEN 'SE-BKL' WHEN {seed} % 30 = 11 THEN 'WH-BRG' WHEN {seed} % 30 = 12 THEN 'AD-CAM' WHEN {seed} % 30 = 13 THEN 'AB-SNS' WHEN {seed} % 30 = 14 THEN 'PT-CVT' WHEN {seed} % 30 = 15 THEN 'BR-ABS' WHEN {seed} % 30 = 16 THEN 'EL-ALT' WHEN {seed} % 30 = 17 THEN 'EN-WTP' WHEN {seed} % 30 = 18 THEN 'SU-SWA' WHEN {seed} % 30 = 19 THEN 'IN-AMP' WHEN {seed} % 30 = 20 THEN 'FS-PMP' WHEN {seed} % 30 = 21 THEN 'ST-EPS' WHEN {seed} % 30 = 22 THEN 'CL-FAN' WHEN {seed} % 30 = 23 THEN 'EX-HRN' WHEN {seed} % 30 = 24 THEN 'SE-MTR' WHEN {seed} % 30 = 25 THEN 'WH-TPS' WHEN {seed} % 30 = 26 THEN 'AD-RDR' WHEN {seed} % 30 = 27 THEN 'AB-INF' WHEN {seed} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END"
+          "generation_expr": "CASE WHEN {id_seq} % 30 = 0 THEN 'SU-BLJ' WHEN {id_seq} % 30 = 1 THEN 'PT-TBW' WHEN {id_seq} % 30 = 2 THEN 'BR-PAD' WHEN {id_seq} % 30 = 3 THEN 'EL-BCM' WHEN {id_seq} % 30 = 4 THEN 'EN-THR' WHEN {id_seq} % 30 = 5 THEN 'IN-TCH' WHEN {id_seq} % 30 = 6 THEN 'FS-INJ' WHEN {id_seq} % 30 = 7 THEN 'ST-RCK' WHEN {id_seq} % 30 = 8 THEN 'CL-RAD' WHEN {id_seq} % 30 = 9 THEN 'EX-LED' WHEN {id_seq} % 30 = 10 THEN 'SE-BKL' WHEN {id_seq} % 30 = 11 THEN 'WH-BRG' WHEN {id_seq} % 30 = 12 THEN 'AD-CAM' WHEN {id_seq} % 30 = 13 THEN 'AB-SNS' WHEN {id_seq} % 30 = 14 THEN 'PT-CVT' WHEN {id_seq} % 30 = 15 THEN 'BR-ABS' WHEN {id_seq} % 30 = 16 THEN 'EL-ALT' WHEN {id_seq} % 30 = 17 THEN 'EN-WTP' WHEN {id_seq} % 30 = 18 THEN 'SU-SWA' WHEN {id_seq} % 30 = 19 THEN 'IN-AMP' WHEN {id_seq} % 30 = 20 THEN 'FS-PMP' WHEN {id_seq} % 30 = 21 THEN 'ST-EPS' WHEN {id_seq} % 30 = 22 THEN 'CL-FAN' WHEN {id_seq} % 30 = 23 THEN 'EX-HRN' WHEN {id_seq} % 30 = 24 THEN 'SE-MTR' WHEN {id_seq} % 30 = 25 THEN 'WH-TPS' WHEN {id_seq} % 30 = 26 THEN 'AD-RDR' WHEN {id_seq} % 30 = 27 THEN 'AB-INF' WHEN {id_seq} % 30 = 28 THEN 'PT-OIL' ELSE 'BR-ROT' END"
         },
         {
           "name": "labor_hours",
@@ -443,7 +443,7 @@
           "sql_type": "STRING",
           "comment": "Claim review outcome",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.62 THEN 'Approved' WHEN {status_noise} < 0.77 THEN 'Partially Approved' WHEN {status_noise} < 0.90 THEN 'Pending Review' ELSE 'Denied' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.62 THEN 'Approved' WHEN {alt_status_noise} < 0.77 THEN 'Partially Approved' WHEN {alt_status_noise} < 0.90 THEN 'Pending Review' ELSE 'Denied' END"
         }
       ],
       "seasonal_patterns": {
@@ -670,7 +670,8 @@
           "sql_type": "DECIMAL(5,2)",
           "comment": "Monthly customer satisfaction score (0-100 scale)",
           "is_dimension": false,
-          "generation_expr": "ROUND(67.0 + {qty_noise} * 15.0, 2)"
+          "generation_expr": "ROUND(67.0 + ({qty_noise} * {seasonal_mult}) * 15.0, 2)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -836,15 +837,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The recall_analysis_metrics view (source: recall_events) has dimensions: component_group, severity_level, root_cause_category, recall_month. Measures: total_recall_events, total_estimated_cost, avg_units_affected, avg_days_to_remedy, critical_recall_count. The warranty_claim_metrics view (source: warranty_claims) has dimensions: region, claim_disposition, claim_month. Measures: total_claims, total_claim_cost, avg_claim_cost, avg_labor_hours. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. make, metric_period, model, model_year, vehicle_class, vehicle_model_id).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports recall and defect analytics at Apex Motor Group across 20 vehicle models and 15 tier-1 suppliers. Stakeholders include the Quality VP (severity, root cause, supplier escapes), the Warranty/CFO finance team (estimated cost, claim cost, exposure), and Field Quality engineers (days to remedy, NHTSA 60-day clock, component patterns). Recalls are filed with NHTSA and must reach a final owner-notification remedy within 60 days; the industry completion-rate benchmark is roughly 75–87%.\n\nMETRIC DEFINITIONS\n- Recall severity = severity_level on recall_events (Minor, Major, Safety Advisory, Critical)\n- Root cause = root_cause_category on recall_events (Supplier Quality Escape, Design Deficiency, etc.)\n- Days to remedy = days_to_remedy on recall_events; benchmark <60 days per NHTSA\n- Units affected = units_affected on recall_events; total_estimated_cost = full campaign exposure in USD\n- Safety exposure = injuries_reported + fatalities_reported on recall_events\n- Warranty claim cost = total_claim_cost_usd (= parts_cost_usd + labor_cost_usd) on warranty_claims\n- Monthly recall throughput = total_recalls_opened / total_recalls_closed on recall_metrics_monthly\n- Customer satisfaction = customer_satisfaction_score (0–100) on recall_metrics_monthly\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - recall_analysis_metrics (source: recall_events) — dims: component_group, severity_level, root_cause_category, recall_month; measures: total_recall_events, total_estimated_cost, avg_units_affected, avg_days_to_remedy, critical_recall_count, total_estimated_repair_cost_per_unit, unique_vehicle_model_count, unique_supplier_count, open_recall_event_count, max_units_affected.\n  - warranty_claim_metrics (source: warranty_claims) — dims: region, claim_disposition, claim_month; measures: total_claims, total_claim_cost, avg_claim_cost, avg_labor_hours, total_parts_cost, total_labor_cost, unique_vehicle_model_count, unique_component_count, max_mileage_at_claim, total_mileage_at_claim.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. supplier_id, recall_nhtsa_number, remedy_type, injuries_reported, fatalities_reported, component_code).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the critical recall count by component group?",
-    "Which component groups have the highest open status count?",
-    "How does the number of unique vehicle models vary by component group?",
-    "How many unique suppliers are there per component group?",
-    "Which regions have the most unique vehicle models?",
-    "How does the number of unique components vary by region?",
-    "What is the highest mileage at claim for each region?"
+    "Show monthly recall event volume and total estimated cost for the trailing 12 months.",
+    "Top 10 suppliers by total estimated recall cost — which tier-1s are driving the most financial exposure?",
+    "Which component groups have the highest critical recall count and average days to remedy?",
+    "What is the total estimated cost of all open recall campaigns by component group?",
+    "How has average days to remedy trended month-over-month vs the NHTSA 60-day benchmark?",
+    "Top 10 vehicle models by units affected in recall campaigns over the trailing 12 months.",
+    "Which regions have the highest warranty claim cost per claim, and what components are driving it?"
   ],
   "example_sqls": [
     {

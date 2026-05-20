@@ -3,7 +3,7 @@
   "industry": "Logistics",
   "use_case": "Route planning, fuel optimization, and delivery efficiency",
   "space_title": "TransRoute Logistics - Route Planning & Delivery Efficiency 🗺️",
-  "space_description": "Route analytics for TransRoute Logistics. Ask about route segments, fuel costs, load utilization, traffic delays, on-time delivery rates, and CO2 emissions across 28 vehicles and regional depots.",
+  "space_description": "**Subindustry:** Logistics\n\n**Use case:** Route Planning, Fuel Optimization & Delivery Efficiency\n\nTransRoute Logistics — segment-level route analytics across 28 mixed-fleet vehicles (Semi / Truck / Van) and 10 metro depots. VP Logistics and Fleet Managers use the space to spot underperforming lanes and overweight-empty miles; the S&OP Lead and CFO use it to manage fuel spend, OTIF performance, and CO2 disclosure for scope-1 reporting.\n\n**Key KPIs**\n- Fuel cost per km (USD) — primary driver of variable cost; benchmark $0.18–$0.30/km for diesel semis\n- Load utilization % — capacity fill rate; <70% signals deadhead / under-loading exposure\n- On-time delivery % — customer SLA metric; 95%+ is industry target\n- Fuel efficiency (km / liter) — operating ratio and ESG metric\n- Cost per delivery (USD) — unit economics for pricing and margin analysis\n- Traffic delay minutes — congestion / route-quality indicator\n- CO2 emissions (kg) — scope-1 reporting and customer ESG asks\n- Total distance km — exposure base for all per-km ratios\n\n**Data sources**\n- `vehicles` — fleet master (type, capacity, fuel, home depot, status) for 28 assets\n- `route_segments` — daily segment-level records with distance, fuel, load, traffic, weather\n- `route_efficiency_metrics` — weekly rollups per vehicle: distance, fuel, OTD, cost per delivery, CO2",
   "schema_basename": "route_planning",
   "tables": [
     {
@@ -415,7 +415,7 @@
           "sql_type": "STRING",
           "comment": "Segment destination city",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.1 THEN 'Denver' WHEN {status_noise} < 0.2 THEN 'Miami' WHEN {status_noise} < 0.3 THEN 'Chicago' WHEN {status_noise} < 0.4 THEN 'New York' WHEN {status_noise} < 0.5 THEN 'Dallas' WHEN {status_noise} < 0.6 THEN 'Atlanta' WHEN {status_noise} < 0.7 THEN 'Los Angeles' WHEN {status_noise} < 0.8 THEN 'Phoenix' WHEN {status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.1 THEN 'Denver' WHEN {alt_status_noise} < 0.2 THEN 'Miami' WHEN {alt_status_noise} < 0.3 THEN 'Chicago' WHEN {alt_status_noise} < 0.4 THEN 'New York' WHEN {alt_status_noise} < 0.5 THEN 'Dallas' WHEN {alt_status_noise} < 0.6 THEN 'Atlanta' WHEN {alt_status_noise} < 0.7 THEN 'Los Angeles' WHEN {alt_status_noise} < 0.8 THEN 'Phoenix' WHEN {alt_status_noise} < 0.9 THEN 'Seattle' ELSE 'Houston' END"
         },
         {
           "name": "distance_km",
@@ -450,7 +450,8 @@
           "sql_type": "DOUBLE",
           "comment": "Load weight as percent of vehicle capacity",
           "is_dimension": false,
-          "generation_expr": "ROUND(30 + {qty_noise} * 65, 2)"
+          "generation_expr": "ROUND(30 + ({qty_noise} * {seasonal_mult}) * 65, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "traffic_delay_minutes",
@@ -464,7 +465,7 @@
           "sql_type": "STRING",
           "comment": "Weather during segment: Clear, Rain, Snow, Fog",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.55 THEN 'Clear' WHEN {status_noise} < 0.80 THEN 'Rain' WHEN {status_noise} < 0.93 THEN 'Snow' ELSE 'Fog' END"
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.55 THEN 'Clear' WHEN {alt_status_noise2} < 0.80 THEN 'Rain' WHEN {alt_status_noise2} < 0.93 THEN 'Snow' ELSE 'Fog' END"
         }
       ],
       "seasonal_patterns": {
@@ -647,7 +648,8 @@
           "sql_type": "DOUBLE",
           "comment": "Percentage of deliveries completed on time",
           "is_dimension": false,
-          "generation_expr": "ROUND(75 + {qty_noise} * 24, 2)"
+          "generation_expr": "ROUND(75 + ({qty_noise} * {seasonal_mult}) * 24, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "deliveries_completed",
@@ -917,15 +919,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The route_segments_metrics view (source: route_segments) has dimensions: segment_date, vehicle_type, origin_location, destination_location, weather_condition. Measures: total_distance_km, total_fuel_consumed_liters, total_fuel_cost_usd, avg_load_utilization_pct, avg_traffic_delay_minutes, segment_count. The route_efficiency_metrics_mv view (source: route_efficiency_metrics) has dimensions: week_start, vehicle_type, vehicle_id. Measures: total_weekly_distance_km, total_weekly_fuel_liters, avg_on_time_delivery_pct, total_deliveries_completed, avg_cost_per_delivery_usd, total_co2_emissions_kg. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. fuel_type, home_depot, status, vehicle_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports route planning, fuel optimization, and delivery efficiency for a mixed-fleet 3PL running 28 vehicles (Semi / Truck / Van) across 10 metro depots. Stakeholders include the VP Logistics (lane performance, OTD), Fleet Manager (load utilization, deadhead, fuel efficiency), S&OP Lead (capacity planning), and CFO (cost per km, cost per delivery, scope-1 CO2 reporting).\n\nMETRIC DEFINITIONS\n- Fuel cost per km = fuel_cost_usd / distance_km; healthy diesel semi ~$0.18–$0.30/km, vans lower\n- Load utilization = load_utilization_pct on route_segments; <70% indicates deadhead / under-loaded risk\n- Fuel efficiency = distance_km / fuel_consumed_liters; null for Electric vehicles\n- On-time delivery rate = on_time_delivery_pct on route_efficiency_metrics; target 95%+\n- Cost per delivery = cost_per_delivery_usd; primary unit-economics metric\n- CO2 emissions = co2_emissions_kg (scope-1, ~2.68 kg per liter diesel)\n- Traffic delay = traffic_delay_minutes per segment; congestion / route-quality signal\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - route_segments_metrics (source: route_segments) — dims: segment_date, vehicle_type, origin_location, destination_location, weather_condition; measures: total_distance_km, total_fuel_consumed_liters, total_fuel_cost_usd, avg_load_utilization_pct, avg_traffic_delay_minutes, segment_count, total_load_weight_kg, unique_vehicle_count, unique_route_count, max_distance_km.\n  - route_efficiency_metrics_mv (source: route_efficiency_metrics) — dims: week_start, vehicle_type, vehicle_id; measures: total_weekly_distance_km, total_weekly_fuel_liters, avg_on_time_delivery_pct, total_deliveries_completed, avg_cost_per_delivery_usd, total_co2_emissions_kg, max_total_distance_km.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. vehicle_name, fuel_type, home_depot, status, route_id).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in unique segments?",
-    "How has unique vehicles changed over time?",
-    "What is the monthly trend in unique routes?",
-    "How has highest distance km changed over time?",
-    "What is the highest total distance km for each week start?",
-    "What is the weekly distances in km for each week start?",
-    "How does weekly fuel consumption in liters vary by week start?"
+    "Show the monthly trend in total fuel cost across the network for the trailing 12 months.",
+    "How has on-time delivery percentage trended month-over-month by vehicle type?",
+    "Top 10 origin-destination lanes by total fuel cost this quarter — which are dragging margin?",
+    "Top 10 vehicles by cost per delivery last month, and what was their average load utilization?",
+    "Which weather conditions correlate with the highest average traffic delay minutes?",
+    "What is the total CO2 emissions trend monthly by vehicle type for scope-1 reporting?",
+    "How does average load utilization compare across Semi, Truck, and Van fleets for the last 90 days?"
   ],
   "example_sqls": [
     {

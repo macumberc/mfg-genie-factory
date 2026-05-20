@@ -1,0 +1,181 @@
+"""Monthly refresh job: tear down and redeploy all 88 manufacturing demos.
+
+This module is invoked monthly by a Databricks Workflow to keep the
+rolling-date data window current. Each refresh:
+
+  1. Lists every (subindustry, use_case) pair available via presets.
+  2. For each, calls ``genie_factory.notebook.deploy_use_case(...)`` which
+     drops the schema, regenerates data from the current calendar, and
+     replaces the Genie space with a fresh one. ``deploy()`` is already
+     idempotent — it CREATE OR REPLACEs tables, transfers ownership, and
+     replaces managed Genie spaces.
+  3. Reports per-spec outcome to a JSON manifest written into a workspace
+     volume so the operator can spot-check.
+
+Concurrency stays at 3 to respect the workspace's 5-qpm Genie space
+creation cap (see CLAUDE.md).
+
+Run via the Databricks notebook task in ``notebooks/monthly_refresh.py``
+or locally with::
+
+    python -m genie_factory.refresh --concurrency 3
+
+Environment overrides:
+
+  GENIE_FACTORY_END_DATE     pin the calendar end date (ISO yyyy-mm-dd)
+  GENIE_FACTORY_REFRESH_OUT  path to write per-spec result JSON
+  GENIE_FACTORY_CONCURRENCY  override concurrency (default 3)
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import os
+import sys
+import time
+import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from .presets import SUBINDUSTRIES, USE_CASES
+
+_logger = logging.getLogger("genie_factory.refresh")
+
+
+def _all_use_case_pairs() -> list[tuple[str, str]]:
+    """Return every (subindustry, use_case_label) pair in the preset corpus."""
+    pairs: list[tuple[str, str]] = []
+    for sub in SUBINDUSTRIES:
+        for uc in USE_CASES.get(sub, []):
+            pairs.append((sub, uc["label"]))
+    return pairs
+
+
+def _deploy_one(sub: str, label: str, spark: Any = None) -> dict[str, Any]:
+    """Run a single deploy. Catches all errors so one bad spec doesn't
+    abort the whole refresh. ``spark`` is captured on the orchestrator
+    thread and passed in because ``SparkSession.getActiveSession()`` is
+    thread-local on Databricks runtimes and returns None in worker threads.
+    """
+    from .notebook import deploy_use_case
+
+    started = time.time()
+    overrides: dict[str, Any] = {}
+    if spark is not None:
+        overrides["spark"] = spark
+    try:
+        result = deploy_use_case(sub, label, **overrides)
+        return {
+            "subindustry": sub,
+            "use_case": label,
+            "status": "success",
+            "duration_seconds": round(time.time() - started, 1),
+            "fqn": result.get("fqn"),
+            "tables": result.get("tables"),
+            "genie": result.get("genie"),
+            "warnings": result.get("warnings", []),
+        }
+    except Exception as exc:  # noqa: BLE001 — we genuinely want to swallow per-spec
+        return {
+            "subindustry": sub,
+            "use_case": label,
+            "status": "error",
+            "duration_seconds": round(time.time() - started, 1),
+            "error": str(exc),
+            "traceback": traceback.format_exc(),
+        }
+
+
+def refresh_all(
+    concurrency: int = 3,
+    out_path: Path | None = None,
+    spark: Any = None,
+) -> dict[str, Any]:
+    """Refresh every spec in parallel (bounded by ``concurrency``).
+
+    Returns a manifest dict with per-spec results and an overall summary.
+    Writes the manifest to ``out_path`` (defaults to
+    ``/tmp/genie_factory_refresh_<UTC timestamp>.json``).
+
+    ``spark`` must be supplied when invoked from a Databricks notebook —
+    pass the global ``spark`` from the calling cell. ``SparkSession.
+    getActiveSession()`` is thread-local on Databricks runtimes and
+    returns None inside the ThreadPoolExecutor workers, so we capture it
+    here and forward to each ``_deploy_one`` call explicitly.
+    """
+    pairs = _all_use_case_pairs()
+    _logger.info(
+        "Starting refresh of %d demos at concurrency %d (anchor=%s)",
+        len(pairs),
+        concurrency,
+        os.environ.get("GENIE_FACTORY_END_DATE") or "CURRENT_DATE()",
+    )
+
+    # If the caller didn't pass spark, try to resolve it from the active
+    # session on this (main) thread. Worker threads can't, so we capture
+    # it here once.
+    if spark is None:
+        try:
+            from pyspark.sql import SparkSession
+            spark = SparkSession.getActiveSession()
+        except Exception:  # noqa: BLE001
+            spark = None
+
+    results: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=concurrency) as pool:
+        futures = {pool.submit(_deploy_one, sub, label, spark): (sub, label) for sub, label in pairs}
+        for fut in as_completed(futures):
+            r = fut.result()
+            results.append(r)
+            tag = r["status"].upper()
+            _logger.info("[%s] %s/%s in %ss", tag, r["subindustry"], r["use_case"], r["duration_seconds"])
+
+    ok = sum(1 for r in results if r["status"] == "success")
+    err = sum(1 for r in results if r["status"] == "error")
+    manifest = {
+        "ran_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "anchor_date": os.environ.get("GENIE_FACTORY_END_DATE") or "CURRENT_DATE()",
+        "concurrency": concurrency,
+        "total": len(results),
+        "success": ok,
+        "error": err,
+        "results": sorted(results, key=lambda r: (r["subindustry"], r["use_case"])),
+    }
+
+    if out_path is None:
+        ts = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        out_path = Path(os.environ.get("GENIE_FACTORY_REFRESH_OUT", f"/tmp/genie_factory_refresh_{ts}.json"))
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(manifest, indent=2))
+
+    _logger.info("Refresh complete: %d/%d success, %d error. Manifest: %s", ok, len(results), err, out_path)
+    return manifest
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=int(os.environ.get("GENIE_FACTORY_CONCURRENCY", "3")),
+        help="parallel deploys (default 3 to stay under 5 qpm Genie cap)",
+    )
+    parser.add_argument("--out", type=Path, default=None, help="manifest output path")
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args(argv)
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        datefmt="%H:%M:%S",
+    )
+    manifest = refresh_all(concurrency=args.concurrency, out_path=args.out)
+    return 0 if manifest["error"] == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

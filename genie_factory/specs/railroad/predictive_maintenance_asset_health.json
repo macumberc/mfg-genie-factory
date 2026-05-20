@@ -3,7 +3,7 @@
   "industry": "Railroad",
   "use_case": "Predictive maintenance and asset health monitoring for rolling stock",
   "space_title": "TrackGuard Systems - Predictive Maintenance & Asset Health 🔧",
-  "space_description": "Railroad asset health analytics for TrackGuard Systems. Ask about sensor anomalies, failure predictions, maintenance schedules, and fleet health across 20 locomotives and railcars.",
+  "space_description": "**Subindustry:** Railroad\n\n**Use case:** Predictive Maintenance & Rolling Stock Asset Health\n\nTrackGuard Systems — fleet reliability analytics for a Class I railroad operating 20 locomotives and railcars across Line Haul, Yard, Bulk, Intermodal, Hazmat, and General fleets. Mechanical VPs and Reliability leaders use this space to monitor sensor anomalies, prioritize at-risk units, and shift the work mix from corrective to preventive; the CFO uses it to size maintenance budgets, track parts/labor spend, and quantify downtime exposure on the operating ratio.\n\n**Key KPIs**\n- Fleet health score (0-100) — ML composite of vibration, bearing temp, oil pressure\n- 30-day failure probability (%) — leading indicator for unplanned removals\n- Remaining useful life (days) — capital and overhaul planning input\n- Emergency event count — reliability and FRA reportable risk signal\n- Total downtime hours — service availability and revenue exposure\n- Parts + labor spend ($) vs maintenance budget — cost discipline\n- Failure component mix — Engine / Brakes / Wheels / Bearings / Couplers / Electronics root-cause concentration\n- Preventive-to-corrective ratio — reliability maturity benchmark\n\n**Data sources**\n- `rolling_stock` — daily sensor readings (vibration, bearing temp, oil pressure, health score) per asset\n- `sensor_readings` — weekly maintenance events with work-order cost, downtime, and failure component\n- `maintenance_events` — monthly fleet forecasts: failure probability, RUL, budget vs actual, risk level",
   "schema_basename": "railroad_pred_maint",
   "tables": [
     {
@@ -78,7 +78,8 @@
           "sql_type": "DOUBLE",
           "comment": "ML-predicted health score 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(40.0 + ({qty_noise} * 60.0), 1)"
+          "generation_expr": "ROUND(40.0 + (({qty_noise} * {seasonal_mult}) * 60.0), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -296,7 +297,7 @@
           "sql_type": "STRING",
           "comment": "Component: Engine, Brakes, Wheels, Bearings, Couplers, Electronics",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Engine' WHEN {status_noise} < 0.38 THEN 'Brakes' WHEN {status_noise} < 0.55 THEN 'Wheels' WHEN {status_noise} < 0.70 THEN 'Bearings' WHEN {status_noise} < 0.85 THEN 'Couplers' ELSE 'Electronics' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.20 THEN 'Engine' WHEN {alt_status_noise} < 0.38 THEN 'Brakes' WHEN {alt_status_noise} < 0.55 THEN 'Wheels' WHEN {alt_status_noise} < 0.70 THEN 'Bearings' WHEN {alt_status_noise} < 0.85 THEN 'Couplers' ELSE 'Electronics' END"
         }
       ],
       "seasonal_patterns": {
@@ -486,14 +487,15 @@
           "sql_type": "DOUBLE",
           "comment": "30-day failure probability 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 40.0, 2)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 40.0, 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "remaining_useful_life_days",
           "sql_type": "INT",
           "comment": "Estimated RUL in days",
           "is_dimension": false,
-          "generation_expr": "CAST(30 + FLOOR({qty_noise} * 330) AS INT)"
+          "generation_expr": "CAST(30 + FLOOR({qty_noise2} * 330) AS INT)"
         },
         {
           "name": "maintenance_budget_usd",
@@ -777,15 +779,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The health_monthly view (source: rolling_stock) has dimensions: reading_date, asset_type, fleet. Measures: avg_health_score, avg_vibration, avg_bearing_temp, asset_count, low_health_count. The maintenance_cost_monthly view (source: sensor_readings) has dimensions: event_date, asset_type, event_type, failure_component. Measures: total_parts_cost, total_labor_cost, total_downtime_hours, event_count, emergency_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. asset_id, asset_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Predictive Maintenance and Asset Health for a Class I railroad fleet of 20 locomotives and railcars across Line Haul, Yard, Bulk, Intermodal, Hazmat, and General fleets. Stakeholders include the VP Mechanical (health score, failure probability, downtime), Reliability Engineering (component failure mix, RUL, emergency events), and the CFO (parts/labor spend vs maintenance budget, capex tradeoffs).\n\nMETRIC DEFINITIONS\n- Fleet health score = AVG(health_score); healthy ~80+ (custom 0-100 composite of vibration, bearing temp, oil pressure)\n- Vibration = vibration_g; >3.0 g sustained indicates bearing or wheel-tread wear\n- Bearing temperature = bearing_temp_celsius; >85 C is hot-bearing alert threshold (industry rule of thumb)\n- 30-day failure probability = failure_probability_pct; >25% triggers proactive shopping\n- Remaining useful life = remaining_useful_life_days; <90 days warrants overhaul scheduling\n- Locomotive MTBF benchmark: world-class fleets aim for 2,000+ operating hours between failures; AI-driven PdM can lift MTBF 3-5x over reactive baselines\n- Emergency event share = emergency_count / event_count; world-class reliability programs hold this <5% with the balance being Preventive + Inspection\n- Maintenance cost ratio = (parts_cost_usd + labor_cost_usd) vs maintenance_budget_usd; track budget variance monthly\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - health_monthly (source: rolling_stock) — dims: reading_date, asset_type, fleet; measures: avg_health_score, avg_vibration, avg_bearing_temp, asset_count, low_health_count, total_oil_pressure_psi, max_vibration_g.\n  - maintenance_cost_monthly (source: sensor_readings) — dims: event_date, asset_type, event_type, failure_component; measures: total_parts_cost, total_labor_cost, total_downtime_hours, event_count, emergency_count, unique_asset_count, max_downtime_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. asset_id, asset_name, failure_probability_pct, remaining_useful_life_days, maintenance_budget_usd, actual_maintenance_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in low health count?",
-    "How has unique assets changed over time?",
-    "What is the monthly trend in highest vibration g?",
-    "How has total oil pressure psi changed over time?",
-    "What is the monthly trend in emergency count?",
-    "How has unique events changed over time?",
-    "What is the monthly trend in unique assets?"
+    "Show the monthly trend in fleet average health score over the trailing 12 months by asset type.",
+    "Top 10 assets by total downtime hours over the last 90 days.",
+    "Which assets have a 30-day failure probability above 25% and less than 90 days of remaining useful life?",
+    "How has the share of emergency events versus preventive events trended month-over-month across the fleet?",
+    "What is the total parts plus labor spend by failure component for the last quarter, and how does it compare to budget?",
+    "Rank the 6 asset types by average bearing temperature in the latest month of data — flag any above 85 Celsius.",
+    "Show monthly maintenance budget versus actual spend by fleet over the trailing 6 months."
   ],
   "example_sqls": [
     {

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import os
 import re
+from datetime import date
 from typing import Any
 
 
@@ -133,6 +135,24 @@ def _validate_expression(expr: str, context: str = "") -> str | None:
     return None
 
 
+_SEED_MOD_PATTERN = re.compile(r"\{\s*seed\s*\}\s*%\s*\d+", re.IGNORECASE)
+
+
+def _validate_no_seed_modulo(expr: str, context: str = "") -> str | None:
+    """Forbid ``{seed} % N`` patterns — they collapse to a per-deploy constant.
+
+    Use ``{id_seq} % N`` instead so the value varies per (date, entity) row.
+    """
+    if not expr:
+        return None
+    if _SEED_MOD_PATTERN.search(expr):
+        return (
+            f"Forbidden pattern '{{seed}} % N' in {context}: use '{{id_seq}} % N' "
+            "so the value varies per row (otherwise the column collapses to one constant per deploy)."
+        )
+    return None
+
+
 # SQL reserved words that need backtick-quoting when used as column names
 _SQL_RESERVED = frozenset({
     "select", "from", "where", "case", "when", "then", "else", "end",
@@ -209,9 +229,37 @@ def metric_view_fqdns(domain_spec: Any, fqn: str) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 
+def _anchor_year() -> int:
+    """Return the calendar year that anchors the data range end.
+
+    Honors ``GENIE_FACTORY_END_DATE`` (ISO format) for reproducible runs,
+    else rolls with the system clock so demos always feel current.
+    """
+    pinned = os.environ.get("GENIE_FACTORY_END_DATE", "").strip()
+    if pinned:
+        try:
+            return int(pinned.split("-", 1)[0])
+        except ValueError:
+            pass
+    return date.today().year
+
+
 def _start_year(scale: int) -> int:
-    """Compute the start year based on scale (scale=1 -> 2025 only)."""
-    return 2025 - (scale - 1)
+    """Compute the start year. Rolls with current year so scale=3 in 2026 -> 2024."""
+    return _anchor_year() - (scale - 1)
+
+
+def _end_date_sql(archetype: str) -> str:
+    """Return a Spark SQL expression for the data range end date.
+
+    Forecast tables extend +6 months past the anchor so "next quarter"
+    style questions return data. Transaction/snapshot end at the anchor.
+    """
+    pinned = os.environ.get("GENIE_FACTORY_END_DATE", "").strip()
+    anchor_sql = f"DATE'{pinned}'" if pinned else "CURRENT_DATE()"
+    if archetype == "forecast":
+        return f"add_months({anchor_sql}, 6)"
+    return anchor_sql
 
 
 def _build_table_sql(table: Any, fqn: str, seed: int, scale: int, target_rows: int | None = None) -> str:
@@ -297,10 +345,19 @@ def _build_table_sql(table: Any, fqn: str, seed: int, scale: int, target_rows: i
     else:
         case_expr = "    CASE\n" + "\n".join(case_lines) + f"\n      ELSE {fallback_prob:.4f}\n    END"
 
-    # Hash-based noise columns (backtick-quote entity PK for safety)
+    # Hash-based noise columns (backtick-quote entity PK for safety).
+    # Distinct salts decorrelate columns; spec authors who need
+    # independent CASE-on-noise use {alt_status_noise[2..5]} so up to six
+    # CASE columns in one table can each ride their own independent hash.
     pk_ref = f"e.`{entity_pk}`"
     qty_noise = _hash_fraction(seed, "qty_noise", "d.dt", pk_ref)
+    qty_noise2 = _hash_fraction(seed, "qty_noise2", "d.dt", pk_ref)
     status_noise = _hash_fraction(seed, "status_noise", "d.dt", pk_ref)
+    alt_status_noise = _hash_fraction(seed, "alt_status_noise", "d.dt", pk_ref)
+    alt_status_noise2 = _hash_fraction(seed, "alt_status_noise2", "d.dt", pk_ref)
+    alt_status_noise3 = _hash_fraction(seed, "alt_status_noise3", "d.dt", pk_ref)
+    alt_status_noise4 = _hash_fraction(seed, "alt_status_noise4", "d.dt", pk_ref)
+    alt_status_noise5 = _hash_fraction(seed, "alt_status_noise5", "d.dt", pk_ref)
     select_noise = _hash_fraction(seed, "select_noise", "d.dt", pk_ref)
     id_seq = _hash_int(seed, "id_seq", "d.dt", pk_ref, modulo=500)
 
@@ -320,11 +377,41 @@ def _build_table_sql(table: Any, fqn: str, seed: int, scale: int, target_rows: i
     for col in table.columns:
         expr = col.generation_expr
         if expr:
-            # Case-insensitive placeholder replacement
+            # Forbid {seed}%N patterns — they collapse to a per-deploy constant.
+            seed_mod_err = _validate_no_seed_modulo(expr, context=col.name)
+            if seed_mod_err:
+                expression_errors.append(seed_mod_err)
+
+            # Per-column seasonal multiplier — resolves {seasonal_mult} to a
+            # MONTH-based sinusoid plus optional year-over-year drift.
+            amp = float(getattr(col, "seasonal_amplitude", 0.0) or 0.0)
+            yoy = float(getattr(col, "yoy_growth", 0.0) or 0.0)
+            if amp or yoy:
+                pieces = ["1.0"]
+                if amp:
+                    pieces.append(f"{amp:.4f} * SIN(2 * PI() * MONTH(d.dt) / 12.0)")
+                if yoy:
+                    pieces.append(f"{yoy:.4f} * (YEAR(d.dt) - {start_year})")
+                seasonal_mult_sql = "(" + " + ".join(pieces) + ")"
+            else:
+                seasonal_mult_sql = "1.0"
+
+            # Case-insensitive placeholder replacement. Note: longest names
+            # listed first so {alt_status_noise5} isn't partially matched by
+            # the shorter {alt_status_noise} pattern below.
             for placeholder, replacement in [
                 ("{fqn}", fqn), ("{table}", table.table_name),
-                ("{qty_noise}", "qty_noise"), ("{status_noise}", "status_noise"),
-                ("{select_noise}", "select_noise"), ("{id_seq}", "id_seq"),
+                ("{alt_status_noise5}", "alt_status_noise5"),
+                ("{alt_status_noise4}", "alt_status_noise4"),
+                ("{alt_status_noise3}", "alt_status_noise3"),
+                ("{alt_status_noise2}", "alt_status_noise2"),
+                ("{alt_status_noise}", "alt_status_noise"),
+                ("{qty_noise2}", "qty_noise2"),
+                ("{qty_noise}", "qty_noise"),
+                ("{status_noise}", "status_noise"),
+                ("{select_noise}", "select_noise"),
+                ("{id_seq}", "id_seq"),
+                ("{seasonal_mult}", seasonal_mult_sql),
                 ("{seed}", str(seed)),
             ]:
                 expr = re.sub(re.escape(placeholder), replacement, expr, flags=re.IGNORECASE)
@@ -365,6 +452,8 @@ def _build_table_sql(table: Any, fqn: str, seed: int, scale: int, target_rows: i
         pair_hash = _hash_int(seed, "pair_hash", pk_ref, modulo=100)
         pair_filter = f"  WHERE {pair_hash} < 52\n"
 
+    end_date_sql = _end_date_sql(archetype)
+
     sql = f"""CREATE OR REPLACE TABLE {fqn}.{table.table_name} AS
 WITH
 entities AS (
@@ -373,14 +462,20 @@ entities AS (
   AS t({entity_aliases})
 ),
 date_range AS (
-  SELECT EXPLODE(SEQUENCE(DATE'{start_year}-01-01', DATE'2025-12-31', {interval})) AS dt
+  SELECT EXPLODE(SEQUENCE(DATE'{start_year}-01-01', {end_date_sql}, {interval})) AS dt
 ),
 skeleton AS (
   SELECT
     d.dt,
     e.*,
     {qty_noise} AS qty_noise,
+    {qty_noise2} AS qty_noise2,
     {status_noise} AS status_noise,
+    {alt_status_noise} AS alt_status_noise,
+    {alt_status_noise2} AS alt_status_noise2,
+    {alt_status_noise3} AS alt_status_noise3,
+    {alt_status_noise4} AS alt_status_noise4,
+    {alt_status_noise5} AS alt_status_noise5,
     {select_noise} AS select_noise,
     {id_seq} AS id_seq,
     MONTH(d.dt) AS mo
@@ -411,6 +506,94 @@ def _yaml_safe(value: str) -> str:
     return value
 
 
+_SUM_MEASURE_PATTERN = re.compile(r"^\s*SUM\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*$", re.IGNORECASE)
+_AVG_MEASURE_PATTERN = re.compile(r"^\s*AVG\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*$", re.IGNORECASE)
+# Compound SUM/AVG: SUM(<arbitrary inner>) where inner contains math/cols but
+# no aggregate keyword. Used to synthesize AVG companions for revenue-style
+# measures defined as SUM(qty * price), SUM(a + b), etc.
+_SUM_COMPOUND_PATTERN = re.compile(r"^\s*SUM\s*\((.+)\)\s*$", re.IGNORECASE | re.DOTALL)
+_AVG_COMPOUND_PATTERN = re.compile(r"^\s*AVG\s*\((.+)\)\s*$", re.IGNORECASE | re.DOTALL)
+
+
+def _synthesize_avg_measures(measures: list[dict]) -> list[dict]:
+    """Auto-append an ``AVG(...)`` measure for every ``SUM(...)`` that lacks
+    a sibling AVG.
+
+    Handles two shapes:
+      - ``SUM(col)``      → ``AVG(col)`` named ``avg_<col>``
+      - ``SUM(<expr>)``   → ``AVG(<expr>)`` named ``avg_<source_measure>``
+        (compound-SUM case: SUM(qty * price), SUM(a + b), etc.)
+
+    AVG of a compound is the row-mean of the same expression — the
+    "per-row average revenue" / "per-row average cost" that Genie needs
+    when a user asks "what was the average order revenue?". The
+    measure name is derived from the source measure (strip ``total_``
+    or ``sum_`` prefix, prepend ``avg_``) to give a readable Genie label.
+    """
+    existing_avg_normalized: set[str] = set()
+    existing_avg_compound: set[str] = set()
+    sum_simple: list[tuple[str, str]] = []  # (col, src_measure_name)
+    sum_compound: list[tuple[str, str]] = []  # (inner_expr, src_measure_name)
+
+    def _norm(expr: str) -> str:
+        return re.sub(r"\s+", "", expr).lower()
+
+    for m in measures:
+        expr = (m.get("expr") or "").strip()
+        avg_simple_match = _AVG_MEASURE_PATTERN.match(expr)
+        sum_simple_match = _SUM_MEASURE_PATTERN.match(expr)
+        if avg_simple_match:
+            existing_avg_normalized.add(avg_simple_match.group(1).lower())
+            existing_avg_compound.add(_norm(avg_simple_match.group(1)))
+            continue
+        avg_comp_match = _AVG_COMPOUND_PATTERN.match(expr)
+        if avg_comp_match:
+            existing_avg_compound.add(_norm(avg_comp_match.group(1)))
+            continue
+        if sum_simple_match:
+            sum_simple.append((sum_simple_match.group(1), m["name"]))
+            continue
+        sum_comp_match = _SUM_COMPOUND_PATTERN.match(expr)
+        if sum_comp_match:
+            sum_compound.append((sum_comp_match.group(1).strip(), m["name"]))
+
+    existing_names = {m["name"] for m in measures}
+    synthesized: list[dict] = []
+
+    for target, src_name in sum_simple:
+        if target.lower() in existing_avg_normalized:
+            continue
+        candidate = f"avg_{target}".lower()
+        if candidate in existing_names:
+            continue
+        synthesized.append({
+            "name": candidate,
+            "expr": f"AVG({target})",
+            "comment": f"Average {target} per row (auto-synthesized companion to {src_name}).",
+        })
+        existing_names.add(candidate)
+
+    for inner_expr, src_name in sum_compound:
+        if _norm(inner_expr) in existing_avg_compound:
+            continue
+        # Derive a readable measure name from the source: strip total_/sum_ prefix.
+        base = re.sub(r"^(total_|sum_)", "", src_name, flags=re.IGNORECASE)
+        candidate = f"avg_{base}".lower()
+        if candidate in existing_names:
+            # Fall back to a hash-stable name to avoid collision.
+            candidate = f"avg_{src_name}".lower()
+            if candidate in existing_names:
+                continue
+        synthesized.append({
+            "name": candidate,
+            "expr": f"AVG({inner_expr})",
+            "comment": f"Average per-row value (auto-synthesized companion to {src_name}).",
+        })
+        existing_names.add(candidate)
+
+    return synthesized
+
+
 def _build_metric_view_sql(mv: Any, fqn: str) -> str:
     """Build a CREATE VIEW WITH METRICS statement from a MetricViewSpec."""
 
@@ -419,8 +602,14 @@ def _build_metric_view_sql(mv: Any, fqn: str) -> str:
         dim_lines.append(f"  - name: {dim['name']}")
         dim_lines.append(f"    expr: {_yaml_safe(dim['expr'])}")
 
+    # Auto-synthesize AVG companions for every SUM(col) measure (opt-out via
+    # MetricViewSpec.auto_avg=False).
+    auto_avg = getattr(mv, "auto_avg", True)
+    synthesized_avgs = _synthesize_avg_measures(mv.measures) if auto_avg else []
+    all_measures = list(mv.measures) + synthesized_avgs
+
     measure_lines = []
-    for m in mv.measures:
+    for m in all_measures:
         measure_lines.append(f"  - name: {m['name']}")
         measure_lines.append(f"    expr: {_yaml_safe(m['expr'])}")
         if m.get("comment"):

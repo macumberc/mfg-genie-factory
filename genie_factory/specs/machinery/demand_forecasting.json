@@ -3,7 +3,7 @@
   "industry": "Machinery",
   "use_case": "Demand forecasting and order backlog management",
   "space_title": "ForecastPro Machinery - Demand Forecasting 📈",
-  "space_description": "Demand analytics for ForecastPro. Ask about order backlog, forecast accuracy, demand trends, and KPIs across 20 equipment models.",
+  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Demand Forecasting & Order Backlog Management\n\nForecastPro Machinery — sales-and-operations planning analytics covering bookings, forecasts, and order backlog across equipment models and customer regions. S&OP planners and Demand Managers tune forecasts week-to-week; the VP Sales and CFO use it to size capacity commitments, manage backlog and cancellations, and lock in revenue against forecast accuracy targets.\n\n**Key KPIs**\n- Forecast accuracy (%) — best-in-class 75–85% at SKU level (100% − MAPE)\n- MAPE (%) — mean absolute percentage error; <15% world-class, 15–25% average\n- Fill rate (%) — order fulfillment target ≥95%\n- Backlog units — capacity and lead-time stress indicator\n- Forecast bias — chronic over/under-forecast detector\n- Cancellation rate (%) — demand-quality signal\n- Total revenue ($) — financial impact of demand performance\n- Lead time (days) — competitive promise tracking\n\n**Data sources**\n- `customer_orders` — order-level bookings with quantity, price, region, status, lead time, discount\n- `demand_forecasts` — forecast vs actual snapshots with bias, MAPE, confidence interval, model version\n- `demand_kpi_monthly` — monthly accuracy, fill rate, backlog, revenue, new vs cancelled orders",
   "schema_basename": "mach_demand_forecast",
   "tables": [
     {
@@ -64,7 +64,7 @@
           "sql_type": "STRING",
           "comment": "Status: Confirmed, Shipped, Backlog, Cancelled",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {status_noise} < 0.04 THEN 'Cancelled' WHEN {status_noise} < 0.20 THEN 'Backlog' WHEN {status_noise} < 0.35 THEN 'Confirmed' ELSE 'Shipped' END"
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.04 THEN 'Cancelled' WHEN {alt_status_noise} < 0.20 THEN 'Backlog' WHEN {alt_status_noise} < 0.35 THEN 'Confirmed' ELSE 'Shipped' END"
         },
         {
           "name": "lead_time_days",
@@ -78,7 +78,8 @@
           "sql_type": "DOUBLE",
           "comment": "Discount percentage applied",
           "is_dimension": false,
-          "generation_expr": "ROUND({qty_noise} * 15.0, 1)"
+          "generation_expr": "ROUND(({qty_noise} * {seasonal_mult}) * 15.0, 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -268,7 +269,8 @@
           "sql_type": "DOUBLE",
           "comment": "Mean absolute percentage error",
           "is_dimension": false,
-          "generation_expr": "ROUND(2.0 + ({qty_noise} * 28.0), 2)"
+          "generation_expr": "ROUND(2.0 + (({qty_noise} * {seasonal_mult}) * 28.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "model_version",
@@ -282,7 +284,8 @@
           "sql_type": "DOUBLE",
           "comment": "Forecast confidence interval width",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 35.0), 1)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 35.0), 1)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {
@@ -451,14 +454,16 @@
           "sql_type": "DOUBLE",
           "comment": "Forecast accuracy percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(65.0 + ({qty_noise} * 33.0), 2)"
+          "generation_expr": "ROUND(65.0 + (({qty_noise} * {seasonal_mult}) * 33.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "fill_rate_pct",
           "sql_type": "DOUBLE",
           "comment": "Order fill rate percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(75.0 + ({qty_noise} * 24.0), 2)"
+          "generation_expr": "ROUND(75.0 + (({qty_noise} * {seasonal_mult}) * 24.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "backlog_units",
@@ -726,15 +731,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The customer_orders_metrics view (source: customer_orders) has dimensions: order_date, product_family, customer_region, order_status. Measures: total_order_revenue, total_order_quantity, total_orders, avg_lead_time. The demand_kpi_metrics view (source: demand_kpi_monthly) has dimensions: kpi_month, product_family. Measures: avg_forecast_accuracy, avg_fill_rate, total_backlog, total_revenue. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. equipment_model).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports demand forecasting and backlog management at ForecastPro. Stakeholders: S&OP planners and Demand Managers (model accuracy by SKU, bias detection), VP Sales (fill rate, backlog age, cancellations), and CFO (revenue at risk, capacity utilization vs forecast).\n\nMETRIC DEFINITIONS\n- Forecast accuracy = AVG(forecast_accuracy_pct) = 100 − MAPE; best-in-class 75–85% at SKU.\n- MAPE = AVG(mape_pct); world-class <15%, average 15–25%.\n- Fill rate = AVG(fill_rate_pct); target ≥95%.\n- Backlog = SUM(backlog_units); aging beyond promised lead time signals capacity gap.\n- Forecast bias = AVG(forecast_bias); persistent positive = over-forecast (carrying cost).\n- Cancellation rate = SUM(cancelled_orders) / SUM(new_orders); leaders <3%.\n- Revenue = SUM(total_revenue_usd); growth and mix indicator.\n- Lead time = AVG(lead_time_days); customer commitment vs actual delivery.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - customer_orders_metrics (source: customer_orders) — dims: order_date, product_family, customer_region, order_status; measures: total_order_revenue, total_order_quantity, total_orders, avg_lead_time, max_order_quantity.\n  - demand_kpi_metrics (source: demand_kpi_monthly) — dims: kpi_month, product_family; measures: avg_forecast_accuracy, avg_fill_rate, total_backlog, total_revenue, total_new_orders, total_cancelled_orders.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. equipment_model, forecast_bias, mape_pct, model_version, discount_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in unique total orderss?",
-    "How has highest order quantity changed over time?",
-    "What is the monthly trend in total order revenue in usd?",
-    "How has total units ordered changed over time?",
-    "What is the monthly trend in highest forecast accuracy percent?",
-    "How has total backlog units changed over time?",
-    "What is the monthly trend in total monthly revenue?"
+    "What is the monthly trend in forecast accuracy by product family over the trailing 12 months?",
+    "Top 10 equipment models by backlog units — which are at greatest risk of missed lead time?",
+    "Which customer regions have the highest order cancellation rate this quarter?",
+    "Rank product families by fill rate — which are below the 95% target?",
+    "Show monthly trend in total revenue vs new orders received.",
+    "Top 10 equipment models by total order revenue this year, and what was the forecast accuracy for each?",
+    "Which forecast model versions have the worst MAPE, and what is the cost of the bias?"
   ],
   "example_sqls": [
     {

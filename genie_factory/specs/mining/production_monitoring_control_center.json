@@ -3,7 +3,7 @@
   "industry": "Mining",
   "use_case": "Mining production monitoring and processing control center",
   "space_title": "MineOps Central - Production Monitoring Control Center 📊",
-  "space_description": "Mining production analytics for MineOps Central. Ask about throughput rates, recovery yields, equipment utilization, and bottleneck analysis across 20 processing units.",
+  "space_description": "**Subindustry:** Mining\n\n**Use case:** Production Monitoring & Processing Control Center\n\nMineOps Central — concentrator plant analytics across 20 processing units spanning primary crushing through grinding (SAG / Ball Mills), flotation, thickening, and material handling. Processing Plant Leads use this space day-to-day to track throughput, recovery, and bottlenecks; Mine Managers and Reliability VPs use it to coordinate mine-to-mill, and CFOs use it to monitor cost per ton, energy intensity, and concentrate revenue exposure.\n\n**Key KPIs**\n- Mill throughput (tph and tpd) — primary driver of concentrate output; data spans ~100-1000 tph across the plant\n- Plant recovery (%) — target 85-92% for sulfide flotation circuits\n- Concentrate grade (%) — saleable product quality vs. smelter penalty thresholds\n- Equipment utilization (%) — target 85%+ on critical-path mills and crushers\n- Bottleneck count — number of constrained units in the flowsheet\n- Energy intensity (kWh/ton) — opex and ESG-relevant; SAG benchmark 7-10 kWh/t\n- Unplanned downtime hours — direct lost-production impact at $/ton concentrate\n- Plan adherence (%) — actual vs. planned daily throughput\n\n**Data sources**\n- `processing_units` — daily unit records: throughput tph, recovery, energy, status\n- `production_readings` — daily quality readings: ore grade, particle size, moisture, concentrate grade\n- `throughput_snapshots` — weekly planned vs. actual TPD, utilization, downtime, bottleneck flag",
   "schema_basename": "mining_production_monitor",
   "tables": [
     {
@@ -57,14 +57,16 @@
           "sql_type": "DOUBLE",
           "comment": "Throughput tons per hour",
           "is_dimension": false,
-          "generation_expr": "ROUND(100.0 + ({qty_noise} * 900.0), 1)"
+          "generation_expr": "ROUND(100.0 + (({qty_noise} * {seasonal_mult}) * 900.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "recovery_pct",
           "sql_type": "DOUBLE",
           "comment": "Material recovery 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(70.0 + ({qty_noise} * 25.0), 2)"
+          "generation_expr": "ROUND(70.0 + (({qty_noise} * {seasonal_mult}) * 25.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "energy_kwh_per_ton",
@@ -274,7 +276,8 @@
           "sql_type": "DOUBLE",
           "comment": "Ore grade percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(0.5 + ({qty_noise} * 4.5), 3)"
+          "generation_expr": "ROUND(0.5 + (({qty_noise} * {seasonal_mult}) * 4.5), 3)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "particle_size_mm",
@@ -288,14 +291,16 @@
           "sql_type": "DOUBLE",
           "comment": "Moisture content percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(2.0 + ({qty_noise} * 13.0), 1)"
+          "generation_expr": "ROUND(2.0 + (({qty_noise} * {seasonal_mult}) * 13.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "concentrate_grade_pct",
           "sql_type": "DOUBLE",
           "comment": "Concentrate grade percentage",
           "is_dimension": false,
-          "generation_expr": "ROUND(15.0 + ({qty_noise} * 45.0), 2)"
+          "generation_expr": "ROUND(15.0 + (({qty_noise} * {seasonal_mult}) * 45.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "quality_status",
@@ -498,21 +503,24 @@
           "sql_type": "DOUBLE",
           "comment": "Planned throughput tons/day",
           "is_dimension": false,
-          "generation_expr": "ROUND(2000.0 + ({qty_noise} * 18000.0), 0)"
+          "generation_expr": "ROUND(2000.0 + (({qty_noise} * {seasonal_mult}) * 18000.0), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "actual_throughput_tpd",
           "sql_type": "DOUBLE",
           "comment": "Actual throughput tons/day",
           "is_dimension": false,
-          "generation_expr": "ROUND((2000.0 + ({qty_noise} * 18000.0)) * (0.75 + {status_noise} * 0.35), 0)"
+          "generation_expr": "ROUND((2000.0 + (({qty_noise} * {seasonal_mult}) * 18000.0)) * (0.75 + {status_noise} * 0.35), 0)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "utilization_pct",
           "sql_type": "DOUBLE",
           "comment": "Equipment utilization 0-100",
           "is_dimension": false,
-          "generation_expr": "ROUND(55.0 + ({qty_noise} * 40.0), 2)"
+          "generation_expr": "ROUND(55.0 + (({qty_noise} * {seasonal_mult}) * 40.0), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "downtime_hours",
@@ -794,15 +802,15 @@
       ]
     }
   ],
-  "genie_instructions": "ALWAYS prefer metric views with MEASURE() syntax for aggregation questions. The production_kpi_monthly view (source: processing_units) has dimensions: record_date, unit_type, processing_stage, unit_status. Measures: avg_throughput_tph, avg_recovery_pct, avg_energy_per_ton, running_count, total_unit_count. The throughput_kpi_monthly view (source: throughput_snapshots) has dimensions: snapshot_date, unit_type, processing_stage, bottleneck_flag. Measures: total_planned_tpd, total_actual_tpd, avg_utilization, total_downtime, bottleneck_count. Use GROUP BY ALL with MEASURE() queries. Only query base tables directly when the question requires columns not available as metric view dimensions (e.g. unit_id, unit_name).",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Production Monitoring for a mining concentrator with 20 processing units across Primary/Secondary/Tertiary Crushing, Grinding (SAG and Ball Mills), Concentration (Flotation, Thickeners), Material Handling (Conveyors, Stackers), and Classification (Vibrating Screens). Stakeholders include the Processing Plant Lead (throughput, recovery, downtime), Mine Manager (mine-to-mill alignment), Reliability VP (faulted units, utilization, downtime), and CFO (energy intensity, plan adherence, concentrate output to revenue).\n\nMETRIC DEFINITIONS\n- Throughput = throughput_tph (instantaneous, ~100-1000 tph) or actual_throughput_tpd (daily, ~2-20 ktpd)\n- Recovery = recovery_pct; target 85-92% for sulfide flotation circuits\n- Energy intensity = energy_kwh_per_ton; SAG grinding benchmark 7-10 kWh/t\n- Utilization = utilization_pct on throughput_snapshots; target 85%+ on critical path\n- Plan adherence = actual_throughput_tpd / planned_throughput_tpd; target 95%+\n- Bottleneck = bottleneck_flag = 'Yes' on throughput_snapshots\n- Unit status = Running / Idle / Maintenance / Fault on processing_units\n- Quality = quality_status (On Spec / Marginal / Off Spec) on production_readings\n- Concentrate grade = concentrate_grade_pct; benchmark 25-35% for copper concentrate\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_kpi_monthly (source: processing_units) — dims: record_date, unit_type, processing_stage, unit_status; measures: avg_throughput_tph, avg_recovery_pct, avg_energy_per_ton, running_count, total_unit_count, max_throughput_tph.\n  - throughput_kpi_monthly (source: throughput_snapshots) — dims: snapshot_date, unit_type, processing_stage, bottleneck_flag; measures: total_planned_tpd, total_actual_tpd, avg_utilization, total_downtime, bottleneck_count, unique_unit_count, max_planned_throughput_tpd.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. unit_id, unit_name, ore_grade_pct, concentrate_grade_pct, planned_throughput_tpd, actual_throughput_tpd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "What is the monthly trend in running count?",
-    "How has unique total units changed over time?",
-    "What is the monthly trend in highest throughput tph?",
-    "How has avg throughput tph changed over time?",
-    "What is the monthly trend in bottleneck count?",
-    "How has unique units changed over time?",
-    "What is the monthly trend in highest planned throughput tpd?"
+    "Show monthly average mill throughput (tph) by processing stage for the trailing 12 months.",
+    "Top 10 processing units by total unplanned downtime hours this quarter — which stage is driving it?",
+    "Which units are most frequently flagged as bottlenecks, and what is their average utilization?",
+    "How has plant recovery trended month-over-month by unit type across grinding and concentration?",
+    "Top 10 units by energy intensity (kWh/ton) — and how do they rank by processing stage?",
+    "What is the plan adherence (actual vs. planned TPD) by processing stage for the last 90 days?",
+    "Which units had the most Off Spec quality readings in the last quarter, and what was their average concentrate grade?"
   ],
   "example_sqls": [
     {
