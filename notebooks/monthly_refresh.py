@@ -77,9 +77,21 @@ print(f"  error    : {manifest['error']}")
 print(f"  concurr. : {manifest['concurrency']}")
 print()
 if manifest["error"]:
-    print("ERRORS:")
+    print(f"ERRORS ({manifest['error']} of {manifest['total']}):")
+    # Show full traceback for the FIRST error so we can diagnose; then a
+    # one-line summary for the rest.
+    first_err_shown = False
     for r in manifest["results"]:
-        if r["status"] == "error":
+        if r["status"] != "error":
+            continue
+        if not first_err_shown:
+            print(f"\n--- First failure: {r['subindustry']}/{r['use_case']} ---")
+            print(f"error: {r.get('error','')}")
+            print("traceback:")
+            print(r.get("traceback", "(no traceback)"))
+            print("--- end first failure ---\n")
+            first_err_shown = True
+        else:
             print(f"  {r['subindustry']}/{r['use_case']}: {r.get('error','')[:140]}")
     print()
 
