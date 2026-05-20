@@ -100,13 +100,15 @@ class TestSqlString:
 
 
 class TestDefaultSchemaName:
-    def test_basic(self):
+    def test_basic_no_user_suffix(self):
+        # Schemas are NOT user-scoped by default; the basename is taken as-is.
         result = default_schema_name("chad.macumber@databricks.com", "retail_demo")
-        assert result == "retail_demo_chad_macumber"
+        assert result == "retail_demo"
 
-    def test_custom_basename(self):
+    def test_username_ignored(self):
+        # Username arg is preserved for backward compat but doesn't affect output.
         result = default_schema_name("john.doe@example.com", "supply_chain")
-        assert result == "supply_chain_john_doe"
+        assert result == "supply_chain"
 
     def test_result_is_valid_identifier(self):
         result = default_schema_name("user@test.com", "demo")

@@ -77,12 +77,18 @@ def sanitize_sql_identifier(name: str, context: str) -> str:
 
 
 def default_schema_name(username: str, schema_basename: str) -> str:
-    """Generate a user-scoped schema name from a dynamic basename."""
+    """Generate the default schema name from the spec's basename.
 
-    return validate_identifier(
-        f"{schema_basename}_{normalize_user_slug(username)}",
-        "default schema",
-    )
+    Note: schemas are NOT user-scoped by default for the manufacturing
+    demo corpus — the spec's ``schema_basename`` is taken as-is so
+    multiple deployers don't fragment the workspace catalog into N copies
+    of every demo. Pass an explicit ``schema=`` override at deploy time
+    if you need a user-suffixed namespace for testing.
+    """
+    # ``username`` is preserved in the signature so existing callers keep
+    # working; it is intentionally unused here.
+    del username
+    return validate_identifier(schema_basename, "default schema")
 
 
 def current_user(spark, deployer_email: Optional[str] = None) -> str:
