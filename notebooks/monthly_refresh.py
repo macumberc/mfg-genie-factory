@@ -56,7 +56,10 @@ logging.basicConfig(
 
 from genie_factory.refresh import refresh_all
 
-manifest = refresh_all(concurrency=concurrency)
+# `spark` is auto-injected in Databricks notebook environments; pass it
+# explicitly because SparkSession.getActiveSession() is thread-local and
+# returns None inside refresh_all's ThreadPoolExecutor workers.
+manifest = refresh_all(concurrency=concurrency, spark=spark)  # noqa: F821
 
 # COMMAND ----------
 

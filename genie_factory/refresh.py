@@ -55,14 +55,20 @@ def _all_use_case_pairs() -> list[tuple[str, str]]:
     return pairs
 
 
-def _deploy_one(sub: str, label: str) -> dict[str, Any]:
+def _deploy_one(sub: str, label: str, spark: Any = None) -> dict[str, Any]:
     """Run a single deploy. Catches all errors so one bad spec doesn't
-    abort the whole refresh."""
+    abort the whole refresh. ``spark`` is captured on the orchestrator
+    thread and passed in because ``SparkSession.getActiveSession()`` is
+    thread-local on Databricks runtimes and returns None in worker threads.
+    """
     from .notebook import deploy_use_case
 
     started = time.time()
+    overrides: dict[str, Any] = {}
+    if spark is not None:
+        overrides["spark"] = spark
     try:
-        result = deploy_use_case(sub, label)
+        result = deploy_use_case(sub, label, **overrides)
         return {
             "subindustry": sub,
             "use_case": label,
@@ -84,12 +90,22 @@ def _deploy_one(sub: str, label: str) -> dict[str, Any]:
         }
 
 
-def refresh_all(concurrency: int = 3, out_path: Path | None = None) -> dict[str, Any]:
+def refresh_all(
+    concurrency: int = 3,
+    out_path: Path | None = None,
+    spark: Any = None,
+) -> dict[str, Any]:
     """Refresh every spec in parallel (bounded by ``concurrency``).
 
     Returns a manifest dict with per-spec results and an overall summary.
     Writes the manifest to ``out_path`` (defaults to
     ``/tmp/genie_factory_refresh_<UTC timestamp>.json``).
+
+    ``spark`` must be supplied when invoked from a Databricks notebook —
+    pass the global ``spark`` from the calling cell. ``SparkSession.
+    getActiveSession()`` is thread-local on Databricks runtimes and
+    returns None inside the ThreadPoolExecutor workers, so we capture it
+    here and forward to each ``_deploy_one`` call explicitly.
     """
     pairs = _all_use_case_pairs()
     _logger.info(
@@ -99,9 +115,19 @@ def refresh_all(concurrency: int = 3, out_path: Path | None = None) -> dict[str,
         os.environ.get("GENIE_FACTORY_END_DATE") or "CURRENT_DATE()",
     )
 
+    # If the caller didn't pass spark, try to resolve it from the active
+    # session on this (main) thread. Worker threads can't, so we capture
+    # it here once.
+    if spark is None:
+        try:
+            from pyspark.sql import SparkSession
+            spark = SparkSession.getActiveSession()
+        except Exception:  # noqa: BLE001
+            spark = None
+
     results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = {pool.submit(_deploy_one, sub, label): (sub, label) for sub, label in pairs}
+        futures = {pool.submit(_deploy_one, sub, label, spark): (sub, label) for sub, label in pairs}
         for fut in as_completed(futures):
             r = fut.result()
             results.append(r)
