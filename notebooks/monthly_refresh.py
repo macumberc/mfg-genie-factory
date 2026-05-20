@@ -19,7 +19,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install --quiet git+https://github.com/macumberc/genie-factory.git@chad/data-quality-remediation
+# MAGIC %pip install --quiet git+https://github.com/macumberc/mfg-genie-factory.git@chad/data-quality-remediation
 # MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------

@@ -64,4 +64,4 @@ resources:
           spec:
             client: "1"
             dependencies:
-              - git+https://github.com/macumberc/genie-factory.git@chad/data-quality-remediation
+              - git+https://github.com/macumberc/mfg-genie-factory.git@chad/data-quality-remediation
