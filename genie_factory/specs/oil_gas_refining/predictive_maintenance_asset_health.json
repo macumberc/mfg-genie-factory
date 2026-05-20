@@ -86,7 +86,8 @@
           "sql_type": "INT",
           "comment": "Predicted remaining useful life in days",
           "is_dimension": false,
-          "generation_expr": "CAST(GREATEST(1, 10 + FLOOR({qty_noise} * 300)) AS INT)"
+          "generation_expr": "CAST(GREATEST(1, 10 + FLOOR(({qty_noise} * {seasonal_mult}) * 300)) AS INT)",
+          "seasonal_amplitude": 0.15
         }
       ],
       "seasonal_patterns": {

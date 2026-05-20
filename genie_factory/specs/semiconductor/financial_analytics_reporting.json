@@ -57,7 +57,7 @@
           "sql_type": "STRING",
           "comment": "Specific GL account",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN {alt_status_noise} < 0.12 THEN 'Product Revenue' WHEN {alt_status_noise} < 0.22 THEN 'License Revenue' WHEN {alt_status_noise} < 0.30 THEN 'Service Revenue' WHEN {alt_status_noise} < 0.38 THEN 'Wafer Cost' WHEN {alt_status_noise} < 0.44 THEN 'Packaging Cost' WHEN {alt_status_noise} < 0.50 THEN 'Test Cost' WHEN {alt_status_noise} < 0.56 THEN 'R&D Salaries' WHEN {alt_status_noise} < 0.62 THEN 'R&D Equipment' WHEN {alt_status_noise} < 0.68 THEN 'SG&A' WHEN {alt_status_noise} < 0.73 THEN 'Marketing' WHEN {alt_status_noise} < 0.78 THEN 'Fab Equipment' WHEN {alt_status_noise} < 0.83 THEN 'IT Infrastructure' WHEN {alt_status_noise} < 0.88 THEN 'Facilities' WHEN {alt_status_noise} < 0.93 THEN 'Depreciation' ELSE 'Other Expense' END"
+          "generation_expr": "CASE WHEN {status_noise} < 0.30 THEN CASE WHEN {alt_status_noise} < 0.40 THEN 'Product Revenue' WHEN {alt_status_noise} < 0.75 THEN 'License Revenue' ELSE 'Service Revenue' END WHEN {status_noise} < 0.50 THEN CASE WHEN {alt_status_noise} < 0.40 THEN 'Wafer Cost' WHEN {alt_status_noise} < 0.70 THEN 'Packaging Cost' ELSE 'Test Cost' END WHEN {status_noise} < 0.70 THEN CASE WHEN {alt_status_noise} < 0.30 THEN 'R&D Salaries' WHEN {alt_status_noise} < 0.55 THEN 'R&D Equipment' WHEN {alt_status_noise} < 0.80 THEN 'SG&A' ELSE 'Marketing' END WHEN {status_noise} < 0.85 THEN CASE WHEN {alt_status_noise} < 0.40 THEN 'Fab Equipment' WHEN {alt_status_noise} < 0.70 THEN 'IT Infrastructure' ELSE 'Facilities' END ELSE CASE WHEN {alt_status_noise} < 0.60 THEN 'Depreciation' ELSE 'Other Expense' END END"
         },
         {
           "name": "amount_usd",
@@ -278,7 +278,7 @@
           "sql_type": "STRING",
           "comment": "Budget health status",
           "is_dimension": false,
-          "generation_expr": "CASE WHEN ({qty_noise} - 0.5) * 30.0 > 5.0 THEN 'Under Budget' WHEN ({qty_noise} - 0.5) * 30.0 > -5.0 THEN 'On Track' WHEN ({qty_noise} - 0.5) * 30.0 > -15.0 THEN 'Over Budget' ELSE 'Critical Overrun' END"
+          "generation_expr": "CASE WHEN ({qty_noise} - 0.5) * 30.0 > 5.0 THEN 'Under Budget' WHEN ({qty_noise} - 0.5) * 30.0 > -5.0 THEN 'On Track' WHEN ({qty_noise} - 0.5) * 30.0 > -10.0 THEN 'Over Budget' ELSE 'Critical Overrun' END"
         },
         {
           "name": "headcount",

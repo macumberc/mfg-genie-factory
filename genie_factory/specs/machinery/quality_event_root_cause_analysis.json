@@ -449,7 +449,8 @@
           "sql_type": "DOUBLE",
           "comment": "Defect rate in parts per million",
           "is_dimension": false,
-          "generation_expr": "ROUND(100.0 + ({qty_noise} * 2900.0), 1)"
+          "generation_expr": "ROUND(100.0 + (({qty_noise} * {seasonal_mult}) * 2900.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "copq_usd",

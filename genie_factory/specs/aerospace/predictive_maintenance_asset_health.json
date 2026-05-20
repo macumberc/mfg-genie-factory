@@ -549,7 +549,8 @@
           "sql_type": "DOUBLE",
           "comment": "EGT margin remaining in Celsius (higher is better)",
           "is_dimension": false,
-          "generation_expr": "ROUND(GREATEST(5.0, 80.0 - ({qty_noise} * 60.0)), 2)"
+          "generation_expr": "ROUND(GREATEST(5.0, 80.0 - (({qty_noise} * {seasonal_mult}) * 60.0)), 2)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "risk_category",

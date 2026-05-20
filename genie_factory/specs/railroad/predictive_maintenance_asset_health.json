@@ -495,7 +495,7 @@
           "sql_type": "INT",
           "comment": "Estimated RUL in days",
           "is_dimension": false,
-          "generation_expr": "CAST(30 + FLOOR({qty_noise} * 330) AS INT)"
+          "generation_expr": "CAST(30 + FLOOR({qty_noise2} * 330) AS INT)"
         },
         {
           "name": "maintenance_budget_usd",

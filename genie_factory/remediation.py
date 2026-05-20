@@ -274,24 +274,36 @@ def apply_fix_wrong_range(spec: dict, spec_key: str) -> int:
 
 
 # KPI column-name patterns that should ride a monthly seasonal curve.
-# Anchored at end (`_pct$`) or unanchored (`.*gor.*`) — kept narrow to avoid
-# touching cumulative counters or identifier-style columns. To exempt a
-# specific column from seasonality, the spec author sets seasonal_amplitude
-# to 0 explicitly before running this mode.
+# Most patterns are unanchored substring matches so suffixes like _ppm,
+# _celsius, _per_bbl, _days, _btu_kwh don't accidentally block a match.
+# Kept narrow enough to avoid cumulative counters or identifiers; explicit
+# exclusions below are stripped after the substring check.
 _KPI_NAME_PATTERNS = [
     re.compile(p, re.IGNORECASE) for p in [
-        r".*_pct$", r".*_ratio$", r".*_rate$", r".*_score$",
-        r".*_efficiency$", r".*_accuracy$", r".*_uptime$", r".*_oee$",
-        r".*_health$", r".*_margin$", r".*_yield$", r".*_factor$",
-        r"^mtbf.*", r"^mttr.*", r"^rul_.*", r"^ccc.*", r".*_index$",
+        r".*_pct\b", r".*_ratio\b", r".*_rate\b",  # _rate / _rate_per_*
+        r".*_score\b", r".*_efficiency\b", r".*_accuracy\b", r".*_uptime\b",
+        r".*_oee\b", r".*_health\b", r".*margin.*",  # margin_pct / egt_margin_celsius
+        r".*_yield\b", r".*_factor\b", r".*_index\b",
+        r"^mtbf.*", r"^mttr.*", r".*rul.*", r"^ccc.*",
         r".*availability.*", r".*utilization.*",
         r".*compliance.*", r".*throughput.*", r".*intensity.*",
         r"^saidi.*", r"^saifi.*", r"^caidi.*",
         r".*gor.*", r".*water_cut.*", r".*recovery.*",
         r".*velocity.*", r".*dwell.*",
-        # Oil & gas production rates (bbl per day, mcf per day) — daily
-        # rate measures, NOT cumulative counters.
-        r".*_bopd$", r".*_bpd$", r".*_mcfpd$",
+        # Oil & gas production rates (bbl/day, mcf/day) and physical
+        # measurements (heat rate, flow rate) — period rates, NOT cumulative.
+        r".*_bopd\b", r".*_bpd\b", r".*_mcfpd\b",
+        r".*heat_rate.*", r".*flow_rate.*",
+        # ppm / dpmo defect rates are demo-trend-relevant.
+        r".*_ppm\b", r".*_dpmo\b",
+    ]
+]
+
+# Columns that match a KPI pattern but should NOT get seasonality (cumulative
+# counters, identifiers, or values where seasonal lift would be misleading).
+_KPI_NAME_EXCLUSIONS = [
+    re.compile(p, re.IGNORECASE) for p in [
+        r"^cumulative_", r"_total$", r"_count$", r"_id$",
     ]
 ]
 
@@ -314,7 +326,11 @@ def _spec_has_trend_question(spec: dict) -> bool:
 
 
 def _is_kpi_column_name(name: str) -> bool:
-    return any(p.match(name or "") for p in _KPI_NAME_PATTERNS)
+    if not name:
+        return False
+    if any(p.match(name) for p in _KPI_NAME_EXCLUSIONS):
+        return False
+    return any(p.match(name) for p in _KPI_NAME_PATTERNS)
 
 
 def apply_fix_flat_trend(spec: dict) -> int:

@@ -433,7 +433,8 @@
           "sql_type": "DOUBLE",
           "comment": "Defect rate in parts per million",
           "is_dimension": false,
-          "generation_expr": "ROUND(50.0 + ({qty_noise} * 950.0), 1)"
+          "generation_expr": "ROUND(50.0 + (({qty_noise} * {seasonal_mult}) * 950.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "escape_rate_pct",

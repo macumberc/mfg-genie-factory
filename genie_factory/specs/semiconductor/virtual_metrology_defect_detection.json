@@ -728,7 +728,7 @@
     "Which defect types are driving the highest kill ratios this quarter — what are we losing yield to?",
     "Rank metrology tools by average overlay error — which of the 6 tools need re-qualification?",
     "How has average VM prediction error trended monthly — is the model drifting?",
-    "Which process steps have the highest average critical dimension (cd_nm) drift, and where is CD variation widest?",
+    "Which process steps have the highest standard deviation of cd_nm across recent measurements, and which tools are driving the spread?",
     "What is the total wafers inspected by process step in the trailing 6 months — where is sampling coverage lowest?"
   ],
   "example_sqls": [

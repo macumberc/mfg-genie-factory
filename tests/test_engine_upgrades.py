@@ -301,9 +301,20 @@ class TestAvgSynthesizer:
         ]
         assert _synthesize_avg_measures(measures) == []
 
-    def test_compound_sum_not_synthesized(self):
-        # SUM(a * b) is not a single-column SUM, so no AVG companion.
+    def test_compound_sum_gets_avg_companion(self):
+        # SUM(a * b) used to be skipped; now we synthesize AVG(a * b)
+        # because "average revenue per row" is exactly what Genie needs.
         measures = [{"name": "total_value", "expr": "SUM(qty * price)", "comment": ""}]
+        synth = _synthesize_avg_measures(measures)
+        assert len(synth) == 1
+        assert synth[0]["name"] == "avg_value"
+        assert synth[0]["expr"] == "AVG(qty * price)"
+
+    def test_compound_sum_with_existing_avg_skipped(self):
+        measures = [
+            {"name": "total_value", "expr": "SUM(qty * price)", "comment": ""},
+            {"name": "avg_value", "expr": "AVG(qty * price)", "comment": ""},
+        ]
         assert _synthesize_avg_measures(measures) == []
 
     def test_max_only_not_synthesized(self):

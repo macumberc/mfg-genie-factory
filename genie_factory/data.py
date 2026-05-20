@@ -508,32 +508,61 @@ def _yaml_safe(value: str) -> str:
 
 _SUM_MEASURE_PATTERN = re.compile(r"^\s*SUM\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*$", re.IGNORECASE)
 _AVG_MEASURE_PATTERN = re.compile(r"^\s*AVG\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*$", re.IGNORECASE)
+# Compound SUM/AVG: SUM(<arbitrary inner>) where inner contains math/cols but
+# no aggregate keyword. Used to synthesize AVG companions for revenue-style
+# measures defined as SUM(qty * price), SUM(a + b), etc.
+_SUM_COMPOUND_PATTERN = re.compile(r"^\s*SUM\s*\((.+)\)\s*$", re.IGNORECASE | re.DOTALL)
+_AVG_COMPOUND_PATTERN = re.compile(r"^\s*AVG\s*\((.+)\)\s*$", re.IGNORECASE | re.DOTALL)
 
 
 def _synthesize_avg_measures(measures: list[dict]) -> list[dict]:
-    """Auto-append an ``AVG(col)`` measure for every ``SUM(col)`` without an AVG sibling.
+    """Auto-append an ``AVG(...)`` measure for every ``SUM(...)`` that lacks
+    a sibling AVG.
 
-    Restricted to single-column SUM expressions so we don't synthesize
-    meaningless averages of products (e.g. ``SUM(qty * price)`` stays SUM-only).
+    Handles two shapes:
+      - ``SUM(col)``      → ``AVG(col)`` named ``avg_<col>``
+      - ``SUM(<expr>)``   → ``AVG(<expr>)`` named ``avg_<source_measure>``
+        (compound-SUM case: SUM(qty * price), SUM(a + b), etc.)
+
+    AVG of a compound is the row-mean of the same expression — the
+    "per-row average revenue" / "per-row average cost" that Genie needs
+    when a user asks "what was the average order revenue?". The
+    measure name is derived from the source measure (strip ``total_``
+    or ``sum_`` prefix, prepend ``avg_``) to give a readable Genie label.
     """
-    existing_avg_targets: set[str] = set()
-    sum_entries: list[tuple[str, str]] = []  # (target_col, source_measure_name)
+    existing_avg_normalized: set[str] = set()
+    existing_avg_compound: set[str] = set()
+    sum_simple: list[tuple[str, str]] = []  # (col, src_measure_name)
+    sum_compound: list[tuple[str, str]] = []  # (inner_expr, src_measure_name)
+
+    def _norm(expr: str) -> str:
+        return re.sub(r"\s+", "", expr).lower()
 
     for m in measures:
         expr = (m.get("expr") or "").strip()
-        avg_match = _AVG_MEASURE_PATTERN.match(expr)
-        sum_match = _SUM_MEASURE_PATTERN.match(expr)
-        if avg_match:
-            existing_avg_targets.add(avg_match.group(1).lower())
-        elif sum_match:
-            sum_entries.append((sum_match.group(1), m["name"]))
+        avg_simple_match = _AVG_MEASURE_PATTERN.match(expr)
+        sum_simple_match = _SUM_MEASURE_PATTERN.match(expr)
+        if avg_simple_match:
+            existing_avg_normalized.add(avg_simple_match.group(1).lower())
+            existing_avg_compound.add(_norm(avg_simple_match.group(1)))
+            continue
+        avg_comp_match = _AVG_COMPOUND_PATTERN.match(expr)
+        if avg_comp_match:
+            existing_avg_compound.add(_norm(avg_comp_match.group(1)))
+            continue
+        if sum_simple_match:
+            sum_simple.append((sum_simple_match.group(1), m["name"]))
+            continue
+        sum_comp_match = _SUM_COMPOUND_PATTERN.match(expr)
+        if sum_comp_match:
+            sum_compound.append((sum_comp_match.group(1).strip(), m["name"]))
 
     existing_names = {m["name"] for m in measures}
     synthesized: list[dict] = []
-    for target, src_name in sum_entries:
-        if target.lower() in existing_avg_targets:
+
+    for target, src_name in sum_simple:
+        if target.lower() in existing_avg_normalized:
             continue
-        # name the new measure after the column, preferring avg_<col> shape.
         candidate = f"avg_{target}".lower()
         if candidate in existing_names:
             continue
@@ -543,6 +572,25 @@ def _synthesize_avg_measures(measures: list[dict]) -> list[dict]:
             "comment": f"Average {target} per row (auto-synthesized companion to {src_name}).",
         })
         existing_names.add(candidate)
+
+    for inner_expr, src_name in sum_compound:
+        if _norm(inner_expr) in existing_avg_compound:
+            continue
+        # Derive a readable measure name from the source: strip total_/sum_ prefix.
+        base = re.sub(r"^(total_|sum_)", "", src_name, flags=re.IGNORECASE)
+        candidate = f"avg_{base}".lower()
+        if candidate in existing_names:
+            # Fall back to a hash-stable name to avoid collision.
+            candidate = f"avg_{src_name}".lower()
+            if candidate in existing_names:
+                continue
+        synthesized.append({
+            "name": candidate,
+            "expr": f"AVG({inner_expr})",
+            "comment": f"Average per-row value (auto-synthesized companion to {src_name}).",
+        })
+        existing_names.add(candidate)
+
     return synthesized
 
 

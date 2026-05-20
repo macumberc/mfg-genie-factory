@@ -275,7 +275,8 @@
           "sql_type": "DOUBLE",
           "comment": "Thermal margin in degrees Celsius (distance to Tjmax)",
           "is_dimension": false,
-          "generation_expr": "ROUND(5.0 + ({qty_noise} * 45.0), 1)"
+          "generation_expr": "ROUND(5.0 + (({qty_noise} * {seasonal_mult}) * 45.0), 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "pareto_optimal",

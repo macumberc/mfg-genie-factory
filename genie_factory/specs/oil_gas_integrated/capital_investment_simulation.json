@@ -856,15 +856,6 @@
         ]
       },
       {
-        "alias": "npv_per_capex",
-        "sql": "ROUND(project_snapshots.npv_mm / NULLIF(investment_kpi_monthly.cumulative_spend_usd / 1000000.0, 0), 3)",
-        "display_name": "NPV per capex million",
-        "synonyms": [
-          "capital efficiency",
-          "return ratio"
-        ]
-      },
-      {
         "alias": "transaction_month",
         "sql": "DATE_TRUNC('month', investment_transactions.transaction_date)",
         "display_name": "transaction month",
