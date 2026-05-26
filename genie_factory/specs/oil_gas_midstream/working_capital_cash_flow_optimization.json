@@ -906,28 +906,28 @@
     {
       "question": "How has total inflows trended over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_inflows_usd) AS total_inflows_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, MEASURE(total_inflows_usd) AS total_inflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "How has total outflows trended over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_outflows_usd) AS total_outflows_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, MEASURE(total_outflows_usd) AS total_outflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "What has been the peak accounts_receivable each month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(max_accounts_receivable) AS peak_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -944,9 +944,9 @@
       "sql_lines": [
         "SELECT business_unit_name, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",
+        "WHERE business_unit_name IS NOT NULL",
         "GROUP BY business_unit_name",
-        "ORDER BY total_amount_usd DESC",
-        "LIMIT 10"
+        "ORDER BY total_amount_usd DESC"
       ]
     },
     {
@@ -957,8 +957,7 @@
         "WHERE business_unit_id IS NOT NULL",
         "GROUP BY ALL",
         "HAVING average_dso_days IS NOT NULL",
-        "ORDER BY average_dso_days DESC",
-        "LIMIT 10"
+        "ORDER BY average_dso_days DESC"
       ]
     },
     {

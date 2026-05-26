@@ -917,8 +917,7 @@
         "SELECT order_date, MEASURE(max_order_quantity) AS max_order_quantity",
         "FROM {fqn}.customer_orders_metrics",
         "GROUP BY ALL",
-        "ORDER BY order_date",
-        "LIMIT 10"
+        "ORDER BY order_date"
       ]
     },
     {
@@ -942,10 +941,13 @@
     {
       "question": "What are the top equipment model ordered by total units ordered?",
       "sql_lines": [
-        "SELECT equipment_model, SUM(order_quantity) AS total_order_quantity",
+        "WITH ranked_models AS ( SELECT equipment_model, SUM(order_quantity) AS total_units_ordered, RANK() OVER (ORDER BY SUM(order_quantity) DESC) AS model_rank",
         "FROM {fqn}.customer_orders",
-        "GROUP BY equipment_model ORDER BY total_order_quantity DESC LIMIT 10",
-        "LIMIT 10"
+        "WHERE equipment_model IS NOT NULL",
+        "GROUP BY equipment_model ) SELECT equipment_model, total_units_ordered",
+        "FROM ranked_models",
+        "WHERE model_rank <= 10",
+        "ORDER BY model_rank"
       ]
     },
     {
@@ -959,14 +961,13 @@
     {
       "question": "Which equipment models have the highest average forecast accuracy?",
       "sql_lines": [
-        "WITH avg_accuracy AS ( SELECT equipment_model, AVG(forecast_accuracy_pct) AS avg_forecast_accuracy",
+        "WITH ranked_models AS ( SELECT equipment_model, AVG(forecast_accuracy_pct) AS avg_forecast_accuracy_pct, RANK() OVER (ORDER BY AVG(forecast_accuracy_pct) DESC) AS rank",
         "FROM {fqn}.demand_kpi_monthly",
         "WHERE equipment_model IS NOT NULL AND forecast_accuracy_pct IS NOT NULL",
-        "GROUP BY equipment_model ) SELECT equipment_model, avg_forecast_accuracy",
-        "FROM ( SELECT *, RANK() OVER (ORDER BY avg_forecast_accuracy DESC) as rank",
-        "FROM avg_accuracy ) ranked",
-        "WHERE rank = 1",
-        "LIMIT 10"
+        "GROUP BY equipment_model ) SELECT equipment_model, avg_forecast_accuracy_pct",
+        "FROM ranked_models",
+        "WHERE rank <= 10",
+        "ORDER BY avg_forecast_accuracy_pct DESC"
       ]
     }
   ]

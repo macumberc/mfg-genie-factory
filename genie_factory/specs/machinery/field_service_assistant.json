@@ -933,10 +933,13 @@
     {
       "question": "What are the top equipment model at customer site by total time to resolution in hours?",
       "sql_lines": [
-        "SELECT equipment_model, SUM(resolution_hours) AS total_resolution_hours",
+        "WITH ranked_models AS ( SELECT equipment_model, SUM(resolution_hours) AS total_resolution_hours, RANK() OVER (ORDER BY SUM(resolution_hours) DESC) AS resolution_rank",
         "FROM {fqn}.service_tickets",
-        "GROUP BY equipment_model ORDER BY total_resolution_hours DESC LIMIT 10",
-        "LIMIT 10"
+        "WHERE equipment_model IS NOT NULL AND resolution_hours IS NOT NULL",
+        "GROUP BY equipment_model ) SELECT equipment_model, total_resolution_hours",
+        "FROM ranked_models",
+        "WHERE resolution_rank <= 10",
+        "ORDER BY resolution_rank"
       ]
     },
     {

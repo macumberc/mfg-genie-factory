@@ -856,38 +856,39 @@
     {
       "question": "How has total off-spec product volume in barrels trended over time?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(max_off_spec_volume_bbl) AS max_off_spec_volume_bbl",
-        "FROM {fqn}.quality_events_metrics",
-        "GROUP BY ALL",
+        "SELECT event_date, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
+        "FROM {fqn}.quality_events",
+        "GROUP BY event_date",
         "ORDER BY event_date"
       ]
     },
     {
       "question": "Which process units have the highest total financial impact?",
       "sql_lines": [
-        "SELECT unit_name, SUM(financial_impact_usd) AS total_metric",
-        "FROM {fqn}.quality_events",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
+        "SELECT unit_id, MEASURE(total_financial_impact_usd) AS total_financial_impact_usd",
+        "FROM {fqn}.quality_events_metrics",
+        "WHERE unit_id IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY total_financial_impact_usd DESC",
         "LIMIT 10"
       ]
     },
     {
       "question": "How has total batch volume in barrels trended over time?",
       "sql_lines": [
-        "SELECT batch_date, MEASURE(max_volume_bbl) AS max_volume_bbl",
-        "FROM {fqn}.batch_records_metrics",
-        "GROUP BY ALL",
+        "SELECT batch_date, SUM(volume_bbl) AS total_volume_bbl",
+        "FROM {fqn}.batch_records",
+        "GROUP BY batch_date",
         "ORDER BY batch_date"
       ]
     },
     {
       "question": "Which process units have the highest total off-spec product volume in barrels?",
       "sql_lines": [
-        "SELECT unit_name, SUM(off_spec_volume_bbl) AS total_off_spec_volume_bbl",
-        "FROM {fqn}.quality_events",
-        "GROUP BY unit_name",
-        "ORDER BY total_off_spec_volume_bbl DESC",
+        "SELECT unit_id, MEASURE(total_off_spec_bbl) AS total_off_spec_bbl",
+        "FROM {fqn}.quality_events_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_off_spec_bbl DESC",
         "LIMIT 10"
       ]
     },

@@ -918,8 +918,8 @@
     {
       "question": "What is the monthly trend in total monthly revenue?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', txn_date) AS month, MEASURE(total_revenue) AS total_revenue",
-        "FROM {fqn}.financial_txn_metrics",
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, MEASURE(total_revenue) AS total_monthly_revenue",
+        "FROM {fqn}.financial_kpi_metrics",
         "GROUP BY ALL",
         "ORDER BY month"
       ]
@@ -927,10 +927,10 @@
     {
       "question": "How has total opex trended over time?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(total_opex) AS total_opex",
+        "SELECT DATE_TRUNC('month', txn_date) AS month, MEASURE(total_opex) AS total_opex",
         "FROM {fqn}.financial_txn_metrics",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -949,8 +949,7 @@
         "SELECT kpi_month, MEASURE(max_gross_margin_percent) AS max_gross_margin_percent",
         "FROM {fqn}.financial_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month",
-        "LIMIT 10"
+        "ORDER BY kpi_month"
       ]
     },
     {
@@ -958,6 +957,7 @@
       "sql_lines": [
         "SELECT cost_center_type, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.financial_transactions",
+        "WHERE posting_status = 'Posted'",
         "GROUP BY cost_center_type",
         "ORDER BY total_amount_usd DESC",
         "LIMIT 10"
@@ -966,9 +966,11 @@
     {
       "question": "What is the average variance percentage by cost center type?",
       "sql_lines": [
-        "SELECT cost_center_type, AVG(variance_pct) AS avg_variance_pct",
+        "SELECT cost_center_type, AVG(try_divide(100.0 * variance_usd,NULLIF(budget_amount_usd, 0))) AS avg_variance_pct",
         "FROM {fqn}.budget_snapshots",
-        "GROUP BY cost_center_type ORDER BY avg_variance_pct DESC"
+        "WHERE cost_center_type IS NOT NULL AND budget_amount_usd IS NOT NULL",
+        "GROUP BY cost_center_type",
+        "ORDER BY avg_variance_pct DESC"
       ]
     },
     {

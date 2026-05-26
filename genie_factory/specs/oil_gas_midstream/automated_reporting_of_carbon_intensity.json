@@ -833,10 +833,11 @@
     {
       "question": "What has been the peak co2 equivalent metric tons each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_co2e_metric_tons) AS max_co2e_metric_tons",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MEASURE(max_co2e_metric_tons) AS peak_co2e_metric_tons",
         "FROM {fqn}.emission_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "HAVING peak_co2e_metric_tons IS NOT NULL",
+        "ORDER BY month"
       ]
     },
     {
@@ -860,19 +861,22 @@
     {
       "question": "How has total monthly co2e changed over time?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(total_monthly_co2e) AS total_monthly_co2e",
-        "FROM {fqn}.carbon_snapshots_metrics",
-        "GROUP BY ALL",
-        "ORDER BY month"
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, SUM(monthly_co2e_tons) AS total_monthly_co2e_tons",
+        "FROM {fqn}.carbon_snapshots",
+        "GROUP BY snapshot_date",
+        "ORDER BY snapshot_date"
       ]
     },
     {
       "question": "What are the top emission source id by total co2 equivalent metric tons?",
       "sql_lines": [
-        "SELECT source_id, SUM(co2e_metric_tons) AS total_co2e_metric_tons",
-        "FROM {fqn}.emission_readings",
-        "GROUP BY source_id ORDER BY total_co2e_metric_tons DESC LIMIT 10",
-        "LIMIT 10"
+        "WITH ranked_sources AS ( SELECT source_id, MEASURE(total_co2e_tons) AS total_co2e_tons, RANK() OVER (ORDER BY MEASURE(total_co2e_tons) DESC) AS co2e_rank",
+        "FROM {fqn}.emission_readings_metrics",
+        "WHERE source_id IS NOT NULL",
+        "GROUP BY ALL ) SELECT source_id, total_co2e_tons",
+        "FROM ranked_sources",
+        "WHERE co2e_rank <= 10",
+        "ORDER BY co2e_rank"
       ]
     },
     {
@@ -888,11 +892,12 @@
     {
       "question": "Which categorys have the highest total emissions tons?",
       "sql_lines": [
-        "SELECT emission_category, SUM(total_emissions_tons) AS total_metric",
+        "WITH ranked_categories AS ( SELECT emission_category, SUM(total_emissions_tons) AS total_emissions_tons, RANK() OVER (ORDER BY SUM(total_emissions_tons) DESC) AS rank",
         "FROM {fqn}.carbon_kpi_monthly",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WHERE emission_category IS NOT NULL AND total_emissions_tons IS NOT NULL",
+        "GROUP BY emission_category ) SELECT emission_category, total_emissions_tons",
+        "FROM ranked_categories",
+        "WHERE rank = 1"
       ]
     }
   ]

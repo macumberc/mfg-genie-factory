@@ -907,8 +907,9 @@
     {
       "question": "What is the monthly trend in total inflow count?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', txn_date) AS month, MEASURE(total_inflow) AS total_inflow",
+        "SELECT DATE_TRUNC('month', txn_date) AS month, MEASURE(total_transactions) AS total_inflow_count",
         "FROM {fqn}.cash_flow_txn_metrics",
+        "WHERE direction = 'Inflow'",
         "GROUP BY ALL",
         "ORDER BY month"
       ]
@@ -916,8 +917,9 @@
     {
       "question": "How has total outflow count changed over time?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(total_outflow) AS total_outflow",
+        "SELECT txn_date, MEASURE(total_transactions) AS total_outflow_count",
         "FROM {fqn}.cash_flow_txn_metrics",
+        "WHERE direction = 'Outflow'",
         "GROUP BY ALL",
         "ORDER BY txn_date"
       ]
@@ -935,21 +937,21 @@
     {
       "question": "How has highest net cash flow changed over time?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(max_net_cash_flow) AS max_net_cash_flow",
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, MEASURE(max_net_cash_flow) AS max_net_cash_flow",
         "FROM {fqn}.cash_flow_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month",
-        "LIMIT 10"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which business unit types have the highest total transaction amount?",
       "sql_lines": [
-        "SELECT business_unit_type, SUM(amount_usd) AS total_amount_usd",
+        "WITH ranked_bu_types AS ( SELECT business_unit_type, SUM(amount_usd) AS total_amount_usd, RANK() OVER (ORDER BY SUM(amount_usd) DESC) AS rnk",
         "FROM {fqn}.cash_flow_transactions",
-        "GROUP BY business_unit_type",
-        "ORDER BY total_amount_usd DESC",
-        "LIMIT 10"
+        "WHERE business_unit_type IS NOT NULL",
+        "GROUP BY business_unit_type ) SELECT business_unit_type, total_amount_usd",
+        "FROM ranked_bu_types",
+        "WHERE rnk = 1"
       ]
     },
     {

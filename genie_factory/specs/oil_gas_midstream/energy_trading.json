@@ -845,7 +845,7 @@
     {
       "question": "How has total volume in barrels equivalent trended over time?",
       "sql_lines": [
-        "SELECT trade_date, MEASURE(max_volume_bbl) AS max_volume_bbl",
+        "SELECT trade_date, MEASURE(total_volume_bbl) AS total_volume_bbl",
         "FROM {fqn}.trade_transactions_metrics",
         "GROUP BY ALL",
         "ORDER BY trade_date"
@@ -854,10 +854,10 @@
     {
       "question": "How has average net position barrels trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_net_position_bbl) AS avg_net_position_bbl",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(avg_net_position_bbl) AS average_net_position_bbl",
         "FROM {fqn}.position_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -872,11 +872,13 @@
     {
       "question": "Which contracts have the highest total volume in barrels equivalent?",
       "sql_lines": [
-        "SELECT contract_name, SUM(volume_bbl) AS total_volume_bbl",
-        "FROM {fqn}.trade_transactions",
-        "GROUP BY contract_name",
-        "ORDER BY total_volume_bbl DESC",
-        "LIMIT 10"
+        "WITH ranked_contracts AS ( SELECT contract_id, MEASURE(total_volume_bbl) AS total_volume_bbl, RANK() OVER (ORDER BY MEASURE(total_volume_bbl) DESC) AS rk",
+        "FROM {fqn}.trade_transactions_metrics",
+        "WHERE contract_id IS NOT NULL",
+        "GROUP BY ALL ) SELECT contract_id, total_volume_bbl",
+        "FROM ranked_contracts",
+        "WHERE rk <= 10",
+        "ORDER BY total_volume_bbl DESC"
       ]
     },
     {
@@ -892,11 +894,12 @@
     {
       "question": "Which commoditys have the highest total sharpe ratio?",
       "sql_lines": [
-        "SELECT commodity, SUM(sharpe_ratio) AS total_metric",
+        "WITH ranked_commodities AS ( SELECT commodity, SUM(sharpe_ratio) AS total_sharpe_ratio, RANK() OVER (ORDER BY SUM(sharpe_ratio) DESC) AS sharpe_rank",
         "FROM {fqn}.trading_kpi_monthly",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WHERE commodity IS NOT NULL AND sharpe_ratio IS NOT NULL",
+        "GROUP BY commodity ) SELECT commodity, total_sharpe_ratio",
+        "FROM ranked_commodities",
+        "WHERE sharpe_rank = 1"
       ]
     }
   ]

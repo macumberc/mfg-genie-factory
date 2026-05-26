@@ -925,8 +925,7 @@
         "SELECT run_date, MEASURE(max_planned_qty) AS max_planned_qty",
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date",
-        "LIMIT 10"
+        "ORDER BY run_date"
       ]
     },
     {
@@ -935,8 +934,7 @@
         "SELECT oee_month, MEASURE(max_availability_percent) AS max_availability_percent",
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
-        "ORDER BY oee_month",
-        "LIMIT 10"
+        "ORDER BY oee_month"
       ]
     },
     {

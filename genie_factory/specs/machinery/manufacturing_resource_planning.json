@@ -959,11 +959,10 @@
     {
       "question": "How has highest schedule adherence percent changed over time?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(max_schedule_adherence_percent) AS max_schedule_adherence_percent",
-        "FROM {fqn}.planning_kpi_metrics",
-        "GROUP BY ALL",
-        "ORDER BY kpi_month",
-        "LIMIT 10"
+        "SELECT kpi_month, MAX(schedule_adherence_pct) AS max_schedule_adherence_pct",
+        "FROM {fqn}.planning_kpi_monthly",
+        "GROUP BY kpi_month",
+        "ORDER BY kpi_month"
       ]
     },
     {

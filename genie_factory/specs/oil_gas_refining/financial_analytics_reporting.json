@@ -897,11 +897,10 @@
     {
       "question": "How has highest amount changed over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "SELECT transaction_date, MEASURE(max_amount) AS max_transaction_amount",
         "FROM {fqn}.financial_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date",
-        "LIMIT 10"
+        "ORDER BY transaction_date"
       ]
     },
     {
@@ -925,11 +924,13 @@
     {
       "question": "Which cost centers have the highest total transaction amount?",
       "sql_lines": [
-        "SELECT cost_center_name, SUM(amount_usd) AS total_amount_usd",
-        "FROM {fqn}.financial_transactions",
-        "GROUP BY cost_center_name",
-        "ORDER BY total_amount_usd DESC",
-        "LIMIT 10"
+        "WITH ranked_cost_centers AS ( SELECT cost_center_id, MEASURE(total_amount_usd) AS total_transaction_amount, RANK() OVER (ORDER BY MEASURE(total_amount_usd) DESC) AS rank",
+        "FROM {fqn}.financial_transactions_metrics",
+        "WHERE cost_center_id IS NOT NULL",
+        "GROUP BY ALL ) SELECT cost_center_id, total_transaction_amount",
+        "FROM ranked_cost_centers",
+        "WHERE rank <= 10",
+        "ORDER BY total_transaction_amount DESC"
       ]
     },
     {

@@ -867,19 +867,19 @@
     {
       "question": "How has average throughput in barrels per day trended by month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
         "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "How has average throughput barrels per day trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_throughput) AS avg_throughput",
-        "FROM {fqn}.production_snapshots_metrics",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
+        "FROM {fqn}.throughput_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -894,20 +894,24 @@
     {
       "question": "What are the top process unit id by total throughput in barrels per day?",
       "sql_lines": [
-        "SELECT unit_id, SUM(throughput_bpd) AS total_throughput_bpd",
+        "WITH ranked_units AS ( SELECT unit_id, SUM(throughput_bpd) AS total_throughput_bpd, RANK() OVER (ORDER BY SUM(throughput_bpd) DESC) AS throughput_rank",
         "FROM {fqn}.throughput_readings",
-        "GROUP BY unit_id ORDER BY total_throughput_bpd DESC LIMIT 10",
-        "LIMIT 10"
+        "WHERE unit_id IS NOT NULL",
+        "GROUP BY unit_id ) SELECT unit_id, total_throughput_bpd",
+        "FROM ranked_units",
+        "WHERE throughput_rank <= 10",
+        "ORDER BY throughput_rank"
       ]
     },
     {
       "question": "Which process units have the best average utilization percentage?",
       "sql_lines": [
-        "SELECT unit_name, AVG(avg_utilization_pct) AS avg_avg_utilization_pct",
-        "FROM {fqn}.production_snapshots",
-        "GROUP BY unit_name",
-        "ORDER BY avg_avg_utilization_pct DESC",
-        "LIMIT 10"
+        "WITH ranked_units AS ( SELECT unit_id, MEASURE(avg_utilization_pct) AS avg_utilization_pct, RANK() OVER (ORDER BY MEASURE(avg_utilization_pct) DESC) AS utilization_rank",
+        "FROM {fqn}.throughput_readings_metrics",
+        "WHERE unit_id IS NOT NULL",
+        "GROUP BY ALL ) SELECT unit_id, avg_utilization_pct",
+        "FROM ranked_units",
+        "ORDER BY utilization_rank"
       ]
     },
     {

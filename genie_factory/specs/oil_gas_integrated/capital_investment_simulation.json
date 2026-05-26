@@ -921,20 +921,19 @@
     {
       "question": "How has highest amount changed over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "SELECT transaction_date, MEASURE(max_amount) AS max_amount_usd",
         "FROM {fqn}.investment_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date",
-        "LIMIT 10"
+        "ORDER BY transaction_date"
       ]
     },
     {
       "question": "How has average net present value trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_npv_mm) AS avg_npv_mm",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(avg_npv_mm) AS average_npv_mm",
         "FROM {fqn}.project_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -950,11 +949,12 @@
     {
       "question": "Which project type: deepwater, onshore conventional, shale, lng, infrastructures have the highest total budgeted amount for this category?",
       "sql_lines": [
-        "SELECT project_type, SUM(budget_amount_usd) AS total_metric",
-        "FROM {fqn}.investment_transactions",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WITH ranked_types AS ( SELECT project_type, MEASURE(total_budget_usd) AS total_budget_usd, RANK() OVER (ORDER BY MEASURE(total_budget_usd) DESC) AS rnk",
+        "FROM {fqn}.investment_transactions_metrics",
+        "WHERE project_type IS NOT NULL",
+        "GROUP BY ALL ) SELECT project_type, total_budget_usd",
+        "FROM ranked_types",
+        "WHERE rnk = 1"
       ]
     },
     {

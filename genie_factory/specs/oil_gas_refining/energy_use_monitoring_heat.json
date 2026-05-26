@@ -895,10 +895,11 @@
     {
       "question": "What has been the peak energy consumption in mmbtu each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_energy_consumption_mmbtu) AS max_energy_consumption_mmbtu",
-        "FROM {fqn}.energy_readings_metrics",
-        "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MAX(energy_consumption_mmbtu) AS peak_energy_consumption_mmbtu",
+        "FROM {fqn}.energy_readings",
+        "WHERE reading_date IS NOT NULL AND energy_consumption_mmbtu IS NOT NULL",
+        "GROUP BY DATE_TRUNC('month', reading_date)",
+        "ORDER BY month"
       ]
     },
     {
@@ -913,10 +914,11 @@
     {
       "question": "How does peak clean ua value btu/hr/f compare across equipment categorys?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_clean_ua_btu_hr_f) AS max_clean_ua_btu_hr_f",
+        "SELECT equipment_category, MEASURE(max_clean_ua_btu_hr_f) AS peak_clean_ua_btu_hr_f",
         "FROM {fqn}.thermal_snapshots_metrics",
+        "WHERE equipment_category IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY peak_clean_ua_btu_hr_f DESC"
       ]
     },
     {

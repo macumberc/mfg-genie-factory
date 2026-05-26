@@ -1000,8 +1000,7 @@
         "SELECT reading_date, MEASURE(max_vibration_velocity_mm_s) AS max_vibration_velocity_mm_s",
         "FROM {fqn}.condition_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date",
-        "LIMIT 10"
+        "ORDER BY reading_date"
       ]
     },
     {
@@ -1010,8 +1009,7 @@
         "SELECT summary_month, MEASURE(max_avg_health_index) AS max_avg_health_index",
         "FROM {fqn}.asset_health_monthly_metrics",
         "GROUP BY ALL",
-        "ORDER BY summary_month",
-        "LIMIT 10"
+        "ORDER BY summary_month"
       ]
     },
     {
@@ -1026,11 +1024,13 @@
     {
       "question": "Which type of industrial assets have the highest average bearing temperature in celsius?",
       "sql_lines": [
-        "SELECT asset_type, AVG(bearing_temperature_c) AS total_bearing_temperature_c",
-        "FROM {fqn}.condition_readings",
-        "GROUP BY asset_type",
-        "ORDER BY total_bearing_temperature_c DESC",
-        "LIMIT 10"
+        "WITH avg_temp_by_type AS (SELECT asset_type, MEASURE(avg_bearing_temp) AS avg_bearing_temp",
+        "FROM {fqn}.condition_readings_metrics",
+        "WHERE asset_type IS NOT NULL",
+        "GROUP BY ALL) SELECT asset_type, avg_bearing_temp",
+        "FROM (SELECT asset_type, avg_bearing_temp, RANK() OVER (ORDER BY avg_bearing_temp DESC) AS rank",
+        "FROM avg_temp_by_type)",
+        "WHERE rank = 1"
       ]
     },
     {
@@ -1046,11 +1046,13 @@
     {
       "question": "Which type of industrial assets have the highest average asset availability percentage?",
       "sql_lines": [
-        "SELECT asset_type, MEASURE(avg_availability) AS avg_availability",
+        "WITH asset_type_availability AS (SELECT asset_type, MEASURE(avg_availability) AS avg_availability",
         "FROM {fqn}.asset_health_monthly_metrics",
-        "GROUP BY ALL",
-        "ORDER BY avg_availability DESC",
-        "LIMIT 10"
+        "WHERE asset_type IS NOT NULL",
+        "GROUP BY ALL), ranked_types AS (SELECT asset_type, avg_availability, RANK() OVER (ORDER BY avg_availability DESC) AS rk",
+        "FROM asset_type_availability) SELECT asset_type, avg_availability",
+        "FROM ranked_types",
+        "WHERE rk = 1"
       ]
     }
   ]

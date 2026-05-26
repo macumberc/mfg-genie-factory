@@ -1139,35 +1139,36 @@
     {
       "question": "Which vehicles have the highest total weekly distance traveled?",
       "sql_lines": [
-        "WITH vehicle_distances AS (SELECT vehicle_id, MEASURE(total_weekly_distance_km) AS total_weekly_distance_km",
+        "WITH vehicle_distances AS ( SELECT vehicle_id, vehicle_type, MEASURE(total_weekly_distance_km) AS total_distance",
         "FROM {fqn}.route_efficiency_metrics_mv",
-        "GROUP BY ALL), ranked_vehicles AS (SELECT vd.vehicle_id, v.vehicle_name, vd.total_weekly_distance_km, RANK() OVER (ORDER BY vd.total_weekly_distance_km DESC) AS rnk",
-        "FROM vehicle_distances vd",
-        "LEFT JOIN {fqn}.vehicles v ON vd.vehicle_id = v.vehicle_id) SELECT vehicle_id, vehicle_name, total_weekly_distance_km",
-        "FROM ranked_vehicles",
-        "WHERE rnk <= 10",
-        "ORDER BY total_weekly_distance_km DESC",
-        "LIMIT 10"
+        "GROUP BY ALL ) SELECT vehicle_id, vehicle_type, total_distance, RANK() OVER (ORDER BY total_distance DESC) AS distance_rank",
+        "FROM vehicle_distances",
+        "WHERE total_distance IS NOT NULL QUALIFY distance_rank <= 10",
+        "ORDER BY distance_rank, vehicle_id"
       ]
     },
     {
       "question": "Which vehicle class: semi, truck, or vans have the highest total fuel efficiency in kilometers per liter?",
       "sql_lines": [
-        "SELECT vehicle_type, SUM(fuel_efficiency_km_per_l) AS total_metric",
-        "FROM {fqn}.vehicles",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WITH efficiency_by_type AS ( SELECT vehicle_type, try_divide(MEASURE(total_distance_km),NULLIF(MEASURE(total_fuel_consumed_liters), 0)) AS fuel_efficiency_km_per_l",
+        "FROM {fqn}.route_segments_metrics",
+        "WHERE vehicle_type IS NOT NULL",
+        "GROUP BY ALL ) SELECT vehicle_type, fuel_efficiency_km_per_l",
+        "FROM ( SELECT *, RANK() OVER (ORDER BY fuel_efficiency_km_per_l DESC) as rnk",
+        "FROM efficiency_by_type ) ranked",
+        "WHERE rnk = 1"
       ]
     },
     {
       "question": "Which vehicles have the best load weight of vehicle capacity?",
       "sql_lines": [
-        "SELECT vehicle_name, AVG(load_utilization_pct) AS avg_load_utilization_pct",
-        "FROM {fqn}.route_segments",
-        "GROUP BY vehicle_name",
-        "ORDER BY avg_load_utilization_pct DESC",
-        "LIMIT 10"
+        "WITH ranked_vehicles AS ( SELECT vehicle_type, MEASURE(avg_load_utilization_pct) AS average_load_utilization_pct, RANK() OVER (ORDER BY MEASURE(avg_load_utilization_pct) DESC) AS utilization_rank",
+        "FROM {fqn}.route_segments_metrics",
+        "WHERE vehicle_type IS NOT NULL",
+        "GROUP BY ALL ) SELECT vehicle_type, average_load_utilization_pct",
+        "FROM ranked_vehicles",
+        "WHERE utilization_rank <= 10",
+        "ORDER BY utilization_rank"
       ]
     },
     {
@@ -1177,8 +1178,8 @@
         "FROM {fqn}.route_efficiency_metrics_mv",
         "WHERE vehicle_id IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY average_on_time_delivery_pct DESC",
-        "LIMIT 10"
+        "HAVING average_on_time_delivery_pct IS NOT NULL",
+        "ORDER BY average_on_time_delivery_pct DESC"
       ]
     }
   ]

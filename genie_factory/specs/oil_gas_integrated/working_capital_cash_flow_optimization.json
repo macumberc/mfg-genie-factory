@@ -939,10 +939,12 @@
     {
       "question": "What has been the peak accounts_receivable each month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(max_accounts_receivable) AS peak_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots_metrics",
+        "WHERE snapshot_date IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "HAVING peak_accounts_receivable_usd IS NOT NULL",
+        "ORDER BY month"
       ]
     },
     {
@@ -959,9 +961,9 @@
       "sql_lines": [
         "SELECT business_unit_name, SUM(amount_usd) AS total_amount_usd",
         "FROM {fqn}.cash_transactions",
+        "WHERE business_unit_name IS NOT NULL",
         "GROUP BY business_unit_name",
-        "ORDER BY total_amount_usd DESC",
-        "LIMIT 10"
+        "ORDER BY total_amount_usd DESC"
       ]
     },
     {

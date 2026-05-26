@@ -857,10 +857,10 @@
     {
       "question": "How has average compliance score 0-100 trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_compliance_score) AS avg_compliance_score",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(avg_compliance_score) AS avg_compliance_score",
         "FROM {fqn}.audit_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -875,11 +875,11 @@
     {
       "question": "Which regulations have the highest total fine/penalty amount?",
       "sql_lines": [
-        "SELECT regulation_name, SUM(fine_amount_usd) AS total_fine_amount_usd",
+        "SELECT reg_id, SUM(fine_amount_usd) AS total_fine_amount_usd",
         "FROM {fqn}.compliance_events",
-        "GROUP BY regulation_name",
-        "ORDER BY total_fine_amount_usd DESC",
-        "LIMIT 10"
+        "WHERE reg_id IS NOT NULL",
+        "GROUP BY reg_id",
+        "ORDER BY total_fine_amount_usd DESC"
       ]
     },
     {
@@ -893,11 +893,14 @@
     {
       "question": "Which compliance areas have the highest total violations in month?",
       "sql_lines": [
-        "SELECT compliance_area, SUM(violation_count) AS total_metric",
-        "FROM {fqn}.compliance_kpi_monthly",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WITH monthly_violations AS ( SELECT DATE_TRUNC('month', event_date) AS month, compliance_area, MEASURE(violation_count) AS total_violations",
+        "FROM {fqn}.compliance_events_metrics",
+        "GROUP BY ALL ) SELECT month, compliance_area, total_violations",
+        "FROM ( SELECT *, RANK() OVER (PARTITION BY month",
+        "ORDER BY total_violations DESC) AS rnk",
+        "FROM monthly_violations )",
+        "WHERE rnk = 1",
+        "ORDER BY month"
       ]
     }
   ]

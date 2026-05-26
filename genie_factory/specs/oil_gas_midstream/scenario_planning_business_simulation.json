@@ -811,9 +811,9 @@
       "sql_lines": [
         "SELECT run_date, MEASURE(max_throughput_change_percent) AS max_throughput_change_percent",
         "FROM {fqn}.simulation_runs_metrics",
+        "WHERE run_date IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY run_date",
-        "LIMIT 10"
+        "ORDER BY run_date"
       ]
     },
     {
@@ -828,21 +828,24 @@
     {
       "question": "Which scenarios have the best average throughput change percentage?",
       "sql_lines": [
-        "SELECT scenario_name, AVG(throughput_change_pct) AS avg_metric",
-        "FROM {fqn}.simulation_runs",
-        "GROUP BY 1",
-        "ORDER BY avg_metric DESC",
-        "LIMIT 10"
+        "WITH scenario_throughput AS (SELECT scenario_id, MEASURE(avg_throughput_change_pct) AS avg_throughput_change_pct",
+        "FROM {fqn}.simulation_runs_metrics",
+        "WHERE scenario_id IS NOT NULL",
+        "GROUP BY ALL) SELECT scenario_id, avg_throughput_change_pct, RANK() OVER (ORDER BY avg_throughput_change_pct DESC) AS rank",
+        "FROM scenario_throughput",
+        "WHERE avg_throughput_change_pct IS NOT NULL QUALIFY rank <= 10",
+        "ORDER BY rank"
       ]
     },
     {
       "question": "Which scenarios have the highest total revenue impact millions?",
       "sql_lines": [
-        "SELECT scenario_name, SUM(revenue_impact_mm) AS total_revenue_impact_mm",
-        "FROM {fqn}.simulation_runs",
-        "GROUP BY scenario_name",
-        "ORDER BY total_revenue_impact_mm DESC",
-        "LIMIT 10"
+        "WITH ranked_scenarios AS ( SELECT scenario_id, MEASURE(avg_revenue_impact_mm) AS total_revenue_impact_mm, RANK() OVER (ORDER BY MEASURE(avg_revenue_impact_mm) DESC) AS rnk",
+        "FROM {fqn}.simulation_runs_metrics",
+        "GROUP BY ALL ) SELECT scenario_id, total_revenue_impact_mm",
+        "FROM ranked_scenarios",
+        "WHERE rnk <= 10",
+        "ORDER BY total_revenue_impact_mm DESC"
       ]
     },
     {

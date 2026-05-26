@@ -963,33 +963,30 @@
     {
       "question": "What has been the peak daily oil production in barrels each month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(max_oil_bbl) AS max_oil_bbl",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MEASURE(max_oil_bbl) AS peak_daily_oil_bbl",
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which wells have the highest total daily gas production in mcf?",
       "sql_lines": [
-        "SELECT well_name, SUM(gas_mcf) AS total_metric",
-        "FROM {fqn}.production_readings",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WITH ranked_wells AS ( SELECT well_id, MEASURE(total_gas_mcf) AS total_gas_mcf, RANK() OVER (ORDER BY MEASURE(total_gas_mcf) DESC) AS rnk",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY ALL ) SELECT well_id, total_gas_mcf",
+        "FROM ranked_wells",
+        "WHERE rnk <= 10",
+        "ORDER BY total_gas_mcf DESC"
       ]
     },
     {
       "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT event_id) AS distinct_events",
+        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT event_id) AS distinct_transactions",
         "FROM {fqn}.production_events",
         "WHERE event_id IS NOT NULL AND event_date IS NOT NULL",
         "GROUP BY month",
-        "ORDER BY month; -- For readings (if user meant readings): -- SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT reading_id) AS distinct_readings --",
-        "FROM {fqn}.production_readings --",
-        "WHERE reading_id IS NOT NULL AND reading_date IS NOT NULL --",
-        "GROUP BY month --",
         "ORDER BY month"
       ]
     },
@@ -999,18 +996,18 @@
         "SELECT event_date, MEASURE(max_duration_hours) AS max_duration_hours",
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date",
-        "LIMIT 10"
+        "ORDER BY event_date"
       ]
     },
     {
       "question": "Which wells have the highest total daily oil production in barrels?",
       "sql_lines": [
-        "SELECT well_name, SUM(oil_bbl) AS total_oil_bbl",
-        "FROM {fqn}.production_readings",
-        "GROUP BY well_name",
-        "ORDER BY total_oil_bbl DESC",
-        "LIMIT 10"
+        "WITH ranked_wells AS ( SELECT well_id, MEASURE(total_oil_bbl) AS total_oil_bbl, RANK() OVER (ORDER BY MEASURE(total_oil_bbl) DESC) AS rnk",
+        "FROM {fqn}.production_readings_metrics",
+        "GROUP BY well_id ) SELECT well_id, total_oil_bbl",
+        "FROM ranked_wells",
+        "WHERE rnk <= 10",
+        "ORDER BY total_oil_bbl DESC"
       ]
     },
     {

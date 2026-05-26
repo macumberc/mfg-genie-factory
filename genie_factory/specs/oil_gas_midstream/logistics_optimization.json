@@ -919,39 +919,42 @@
     {
       "question": "How has average throughput in barrels per day trended by month?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MEASURE(avg_throughput_bpd) AS avg_throughput_bpd",
         "FROM {fqn}.flow_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which segments have the best average capacity utilization percentage?",
       "sql_lines": [
-        "SELECT segment_name, AVG(capacity_utilization_pct) AS avg_metric",
-        "FROM {fqn}.flow_readings",
-        "GROUP BY 1",
-        "ORDER BY avg_metric DESC",
-        "LIMIT 10"
+        "SELECT segment_id, MEASURE(avg_utilization_pct) AS avg_utilization_pct",
+        "FROM {fqn}.flow_readings_metrics",
+        "WHERE segment_id IS NOT NULL",
+        "GROUP BY ALL",
+        "HAVING avg_utilization_pct IS NOT NULL",
+        "ORDER BY avg_utilization_pct DESC"
       ]
     },
     {
       "question": "How has total volume impact barrels trended over time?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(max_volume_impact_bbl) AS max_volume_impact_bbl",
+        "SELECT DATE_TRUNC('month', event_date) AS month, MEASURE(total_volume_impact_bbl) AS total_volume_impact_bbl",
         "FROM {fqn}.logistics_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which segments have the best average throughput in barrels per day?",
       "sql_lines": [
-        "SELECT segment_name, AVG(throughput_bpd) AS total_throughput_bpd",
-        "FROM {fqn}.flow_readings",
-        "GROUP BY segment_name",
-        "ORDER BY total_throughput_bpd DESC",
-        "LIMIT 10"
+        "WITH ranked_segments AS ( SELECT segment_id, MEASURE(avg_throughput_bpd) AS average_throughput_bpd, RANK() OVER (ORDER BY MEASURE(avg_throughput_bpd) DESC) AS throughput_rank",
+        "FROM {fqn}.flow_readings_metrics",
+        "WHERE segment_id IS NOT NULL",
+        "GROUP BY ALL ) SELECT segment_id, average_throughput_bpd",
+        "FROM ranked_segments",
+        "WHERE throughput_rank <= 10",
+        "ORDER BY throughput_rank"
       ]
     },
     {
@@ -965,11 +968,11 @@
     {
       "question": "Which pipeline types have the highest total monthly revenue?",
       "sql_lines": [
-        "SELECT pipeline_type, SUM(revenue_usd) AS total_metric",
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, pipeline_type, SUM(revenue_usd) AS total_revenue",
         "FROM {fqn}.throughput_kpi_monthly",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WHERE pipeline_type IS NOT NULL AND revenue_usd IS NOT NULL",
+        "GROUP BY DATE_TRUNC('month', kpi_month), pipeline_type",
+        "ORDER BY total_revenue DESC"
       ]
     }
   ]

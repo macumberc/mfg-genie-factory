@@ -966,11 +966,12 @@
     {
       "question": "Which vehicles have the best dispatched hours of available hours?",
       "sql_lines": [
-        "SELECT vehicle_name, AVG(utilization_pct) AS avg_utilization_pct",
+        "WITH vehicle_utilization AS ( SELECT vehicle_id, vehicle_name, AVG(utilization_pct) AS avg_utilization_pct",
         "FROM {fqn}.vehicle_utilization_snapshots",
-        "GROUP BY vehicle_name",
-        "ORDER BY avg_utilization_pct DESC",
-        "LIMIT 10"
+        "WHERE vehicle_id IS NOT NULL AND utilization_pct IS NOT NULL",
+        "GROUP BY vehicle_id, vehicle_name ) SELECT vehicle_id, vehicle_name, avg_utilization_pct, RANK() OVER (ORDER BY avg_utilization_pct DESC) AS utilization_rank",
+        "FROM vehicle_utilization",
+        "ORDER BY utilization_rank ASC, vehicle_id"
       ]
     },
     {

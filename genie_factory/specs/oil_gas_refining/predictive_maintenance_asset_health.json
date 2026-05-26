@@ -958,13 +958,11 @@
     {
       "question": "Which process units have the highest average asset health score?",
       "sql_lines": [
-        "WITH ranked_units AS ( SELECT process_unit, AVG(avg_health_score) AS avg_health_score, RANK() OVER (ORDER BY AVG(avg_health_score) DESC) AS rnk",
+        "SELECT process_unit, AVG(avg_health_score) AS average_health_score",
         "FROM {fqn}.equipment_health_monthly",
         "WHERE process_unit IS NOT NULL AND avg_health_score IS NOT NULL",
-        "GROUP BY process_unit ) SELECT process_unit, avg_health_score",
-        "FROM ranked_units",
-        "WHERE rnk = 1",
-        "LIMIT 10"
+        "GROUP BY process_unit",
+        "ORDER BY average_health_score DESC"
       ]
     },
     {
@@ -980,19 +978,18 @@
     {
       "question": "How has highest downtime hours changed over time?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(max_downtime_hours) AS max_downtime_hours",
+        "SELECT DATE_TRUNC('month', event_date) AS month, MEASURE(max_downtime_hours) AS max_downtime_hours",
         "FROM {fqn}.maintenance_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date",
-        "LIMIT 10"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which equipments have the highest total raw sensor measurement value?",
       "sql_lines": [
-        "SELECT equipment_name, SUM(sensor_value) AS total_sensor_value",
-        "FROM {fqn}.sensor_readings",
-        "GROUP BY equipment_name",
+        "SELECT equipment_id, MEASURE(total_sensor_value) AS total_sensor_value",
+        "FROM {fqn}.sensor_readings_metrics",
+        "GROUP BY ALL",
         "ORDER BY total_sensor_value DESC",
         "LIMIT 10"
       ]

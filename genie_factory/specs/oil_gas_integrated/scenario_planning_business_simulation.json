@@ -867,37 +867,40 @@
         "SELECT run_date, MEASURE(max_oil_price_assumption) AS max_oil_price_assumption",
         "FROM {fqn}.simulation_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date",
-        "LIMIT 10"
+        "ORDER BY run_date"
       ]
     },
     {
       "question": "How has average projected revenue trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_projected_revenue_mm) AS avg_projected_revenue_mm",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(avg_projected_revenue_mm) AS average_projected_revenue_mm",
         "FROM {fqn}.outcome_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which scenario have the best average assumed annual production growth rate?",
       "sql_lines": [
-        "SELECT scenario_name, AVG(production_growth_pct) AS avg_metric",
-        "FROM {fqn}.simulation_runs",
-        "GROUP BY 1",
-        "ORDER BY avg_metric DESC",
-        "LIMIT 10"
+        "WITH scenario_growth AS (SELECT scenario_id, MEASURE(avg_production_growth_pct) AS avg_production_growth_pct",
+        "FROM {fqn}.simulation_runs_metrics",
+        "WHERE scenario_id IS NOT NULL",
+        "GROUP BY ALL), ranked_scenarios AS (SELECT scenario_id, avg_production_growth_pct, RANK() OVER (ORDER BY avg_production_growth_pct DESC) AS growth_rank",
+        "FROM scenario_growth) SELECT scenario_id, avg_production_growth_pct",
+        "FROM ranked_scenarios",
+        "WHERE growth_rank = 1",
+        "ORDER BY scenario_id"
       ]
     },
     {
       "question": "Which scenario have the highest total assumed wti oil price per barrel?",
       "sql_lines": [
-        "SELECT scenario_name, SUM(oil_price_assumption) AS total_oil_price_assumption",
+        "WITH scenario_totals AS ( SELECT scenario_id, SUM(oil_price_assumption) AS total_oil_price_assumption, RANK() OVER (ORDER BY SUM(oil_price_assumption) DESC) AS rnk",
         "FROM {fqn}.simulation_runs",
-        "GROUP BY scenario_name",
-        "ORDER BY total_oil_price_assumption DESC",
-        "LIMIT 10"
+        "WHERE scenario_id IS NOT NULL",
+        "GROUP BY scenario_id ) SELECT scenario_id, total_oil_price_assumption",
+        "FROM scenario_totals",
+        "WHERE rnk = 1"
       ]
     },
     {
@@ -915,11 +918,13 @@
     {
       "question": "Which scenario categorys have the highest total probability-weighted npv?",
       "sql_lines": [
-        "SELECT scenario_category, SUM(weighted_npv_mm) AS total_metric",
+        "WITH category_totals AS ( SELECT scenario_category, SUM(weighted_npv_mm) AS total_weighted_npv_mm",
         "FROM {fqn}.scenario_kpi_monthly",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WHERE scenario_category IS NOT NULL",
+        "GROUP BY scenario_category ) SELECT scenario_category, total_weighted_npv_mm",
+        "FROM ( SELECT *, RANK() OVER (ORDER BY total_weighted_npv_mm DESC) AS rnk",
+        "FROM category_totals ) ranked",
+        "WHERE rnk = 1"
       ]
     }
   ]

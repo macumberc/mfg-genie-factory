@@ -960,12 +960,13 @@
     {
       "question": "Which product line identifiers have the highest average defect rate in ppm?",
       "sql_lines": [
-        "SELECT product_line, AVG(defect_ppm) AS avg_defect_ppm, RANK() OVER (ORDER BY AVG(defect_ppm) DESC) AS rank_defect_ppm",
+        "WITH ranked_product_lines AS ( SELECT product_line, AVG(defect_ppm) AS average_defect_ppm, RANK() OVER (ORDER BY AVG(defect_ppm) DESC) AS rnk",
         "FROM {fqn}.quality_kpi_monthly",
         "WHERE product_line IS NOT NULL AND defect_ppm IS NOT NULL",
-        "GROUP BY product_line",
-        "ORDER BY avg_defect_ppm DESC",
-        "LIMIT 10"
+        "GROUP BY product_line ) SELECT product_line, average_defect_ppm",
+        "FROM ranked_product_lines",
+        "WHERE rnk <= 10",
+        "ORDER BY average_defect_ppm DESC"
       ]
     }
   ]

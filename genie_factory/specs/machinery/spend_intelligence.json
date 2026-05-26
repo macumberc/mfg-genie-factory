@@ -1028,10 +1028,10 @@
     {
       "question": "How has late delivery count changed over time?",
       "sql_lines": [
-        "SELECT po_date, MEASURE(late_delivery_count) AS late_delivery_count",
+        "SELECT DATE_TRUNC('month', po_date) AS month, MEASURE(late_delivery_count) AS late_delivery_count",
         "FROM {fqn}.procurement_metrics",
         "GROUP BY ALL",
-        "ORDER BY po_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -1046,11 +1046,10 @@
     {
       "question": "How has highest total spend changed over time?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(max_total_spend) AS max_total_spend",
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, MEASURE(max_total_spend) AS highest_total_spend",
         "FROM {fqn}.spend_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month",
-        "LIMIT 10"
+        "ORDER BY month"
       ]
     },
     {

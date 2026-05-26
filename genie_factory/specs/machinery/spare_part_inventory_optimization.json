@@ -1043,10 +1043,11 @@
     {
       "question": "How has total received qty count changed over time?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(total_received_qty) AS total_received_qty",
+        "SELECT DATE_TRUNC('month', txn_date) AS month, MEASURE(total_received_qty) AS total_received_qty",
         "FROM {fqn}.parts_transactions_metrics",
+        "WHERE txn_date IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -1070,33 +1071,34 @@
     {
       "question": "What are the top spare part number by total transaction quantity?",
       "sql_lines": [
-        "SELECT part_number, SUM(quantity) AS total_quantity",
+        "WITH ranked_parts AS ( SELECT part_number, SUM(quantity) AS total_quantity, RANK() OVER (ORDER BY SUM(quantity) DESC) AS quantity_rank",
         "FROM {fqn}.parts_transactions",
-        "GROUP BY part_number ORDER BY total_quantity DESC LIMIT 10",
-        "LIMIT 10"
+        "WHERE part_number IS NOT NULL",
+        "GROUP BY part_number ) SELECT part_number, total_quantity",
+        "FROM ranked_parts",
+        "WHERE quantity_rank <= 10",
+        "ORDER BY quantity_rank"
       ]
     },
     {
       "question": "Which spare part numbers have the highest total quantity on hand?",
       "sql_lines": [
-        "SELECT part_number, SUM(on_hand_qty) AS total_metric",
+        "WITH ranked_parts AS ( SELECT part_number, SUM(on_hand_qty) AS total_on_hand_qty, RANK() OVER (ORDER BY SUM(on_hand_qty) DESC) AS rank",
         "FROM {fqn}.inventory_snapshots",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WHERE part_number IS NOT NULL AND on_hand_qty IS NOT NULL",
+        "GROUP BY part_number ) SELECT part_number, total_on_hand_qty",
+        "FROM ranked_parts",
+        "WHERE rank = 1"
       ]
     },
     {
       "question": "Which spare part numbers have the highest average inventory turnover ratio?",
       "sql_lines": [
-        "WITH avg_turnover AS ( SELECT part_number, AVG(turnover_ratio) AS avg_turnover_ratio",
+        "SELECT part_number, AVG(turnover_ratio) AS avg_turnover_ratio, RANK() OVER (ORDER BY AVG(turnover_ratio) DESC) AS turnover_rank",
         "FROM {fqn}.inventory_kpi_monthly",
         "WHERE part_number IS NOT NULL AND turnover_ratio IS NOT NULL",
-        "GROUP BY part_number ) SELECT part_number, avg_turnover_ratio",
-        "FROM ( SELECT *, RANK() OVER (ORDER BY avg_turnover_ratio DESC) AS rank",
-        "FROM avg_turnover ) ranked",
-        "WHERE rank = 1",
-        "LIMIT 10"
+        "GROUP BY part_number",
+        "ORDER BY avg_turnover_ratio DESC"
       ]
     }
   ]

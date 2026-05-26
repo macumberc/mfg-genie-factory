@@ -925,53 +925,51 @@
     {
       "question": "Which equipments have the highest total sensor value?",
       "sql_lines": [
-        "SELECT equipment_name, SUM(sensor_value) AS total_metric",
-        "FROM {fqn}.sensor_readings",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "SELECT equipment_id, MEASURE(total_sensor_value) AS total_sensor_value",
+        "FROM {fqn}.sensor_readings_metrics",
+        "WHERE equipment_id IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY total_sensor_value DESC"
       ]
     },
     {
       "question": "How has highest downtime hours changed over time?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(max_downtime_hours) AS max_downtime_hours",
-        "FROM {fqn}.maintenance_events_metrics",
-        "GROUP BY ALL",
-        "ORDER BY event_date",
-        "LIMIT 10"
+        "SELECT event_date, MAX(downtime_hours) AS max_downtime_hours",
+        "FROM {fqn}.maintenance_events",
+        "GROUP BY event_date",
+        "ORDER BY event_date"
       ]
     },
     {
       "question": "Which equipment types have the best average health score 0-100?",
       "sql_lines": [
-        "SELECT equipment_type, AVG(health_score) AS avg_metric",
-        "FROM {fqn}.sensor_readings",
-        "GROUP BY 1",
-        "ORDER BY avg_metric DESC",
-        "LIMIT 10"
+        "SELECT equipment_type, MEASURE(avg_health_score) AS avg_health_score",
+        "FROM {fqn}.sensor_readings_metrics",
+        "WHERE equipment_type IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY avg_health_score DESC"
       ]
     },
     {
       "question": "Which equipments have the highest total events?",
       "sql_lines": [
-        "WITH ranked_equipment AS ( SELECT equipment_id, MEASURE(total_events) AS total_events, RANK() OVER (ORDER BY MEASURE(total_events) DESC) AS rnk",
+        "SELECT equipment_id, MEASURE(total_events) AS total_events",
         "FROM {fqn}.maintenance_events_metrics",
-        "GROUP BY ALL ) SELECT equipment_id, total_events",
-        "FROM ranked_equipment",
-        "WHERE rnk <= 10",
-        "ORDER BY total_events DESC",
-        "LIMIT 10"
+        "WHERE equipment_id IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY total_events DESC"
       ]
     },
     {
       "question": "Which fields have the highest average average health score?",
       "sql_lines": [
-        "SELECT field_name, AVG(avg_health_score) AS avg_metric",
+        "WITH ranked_fields AS ( SELECT field_name, AVG(avg_health_score) AS avg_avg_health_score, RANK() OVER (ORDER BY AVG(avg_health_score) DESC) AS rnk",
         "FROM {fqn}.equipment_health_monthly",
-        "GROUP BY 1",
-        "ORDER BY avg_metric DESC",
-        "LIMIT 10"
+        "WHERE field_name IS NOT NULL AND avg_health_score IS NOT NULL",
+        "GROUP BY field_name ) SELECT field_name, avg_avg_health_score",
+        "FROM ranked_fields",
+        "WHERE rnk = 1"
       ]
     }
   ]

@@ -951,10 +951,11 @@
     {
       "question": "Which cnc machine models have the highest total surface roughness ra in micrometers?",
       "sql_lines": [
-        "SELECT machine_model, SUM(surface_finish_um) AS total_surface_finish_um",
-        "FROM {fqn}.machining_events",
-        "GROUP BY machine_model",
-        "ORDER BY total_surface_finish_um DESC",
+        "SELECT machine_model, MEASURE(avg_surface_finish) AS total_surface_roughness_ra_um",
+        "FROM {fqn}.machining_events_metrics",
+        "WHERE machine_model IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY total_surface_roughness_ra_um DESC",
         "LIMIT 10"
       ]
     },
@@ -969,11 +970,12 @@
     {
       "question": "Which cnc machine models have the highest average defect rate percentage?",
       "sql_lines": [
-        "SELECT machine_model, MEASURE(avg_defect_rate) AS avg_defect_rate",
+        "WITH ranked_models AS ( SELECT machine_model, MEASURE(avg_defect_rate) AS avg_defect_rate, RANK() OVER (ORDER BY MEASURE(avg_defect_rate) DESC) AS defect_rate_rank",
         "FROM {fqn}.defect_kpi_metrics",
-        "GROUP BY ALL",
-        "ORDER BY avg_defect_rate DESC",
-        "LIMIT 10"
+        "WHERE machine_model IS NOT NULL",
+        "GROUP BY ALL ) SELECT machine_model, avg_defect_rate",
+        "FROM ranked_models",
+        "WHERE defect_rate_rank = 1"
       ]
     }
   ]

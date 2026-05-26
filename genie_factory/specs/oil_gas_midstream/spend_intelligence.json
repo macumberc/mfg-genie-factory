@@ -861,29 +861,28 @@
     {
       "question": "How has highest amount changed over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
+        "SELECT transaction_date, MEASURE(max_amount) AS max_amount_usd",
         "FROM {fqn}.procurement_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date",
-        "LIMIT 10"
+        "ORDER BY transaction_date"
       ]
     },
     {
       "question": "How has average quality score 0-100 trended by month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_quality_score) AS avg_quality_score",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(avg_quality_score) AS avg_quality_score",
         "FROM {fqn}.supplier_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "Which suppliers have the highest total transaction amount?",
       "sql_lines": [
-        "SELECT supplier_name, SUM(amount_usd) AS total_metric",
-        "FROM {fqn}.procurement_transactions",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
+        "SELECT supplier_id, MEASURE(total_spend_usd) AS total_transaction_amount",
+        "FROM {fqn}.procurement_transactions_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_transaction_amount DESC",
         "LIMIT 10"
       ]
     },

@@ -900,28 +900,28 @@
     {
       "question": "How has total inflows trended over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_inflows_usd) AS total_inflows_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, MEASURE(total_inflows_usd) AS total_inflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "How has total outflows trended over time?",
       "sql_lines": [
-        "SELECT transaction_date, MEASURE(total_outflows_usd) AS total_outflows_usd",
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, MEASURE(total_outflows_usd) AS total_outflows_usd",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "What has been the peak accounts_receivable each month?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(max_accounts_receivable) AS max_accounts_receivable",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(max_accounts_receivable) AS peak_accounts_receivable_usd",
         "FROM {fqn}.working_capital_snapshots_metrics",
-        "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "GROUP BY DATE_TRUNC('month', snapshot_date)",
+        "ORDER BY month"
       ]
     },
     {
@@ -936,11 +936,13 @@
     {
       "question": "Which business units have the most cash flow amount?",
       "sql_lines": [
-        "SELECT business_unit_name, SUM(amount_usd) AS total_amount_usd",
+        "WITH ranked_units AS ( SELECT business_unit_name, SUM(amount_usd) AS total_amount_usd, RANK() OVER (ORDER BY SUM(amount_usd) DESC) AS cashflow_rank",
         "FROM {fqn}.cash_transactions",
-        "GROUP BY business_unit_name",
-        "ORDER BY total_amount_usd DESC",
-        "LIMIT 10"
+        "WHERE business_unit_name IS NOT NULL",
+        "GROUP BY business_unit_name ) SELECT business_unit_name, total_amount_usd",
+        "FROM ranked_units",
+        "WHERE cashflow_rank = 1",
+        "ORDER BY business_unit_name"
       ]
     },
     {
@@ -958,11 +960,12 @@
     {
       "question": "Which segments have the highest total free cash flow?",
       "sql_lines": [
-        "SELECT segment, SUM(free_cash_flow_usd) AS total_metric",
+        "WITH ranked_segments AS ( SELECT segment, SUM(free_cash_flow_usd) AS total_free_cash_flow_usd, RANK() OVER (ORDER BY SUM(free_cash_flow_usd) DESC) AS rnk",
         "FROM {fqn}.cashflow_monthly",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "WHERE segment IS NOT NULL",
+        "GROUP BY segment ) SELECT segment, total_free_cash_flow_usd",
+        "FROM ranked_segments",
+        "WHERE rnk = 1"
       ]
     }
   ]

@@ -1030,9 +1030,10 @@
     {
       "question": "Which equipment assets have the highest total raw sensor measurement value?",
       "sql_lines": [
-        "SELECT asset_name, SUM(sensor_value) AS total_sensor_value",
+        "SELECT asset_id, SUM(sensor_value) AS total_sensor_value",
         "FROM {fqn}.sensor_readings",
-        "GROUP BY asset_name",
+        "WHERE asset_id IS NOT NULL",
+        "GROUP BY asset_id",
         "ORDER BY total_sensor_value DESC",
         "LIMIT 10"
       ]

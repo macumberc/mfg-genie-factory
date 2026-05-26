@@ -916,10 +916,11 @@
     {
       "question": "How has total weight delivered lbs count changed over time?",
       "sql_lines": [
-        "SELECT order_date, MEASURE(total_weight_delivered_lbs) AS total_weight_delivered_lbs",
+        "SELECT DATE_TRUNC('month', order_date) AS month, MEASURE(total_weight_delivered_lbs) AS total_weight_delivered_lbs",
         "FROM {fqn}.shipment_orders_metrics",
+        "WHERE order_date IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY order_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -944,21 +945,23 @@
     {
       "question": "Which lane category: domestic ftl, domestic ltl, cross-border, intermodals have the highest total freight charge?",
       "sql_lines": [
-        "SELECT lane_category, SUM(freight_charge_usd) AS total_metric",
-        "FROM {fqn}.shipment_orders",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
-        "LIMIT 10"
+        "SELECT lane_category, MEASURE(total_freight_revenue) AS total_freight_revenue",
+        "FROM {fqn}.shipment_orders_metrics",
+        "WHERE lane_category IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY total_freight_revenue DESC"
       ]
     },
     {
       "question": "Which lane categorys have the highest number of forecast records?",
       "sql_lines": [
-        "SELECT lane_category, MEASURE(forecast_record_count) AS forecast_record_count",
+        "WITH category_counts AS (SELECT lane_category, MEASURE(forecast_record_count) AS forecast_record_count",
         "FROM {fqn}.demand_forecasts_metrics",
-        "GROUP BY ALL",
-        "ORDER BY forecast_record_count DESC",
-        "LIMIT 10"
+        "WHERE lane_category IS NOT NULL",
+        "GROUP BY ALL) SELECT lane_category, forecast_record_count",
+        "FROM (SELECT lane_category, forecast_record_count, RANK() OVER (ORDER BY forecast_record_count DESC) AS rank",
+        "FROM category_counts)",
+        "WHERE rank = 1"
       ]
     },
     {
