@@ -956,10 +956,11 @@
     {
       "question": "Which vehicle class: heavy duty, medium duty, light duty, sprinters have the highest total cargo weight in kilograms?",
       "sql_lines": [
-        "SELECT vehicle_class, SUM(cargo_weight_kg) AS total_metric",
-        "FROM {fqn}.fleet_operations",
-        "GROUP BY 1",
-        "ORDER BY total_metric DESC",
+        "SELECT vehicle_class, MEASURE(total_cargo_weight_kg) AS total_cargo_weight_kg",
+        "FROM {fqn}.fleet_operations_metrics",
+        "WHERE vehicle_class IS NOT NULL",
+        "GROUP BY ALL",
+        "ORDER BY total_cargo_weight_kg DESC",
         "LIMIT 10"
       ]
     },
