@@ -764,7 +764,8 @@
         "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date",
+        "LIMIT 10"
       ]
     },
     {
@@ -951,10 +952,12 @@
     {
       "question": "Which business units have the highest average dso?",
       "sql_lines": [
-        "SELECT business_unit_name, MEASURE(avg_dso_days) AS avg_dso_days",
+        "SELECT business_unit_id, MEASURE(avg_dso_days) AS average_dso_days",
         "FROM {fqn}.working_capital_snapshots_metrics",
+        "WHERE business_unit_id IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY avg_dso_days DESC",
+        "HAVING average_dso_days IS NOT NULL",
+        "ORDER BY average_dso_days DESC",
         "LIMIT 10"
       ]
     },

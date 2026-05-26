@@ -2,8 +2,8 @@
   "company_name": "CapVenture Energy",
   "industry": "Oil & Gas Integrated",
   "use_case": "Capital investment simulation and portfolio optimization for exploration and development projects",
-  "space_title": "CapVenture Energy - Capital Investment Simulation \ud83d\udcb0",
-  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Capital Investment Simulation & Portfolio Optimization\n\nCapVenture Energy \u2014 capital portfolio analytics across 20 active exploration and development projects spanning Gulf of Mexico deepwater, Permian shale, LNG export, and infrastructure. Project Finance and the CapEx Committee use this space to rank projects on NPV/IRR, monitor schedule and cost variance, and reallocate capital to higher-return opportunities; the CFO and Board use it for sanction decisions, project-phase gating, and tracking portfolio ROIC against the corporate hurdle.\n\n**Key KPIs**\n- NPV ($MM) \u2014 primary economic decision metric\n- IRR (%) \u2014 corporate hurdle typically 10-15% for major projects\n- ROIC (%) \u2014 portfolio capital efficiency; IOC target 8-12%\n- Cost variance (%) \u2014 actual vs. budget at the project level\n- Schedule adherence (%) \u2014 on-time delivery against FID schedule\n- Cumulative capex ($MM) \u2014 committed and drawn capital by project\n- Budget remaining (%) \u2014 discretionary spend headroom\n- Risk rating mix \u2014 share of portfolio at High/Critical risk\n\n**Data sources**\n- `investment_transactions` \u2014 capex spend by project, spend category, phase, approval status\n- `project_snapshots` \u2014 periodic NPV, IRR, schedule adherence, cost variance, risk rating\n- `investment_kpi_monthly` \u2014 monthly spend, cumulative capex, ROIC, budget remaining",
+  "space_title": "CapVenture Energy - Capital Investment Simulation 💰",
+  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Capital Investment Simulation & Portfolio Optimization\n\nCapVenture Energy — capital portfolio analytics across 20 active exploration and development projects spanning Gulf of Mexico deepwater, Permian shale, LNG export, and infrastructure. Project Finance and the CapEx Committee use this space to rank projects on NPV/IRR, monitor schedule and cost variance, and reallocate capital to higher-return opportunities; the CFO and Board use it for sanction decisions, project-phase gating, and tracking portfolio ROIC against the corporate hurdle.\n\n**Key KPIs**\n- NPV ($MM) — primary economic decision metric\n- IRR (%) — corporate hurdle typically 10-15% for major projects\n- ROIC (%) — portfolio capital efficiency; IOC target 8-12%\n- Cost variance (%) — actual vs. budget at the project level\n- Schedule adherence (%) — on-time delivery against FID schedule\n- Cumulative capex ($MM) — committed and drawn capital by project\n- Budget remaining (%) — discretionary spend headroom\n- Risk rating mix — share of portfolio at High/Critical risk\n\n**Data sources**\n- `investment_transactions` — capex spend by project, spend category, phase, approval status\n- `project_snapshots` — periodic NPV, IRR, schedule adherence, cost variance, risk rating\n- `investment_kpi_monthly` — monthly spend, cumulative capex, ROIC, budget remaining",
   "schema_basename": "og_integrated_capinvest",
   "tables": [
     {
@@ -743,13 +743,13 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Capital Investment Simulation and Portfolio Optimization for an integrated oil & gas company managing 20 projects across Deepwater (GoM), Onshore Conventional, Shale (Permian / Eagle Ford / Marcellus), LNG, and Infrastructure (incl. CCS). Stakeholders include Project Finance and the CapEx Committee (NPV / IRR / variance), the CFO (capital allocation, ROIC), and the Board (sanction approvals, project gating).\n\nMETRIC DEFINITIONS\n- NPV = npv_mm on project_snapshots (USD millions); avg_npv_mm rolls up\n- IRR = irr_pct on project_snapshots; majors typically hurdle 10-15% for development capex, 15-20% for high-risk exploration\n- ROIC = portfolio_roic_pct on investment_kpi_monthly; IOC target 8-12%\n- Schedule adherence = schedule_adherence_pct; target >95%\n- Cost variance = cost_variance_pct; alarm threshold >10% over budget\n- Cumulative spend = cumulative_spend_usd on investment_kpi_monthly\n- Budget remaining = budget_remaining_pct\n- Risk rating = risk_rating band on project_snapshots (Low / Medium / High / Critical)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - investment_transactions_metrics (source: investment_transactions) \u2014 dims: transaction_date, project_id, project_type, basin_region, spend_category, phase, approval_status; measures: total_spend_usd, total_budget_usd, total_transactions, avg_transaction_usd, max_amount.\n  - project_snapshots_metrics (source: project_snapshots) \u2014 dims: snapshot_date, project_id, project_type, basin_region, risk_rating; measures: avg_npv_mm, avg_irr_pct, avg_schedule_adherence, avg_cost_variance_pct, max_npv_mm.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. project_name, npv_mm, irr_pct, cumulative_spend_usd, portfolio_roic_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Capital Investment Simulation and Portfolio Optimization for an integrated oil & gas company managing 20 projects across Deepwater (GoM), Onshore Conventional, Shale (Permian / Eagle Ford / Marcellus), LNG, and Infrastructure (incl. CCS). Stakeholders include Project Finance and the CapEx Committee (NPV / IRR / variance), the CFO (capital allocation, ROIC), and the Board (sanction approvals, project gating).\n\nMETRIC DEFINITIONS\n- NPV = npv_mm on project_snapshots (USD millions); avg_npv_mm rolls up\n- IRR = irr_pct on project_snapshots; majors typically hurdle 10-15% for development capex, 15-20% for high-risk exploration\n- ROIC = portfolio_roic_pct on investment_kpi_monthly; IOC target 8-12%\n- Schedule adherence = schedule_adherence_pct; target >95%\n- Cost variance = cost_variance_pct; alarm threshold >10% over budget\n- Cumulative spend = cumulative_spend_usd on investment_kpi_monthly\n- Budget remaining = budget_remaining_pct\n- Risk rating = risk_rating band on project_snapshots (Low / Medium / High / Critical)\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - investment_transactions_metrics (source: investment_transactions) — dims: transaction_date, project_id, project_type, basin_region, spend_category, phase, approval_status; measures: total_spend_usd, total_budget_usd, total_transactions, avg_transaction_usd, max_amount.\n  - project_snapshots_metrics (source: project_snapshots) — dims: snapshot_date, project_id, project_type, basin_region, risk_rating; measures: avg_npv_mm, avg_irr_pct, avg_schedule_adherence, avg_cost_variance_pct, max_npv_mm.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. project_name, npv_mm, irr_pct, cumulative_spend_usd, portfolio_roic_pct).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 projects by average NPV in millions.",
     "Show monthly total capital spend by project type for the trailing 12 months.",
     "Which projects are flagged as High or Critical risk, and what is their NPV and IRR?",
     "Which projects have cost variance greater than 10% over budget, by basin region?",
-    "Top 10 projects by average IRR \u2014 and how do they compare on schedule adherence?",
+    "Top 10 projects by average IRR — and how do they compare on schedule adherence?",
     "How has portfolio ROIC trended month-over-month across the deepwater and shale segments?",
     "What is the total approved capex by spend category and phase across the active portfolio?"
   ],
@@ -775,10 +775,10 @@
     {
       "question": "What is the monthly trend in average irr percentage?",
       "sql_lines": [
-        "SELECT snapshot_date, MEASURE(avg_irr_pct) AS avg_irr_pct",
+        "SELECT DATE_TRUNC('month', snapshot_date) AS month, MEASURE(avg_irr_pct) AS avg_irr_pct",
         "FROM {fqn}.project_snapshots_metrics",
         "GROUP BY ALL",
-        "ORDER BY snapshot_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -912,7 +912,7 @@
     {
       "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "SELECT DATE_TRUNC('month', transaction_date) AS month, COUNT(DISTINCT transaction_id) AS distinct_transaction_count",
         "FROM {fqn}.investment_transactions",
         "GROUP BY 1",
         "ORDER BY 1"
@@ -924,7 +924,8 @@
         "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
         "FROM {fqn}.investment_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date",
+        "LIMIT 10"
       ]
     },
     {

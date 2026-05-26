@@ -2,8 +2,8 @@
   "company_name": "PetroPulse Integrated",
   "industry": "Oil & Gas Integrated",
   "use_case": "Real-time production monitoring and control center for wells and platforms",
-  "space_title": "PetroPulse Integrated - Production Monitoring Control Center \ud83d\udcca",
-  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Production Monitoring & Control Center\n\nPetroPulse Integrated \u2014 real-time production analytics across 20 wells on 6 Gulf of Mexico platforms covering Thunder Horse, Mars, Atlantis, and other major fields. Production Operations and the Control Center use this space to monitor flowing status, choke positions, and deferred volumes day-to-day; the Upstream VP and Asset Managers use it to track water cut, GOR drift, uptime, and the revenue impact of unplanned shut-ins and hurricane evacuations.\n\n**Key KPIs**\n- Total oil (bbl/d) and gas (MCF/d) \u2014 top-line production volume\n- Well uptime (%) \u2014 IOGP top-quartile >95%\n- Water cut (%) \u2014 reservoir maturity / waterflood indicator\n- GOR (SCF/bbl) \u2014 reservoir pressure / gas breakthrough signal\n- Deferred oil (bbl) \u2014 production lost to events vs. potential\n- Wellhead pressure (PSI) and choke position (%) \u2014 operating envelope\n- Event severity mix \u2014 High/Critical vs Low/Medium event share\n- BOE (oil + gas/6) \u2014 combined hydrocarbon throughput\n\n**Data sources**\n- `production_readings` \u2014 daily well-level oil, gas, water, choke, wellhead pressure, status\n- `production_events` \u2014 shut-ins, startups, hurricane evac, equipment trips with deferred volumes\n- `production_kpi_monthly` \u2014 monthly uptime, water cut, GOR, deferred oil snapshots",
+  "space_title": "PetroPulse Integrated - Production Monitoring Control Center 📊",
+  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Production Monitoring & Control Center\n\nPetroPulse Integrated — real-time production analytics across 20 wells on 6 Gulf of Mexico platforms covering Thunder Horse, Mars, Atlantis, and other major fields. Production Operations and the Control Center use this space to monitor flowing status, choke positions, and deferred volumes day-to-day; the Upstream VP and Asset Managers use it to track water cut, GOR drift, uptime, and the revenue impact of unplanned shut-ins and hurricane evacuations.\n\n**Key KPIs**\n- Total oil (bbl/d) and gas (MCF/d) — top-line production volume\n- Well uptime (%) — IOGP top-quartile >95%\n- Water cut (%) — reservoir maturity / waterflood indicator\n- GOR (SCF/bbl) — reservoir pressure / gas breakthrough signal\n- Deferred oil (bbl) — production lost to events vs. potential\n- Wellhead pressure (PSI) and choke position (%) — operating envelope\n- Event severity mix — High/Critical vs Low/Medium event share\n- BOE (oil + gas/6) — combined hydrocarbon throughput\n\n**Data sources**\n- `production_readings` — daily well-level oil, gas, water, choke, wellhead pressure, status\n- `production_events` — shut-ins, startups, hurricane evac, equipment trips with deferred volumes\n- `production_kpi_monthly` — monthly uptime, water cut, GOR, deferred oil snapshots",
   "schema_basename": "og_integrated_production",
   "tables": [
     {
@@ -785,13 +785,13 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Production Monitoring for an integrated operator running 20 wells across 6 Gulf of Mexico platforms (Thunder Horse, Mars, Atlantis, Na Kika, Shenzi, Mad Dog). Stakeholders include the Production Control Center (flowing status / choke / pressures), the Upstream VP (volumes / uptime / deferred barrels), and Reservoir Engineering (water cut, GOR drift, decline).\n\nMETRIC DEFINITIONS\n- Production volumes = SUM(oil_bbl) and SUM(gas_mcf) on production_readings (daily)\n- Uptime = uptime_pct on production_kpi_monthly; IOGP top-quartile >95%, healthy >92%\n- Water cut = water_cut_pct; mature GoM deepwater typically 25-60%, >70% triggers intervention review\n- GOR = gor_ratio in SCF/BBL; rising GOR signals gas breakthrough or pressure decline\n- Deferred oil = deferred_oil_bbl on production_events; key revenue-loss metric\n- Severity = severity band on production_events (Low / Medium / High / Critical)\n- BOE = oil_bbl + gas_mcf / 6.0; standard hydrocarbon equivalence factor\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) \u2014 dims: reading_date, well_id, platform_name, field_name, status; measures: total_oil_bbl, total_gas_mcf, total_water_bbl, avg_wellhead_pressure_psi, avg_choke_pct, max_oil_bbl.\n  - production_events_metrics (source: production_events) \u2014 dims: event_date, well_id, platform_name, field_name, event_category, severity; measures: total_events, total_deferred_oil_bbl, total_deferred_gas_mcf, total_duration_hours, avg_duration_hours, max_duration_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. well_name, water_cut_pct, gor_ratio, uptime_pct, deferred_oil_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Production Monitoring for an integrated operator running 20 wells across 6 Gulf of Mexico platforms (Thunder Horse, Mars, Atlantis, Na Kika, Shenzi, Mad Dog). Stakeholders include the Production Control Center (flowing status / choke / pressures), the Upstream VP (volumes / uptime / deferred barrels), and Reservoir Engineering (water cut, GOR drift, decline).\n\nMETRIC DEFINITIONS\n- Production volumes = SUM(oil_bbl) and SUM(gas_mcf) on production_readings (daily)\n- Uptime = uptime_pct on production_kpi_monthly; IOGP top-quartile >95%, healthy >92%\n- Water cut = water_cut_pct; mature GoM deepwater typically 25-60%, >70% triggers intervention review\n- GOR = gor_ratio in SCF/BBL; rising GOR signals gas breakthrough or pressure decline\n- Deferred oil = deferred_oil_bbl on production_events; key revenue-loss metric\n- Severity = severity band on production_events (Low / Medium / High / Critical)\n- BOE = oil_bbl + gas_mcf / 6.0; standard hydrocarbon equivalence factor\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - production_readings_metrics (source: production_readings) — dims: reading_date, well_id, platform_name, field_name, status; measures: total_oil_bbl, total_gas_mcf, total_water_bbl, avg_wellhead_pressure_psi, avg_choke_pct, max_oil_bbl.\n  - production_events_metrics (source: production_events) — dims: event_date, well_id, platform_name, field_name, event_category, severity; measures: total_events, total_deferred_oil_bbl, total_deferred_gas_mcf, total_duration_hours, avg_duration_hours, max_duration_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. well_name, water_cut_pct, gor_ratio, uptime_pct, deferred_oil_bbl).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 wells by total oil production in barrels over the last 90 days.",
     "Show monthly total oil and gas production by field for the trailing 12 months.",
     "Which wells have water cut above 60%, and what platforms are they on?",
     "What was the total deferred oil from Hurricane Evac events this year, by field?",
-    "Top 10 wells by uptime percentage this quarter \u2014 and how does that compare to last quarter?",
+    "Top 10 wells by uptime percentage this quarter — and how does that compare to last quarter?",
     "How has average wellhead pressure trended month-over-month for Thunder Horse wells?",
     "Which platforms had the highest count of High and Critical severity events this year?"
   ],
@@ -799,10 +799,10 @@
     {
       "question": "What is the monthly trend in total gas production in mcf?",
       "sql_lines": [
-        "SELECT reading_date, MEASURE(total_gas_mcf) AS total_gas_mcf",
+        "SELECT DATE_TRUNC('month', reading_date) AS month, MEASURE(total_gas_mcf) AS total_gas_mcf",
         "FROM {fqn}.production_readings_metrics",
         "GROUP BY ALL",
-        "ORDER BY reading_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -817,10 +817,10 @@
     {
       "question": "What is the monthly trend in total deferred oil production in barrels?",
       "sql_lines": [
-        "SELECT event_date, MEASURE(total_deferred_oil_bbl) AS total_deferred_oil_bbl",
+        "SELECT DATE_TRUNC('month', event_date) AS month, MEASURE(total_deferred_oil_bbl) AS total_deferred_oil_bbl",
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -982,10 +982,15 @@
     {
       "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "SELECT DATE_TRUNC('month', event_date) AS month, COUNT(DISTINCT event_id) AS distinct_events",
         "FROM {fqn}.production_events",
-        "GROUP BY 1",
-        "ORDER BY 1"
+        "WHERE event_id IS NOT NULL AND event_date IS NOT NULL",
+        "GROUP BY month",
+        "ORDER BY month; -- For readings (if user meant readings): -- SELECT DATE_TRUNC('month', reading_date) AS month, COUNT(DISTINCT reading_id) AS distinct_readings --",
+        "FROM {fqn}.production_readings --",
+        "WHERE reading_id IS NOT NULL AND reading_date IS NOT NULL --",
+        "GROUP BY month --",
+        "ORDER BY month"
       ]
     },
     {
@@ -994,7 +999,8 @@
         "SELECT event_date, MEASURE(max_duration_hours) AS max_duration_hours",
         "FROM {fqn}.production_events_metrics",
         "GROUP BY ALL",
-        "ORDER BY event_date"
+        "ORDER BY event_date",
+        "LIMIT 10"
       ]
     },
     {

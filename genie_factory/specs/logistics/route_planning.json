@@ -1104,7 +1104,7 @@
     {
       "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', segment_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "SELECT DATE_TRUNC('month', segment_date) AS month, COUNT(DISTINCT segment_id) AS distinct_count",
         "FROM {fqn}.route_segments",
         "GROUP BY 1",
         "ORDER BY 1"
@@ -1123,21 +1123,30 @@
     {
       "question": "Which depots have driven the most kilometers in the past week?",
       "sql_lines": [
-        "SELECT depot_name, SUM(distance_km) AS total_distance_km",
-        "FROM {fqn}.route_legs",
-        "WHERE leg_date >= DATE_SUB(CURRENT_DATE(), 7)",
-        "GROUP BY depot_name",
-        "ORDER BY total_distance_km DESC",
-        "LIMIT 10"
+        "WITH latest_week AS (SELECT MAX(week_start) AS week_start",
+        "FROM {fqn}.route_efficiency_metrics_mv), vehicle_distance AS ( SELECT vehicle_id, MEASURE(total_weekly_distance_km) AS total_distance_km",
+        "FROM {fqn}.route_efficiency_metrics_mv",
+        "WHERE week_start = (SELECT week_start",
+        "FROM latest_week)",
+        "GROUP BY ALL ) SELECT v.home_depot AS depot, SUM(vd.total_distance_km) AS total_distance_km",
+        "FROM vehicle_distance vd",
+        "JOIN {fqn}.vehicles v ON vd.vehicle_id = v.vehicle_id",
+        "WHERE v.home_depot IS NOT NULL",
+        "GROUP BY v.home_depot",
+        "ORDER BY total_distance_km DESC"
       ]
     },
     {
       "question": "Which vehicles have the highest total weekly distance traveled?",
       "sql_lines": [
-        "SELECT vehicle_name, SUM(distance_km) AS total_distance_km",
-        "FROM {fqn}.route_legs",
-        "GROUP BY vehicle_name",
-        "ORDER BY total_distance_km DESC",
+        "WITH vehicle_distances AS (SELECT vehicle_id, MEASURE(total_weekly_distance_km) AS total_weekly_distance_km",
+        "FROM {fqn}.route_efficiency_metrics_mv",
+        "GROUP BY ALL), ranked_vehicles AS (SELECT vd.vehicle_id, v.vehicle_name, vd.total_weekly_distance_km, RANK() OVER (ORDER BY vd.total_weekly_distance_km DESC) AS rnk",
+        "FROM vehicle_distances vd",
+        "LEFT JOIN {fqn}.vehicles v ON vd.vehicle_id = v.vehicle_id) SELECT vehicle_id, vehicle_name, total_weekly_distance_km",
+        "FROM ranked_vehicles",
+        "WHERE rnk <= 10",
+        "ORDER BY total_weekly_distance_km DESC",
         "LIMIT 10"
       ]
     },
@@ -1157,16 +1166,18 @@
         "SELECT vehicle_name, AVG(load_utilization_pct) AS avg_load_utilization_pct",
         "FROM {fqn}.route_segments",
         "GROUP BY vehicle_name",
-        "ORDER BY avg_load_utilization_pct DESC"
+        "ORDER BY avg_load_utilization_pct DESC",
+        "LIMIT 10"
       ]
     },
     {
       "question": "Which vehicles have the highest average on-time delivery percentage?",
       "sql_lines": [
-        "SELECT vehicle_name, MEASURE(avg_on_time_delivery_pct) AS avg_on_time_delivery_pct",
+        "SELECT vehicle_id, MEASURE(avg_on_time_delivery_pct) AS average_on_time_delivery_pct",
         "FROM {fqn}.route_efficiency_metrics_mv",
+        "WHERE vehicle_id IS NOT NULL",
         "GROUP BY ALL",
-        "ORDER BY avg_on_time_delivery_pct DESC",
+        "ORDER BY average_on_time_delivery_pct DESC",
         "LIMIT 10"
       ]
     }

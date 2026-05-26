@@ -46,10 +46,23 @@ from .presets import SUBINDUSTRIES, USE_CASES
 _logger = logging.getLogger("genie_factory.refresh")
 
 
-def _all_use_case_pairs() -> list[tuple[str, str]]:
-    """Return every (subindustry, use_case_label) pair in the preset corpus."""
+def _all_use_case_pairs(
+    subindustry_slugs: list[str] | None = None,
+) -> list[tuple[str, str]]:
+    """Return every (subindustry, use_case_label) pair in the preset corpus.
+
+    ``subindustry_slugs`` optionally filters to one or more subindustries by
+    their slug form (e.g. ``["logistics", "machinery"]``).
+    """
+    from .specs import _slugify
+
+    keep: set[str] | None = None
+    if subindustry_slugs:
+        keep = set(subindustry_slugs)
     pairs: list[tuple[str, str]] = []
     for sub in SUBINDUSTRIES:
+        if keep is not None and _slugify(sub) not in keep:
+            continue
         for uc in USE_CASES.get(sub, []):
             pairs.append((sub, uc["label"]))
     return pairs
@@ -94,6 +107,7 @@ def refresh_all(
     concurrency: int = 3,
     out_path: Path | None = None,
     spark: Any = None,
+    subindustries: list[str] | None = None,
 ) -> dict[str, Any]:
     """Refresh every spec in parallel (bounded by ``concurrency``).
 
@@ -107,12 +121,13 @@ def refresh_all(
     returns None inside the ThreadPoolExecutor workers, so we capture it
     here and forward to each ``_deploy_one`` call explicitly.
     """
-    pairs = _all_use_case_pairs()
+    pairs = _all_use_case_pairs(subindustries)
     _logger.info(
-        "Starting refresh of %d demos at concurrency %d (anchor=%s)",
+        "Starting refresh of %d demos at concurrency %d (anchor=%s, filter=%s)",
         len(pairs),
         concurrency,
         os.environ.get("GENIE_FACTORY_END_DATE") or "CURRENT_DATE()",
+        subindustries or "ALL",
     )
 
     # If the caller didn't pass spark, try to resolve it from the active
@@ -165,6 +180,11 @@ def main(argv: list[str] | None = None) -> int:
         help="parallel deploys (default 3 to stay under 5 qpm Genie cap)",
     )
     parser.add_argument("--out", type=Path, default=None, help="manifest output path")
+    parser.add_argument(
+        "--subindustries",
+        default=None,
+        help="comma-separated subindustry slugs to refresh (default: all 88 specs)",
+    )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -173,7 +193,13 @@ def main(argv: list[str] | None = None) -> int:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
         datefmt="%H:%M:%S",
     )
-    manifest = refresh_all(concurrency=args.concurrency, out_path=args.out)
+    subs = (
+        [s.strip() for s in args.subindustries.split(",") if s.strip()]
+        if args.subindustries else None
+    )
+    manifest = refresh_all(
+        concurrency=args.concurrency, out_path=args.out, subindustries=subs,
+    )
     return 0 if manifest["error"] == 0 else 1
 
 

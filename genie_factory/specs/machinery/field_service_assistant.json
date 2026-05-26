@@ -2,8 +2,8 @@
   "company_name": "FieldForce Machinery",
   "industry": "Machinery",
   "use_case": "Field service management and technician dispatch optimization",
-  "space_title": "FieldForce Machinery - Field Service Assistant \ud83d\udee0\ufe0f",
-  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Field Service Management & Technician Dispatch\n\nFieldForce Machinery \u2014 installed-base service analytics across multiple equipment models and issue categories. Service Managers and Dispatchers monitor ticket queues, technician utilization, and SLA risk daily; the VP Service and CFO use it to drive first-time-fix rate, service margin, and aftermarket revenue from the deployed install base.\n\n**Key KPIs**\n- First-time fix rate (%) \u2014 industry leader benchmark \u226580%, average 70\u201375%\n- SLA compliance (%) \u2014 target \u226595%\n- Mean time to resolution (hrs) \u2014 customer-experience driver\n- Mean time to dispatch (hrs) \u2014 early operational lever\n- Technician utilization (%) \u2014 target 75\u201385% (productive hours)\n- Cost per ticket ($) \u2014 service margin input\n- Repeat visit rate (%) \u2014 leaders <10%\n- Customer satisfaction (1\u20135) \u2014 NPS proxy for service relationship\n\n**Data sources**\n- `service_tickets` \u2014 ticket-level records with priority, issue category, resolution hours, parts/labor cost\n- `technician_snapshots` \u2014 weekly technician utilization, tickets closed, CSAT, travel hours\n- `service_kpi_monthly` \u2014 monthly FTF rate, SLA compliance, cost per ticket, repeat visit rate, dispatch time",
+  "space_title": "FieldForce Machinery - Field Service Assistant 🛠️",
+  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Field Service Management & Technician Dispatch\n\nFieldForce Machinery — installed-base service analytics across multiple equipment models and issue categories. Service Managers and Dispatchers monitor ticket queues, technician utilization, and SLA risk daily; the VP Service and CFO use it to drive first-time-fix rate, service margin, and aftermarket revenue from the deployed install base.\n\n**Key KPIs**\n- First-time fix rate (%) — industry leader benchmark ≥80%, average 70–75%\n- SLA compliance (%) — target ≥95%\n- Mean time to resolution (hrs) — customer-experience driver\n- Mean time to dispatch (hrs) — early operational lever\n- Technician utilization (%) — target 75–85% (productive hours)\n- Cost per ticket ($) — service margin input\n- Repeat visit rate (%) — leaders <10%\n- Customer satisfaction (1–5) — NPS proxy for service relationship\n\n**Data sources**\n- `service_tickets` — ticket-level records with priority, issue category, resolution hours, parts/labor cost\n- `technician_snapshots` — weekly technician utilization, tickets closed, CSAT, travel hours\n- `service_kpi_monthly` — monthly FTF rate, SLA compliance, cost per ticket, repeat visit rate, dispatch time",
   "schema_basename": "mach_field_service",
   "tables": [
     {
@@ -725,12 +725,12 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports field-service operations for FieldForce Machinery. Stakeholders: Service Manager and Dispatcher (queue depth, technician utilization, SLA risk), VP Service (FTF rate, repeat visits, CSAT), and CFO (cost per ticket, service margin, aftermarket revenue uplift).\n\nMETRIC DEFINITIONS\n- First-time fix rate = AVG(first_time_fix_rate_pct); leaders \u226580%, average 70\u201375%.\n- SLA compliance = AVG(sla_compliance_pct); target \u226595%.\n- Resolution time = AVG(resolution_hours); MTBF and dispatch efficiency proxy.\n- Mean time to dispatch = AVG(mean_time_to_dispatch_hours); target <4 hrs for critical.\n- Utilization = AVG(utilization_pct); productive target 75\u201385%.\n- Cost per ticket = AVG(avg_cost_per_ticket_usd); margin lever versus contract price.\n- Repeat visit rate = AVG(repeat_visit_pct); leaders <10%.\n- CSAT = AVG(customer_satisfaction); 1\u20135 scale, target \u22654.2.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - service_tickets_metrics (source: service_tickets) \u2014 dims: ticket_date, equipment_type, priority, issue_category; measures: total_tickets, avg_resolution_hours, total_service_cost, first_time_fix_count, max_resolution_hours.\n  - service_kpi_metrics (source: service_kpi_monthly) \u2014 dims: kpi_month, equipment_type; measures: avg_ftf_rate, avg_sla_compliance, avg_cost_per_ticket, total_tickets_monthly, total_repeat_visit_percent, total_mean_time_to_dispatch_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. technician_id, parts_cost_usd, labor_cost_usd, first_time_fix, customer_satisfaction).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports field-service operations for FieldForce Machinery. Stakeholders: Service Manager and Dispatcher (queue depth, technician utilization, SLA risk), VP Service (FTF rate, repeat visits, CSAT), and CFO (cost per ticket, service margin, aftermarket revenue uplift).\n\nMETRIC DEFINITIONS\n- First-time fix rate = AVG(first_time_fix_rate_pct); leaders ≥80%, average 70–75%.\n- SLA compliance = AVG(sla_compliance_pct); target ≥95%.\n- Resolution time = AVG(resolution_hours); MTBF and dispatch efficiency proxy.\n- Mean time to dispatch = AVG(mean_time_to_dispatch_hours); target <4 hrs for critical.\n- Utilization = AVG(utilization_pct); productive target 75–85%.\n- Cost per ticket = AVG(avg_cost_per_ticket_usd); margin lever versus contract price.\n- Repeat visit rate = AVG(repeat_visit_pct); leaders <10%.\n- CSAT = AVG(customer_satisfaction); 1–5 scale, target ≥4.2.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - service_tickets_metrics (source: service_tickets) — dims: ticket_date, equipment_type, priority, issue_category; measures: total_tickets, avg_resolution_hours, total_service_cost, first_time_fix_count, max_resolution_hours.\n  - service_kpi_metrics (source: service_kpi_monthly) — dims: kpi_month, equipment_type; measures: avg_ftf_rate, avg_sla_compliance, avg_cost_per_ticket, total_tickets_monthly, total_repeat_visit_percent, total_mean_time_to_dispatch_hours.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. technician_id, parts_cost_usd, labor_cost_usd, first_time_fix, customer_satisfaction).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "What is the monthly trend in first-time fix rate by equipment type over the trailing 12 months?",
-    "Top 10 equipment models by average resolution hours \u2014 which need the most dispatch time?",
+    "Top 10 equipment models by average resolution hours — which need the most dispatch time?",
     "Which issue categories drive the highest total service cost this quarter?",
-    "Rank equipment types by SLA compliance \u2014 which are below the 95% target?",
+    "Rank equipment types by SLA compliance — which are below the 95% target?",
     "Show monthly trend in average cost per ticket vs first-time fix rate across the install base.",
     "Top 10 highest-priority tickets by resolution hours in the last 30 days.",
     "Which equipment types have the worst repeat visit rate, and what is the cost impact?"
@@ -897,19 +897,19 @@
     {
       "question": "What is the monthly trend in first time fix count?",
       "sql_lines": [
-        "SELECT ticket_date, MEASURE(first_time_fix_count) AS first_time_fix_count",
+        "SELECT DATE_TRUNC('month', ticket_date) AS month, MEASURE(first_time_fix_count) AS first_time_fix_count",
         "FROM {fqn}.service_tickets_metrics",
         "GROUP BY ALL",
-        "ORDER BY ticket_date"
+        "ORDER BY month"
       ]
     },
     {
       "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', ticket_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
-        "FROM {fqn}.service_tickets",
-        "GROUP BY 1",
-        "ORDER BY 1"
+        "SELECT DATE_TRUNC('month', ticket_date) AS month, MEASURE(total_tickets) AS distinct_tickets",
+        "FROM {fqn}.service_tickets_metrics",
+        "GROUP BY ALL",
+        "ORDER BY month"
       ]
     },
     {
@@ -935,7 +935,8 @@
       "sql_lines": [
         "SELECT equipment_model, SUM(resolution_hours) AS total_resolution_hours",
         "FROM {fqn}.service_tickets",
-        "GROUP BY equipment_model ORDER BY total_resolution_hours DESC LIMIT 10"
+        "GROUP BY equipment_model ORDER BY total_resolution_hours DESC LIMIT 10",
+        "LIMIT 10"
       ]
     },
     {
@@ -949,10 +950,13 @@
     {
       "question": "Which equipment models have the highest average first-time fix rate?",
       "sql_lines": [
-        "SELECT equipment_model, MEASURE(avg_ftf_rate) AS avg_ftf_rate",
-        "FROM {fqn}.service_kpi_metrics",
-        "GROUP BY ALL",
-        "ORDER BY avg_ftf_rate DESC",
+        "WITH ranked_models AS ( SELECT equipment_model, AVG(first_time_fix_rate_pct) AS avg_first_time_fix_rate_pct, RANK() OVER (ORDER BY AVG(first_time_fix_rate_pct) DESC) AS rank",
+        "FROM {fqn}.service_kpi_monthly",
+        "WHERE equipment_model IS NOT NULL AND first_time_fix_rate_pct IS NOT NULL",
+        "GROUP BY equipment_model ) SELECT equipment_model, avg_first_time_fix_rate_pct",
+        "FROM ranked_models",
+        "WHERE rank <= 10",
+        "ORDER BY avg_first_time_fix_rate_pct DESC",
         "LIMIT 10"
       ]
     }

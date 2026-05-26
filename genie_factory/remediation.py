@@ -476,6 +476,209 @@ def apply_fix_topn_cardinality(spec: dict) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Fix 6 — Promote Genie-judged-good SQL to be the new gold (from an actions
+# JSON produced by ``scripts/analyze_benchmark_failures.py``).
+# ---------------------------------------------------------------------------
+
+
+# Module-level state set by main() before run_modes() begins iterating.
+# Keyed by ``"<subindustry>/<use_case>"`` → list of action dicts that have
+# ``category == "PROMOTE_GENIE_SQL_TO_GOLD"`` for that spec.
+_PROMOTE_ACTIONS: dict[str, list[dict]] = {}
+
+
+_CLAUSE_SPLIT_RE = re.compile(
+    r"(?i)\s+(?=(?:LEFT\s+|RIGHT\s+|FULL\s+|INNER\s+|OUTER\s+|CROSS\s+)?JOIN\b"
+    r"|FROM\b|WHERE\b|GROUP\s+BY\b|HAVING\b|ORDER\s+BY\b|LIMIT\b|UNION\b)"
+)
+
+
+def _normalize_genie_sql(sql: str, schema_basename: str) -> list[str]:
+    """Convert a Genie-produced SQL string into the spec ``sql_lines`` shape.
+
+    - Strip surrounding whitespace + trailing semicolons.
+    - Drop backtick identifier quotes (Spark accepts both).
+    - Replace any ``<catalog>.<schema_basename>`` occurrences with ``{fqn}``.
+    - Split on top-level clause keywords so each clause is its own line.
+    """
+    s = sql.strip().rstrip(";").strip()
+    s = s.replace("`", "")
+    # Substitute any `<catalog>.<schema_basename>` (e.g.
+    # ``logistics_demos_catalog.route_planning``) with ``{fqn}``.
+    if schema_basename:
+        s = re.sub(
+            r"\b[A-Za-z_][A-Za-z0-9_]*\." + re.escape(schema_basename) + r"\b",
+            "{fqn}",
+            s,
+        )
+    parts = _CLAUSE_SPLIT_RE.split(s)
+    # Collapse ALL whitespace runs (including embedded \n from Genie's CTE
+    # formatting) to a single space — keeps each spec sql_lines entry on one
+    # physical line, which is the convention elsewhere in the corpus.
+    cleaned = [re.sub(r"\s+", " ", p).strip() for p in parts if p and p.strip()]
+    # Stdlib re's variable-width lookbehind limitation means our split also
+    # fires between "LEFT" and "JOIN". Rejoin any modifier-only line with the
+    # following JOIN clause.
+    join_modifiers = {"LEFT", "RIGHT", "FULL", "INNER", "OUTER", "CROSS"}
+    merged: list[str] = []
+    i = 0
+    while i < len(cleaned):
+        token = cleaned[i]
+        if token.upper() in join_modifiers and i + 1 < len(cleaned):
+            merged.append(f"{token} {cleaned[i+1]}")
+            i += 2
+        else:
+            merged.append(token)
+            i += 1
+    return merged
+
+
+def apply_fix_bench_promote_genie(spec: dict, spec_key: str) -> int:
+    """Replace gold ``sql_lines`` for benchmark questions whose paired
+    action says ``PROMOTE_GENIE_SQL_TO_GOLD``.
+
+    Matches by exact ``question`` text within the spec's ``benchmarks``.
+    Skipped silently when there's no action for this spec or no matching
+    question, so the mode is safe to run alongside others.
+    """
+    actions = _PROMOTE_ACTIONS.get(spec_key) or []
+    if not actions:
+        return 0
+    schema_basename = spec.get("schema_basename") or ""
+    # Build a question→suggested_sql map for O(1) lookup.
+    by_q: dict[str, str] = {}
+    for a in actions:
+        sg = a.get("suggested_gold_sql")
+        q = a.get("question")
+        if sg and q and a.get("category") == "PROMOTE_GENIE_SQL_TO_GOLD":
+            by_q[q] = sg
+    if not by_q:
+        return 0
+    changes = 0
+    for b in spec.get("benchmarks", []) or []:
+        q = b.get("question")
+        if not q or q not in by_q:
+            continue
+        new_lines = _normalize_genie_sql(by_q[q], schema_basename)
+        if not new_lines:
+            continue
+        # Idempotence: skip if already identical.
+        if b.get("sql_lines") == new_lines:
+            continue
+        b["sql_lines"] = new_lines
+        changes += 1
+    return changes
+
+
+# ---------------------------------------------------------------------------
+# Fix 7 — "Monthly trend" questions must have DATE_TRUNC('month', ...) in gold.
+# ---------------------------------------------------------------------------
+
+
+_MONTHLY_TREND_RE = re.compile(r"\bmonthly\b", re.IGNORECASE)
+_DATE_TOKEN_RE = re.compile(
+    r"\b(\w*(?:_date|_timestamp|snapshot_month|_month|_time|order_dt|ticket_dt))\b",
+    re.IGNORECASE,
+)
+
+
+def _rewrite_monthly_trend(sql_lines: list[str]) -> tuple[list[str], bool]:
+    """If gold SELECT references a bare date column, wrap in DATE_TRUNC('month', …).
+
+    Skips lines that already contain ``DATE_TRUNC(``.
+    """
+    if not sql_lines:
+        return sql_lines, False
+    if any("DATE_TRUNC(" in line.upper() for line in sql_lines):
+        return sql_lines, False
+
+    select_line_idx = None
+    for i, line in enumerate(sql_lines):
+        if re.match(r"^\s*SELECT\b", line, re.IGNORECASE):
+            select_line_idx = i
+            break
+    if select_line_idx is None:
+        return sql_lines, False
+
+    select_line = sql_lines[select_line_idx]
+    m = _DATE_TOKEN_RE.search(select_line)
+    if not m:
+        return sql_lines, False
+    date_col = m.group(1)
+    # Replace the first occurrence of "<date_col>" (not when prefixed with
+    # ``.`` to avoid touching qualified references mid-string).
+    rewritten_select = re.sub(
+        r"(?<![A-Za-z0-9_.])" + re.escape(date_col) + r"(?![A-Za-z0-9_])",
+        f"DATE_TRUNC('month', {date_col}) AS month",
+        select_line,
+        count=1,
+    )
+    if rewritten_select == select_line:
+        return sql_lines, False
+    new_lines = list(sql_lines)
+    new_lines[select_line_idx] = rewritten_select
+    # Rewrite ORDER BY <date_col> → ORDER BY month
+    for j, line in enumerate(new_lines):
+        if re.match(r"^\s*ORDER\s+BY\b", line, re.IGNORECASE):
+            new_lines[j] = re.sub(
+                r"(?<![A-Za-z0-9_.])" + re.escape(date_col) + r"(?![A-Za-z0-9_])",
+                "month",
+                line,
+            )
+    return new_lines, True
+
+
+def apply_fix_bench_monthly_trend(spec: dict) -> int:
+    """Wrap bare date columns in DATE_TRUNC('month', …) for monthly-trend Qs."""
+    changes = 0
+    for item_key in ("benchmarks", "example_sqls"):
+        for item in spec.get(item_key, []) or []:
+            q = item.get("question") or ""
+            if not _MONTHLY_TREND_RE.search(q):
+                continue
+            new_lines, ch = _rewrite_monthly_trend(item.get("sql_lines") or [])
+            if ch:
+                item["sql_lines"] = new_lines
+                changes += 1
+    return changes
+
+
+# ---------------------------------------------------------------------------
+# Fix 8 — "Top X" / "highest" / "lowest" questions need explicit LIMIT.
+# ---------------------------------------------------------------------------
+
+
+# Match cardinality-style superlatives that ask for an ordered list of
+# entities, not "most recent X" (singular event) which uses a different
+# shape.  Require a noun following the superlative (5 chars+) to skip
+# things like "the lowest" alone.
+_TOPN_PHRASE_RE = re.compile(
+    r"\b(?:top\s+\d+|top\s+\w+|highest|lowest|largest|smallest|worst|best)\b\s+\w{3,}",
+    re.IGNORECASE,
+)
+
+
+def _has_limit_clause(sql_lines: list[str]) -> bool:
+    return any(re.match(r"^\s*LIMIT\b", l, re.IGNORECASE) for l in sql_lines)
+
+
+def apply_fix_bench_top_limit(spec: dict) -> int:
+    """Append ``LIMIT 10`` to gold SQL for "top X" / "highest …" benchmarks."""
+    changes = 0
+    for item_key in ("benchmarks", "example_sqls"):
+        for item in spec.get(item_key, []) or []:
+            q = item.get("question") or ""
+            if not _TOPN_PHRASE_RE.search(q):
+                continue
+            lines = item.get("sql_lines") or []
+            if not lines or _has_limit_clause(lines):
+                continue
+            item["sql_lines"] = list(lines) + ["LIMIT 10"]
+            changes += 1
+    return changes
+
+
+# ---------------------------------------------------------------------------
 # Driver
 # ---------------------------------------------------------------------------
 
@@ -495,6 +698,9 @@ MODES: dict[str, FixFn] = {
     "fix-wrong-range": apply_fix_wrong_range,
     "fix-flat-trend": _wrap(apply_fix_flat_trend),
     "fix-topn-cardinality": _wrap(apply_fix_topn_cardinality),
+    "fix-bench-promote-genie": apply_fix_bench_promote_genie,
+    "fix-bench-monthly-trend": _wrap(apply_fix_bench_monthly_trend),
+    "fix-bench-top-limit": _wrap(apply_fix_bench_top_limit),
 }
 
 # Documented safe order (smaller, more targeted fixes first).
@@ -504,6 +710,10 @@ _MODE_ORDER = [
     "fix-correlated-hash",
     "fix-flat-trend",
     "fix-topn-cardinality",
+    # Benchmark-driven fixes (run after Phase-1 mechanical fixes).
+    "fix-bench-promote-genie",
+    "fix-bench-monthly-trend",
+    "fix-bench-top-limit",
 ]
 
 
@@ -566,6 +776,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--use-case", help="filter to one use-case file stem")
     parser.add_argument("--dry-run", action="store_true", help="do not write changes")
     parser.add_argument("--diff", action="store_true", help="show short diffs per spec")
+    parser.add_argument(
+        "--actions",
+        help=(
+            "Path to JSON produced by scripts/analyze_benchmark_failures.py — "
+            "required for --fix-bench-promote-genie."
+        ),
+    )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -580,6 +797,23 @@ def main(argv: list[str] | None = None) -> int:
     if not selected:
         parser.error("provide one of --fix-* or --all")
         return 2
+
+    # Load actions JSON if the promote mode is selected.
+    if "fix-bench-promote-genie" in selected:
+        if not args.actions:
+            parser.error("--fix-bench-promote-genie requires --actions <path.json>")
+            return 2
+        with open(args.actions, encoding="utf-8") as f:
+            manifest = json.load(f)
+        global _PROMOTE_ACTIONS
+        _PROMOTE_ACTIONS = defaultdict(list)
+        for a in manifest.get("actions", []):
+            key = f"{a['subindustry']}/{a['use_case']}"
+            _PROMOTE_ACTIONS[key].append(a)
+        _logger.info(
+            "Loaded %d action(s) covering %d spec(s) from %s",
+            len(manifest.get("actions", [])), len(_PROMOTE_ACTIONS), args.actions,
+        )
 
     paths = iter_specs(args.subindustry, args.use_case)
     if not paths:

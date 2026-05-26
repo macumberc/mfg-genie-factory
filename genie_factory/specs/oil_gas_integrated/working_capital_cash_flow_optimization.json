@@ -2,8 +2,8 @@
   "company_name": "CashFlow Energy",
   "industry": "Oil & Gas Integrated",
   "use_case": "Working capital and cash flow optimization for integrated oil and gas operations",
-  "space_title": "CashFlow Energy - Working Capital & Cash Flow Optimization \ud83d\udcb0",
-  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nCashFlow Energy \u2014 treasury and working-capital analytics across 20 business units spanning Upstream, Downstream, Midstream, and Corporate. Treasury and the Controller use this space to monitor daily inflows / outflows, receivables aging, and DSO/DPO trends; the CFO and Treasurer use it for liquidity planning, cash-conversion-cycle reduction, net debt management, and free-cash-flow forecasting to support dividend and buyback decisions.\n\n**Key KPIs**\n- Free cash flow ($MM) \u2014 primary shareholder-return funding source\n- DSO (days sales outstanding) \u2014 IOC benchmark 30-45 days\n- DPO (days payable outstanding) \u2014 typically 30-50 days for majors\n- Cash conversion cycle (days) \u2014 DSO + DIO - DPO; lower = better\n- Current ratio \u2014 liquidity health, target >1.0\n- Net debt ($MM) \u2014 leverage indicator\n- Accounts receivable / payable / inventory ($MM) \u2014 working-capital component balances\n- Cash balance ($MM) \u2014 on-hand liquidity by business unit\n\n**Data sources**\n- `cash_transactions` \u2014 daily inflows, outflows, intercompany, tax, dividend with days outstanding\n- `working_capital_snapshots` \u2014 weekly AR, AP, inventory, cash, DSO, DPO snapshots\n- `cashflow_kpi_monthly` \u2014 monthly free cash flow, cash conversion cycle, current ratio, net debt",
+  "space_title": "CashFlow Energy - Working Capital & Cash Flow Optimization 💰",
+  "space_description": "**Subindustry:** Oil & Gas Integrated\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nCashFlow Energy — treasury and working-capital analytics across 20 business units spanning Upstream, Downstream, Midstream, and Corporate. Treasury and the Controller use this space to monitor daily inflows / outflows, receivables aging, and DSO/DPO trends; the CFO and Treasurer use it for liquidity planning, cash-conversion-cycle reduction, net debt management, and free-cash-flow forecasting to support dividend and buyback decisions.\n\n**Key KPIs**\n- Free cash flow ($MM) — primary shareholder-return funding source\n- DSO (days sales outstanding) — IOC benchmark 30-45 days\n- DPO (days payable outstanding) — typically 30-50 days for majors\n- Cash conversion cycle (days) — DSO + DIO - DPO; lower = better\n- Current ratio — liquidity health, target >1.0\n- Net debt ($MM) — leverage indicator\n- Accounts receivable / payable / inventory ($MM) — working-capital component balances\n- Cash balance ($MM) — on-hand liquidity by business unit\n\n**Data sources**\n- `cash_transactions` — daily inflows, outflows, intercompany, tax, dividend with days outstanding\n- `working_capital_snapshots` — weekly AR, AP, inventory, cash, DSO, DPO snapshots\n- `cashflow_kpi_monthly` — monthly free cash flow, cash conversion cycle, current ratio, net debt",
   "schema_basename": "og_integrated_cashflow",
   "tables": [
     {
@@ -743,13 +743,13 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Working Capital and Cash Flow Optimization for an integrated oil & gas company running 20 business units across Upstream, Downstream, Midstream, and Corporate. Stakeholders include Treasury (cash position, FX, intercompany), Controllership (AR / AP / inventory), and the CFO / Treasurer (free cash flow, cash conversion cycle, net debt, dividend coverage).\n\nMETRIC DEFINITIONS\n- Free cash flow = free_cash_flow_usd on cashflow_kpi_monthly; primary shareholder-return funding source\n- DSO = dso_days on working_capital_snapshots; IOC benchmark 30-45 days\n- DPO = dpo_days on working_capital_snapshots; typically 30-50 days for majors\n- CCC = cash_conversion_cycle_days on cashflow_kpi_monthly (DSO + DIO - DPO); lower = better\n- Current ratio = current_ratio on cashflow_kpi_monthly; target >1.0 for healthy liquidity\n- Net debt = net_debt_usd; leverage indicator vs. EBITDA\n- Inflows / outflows = amount_usd sign on cash_transactions (positive = inflow)\n- Working capital components = accounts_receivable_usd, accounts_payable_usd, inventory_usd, cash_balance_usd\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cash_transactions_metrics (source: cash_transactions) \u2014 dims: transaction_date, business_unit_id, segment, region, flow_type, counterparty; measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions, avg_days_outstanding, max_amount.\n  - working_capital_snapshots_metrics (source: working_capital_snapshots) \u2014 dims: snapshot_date, business_unit_id, segment, region; measures: total_receivables_usd, total_payables_usd, total_inventory_usd, total_cash_balance_usd, avg_dso_days, total_dpo_days, max_accounts_receivable.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. business_unit_name, dso_days, dpo_days, free_cash_flow_usd, cash_conversion_cycle_days, current_ratio, net_debt_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports Working Capital and Cash Flow Optimization for an integrated oil & gas company running 20 business units across Upstream, Downstream, Midstream, and Corporate. Stakeholders include Treasury (cash position, FX, intercompany), Controllership (AR / AP / inventory), and the CFO / Treasurer (free cash flow, cash conversion cycle, net debt, dividend coverage).\n\nMETRIC DEFINITIONS\n- Free cash flow = free_cash_flow_usd on cashflow_kpi_monthly; primary shareholder-return funding source\n- DSO = dso_days on working_capital_snapshots; IOC benchmark 30-45 days\n- DPO = dpo_days on working_capital_snapshots; typically 30-50 days for majors\n- CCC = cash_conversion_cycle_days on cashflow_kpi_monthly (DSO + DIO - DPO); lower = better\n- Current ratio = current_ratio on cashflow_kpi_monthly; target >1.0 for healthy liquidity\n- Net debt = net_debt_usd; leverage indicator vs. EBITDA\n- Inflows / outflows = amount_usd sign on cash_transactions (positive = inflow)\n- Working capital components = accounts_receivable_usd, accounts_payable_usd, inventory_usd, cash_balance_usd\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cash_transactions_metrics (source: cash_transactions) — dims: transaction_date, business_unit_id, segment, region, flow_type, counterparty; measures: total_inflows_usd, total_outflows_usd, net_cash_flow_usd, total_transactions, avg_days_outstanding, max_amount.\n  - working_capital_snapshots_metrics (source: working_capital_snapshots) — dims: snapshot_date, business_unit_id, segment, region; measures: total_receivables_usd, total_payables_usd, total_inventory_usd, total_cash_balance_usd, avg_dso_days, total_dpo_days, max_accounts_receivable.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. business_unit_name, dso_days, dpo_days, free_cash_flow_usd, cash_conversion_cycle_days, current_ratio, net_debt_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Top 10 business units by total cash inflows over the last 90 days.",
     "Show monthly free cash flow by segment for the trailing 12 months.",
     "Which business units have DSO above 45 days, and what is their accounts receivable balance?",
     "What is the trend in cash conversion cycle month-over-month across the Downstream segment?",
-    "Top 10 business units by net debt \u2014 and how does that compare to their cash balance?",
+    "Top 10 business units by net debt — and how does that compare to their cash balance?",
     "Which business units have negative free cash flow this year, and by how much?",
     "How has total accounts payable trended month-over-month by segment?"
   ],
@@ -769,7 +769,8 @@
         "SELECT transaction_date, MEASURE(max_amount) AS max_amount",
         "FROM {fqn}.cash_transactions_metrics",
         "GROUP BY ALL",
-        "ORDER BY transaction_date"
+        "ORDER BY transaction_date",
+        "LIMIT 10"
       ]
     },
     {
@@ -966,9 +967,11 @@
     {
       "question": "Which business units have the highest average days sales outstanding?",
       "sql_lines": [
-        "SELECT business_unit_name, MEASURE(avg_dso_days) AS avg_dso_days",
+        "SELECT business_unit_id, MEASURE(avg_dso_days) AS avg_dso_days",
         "FROM {fqn}.working_capital_snapshots_metrics",
+        "WHERE business_unit_id IS NOT NULL",
         "GROUP BY ALL",
+        "HAVING avg_dso_days IS NOT NULL",
         "ORDER BY avg_dso_days DESC",
         "LIMIT 10"
       ]

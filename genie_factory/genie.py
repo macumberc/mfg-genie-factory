@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 from typing import Any, Optional
 import urllib.error
@@ -238,45 +239,63 @@ def create_or_replace_genie_space(
     excluded_views: Optional[set[str]] = None,
     workspace_client: Any = None,
 ) -> GenieSpaceResult:
-    """Create a new Genie space, then delete any prior managed spaces.
+    """Delete any prior managed spaces, then create a fresh space.
 
-    Atomic ordering: the new space is created first so that on failure the
-    old spaces remain intact and the user still has a working Genie room.
-    Old spaces are only cleaned up after the new one succeeds.
+    Ordering: delete-first so that the new space's title doesn't collide
+    with the old one — Databricks appends a `` YYYY-MM-DD HH:MM:SS`` suffix
+    to any new title that duplicates an existing space. The tradeoff is
+    that if the subsequent create fails, the old space is gone for that
+    refresh cycle; the monthly_refresh job is idempotent and will recreate
+    it on the next run.
     """
 
     ws = workspace_client or _default_workspace_client()
 
-    # 1. Find existing spaces (before creation, for later cleanup)
+    # 1. Find existing managed spaces that would collide on title.
     final_title = f"{domain_spec.industry} - {domain_spec.space_title}"
     existing = find_managed_spaces(spark, fqn, final_title, workspace_client=ws)
 
-    # 2. Build payload and create new space FIRST
-    payload = build_genie_payload(
-        domain_spec, fqn, warehouse_id, username, excluded_views=excluded_views
-    )
-    created = _api_request(
-        ws,
-        "POST",
-        "/api/2.0/genie/spaces",
-        payload=payload,
-        expected_statuses=(200, 201),
-    )
-    space_id = created["space_id"]
-    host = ws.config.host.rstrip("/")
-
-    # 3. New space succeeded — now safe to delete old spaces
+    # 2. Delete them FIRST so the new POST gets the clean title.
     replaced_ids: list[str] = []
     for space in existing:
         old_id = space.get("space_id")
-        if old_id:
-            try:
-                delete_genie_space(spark, old_id, workspace_client=ws)
-                replaced_ids.append(old_id)
-            except Exception as exc:
-                _logger.warning(
-                    "Failed to delete old Genie space %s: %s", old_id, exc
-                )
+        if not old_id:
+            continue
+        try:
+            delete_genie_space(spark, old_id, workspace_client=ws)
+            replaced_ids.append(old_id)
+            _logger.info("Deleted prior managed Genie space %s before re-create", old_id)
+        except Exception as exc:
+            _logger.warning(
+                "Failed to delete old Genie space %s: %s", old_id, exc
+            )
+
+    # 3. Build payload and create new space.
+    payload = build_genie_payload(
+        domain_spec, fqn, warehouse_id, username, excluded_views=excluded_views
+    )
+    try:
+        created = _api_request(
+            ws,
+            "POST",
+            "/api/2.0/genie/spaces",
+            payload=payload,
+            expected_statuses=(200, 201),
+        )
+    except Exception:
+        if replaced_ids:
+            _logger.error(
+                "Genie space create FAILED after deleting prior spaces %s — "
+                "next monthly refresh will recreate.", replaced_ids,
+            )
+        raise
+    space_id = created["space_id"]
+    host = ws.config.host.rstrip("/")
+
+    # 3b. Best-effort: grant configured admin groups CAN_MANAGE on the new
+    # space so manageability survives across monthly refreshes (each refresh
+    # creates a new space_id, dropping prior ACLs).
+    _grant_configured_admin_groups(ws, space_id)
 
     return GenieSpaceResult(
         status="replaced" if replaced_ids else "created",
@@ -352,6 +371,52 @@ def find_managed_spaces(
         if legacy_marker in (space.get("description", "") or ""):
             results.append(space)
     return results
+
+
+def _grant_configured_admin_groups(ws: Any, space_id: str) -> None:
+    """PATCH CAN_MANAGE for each group named in GENIE_FACTORY_ADMIN_GROUPS.
+
+    Comma-separated env var, e.g. ``"genie-factory-admins,demo-leads"``.
+    Empty/unset → no-op. Failures are logged but never raised — the space
+    was created successfully and a permission grant should not abort deploy.
+    """
+    raw = os.environ.get("GENIE_FACTORY_ADMIN_GROUPS", "").strip()
+    if not raw:
+        return
+    groups = [g.strip() for g in raw.split(",") if g.strip()]
+    if not groups:
+        return
+    try:
+        grant_space_permissions(
+            ws,
+            space_id,
+            [{"group_name": g, "permission_level": "CAN_MANAGE"} for g in groups],
+        )
+    except Exception as exc:
+        _logger.warning(
+            "Failed to grant Genie space permissions on %s: %s", space_id, exc
+        )
+
+
+def grant_space_permissions(
+    ws: Any,
+    space_id: str,
+    acl_entries: list[dict[str, Any]],
+) -> None:
+    """PATCH /api/2.0/permissions/genie/{space_id} with the given ACL entries.
+
+    PATCH appends to the existing ACL (PUT would replace it). Idempotent for
+    the same principal+level. Raises on failure — callers that want
+    best-effort behavior should catch and log themselves.
+    """
+    if not acl_entries:
+        return
+    _api_request(
+        ws,
+        "PATCH",
+        f"/api/2.0/permissions/genie/{space_id}",
+        payload={"access_control_list": acl_entries},
+    )
 
 
 def delete_genie_space(spark, space_id: str, workspace_client: Any = None) -> None:

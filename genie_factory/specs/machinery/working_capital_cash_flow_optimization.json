@@ -2,8 +2,8 @@
   "company_name": "CapitalFlow Machinery",
   "industry": "Machinery",
   "use_case": "Working capital and cash flow optimization",
-  "space_title": "CapitalFlow Machinery - Working Capital Optimization \ud83d\udcb0",
-  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nCapitalFlow Machinery \u2014 treasury and working-capital analytics across business units. The Treasurer and AR/AP teams manage day-to-day collections and payment timing; the CFO and CEO use it to drive Net Working Capital days down, free up trapped cash, and forecast cash position against capex and dividend commitments.\n\n**Key KPIs**\n- Cash Conversion Cycle (days) \u2014 industrial machinery benchmark 60\u2013120 days, leaders <60\n- DSO (Days Sales Outstanding) \u2014 target <45 days B2B industrials\n- DPO (Days Payable Outstanding) \u2014 leverage 45\u201375 days without supplier strain\n- Net Working Capital ($) \u2014 capital efficiency lever\n- Operating cash flow ($) \u2014 core business health\n- Free cash flow ($) \u2014 capex/dividend coverage\n- AR collection rate (%) \u2014 target \u226598%\n- Cash flow forecast variance (%) \u2014 accuracy target <5%\n\n**Data sources**\n- `cash_flow_transactions` \u2014 AR collections, AP payments, capex, opex, revenue with days outstanding\n- `working_capital_snapshots` \u2014 monthly AR, AP, inventory, DSO, DPO, cash conversion cycle by BU\n- `cash_flow_monthly` \u2014 monthly net/operating/free cash flow, working capital, collection rate, variance",
+  "space_title": "CapitalFlow Machinery - Working Capital Optimization 💰",
+  "space_description": "**Subindustry:** Machinery\n\n**Use case:** Working Capital & Cash Flow Optimization\n\nCapitalFlow Machinery — treasury and working-capital analytics across business units. The Treasurer and AR/AP teams manage day-to-day collections and payment timing; the CFO and CEO use it to drive Net Working Capital days down, free up trapped cash, and forecast cash position against capex and dividend commitments.\n\n**Key KPIs**\n- Cash Conversion Cycle (days) — industrial machinery benchmark 60–120 days, leaders <60\n- DSO (Days Sales Outstanding) — target <45 days B2B industrials\n- DPO (Days Payable Outstanding) — leverage 45–75 days without supplier strain\n- Net Working Capital ($) — capital efficiency lever\n- Operating cash flow ($) — core business health\n- Free cash flow ($) — capex/dividend coverage\n- AR collection rate (%) — target ≥98%\n- Cash flow forecast variance (%) — accuracy target <5%\n\n**Data sources**\n- `cash_flow_transactions` — AR collections, AP payments, capex, opex, revenue with days outstanding\n- `working_capital_snapshots` — monthly AR, AP, inventory, DSO, DPO, cash conversion cycle by BU\n- `cash_flow_monthly` — monthly net/operating/free cash flow, working capital, collection rate, variance",
   "schema_basename": "mach_working_capital",
   "tables": [
     {
@@ -735,14 +735,14 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports working capital and cash flow optimization at CapitalFlow. Stakeholders: Treasurer and AR/AP teams (collections, payment timing, aging buckets), CFO (CCC, NWC, OCF/FCF, forecast variance), and CEO (capital efficiency, capex/dividend coverage, balance-sheet discipline across business units).\n\nMETRIC DEFINITIONS\n- Cash Conversion Cycle = AVG(cash_conversion_cycle_days) = DSO + DIO \u2212 DPO; leaders <60 days.\n- DSO = AVG(dso_days); target <45 days for B2B industrials.\n- DPO = AVG(dpo_days); 45\u201375 days leverages float without supplier risk.\n- Net Working Capital = SUM(working_capital_usd); minimize subject to growth needs.\n- Operating cash flow = SUM(operating_cash_flow_usd); core business cash generation.\n- Free cash flow = SUM(free_cash_flow_usd); OCF \u2212 capex; funds dividends and buybacks.\n- Collection rate = AVG(collection_rate_pct); target \u226598%.\n- Forecast variance = AVG(forecast_variance_pct); accuracy target <5%.\n- Note on direction vs txn_type: `direction` (Inflow / Outflow) is generated independently of `txn_type` in synthetic data, so do not assume a strict business mapping (e.g. AR Collection is not always Inflow). When you need true inflow/outflow semantics, filter on `direction` rather than inferring it from `txn_type`.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cash_flow_txn_metrics (source: cash_flow_transactions) \u2014 dims: txn_date, business_unit_type, txn_type, direction; measures: total_inflow, total_outflow, total_transactions, avg_days_outstanding, unique_business_unit_count, max_amount.\n  - cash_flow_kpi_metrics (source: cash_flow_monthly) \u2014 dims: kpi_month, business_unit_type; measures: total_net_cash_flow, total_operating_cf, avg_collection_rate, total_working_capital, total_free_cash_flow, total_forecast_variance_percent.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. business_unit_id, dso_days, dpo_days, cash_conversion_cycle_days, accounts_receivable_usd, accounts_payable_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports working capital and cash flow optimization at CapitalFlow. Stakeholders: Treasurer and AR/AP teams (collections, payment timing, aging buckets), CFO (CCC, NWC, OCF/FCF, forecast variance), and CEO (capital efficiency, capex/dividend coverage, balance-sheet discipline across business units).\n\nMETRIC DEFINITIONS\n- Cash Conversion Cycle = AVG(cash_conversion_cycle_days) = DSO + DIO − DPO; leaders <60 days.\n- DSO = AVG(dso_days); target <45 days for B2B industrials.\n- DPO = AVG(dpo_days); 45–75 days leverages float without supplier risk.\n- Net Working Capital = SUM(working_capital_usd); minimize subject to growth needs.\n- Operating cash flow = SUM(operating_cash_flow_usd); core business cash generation.\n- Free cash flow = SUM(free_cash_flow_usd); OCF − capex; funds dividends and buybacks.\n- Collection rate = AVG(collection_rate_pct); target ≥98%.\n- Forecast variance = AVG(forecast_variance_pct); accuracy target <5%.\n- Note on direction vs txn_type: `direction` (Inflow / Outflow) is generated independently of `txn_type` in synthetic data, so do not assume a strict business mapping (e.g. AR Collection is not always Inflow). When you need true inflow/outflow semantics, filter on `direction` rather than inferring it from `txn_type`.\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - cash_flow_txn_metrics (source: cash_flow_transactions) — dims: txn_date, business_unit_type, txn_type, direction; measures: total_inflow, total_outflow, total_transactions, avg_days_outstanding, unique_business_unit_count, max_amount.\n  - cash_flow_kpi_metrics (source: cash_flow_monthly) — dims: kpi_month, business_unit_type; measures: total_net_cash_flow, total_operating_cf, avg_collection_rate, total_working_capital, total_free_cash_flow, total_forecast_variance_percent.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For \"Top X\" requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly only when needing columns not exposed by metric views (e.g. business_unit_id, dso_days, dpo_days, cash_conversion_cycle_days, accounts_receivable_usd, accounts_payable_usd).\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
-    "Top 10 business units by Cash Conversion Cycle days \u2014 where is cash trapped longest?",
+    "Top 10 business units by Cash Conversion Cycle days — where is cash trapped longest?",
     "What is the monthly trend in operating cash flow vs free cash flow over the trailing 12 months?",
     "Which business units have DSO above the 45-day target, and what is the outstanding AR balance?",
-    "Rank business unit types by AR collection rate \u2014 which are below the 98% target?",
+    "Rank business unit types by AR collection rate — which are below the 98% target?",
     "Show monthly trend in net working capital across all business units.",
-    "Top 10 transactions by days outstanding \u2014 where should the collections team focus?",
+    "Top 10 transactions by days outstanding — where should the collections team focus?",
     "Which business units have the worst cash flow forecast variance, and what is the dollar impact?"
   ],
   "example_sqls": [
@@ -767,10 +767,10 @@
     {
       "question": "What is the monthly trend in total net cash flow?",
       "sql_lines": [
-        "SELECT kpi_month, MEASURE(total_net_cash_flow) AS total_net_cash_flow",
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, MEASURE(total_net_cash_flow) AS total_net_cash_flow",
         "FROM {fqn}.cash_flow_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY month"
       ]
     },
     {
@@ -907,10 +907,10 @@
     {
       "question": "What is the monthly trend in total inflow count?",
       "sql_lines": [
-        "SELECT txn_date, MEASURE(total_inflow) AS total_inflow",
+        "SELECT DATE_TRUNC('month', txn_date) AS month, MEASURE(total_inflow) AS total_inflow",
         "FROM {fqn}.cash_flow_txn_metrics",
         "GROUP BY ALL",
-        "ORDER BY txn_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -925,8 +925,9 @@
     {
       "question": "How many distinct forecasts appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', kpi_month) AS month, COUNT(DISTINCT forecast) AS distinct_count",
+        "SELECT DATE_TRUNC('month', kpi_month) AS month, COUNT(DISTINCT kpi_id) AS distinct_forecast_count",
         "FROM {fqn}.cash_flow_monthly",
+        "WHERE kpi_month IS NOT NULL AND kpi_id IS NOT NULL",
         "GROUP BY 1",
         "ORDER BY 1"
       ]
@@ -937,7 +938,8 @@
         "SELECT kpi_month, MEASURE(max_net_cash_flow) AS max_net_cash_flow",
         "FROM {fqn}.cash_flow_kpi_metrics",
         "GROUP BY ALL",
-        "ORDER BY kpi_month"
+        "ORDER BY kpi_month",
+        "LIMIT 10"
       ]
     },
     {

@@ -752,10 +752,10 @@
     {
       "question": "What is the monthly trend in total good units produced?",
       "sql_lines": [
-        "SELECT run_date, MEASURE(total_actual_qty) AS total_actual_qty",
+        "SELECT DATE_TRUNC('month', run_date) AS month, MEASURE(total_actual_qty) AS total_actual_qty",
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY month"
       ]
     },
     {
@@ -912,10 +912,11 @@
     {
       "question": "How many distinct transactions appeared each month?",
       "sql_lines": [
-        "SELECT DATE_TRUNC('month', run_date) AS month, COUNT(DISTINCT transaction) AS distinct_count",
+        "SELECT DATE_TRUNC('month', run_date) AS month, COUNT(DISTINCT run_id) AS distinct_transactions",
         "FROM {fqn}.production_runs",
-        "GROUP BY 1",
-        "ORDER BY 1"
+        "WHERE run_id IS NOT NULL AND run_date IS NOT NULL",
+        "GROUP BY month",
+        "ORDER BY month"
       ]
     },
     {
@@ -924,7 +925,8 @@
         "SELECT run_date, MEASURE(max_planned_qty) AS max_planned_qty",
         "FROM {fqn}.production_runs_metrics",
         "GROUP BY ALL",
-        "ORDER BY run_date"
+        "ORDER BY run_date",
+        "LIMIT 10"
       ]
     },
     {
@@ -933,16 +935,17 @@
         "SELECT oee_month, MEASURE(max_availability_percent) AS max_availability_percent",
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
-        "ORDER BY oee_month"
+        "ORDER BY oee_month",
+        "LIMIT 10"
       ]
     },
     {
       "question": "What is the monthly trend in total output units?",
       "sql_lines": [
-        "SELECT oee_month, MEASURE(total_output) AS total_output",
+        "SELECT DATE_TRUNC('month', oee_month) AS month, MEASURE(total_output) AS total_output",
         "FROM {fqn}.oee_metrics",
         "GROUP BY ALL",
-        "ORDER BY oee_month"
+        "ORDER BY month"
       ]
     },
     {
