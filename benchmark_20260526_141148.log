@@ -1,0 +1,89 @@
+2026-05-26 14:11:49,501 INFO databricks.sdk: loading fe-vm-logistics-demos profile from ~/.databrickscfg: host, account_id, workspace_id, auth_type
+2026-05-26 14:11:49,520 INFO databricks.sdk: Using Databricks CLI authentication
+2026-05-26 14:11:49,521 INFO __main__: Scope: 37 spec(s) across 6 subindustries
+2026-05-26 14:11:49,521 INFO __main__: Listing all Genie spaces in workspace...
+2026-05-26 14:11:51,772 INFO __main__: Found 89 total spaces; building title index
+2026-05-26 14:11:53,543 INFO __main__: Kick-off logistics/route_planning → 01f159352f14142cabe937429cba5b2b (eval_run_id=01f15936c0b418f981486002ccba7989, status=RUNNING)
+2026-05-26 14:11:55,458 INFO __main__: Kick-off logistics/fleet_planning_and_optimization → 01f159352d891e3fade3c68d8a6880c0 (eval_run_id=01f15936c1f819fa9bfdfc213f681722, status=RUNNING)
+2026-05-26 14:11:57,434 INFO __main__: Kick-off logistics/load_demand_forecasting → 01f159352d981118bed097cd7d4dfdd3 (eval_run_id=01f15936c31d1fac922e7317aed89bf3, status=RUNNING)
+2026-05-26 14:11:59,446 INFO __main__: Kick-off machinery/asset_health → 01f159354f6314028c7bf665a2f8bd7e (eval_run_id=01f15936c44a16258f1326ac21471766, status=RUNNING)
+2026-05-26 14:12:01,424 INFO __main__: Kick-off machinery/machining_process_defect_detection → 01f159354f35128bb2373ec0049027bb (eval_run_id=01f15936c57f108d9712363e81084d37, status=RUNNING)
+2026-05-26 14:13:04,187 INFO __main__: Kick-off machinery/production_monitoring → 01f1593550541e998200997ed9d360b4 (eval_run_id=01f15936eaf01dc29bc7ca2de051e60f, status=RUNNING)
+2026-05-26 14:13:06,139 INFO __main__: Kick-off machinery/field_service_assistant → 01f159356cc4102594b164da1e8a0261 (eval_run_id=01f15936ec161171999df1768b42ed32, status=RUNNING)
+2026-05-26 14:13:08,046 INFO __main__: Kick-off machinery/quality_event_root_cause_analysis → 01f159356dc812a7baac879a987187bf (eval_run_id=01f15936ed3f18c6b9f8f0208e4e8a7a, status=RUNNING)
+2026-05-26 14:13:10,004 INFO __main__: Kick-off machinery/demand_forecasting → 01f159356eca16a185d9886e6306849f (eval_run_id=01f15936ee63150b817ee294ef90f3af, status=RUNNING)
+2026-05-26 14:13:12,000 INFO __main__: Kick-off machinery/spare_part_inventory_optimization → 01f15935899417428c08c2823a96f541 (eval_run_id=01f15936ef8c1fa689daee11ac0e68f8, status=RUNNING)
+2026-05-26 14:14:14,841 INFO __main__: Kick-off machinery/manufacturing_resource_planning → 01f159358ae0186193651ccde1dd56c2 (eval_run_id=01f15937150d19e7bbb7b8080a242b04, status=RUNNING)
+2026-05-26 14:14:16,808 INFO __main__: Kick-off machinery/working_capital_cash_flow_optimization → 01f159358ba8196b93fd25bbea76addc (eval_run_id=01f15937163314d8a41f956de33221cf, status=RUNNING)
+2026-05-26 14:14:18,784 INFO __main__: Kick-off machinery/financial_analytics_reporting → 01f15935a68b103389447b971687f2fe (eval_run_id=01f15937175e1a21ab026d8758b65043, status=RUNNING)
+2026-05-26 14:14:20,736 INFO __main__: Kick-off machinery/spend_intelligence → 01f15935a8251962b239cb9f2390673d (eval_run_id=01f15937188c11fe9c088023238f8ce2, status=RUNNING)
+2026-05-26 14:14:22,635 INFO __main__: Kick-off oil_gas_upstream/predictive_maintenance_asset_health → 01f1593671701e928a48a5d678777425 (eval_run_id=01f1593719b6173e9d988db42b36bfad, status=RUNNING)
+2026-05-26 14:15:24,673 INFO __main__: Kick-off oil_gas_upstream/reservoir_management → 01f15936b55715a3bc3625f789f4434e (eval_run_id=01f159373eaa1da69b70f7edccec1039, status=RUNNING)
+2026-05-26 14:15:26,554 INFO __main__: Kick-off oil_gas_upstream/well_production_monitoring_flow → 01f159368c8410b98d62abb603425b59 (eval_run_id=01f159373fd01c3f95941eaa328403c5, status=RUNNING)
+2026-05-26 14:15:28,583 INFO __main__: Kick-off oil_gas_midstream/logistics_optimization → 01f159361eba1e8a95cb1597a5482197 (eval_run_id=01f1593740f218e4a7f10baf09d003a6, status=RUNNING)
+2026-05-26 14:15:30,499 INFO __main__: Kick-off oil_gas_midstream/regulation_compliance → 01f15936384c16dab2e8ca8590b887e0 (eval_run_id=01f15937422614488d09a0e907ba48d0, status=RUNNING)
+2026-05-26 14:15:32,514 INFO __main__: Kick-off oil_gas_midstream/scenario_planning_business_simulation → 01f1593639321648b04d4f0a0d4add4f (eval_run_id=01f15937434b1458a8b19173873bf79c, status=RUNNING)
+2026-05-26 14:16:35,163 INFO __main__: Kick-off oil_gas_midstream/energy_trading → 01f159363d02170cb520a76ff6e0cb7d (eval_run_id=01f15937689e1d73871a7bebfe181b6c, status=RUNNING)
+2026-05-26 14:16:37,258 INFO __main__: Kick-off oil_gas_midstream/financial_analytics_reporting → 01f1593655e117f39daa81418e3a6b26 (eval_run_id=01f1593769d613f2bf4f91fec853feee, status=RUNNING)
+2026-05-26 14:16:39,231 INFO __main__: Kick-off oil_gas_midstream/automated_reporting_of_carbon_intensity → 01f1593654e011d0b2cba485da851217 (eval_run_id=01f159376b161232b29034004cd61647, status=RUNNING)
+2026-05-26 14:16:41,139 INFO __main__: Kick-off oil_gas_midstream/working_capital_cash_flow_optimization → 01f159365b10103c924afca7228b6a62 (eval_run_id=01f159376c421bf89010f2ee27f9edb6, status=RUNNING)
+2026-05-26 14:16:43,030 INFO __main__: Kick-off oil_gas_midstream/spend_intelligence → 01f159366fc8110b9ef7d218fa773c61 (eval_run_id=01f159376d66173384b7b78d35761b76, status=RUNNING)
+2026-05-26 14:17:45,498 INFO __main__: Kick-off oil_gas_refining/predictive_maintenance_asset_health → 01f15935e52a169791f5cbaed2d3d05b (eval_run_id=01f15937929c12799c0de354da762da0, status=RUNNING)
+2026-05-26 14:17:47,585 INFO __main__: Kick-off oil_gas_refining/quality_event_root_cause_analysis → 01f15935fcd111899515e49e0a764512 (eval_run_id=01f1593793c11a36a21c8d98af04fb49, status=RUNNING)
+2026-05-26 14:17:49,544 INFO __main__: Kick-off oil_gas_refining/energy_use_monitoring_heat → 01f15935fe7514f2b1c283745d915b74 (eval_run_id=01f159379500170f91fdca80413c9e12, status=RUNNING)
+2026-05-26 14:17:51,434 INFO __main__: Kick-off oil_gas_refining/production_monitoring → 01f1593601d01ded93a62481809a8847 (eval_run_id=01f15937962b19b8a2fbbb4bfe333660, status=RUNNING)
+2026-05-26 14:17:53,340 INFO __main__: Kick-off oil_gas_refining/financial_analytics_reporting → 01f15936194315928f9512e881cfa14d (eval_run_id=01f15937974c1161bc3a7dfc99ec0e4e, status=RUNNING)
+2026-05-26 14:18:55,923 INFO __main__: Kick-off oil_gas_refining/working_capital_cash_flow_optimization → 01f159361b1f148e86003903e5c24c63 (eval_run_id=01f15937bc9310c49061e4754c4698e9, status=RUNNING)
+2026-05-26 14:18:57,847 INFO __main__: Kick-off oil_gas_integrated/predictive_maintenance_asset_health → 01f15935aa5716d7b2230739b053452c (eval_run_id=01f15937bdbc1162ae827715d854e813, status=RUNNING)
+2026-05-26 14:18:59,810 INFO __main__: Kick-off oil_gas_integrated/production_monitoring_control_center → 01f15935c4391072b0664d2e5b076539 (eval_run_id=01f15937bee118fe8cf03035c2c08b0c, status=RUNNING)
+2026-05-26 14:19:01,728 INFO __main__: Kick-off oil_gas_integrated/scenario_planning_business_simulation → 01f15935c429176ca07a3f2e4c6e7752 (eval_run_id=01f15937c00c14578f60a4b01e1b2d14, status=RUNNING)
+2026-05-26 14:19:03,616 INFO __main__: Kick-off oil_gas_integrated/capital_investment_simulation → 01f15935c7611a75bcaf7447efc5d2e1 (eval_run_id=01f15937c1321e729ecbb1b0df44e582, status=RUNNING)
+2026-05-26 14:20:06,447 INFO __main__: Kick-off oil_gas_integrated/financial_analytics_reporting → 01f15935e0641672b339325473c05b68 (eval_run_id=01f15937e69017aab04e2e05830ee973, status=RUNNING)
+2026-05-26 14:20:08,332 INFO __main__: Kick-off oil_gas_integrated/working_capital_cash_flow_optimization → 01f15935e1261f9488fc65853c652e1d (eval_run_id=01f15937e7c61a6c804e59dbbc6e68a9, status=RUNNING)
+2026-05-26 14:20:08,837 INFO __main__: Polling 37 in-flight eval runs every 30s
+2026-05-26 14:20:58,136 INFO __main__: Still running: 7. oil_gas_refining/working_capital_cash_flow_optimization=RUNNING(2/7), oil_gas_integrated/predictive_maintenance_asset_health=RUNNING(3/7), oil_gas_integrated/production_monitoring_control_center=RUNNING(2/7), oil_gas_integrated/scenario_planning_business_simulation=RUNNING(1/7), oil_gas_integrated/c
+2026-05-26 14:21:31,158 INFO __main__: Still running: 7. oil_gas_refining/working_capital_cash_flow_optimization=RUNNING(2/7), oil_gas_integrated/predictive_maintenance_asset_health=RUNNING(5/7), oil_gas_integrated/production_monitoring_control_center=RUNNING(2/7), oil_gas_integrated/scenario_planning_business_simulation=RUNNING(1/7), oil_gas_integrated/c
+2026-05-26 14:22:03,968 INFO __main__: Still running: 2. oil_gas_integrated/financial_analytics_reporting=RUNNING(4/7), oil_gas_integrated/working_capital_cash_flow_optimization=RUNNING(3/7)
+2026-05-26 14:22:35,102 INFO __main__: Still running: 2. oil_gas_integrated/financial_analytics_reporting=RUNNING(4/7), oil_gas_integrated/working_capital_cash_flow_optimization=RUNNING(4/7)
+2026-05-26 14:23:05,873 INFO __main__: Still running: 1. oil_gas_integrated/working_capital_cash_flow_optimization=RUNNING(4/7)
+2026-05-26 14:23:42,579 INFO __main__: Fetched 7 result(s) for logistics/route_planning
+2026-05-26 14:23:42,786 INFO __main__: Fetched 7 result(s) for machinery/quality_event_root_cause_analysis
+2026-05-26 14:23:42,786 INFO __main__: Fetched 7 result(s) for machinery/field_service_assistant
+2026-05-26 14:23:43,029 INFO __main__: Fetched 7 result(s) for machinery/machining_process_defect_detection
+2026-05-26 14:23:43,232 INFO __main__: Fetched 7 result(s) for machinery/production_monitoring
+2026-05-26 14:23:43,318 INFO __main__: Fetched 7 result(s) for logistics/fleet_planning_and_optimization
+2026-05-26 14:23:43,706 INFO __main__: Fetched 7 result(s) for machinery/asset_health
+2026-05-26 14:23:43,814 INFO __main__: Fetched 7 result(s) for logistics/load_demand_forecasting
+2026-05-26 14:23:47,769 INFO __main__: Fetched 7 result(s) for machinery/manufacturing_resource_planning
+2026-05-26 14:23:48,349 INFO __main__: Fetched 7 result(s) for machinery/spare_part_inventory_optimization
+2026-05-26 14:23:48,747 INFO __main__: Fetched 7 result(s) for machinery/demand_forecasting
+2026-05-26 14:23:48,766 INFO __main__: Fetched 7 result(s) for machinery/working_capital_cash_flow_optimization
+2026-05-26 14:23:49,620 INFO __main__: Fetched 7 result(s) for oil_gas_upstream/predictive_maintenance_asset_health
+2026-05-26 14:23:49,674 INFO __main__: Fetched 7 result(s) for machinery/financial_analytics_reporting
+2026-05-26 14:23:50,031 INFO __main__: Fetched 7 result(s) for machinery/spend_intelligence
+2026-05-26 14:23:51,056 INFO __main__: Fetched 7 result(s) for oil_gas_upstream/reservoir_management
+2026-05-26 14:23:54,142 INFO __main__: Fetched 7 result(s) for oil_gas_upstream/well_production_monitoring_flow
+2026-05-26 14:23:54,248 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/regulation_compliance
+2026-05-26 14:23:54,577 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/logistics_optimization
+2026-05-26 14:23:54,740 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/energy_trading
+2026-05-26 14:23:55,132 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/scenario_planning_business_simulation
+2026-05-26 14:23:55,137 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/automated_reporting_of_carbon_intensity
+2026-05-26 14:23:55,845 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/financial_analytics_reporting
+2026-05-26 14:23:56,584 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/working_capital_cash_flow_optimization
+2026-05-26 14:23:59,615 INFO __main__: Fetched 7 result(s) for oil_gas_refining/predictive_maintenance_asset_health
+2026-05-26 14:24:00,127 INFO __main__: Fetched 7 result(s) for oil_gas_midstream/spend_intelligence
+2026-05-26 14:24:00,164 INFO __main__: Fetched 7 result(s) for oil_gas_refining/production_monitoring
+2026-05-26 14:24:00,201 INFO __main__: Fetched 7 result(s) for oil_gas_refining/energy_use_monitoring_heat
+2026-05-26 14:24:00,332 INFO __main__: Fetched 7 result(s) for oil_gas_refining/quality_event_root_cause_analysis
+2026-05-26 14:24:00,624 INFO __main__: Fetched 7 result(s) for oil_gas_refining/financial_analytics_reporting
+2026-05-26 14:24:01,171 INFO __main__: Fetched 7 result(s) for oil_gas_refining/working_capital_cash_flow_optimization
+2026-05-26 14:24:02,001 INFO __main__: Fetched 7 result(s) for oil_gas_integrated/predictive_maintenance_asset_health
+2026-05-26 14:24:04,539 INFO __main__: Fetched 7 result(s) for oil_gas_integrated/production_monitoring_control_center
+2026-05-26 14:24:05,016 INFO __main__: Fetched 7 result(s) for oil_gas_integrated/capital_investment_simulation
+2026-05-26 14:24:05,082 INFO __main__: Fetched 7 result(s) for oil_gas_integrated/working_capital_cash_flow_optimization
+2026-05-26 14:24:05,087 INFO __main__: Fetched 7 result(s) for oil_gas_integrated/scenario_planning_business_simulation
+2026-05-26 14:24:05,287 INFO __main__: Fetched 7 result(s) for oil_gas_integrated/financial_analytics_reporting
+2026-05-26 14:24:05,293 INFO __main__: Wrote 259 question result(s) to benchmark_20260526_141148.jsonl
+2026-05-26 14:24:05,295 INFO __main__: Wrote 37 space summary line(s) to benchmark_20260526_141148_summary.jsonl
+
+Done. Spaces: 37, Questions: 259, GOOD=139, NEEDS_REVIEW=1, BAD=119
