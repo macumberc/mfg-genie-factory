@@ -58,6 +58,18 @@ try:
 except Exception:
     pass
 
+# Optional: restrict the refresh to a comma-separated list of subindustry
+# slugs (e.g. "logistics,machinery,oil_gas_upstream"). Empty / unset → all 88.
+# Lets a workspace that only deployed a subset stay scoped to that subset on
+# every monthly cycle.
+subindustries: list[str] | None = None
+try:
+    raw_subs = dbutils.widgets.get("subindustries")  # noqa: F821
+    if raw_subs:
+        subindustries = [s.strip() for s in raw_subs.split(",") if s.strip()]
+except Exception:
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -69,7 +81,11 @@ from genie_factory.refresh import refresh_all
 # `spark` is auto-injected in Databricks notebook environments; pass it
 # explicitly because SparkSession.getActiveSession() is thread-local and
 # returns None inside refresh_all's ThreadPoolExecutor workers.
-manifest = refresh_all(concurrency=concurrency, spark=spark)  # noqa: F821
+manifest = refresh_all(  # noqa: F821
+    concurrency=concurrency,
+    spark=spark,  # noqa: F821
+    subindustries=subindustries,
+)
 
 # COMMAND ----------
 

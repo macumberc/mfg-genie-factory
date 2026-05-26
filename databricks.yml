@@ -55,6 +55,10 @@ resources:
               concurrency: "3"
               # end_date intentionally empty — engine rolls with CURRENT_DATE.
               end_date: ""
+              # subindustries: comma-separated slugs to restrict the refresh
+              # (e.g. "logistics,machinery"). Empty = refresh all 88 specs.
+              # Set this when a workspace only wants a subset refreshed monthly.
+              subindustries: ""
             source: WORKSPACE
 
           environment_key: default
