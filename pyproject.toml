@@ -16,19 +16,12 @@ app = [
     "dash-bootstrap-components",
     "databricks-connect",
 ]
-test = [
-    "pytest>=8.0",
-]
 
 [tool.setuptools.packages.find]
 include = ["genie_factory*"]
 
 [tool.setuptools.package-data]
 genie_factory = ["specs/**/*.json"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["."]
 
 [tool.ruff]
 line-length = 120

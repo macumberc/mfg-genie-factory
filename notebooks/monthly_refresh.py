@@ -48,6 +48,16 @@ try:
 except Exception:
     pass
 
+# Auto-grant CAN_MANAGE to this workspace's admin group on every space the
+# refresh recreates. Job parameter `admin_groups` overrides if set.
+os.environ.setdefault("GENIE_FACTORY_ADMIN_GROUPS", "genie-factory-admins")
+try:
+    admin_groups = dbutils.widgets.get("admin_groups")  # noqa: F821
+    if admin_groups:
+        os.environ["GENIE_FACTORY_ADMIN_GROUPS"] = admin_groups
+except Exception:
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
