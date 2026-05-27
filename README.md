@@ -86,6 +86,91 @@ The first deploy takes ~2 minutes. When the status shows **Running**, click the 
 
 ---
 
+## Bulk Deploy & Monthly Refresh
+
+Use the **Databricks Asset Bundle** to deploy any subset of the 88 use cases in one shot and keep them refreshed on a monthly cron. This is the right path when you want a workspace pre-loaded with a fixed set of subindustries rather than a clickable picker.
+
+### Step 1: Point the bundle at your workspace
+
+Clone the repo locally and edit `databricks.yml`:
+
+```yaml
+targets:
+  prod:
+    workspace:
+      host: https://<your-workspace>.cloud.databricks.com   # ← your workspace URL
+    run_as:
+      user_name: <you>@<your-org>.com                       # ← who the job runs as
+
+resources:
+  jobs:
+    monthly_refresh:
+      tasks:
+        - task_key: refresh
+          notebook_task:
+            base_parameters:
+              concurrency: "3"          # parallel deploys; 5 qpm Genie cap caps this
+              end_date: ""              # empty = rolling CURRENT_DATE()
+              subindustries: ""         # ← see below
+```
+
+### Step 2: Pick subindustries to deploy
+
+The `subindustries` parameter takes a comma-separated list of slugs. Empty / unset means **all 88 use cases**.
+
+| `subindustries` value | What gets deployed |
+|:---|:---|
+| `""` *(default)* | All 88 use cases across all 18 subindustries |
+| `"logistics"` | 3 logistics use cases only |
+| `"logistics,machinery"` | 3 + 11 = 14 use cases |
+| `"oil_gas_upstream,oil_gas_midstream,oil_gas_refining,oil_gas_integrated"` | All 23 oil & gas use cases |
+
+**Slug convention** — lowercase the display name, replace non-alphanumerics with `_`. Full list:
+
+```
+aerospace               food_beverage          oil_gas_midstream
+automotive              industrial_distribution oil_gas_refining
+chemicals_materials     logistics              oil_gas_upstream
+computer_electronic     machinery              power_generation
+construction_engineering mining                railroad
+electric_utility        oil_gas_integrated     semiconductor
+```
+
+### Step 3: Deploy + run
+
+```bash
+databricks bundle deploy --profile <your-cli-profile> --target prod
+databricks bundle run monthly_refresh --profile <your-cli-profile> --target prod
+```
+
+The bundle registers a monthly cron (`0 6 1 * *` UTC — 06:00 UTC on the 1st of each month) plus runs the job once on-demand. Wall-clock per run: **~12 min for the 37-spec sample, ~21 min for all 88** at concurrency=3.
+
+### Behavior
+
+- **Idempotent** — every run drops + recreates the schemas and Genie spaces from the latest spec JSONs on `@main`. Re-running mid-cycle is safe.
+- **Title stability** — spaces keep the title `<Industry> - <space_title>` across refreshes; the engine deletes the prior managed space before creating the new one so no `YYYY-MM-DD` suffix appears.
+- **Rolling data window** — synthetic data slides with `CURRENT_DATE()` so "the last 12 months" always lands inside the data.
+- **One-off override** — to run once with a different subset without changing the saved job parameters:
+
+  ```bash
+  databricks jobs run-now <job_id> --notebook-params subindustries=logistics,machinery
+  ```
+
+### Single-use-case alternative (notebook / Python)
+
+For programmatic single-spec deploys (e.g. inside another notebook):
+
+```python
+%pip install git+https://github.com/macumberc/mfg-genie-factory.git@main
+
+from genie_factory.notebook import deploy_use_case
+result = deploy_use_case("Oil & Gas Upstream", "Reservoir Management")
+# → Creates schema, tables, metric views, Genie space.
+# → Returns dict with FQN + Genie URL.
+```
+
+---
+
 ## Available Use Cases
 
 88 ready-to-deploy use cases across 18 manufacturing subindustries:
