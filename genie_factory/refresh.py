@@ -103,6 +103,154 @@ def _deploy_one(sub: str, label: str, spark: Any = None) -> dict[str, Any]:
         }
 
 
+def _teardown_one(sub: str, label: str, spark: Any, workspace_client: Any = None) -> dict[str, Any]:
+    """Tear down a single spec's schema + Genie space(s).
+
+    Looks up the spec's expected title (``"<industry> - <space_title>"``)
+    and deletes every matching Genie space (handling Databricks'
+    timestamp-suffix variant via ``find_managed_spaces``). Then drops the
+    schema CASCADE.
+
+    Implemented directly rather than calling ``cleanup()`` because
+    ``cleanup()``'s space-resolution path falls back to a legacy
+    ``fqn=<...>`` description marker that current deploys don't emit.
+    Catches all errors so one bad spec doesn't abort the whole teardown.
+    """
+    from .genie import (
+        _default_workspace_client,
+        delete_genie_space,
+        find_managed_spaces,
+    )
+    from .specs import load_spec
+    from .validators import resolve_namespace
+
+    started = time.time()
+    try:
+        spec = load_spec(sub, label)
+        if spec is None:
+            return {
+                "subindustry": sub,
+                "use_case": label,
+                "status": "skipped",
+                "duration_seconds": round(time.time() - started, 1),
+                "error": "spec not found on disk",
+            }
+        ns = resolve_namespace(spark, catalog=None, schema=None,
+                               schema_basename=spec.schema_basename)
+        ws = workspace_client or _default_workspace_client()
+        notes: list[str] = []
+
+        # 1. Delete managed Genie spaces by expected title.
+        expected_title = f"{spec.industry} - {spec.space_title}"
+        deleted_space_ids: list[str] = []
+        try:
+            managed = find_managed_spaces(spark, ns.fqn, title=expected_title, workspace_client=ws)
+            for s in managed:
+                sid = s.get("space_id")
+                if not sid:
+                    continue
+                try:
+                    delete_genie_space(spark, sid, workspace_client=ws)
+                    deleted_space_ids.append(sid)
+                except Exception as exc:  # noqa: BLE001
+                    notes.append(f"Failed to delete Genie space {sid}: {exc}")
+        except Exception as exc:  # noqa: BLE001
+            notes.append(f"Failed to list managed Genie spaces for {ns.fqn}: {exc}")
+
+        # 2. Drop schema CASCADE.
+        dropped_schema = False
+        try:
+            spark.sql(f"DROP SCHEMA IF EXISTS {ns.fqn} CASCADE")
+            dropped_schema = True
+        except Exception as exc:  # noqa: BLE001
+            notes.append(f"Failed to drop schema {ns.fqn}: {exc}")
+
+        return {
+            "subindustry": sub,
+            "use_case": label,
+            "status": "success",
+            "duration_seconds": round(time.time() - started, 1),
+            "fqn": ns.fqn,
+            "dropped_schema": dropped_schema,
+            "deleted_space_ids": deleted_space_ids,
+            "notes": notes,
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "subindustry": sub,
+            "use_case": label,
+            "status": "error",
+            "duration_seconds": round(time.time() - started, 1),
+            "error": str(exc),
+            "traceback": traceback.format_exc(),
+        }
+
+
+def teardown_all(
+    concurrency: int = 3,
+    out_path: Path | None = None,
+    spark: Any = None,
+    subindustries: list[str] | None = None,
+    workspace_client: Any = None,
+) -> dict[str, Any]:
+    """Tear down every spec in parallel: drop schemas + delete Genie spaces.
+
+    Mirrors ``refresh_all``'s shape so the manifest surfaces the same way
+    in the bundle job-output. Default scope is all 88 specs;
+    ``subindustries`` optionally filters to a subset.
+    """
+    pairs = _all_use_case_pairs(subindustries)
+    _logger.info(
+        "Starting teardown of %d demos at concurrency %d (filter=%s)",
+        len(pairs), concurrency, subindustries or "ALL",
+    )
+
+    if spark is None:
+        try:
+            from pyspark.sql import SparkSession
+            spark = SparkSession.getActiveSession()
+        except Exception:  # noqa: BLE001
+            spark = None
+
+    results: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=concurrency) as pool:
+        futures = {
+            pool.submit(_teardown_one, sub, label, spark, workspace_client): (sub, label)
+            for sub, label in pairs
+        }
+        for fut in as_completed(futures):
+            r = fut.result()
+            results.append(r)
+            _logger.info("[%s] %s/%s in %ss", r["status"].upper(),
+                         r["subindustry"], r["use_case"], r["duration_seconds"])
+
+    ok = sum(1 for r in results if r["status"] == "success")
+    err = sum(1 for r in results if r["status"] == "error")
+    skipped = sum(1 for r in results if r["status"] == "skipped")
+    manifest = {
+        "ran_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "operation": "teardown",
+        "concurrency": concurrency,
+        "total": len(results),
+        "success": ok,
+        "error": err,
+        "skipped": skipped,
+        "results": sorted(results, key=lambda r: (r["subindustry"], r["use_case"])),
+    }
+
+    if out_path is None:
+        ts = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        out_path = Path(os.environ.get(
+            "GENIE_FACTORY_REFRESH_OUT", f"/tmp/genie_factory_teardown_{ts}.json"
+        ))
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(manifest, indent=2))
+
+    _logger.info("Teardown complete: %d/%d success, %d error, %d skipped. Manifest: %s",
+                 ok, len(results), err, skipped, out_path)
+    return manifest
+
+
 def refresh_all(
     concurrency: int = 3,
     out_path: Path | None = None,
@@ -183,7 +331,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--subindustries",
         default=None,
-        help="comma-separated subindustry slugs to refresh (default: all 88 specs)",
+        help="comma-separated subindustry slugs to refresh/teardown (default: all 88 specs)",
+    )
+    parser.add_argument(
+        "--teardown",
+        action="store_true",
+        help="DESTRUCTIVE: drop schemas + delete Genie spaces instead of deploying",
     )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
@@ -197,9 +350,14 @@ def main(argv: list[str] | None = None) -> int:
         [s.strip() for s in args.subindustries.split(",") if s.strip()]
         if args.subindustries else None
     )
-    manifest = refresh_all(
-        concurrency=args.concurrency, out_path=args.out, subindustries=subs,
-    )
+    if args.teardown:
+        manifest = teardown_all(
+            concurrency=args.concurrency, out_path=args.out, subindustries=subs,
+        )
+    else:
+        manifest = refresh_all(
+            concurrency=args.concurrency, out_path=args.out, subindustries=subs,
+        )
     return 0 if manifest["error"] == 0 else 1
 
 
