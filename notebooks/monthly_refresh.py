@@ -70,6 +70,17 @@ try:
 except Exception:
     pass
 
+# Optional: pin the target Unity Catalog. Empty / unset → engine resolves via
+# current_catalog() with fallback. Set to deploy a workspace's specs under a
+# specific catalog (e.g. "manufacturing") instead of the workspace default.
+catalog: str | None = None
+try:
+    raw_catalog = dbutils.widgets.get("catalog")  # noqa: F821
+    if raw_catalog:
+        catalog = raw_catalog.strip()
+except Exception:
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -85,6 +96,7 @@ manifest = refresh_all(  # noqa: F821
     concurrency=concurrency,
     spark=spark,  # noqa: F821
     subindustries=subindustries,
+    catalog=catalog,
 )
 
 # COMMAND ----------

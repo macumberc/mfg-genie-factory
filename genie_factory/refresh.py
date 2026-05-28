@@ -68,7 +68,7 @@ def _all_use_case_pairs(
     return pairs
 
 
-def _deploy_one(sub: str, label: str, spark: Any = None) -> dict[str, Any]:
+def _deploy_one(sub: str, label: str, spark: Any = None, catalog: str | None = None) -> dict[str, Any]:
     """Run a single deploy. Catches all errors so one bad spec doesn't
     abort the whole refresh. ``spark`` is captured on the orchestrator
     thread and passed in because ``SparkSession.getActiveSession()`` is
@@ -80,6 +80,8 @@ def _deploy_one(sub: str, label: str, spark: Any = None) -> dict[str, Any]:
     overrides: dict[str, Any] = {}
     if spark is not None:
         overrides["spark"] = spark
+    if catalog:
+        overrides["catalog"] = catalog
     try:
         result = deploy_use_case(sub, label, **overrides)
         return {
@@ -256,6 +258,7 @@ def refresh_all(
     out_path: Path | None = None,
     spark: Any = None,
     subindustries: list[str] | None = None,
+    catalog: str | None = None,
 ) -> dict[str, Any]:
     """Refresh every spec in parallel (bounded by ``concurrency``).
 
@@ -290,7 +293,7 @@ def refresh_all(
 
     results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = {pool.submit(_deploy_one, sub, label, spark): (sub, label) for sub, label in pairs}
+        futures = {pool.submit(_deploy_one, sub, label, spark, catalog): (sub, label) for sub, label in pairs}
         for fut in as_completed(futures):
             r = fut.result()
             results.append(r)
@@ -338,6 +341,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="DESTRUCTIVE: drop schemas + delete Genie spaces instead of deploying",
     )
+    parser.add_argument(
+        "--catalog",
+        default=os.environ.get("GENIE_FACTORY_CATALOG") or None,
+        help="target catalog for deploys (default: workspace current_catalog())",
+    )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -357,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         manifest = refresh_all(
             concurrency=args.concurrency, out_path=args.out, subindustries=subs,
+            catalog=args.catalog,
         )
     return 0 if manifest["error"] == 0 else 1
 

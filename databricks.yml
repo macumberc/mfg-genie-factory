@@ -22,6 +22,24 @@ targets:
     run_as:
       user_name: chad.macumber@databricks.com
 
+  # Phase-1 deployment to the manufacturing demo workspace. Same 7-subindustry
+  # corpus as `prod`, but targets the `manufacturing` Unity Catalog instead of
+  # the workspace default catalog.
+  mfg_industry_prod:
+    mode: production
+    workspace:
+      host: https://fevm-mfg-industry-prod.cloud.databricks.com
+    run_as:
+      user_name: chad.macumber@databricks.com
+    resources:
+      jobs:
+        monthly_refresh:
+          tasks:
+            - task_key: refresh
+              notebook_task:
+                base_parameters:
+                  catalog: "manufacturing"
+
 resources:
   jobs:
     monthly_refresh:
@@ -61,6 +79,9 @@ resources:
               # Chemicals & Materials — the phase-1 launch corpus for
               # fe-vm-logistics-demos. Phase-2 will widen this list.
               subindustries: "logistics,machinery,chemicals_materials,oil_gas_upstream,oil_gas_midstream,oil_gas_refining,oil_gas_integrated"
+              # catalog: empty = engine resolves via current_catalog() fallback.
+              # Targets can override to pin a specific catalog (see mfg_industry_prod).
+              catalog: ""
             source: WORKSPACE
 
           environment_key: default
