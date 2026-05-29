@@ -442,6 +442,7 @@ def deploy(
             table_names=list(tables.keys()),
             space_id=getattr(genie, "space_id", None),
             space_title=getattr(genie, "title", None) or domain_spec.space_title,
+            workspace_client=workspace_client,
         )
         all_warnings.extend(tag_info.get("warnings", []))
     except Exception as exc:  # noqa: BLE001 — tagging must never fail a deploy

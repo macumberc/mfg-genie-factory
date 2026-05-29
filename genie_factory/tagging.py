@@ -47,6 +47,11 @@ _logger = logging.getLogger("genie_factory.tagging")
 TAG_SUBINDUSTRY = "mfg_subindustry"
 TAG_OUTCOME = "mfg_outcome_usecase"
 
+# Entity type for the workspace entity-tag-assignments API. Genie spaces ARE
+# taggable through this API (the /genie/spaces PATCH endpoint silently drops a
+# `tags` field, but /api/2.0/entity-tag-assignments accepts geniespaces tags).
+ENTITY_TYPE_GENIE = "geniespaces"
+
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SPECS_DIR = os.path.join(_REPO_ROOT, "genie_factory", "specs")
 
@@ -282,6 +287,64 @@ def apply_uc_tags(
 
 
 # --------------------------------------------------------------------------- #
+# #1b — Genie space tags (entity-tag-assignments API)
+# --------------------------------------------------------------------------- #
+
+def assign_space_tags(
+    workspace_client: Any,
+    space_id: str,
+    tags: dict[str, str],
+) -> list[dict[str, str]]:
+    """Assign tags to a Genie space via the entity-tag-assignments API.
+
+    Idempotent upsert per tag: ``POST /api/2.0/entity-tag-assignments`` to
+    create, falling back to ``PATCH .../{entity_type}/{id}/tags/{key}`` to
+    update when the tag already exists. Best-effort — returns warnings, never
+    raises. Free-form values are accepted (no governed-tag policy required).
+    """
+    from .genie import _api_request, _default_workspace_client
+
+    warnings: list[dict[str, str]] = []
+    if not tags or not space_id:
+        return warnings
+
+    ws = workspace_client or _default_workspace_client()
+    for key, value in tags.items():
+        try:
+            _api_request(
+                ws,
+                "POST",
+                "/api/2.0/entity-tag-assignments",
+                payload={
+                    "entity_type": ENTITY_TYPE_GENIE,
+                    "entity_id": space_id,
+                    "tag_key": key,
+                    "tag_value": value,
+                },
+                expected_statuses=(200, 201),
+            )
+        except Exception:  # noqa: BLE001 — most likely "already exists"; update.
+            try:
+                _api_request(
+                    ws,
+                    "PATCH",
+                    f"/api/2.0/entity-tag-assignments/{ENTITY_TYPE_GENIE}/{space_id}"
+                    f"/tags/{key}?update_mask=tag_value",
+                    payload={"tag_value": value},
+                    expected_statuses=(200,),
+                )
+            except Exception as exc:  # noqa: BLE001
+                _logger.warning(
+                    "Space tag %s=%s on %s failed: %s", key, value, space_id, exc
+                )
+                warnings.append(
+                    {"category": "space_tag",
+                     "name": f"{space_id}:{key}", "error": str(exc)}
+                )
+    return warnings
+
+
+# --------------------------------------------------------------------------- #
 # #2 — Sidecar Delta mapping table
 # --------------------------------------------------------------------------- #
 
@@ -360,8 +423,10 @@ def apply_tags_and_record(
     table_names: list[str],
     space_id: Optional[str] = None,
     space_title: Optional[str] = None,
+    workspace_client: Any = None,
 ) -> dict[str, Any]:
-    """Apply UC tags (#1) and upsert the sidecar mapping row (#2).
+    """Apply tags (#1 UC schema/tables, #1b Genie space) and upsert the sidecar
+    mapping row (#2).
 
     Best-effort and self-contained: collects warnings, never raises, so a tag
     failure cannot abort a deploy.
@@ -371,6 +436,10 @@ def apply_tags_and_record(
 
     # #1 Unity Catalog tags on schema + tables.
     warnings.extend(apply_uc_tags(spark, fqn, table_names, tags))
+
+    # #1b Genie space tags (entity-tag-assignments API).
+    if space_id:
+        warnings.extend(assign_space_tags(workspace_client, space_id, tags))
 
     # #2 Sidecar mapping row (always attempted).
     mapping_table = None
@@ -457,6 +526,69 @@ def populate_specs(dry_run: bool = False) -> dict[str, Any]:
     return summary
 
 
+def _spec_title_tag_map() -> dict[str, dict[str, str]]:
+    """Build {deployed_space_title: tags} from the local spec corpus.
+
+    Deployed titles follow ``build_genie_payload``'s
+    ``f"{industry} - {space_title}"`` convention, so we reproduce it here to
+    match a live space back to its taxonomy values without parsing descriptions.
+    """
+    from .generator import DomainSpec
+
+    out: dict[str, dict[str, str]] = {}
+    for path in sorted(glob.glob(os.path.join(_SPECS_DIR, "*", "*.json"))):
+        with open(path, encoding="utf-8") as f:
+            spec = DomainSpec.from_dict(json.load(f))
+        title = f"{spec.industry} - {spec.space_title}"
+        out[title] = resolve_tags(spec)
+    return out
+
+
+def tag_existing_spaces(
+    workspace_client: Any = None,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    """Propagate taxonomy tags to every already-deployed managed Genie space.
+
+    Matches live spaces to specs by title (tolerating the Databricks
+    timestamp-suffix rename), then upserts entity tags. Use this to tag spaces
+    that were deployed before space-tagging was wired into deploy(), without a
+    full redeploy.
+    """
+    from .genie import _default_workspace_client, _list_all_genie_spaces, _TIMESTAMP_SUFFIX_RE
+
+    ws = workspace_client or _default_workspace_client()
+    title_map = _spec_title_tag_map()
+    spaces = _list_all_genie_spaces(ws)
+
+    assigned, unmatched, failed = [], [], []
+    for space in spaces:
+        title = space.get("title", "") or ""
+        tags = title_map.get(title) or title_map.get(_TIMESTAMP_SUFFIX_RE.sub("", title))
+        if not tags:
+            # Skip non-GF spaces silently; report GF-looking ones that miss.
+            if (space.get("description", "") or "").lstrip().startswith("**Subindustry:**"):
+                unmatched.append(title)
+            continue
+        space_id = space.get("space_id")
+        if dry_run:
+            assigned.append({"title": title, "space_id": space_id, "tags": tags})
+            continue
+        warns = assign_space_tags(ws, space_id, tags)
+        if warns:
+            failed.append({"title": title, "space_id": space_id, "warnings": warns})
+        else:
+            assigned.append({"title": title, "space_id": space_id, "tags": tags})
+
+    summary = {
+        "total_spaces": len(spaces),
+        "assigned": len(assigned),
+        "unmatched_gf": unmatched,
+        "failed": failed,
+    }
+    return summary
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     parser = argparse.ArgumentParser(prog="python -m genie_factory.tagging")
@@ -464,13 +596,23 @@ def main() -> None:
         "--populate-specs", action="store_true",
         help="Write mfg_subindustry + mfg_outcome_usecase into all spec JSONs.",
     )
-    parser.add_argument("--dry-run", action="store_true", help="Don't write files.")
+    parser.add_argument(
+        "--tag-spaces", action="store_true",
+        help="Propagate taxonomy tags to all already-deployed Genie spaces "
+             "(matches live spaces to specs by title). Uses DATABRICKS_CONFIG_PROFILE.",
+    )
+    parser.add_argument("--dry-run", action="store_true", help="Don't write/assign.")
     args = parser.parse_args()
 
     if args.populate_specs:
         summary = populate_specs(dry_run=args.dry_run)
         print(json.dumps(summary, indent=2))
         if summary["errors"]:
+            raise SystemExit(1)
+    elif args.tag_spaces:
+        summary = tag_existing_spaces(dry_run=args.dry_run)
+        print(json.dumps(summary, indent=2))
+        if summary["failed"]:
             raise SystemExit(1)
     else:
         parser.print_help()
