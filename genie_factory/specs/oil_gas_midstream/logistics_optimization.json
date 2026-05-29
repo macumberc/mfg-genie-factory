@@ -975,5 +975,7 @@
         "ORDER BY total_revenue DESC"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Midstream",
+  "mfg_outcome_usecase": "Distribution & Logistics Optimization"
 }

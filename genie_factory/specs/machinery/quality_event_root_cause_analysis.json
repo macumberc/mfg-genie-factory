@@ -969,5 +969,7 @@
         "ORDER BY average_defect_ppm DESC"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Machinery",
+  "mfg_outcome_usecase": "Quality Event Root Cause Analysis"
 }

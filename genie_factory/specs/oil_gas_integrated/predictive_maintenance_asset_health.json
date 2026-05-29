@@ -1059,5 +1059,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Integrated",
+  "mfg_outcome_usecase": "Predictive Maintenance & Asset Health"
 }

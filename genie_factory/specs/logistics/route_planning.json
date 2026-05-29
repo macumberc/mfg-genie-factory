@@ -1182,5 +1182,7 @@
         "ORDER BY average_on_time_delivery_pct DESC"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Logistics",
+  "mfg_outcome_usecase": "Distribution & Logistics Optimization"
 }

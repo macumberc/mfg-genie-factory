@@ -1101,5 +1101,7 @@
         "ORDER BY avg_turnover_ratio DESC"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Machinery",
+  "mfg_outcome_usecase": "Inventory Optimization"
 }

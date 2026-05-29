@@ -973,5 +973,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Upstream",
+  "mfg_outcome_usecase": "Production Monitoring"
 }

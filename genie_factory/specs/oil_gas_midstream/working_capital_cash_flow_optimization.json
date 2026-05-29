@@ -970,5 +970,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Midstream",
+  "mfg_outcome_usecase": "Operations Resource Efficiency"
 }

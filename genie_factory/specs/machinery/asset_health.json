@@ -1055,5 +1055,7 @@
         "WHERE rk = 1"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Machinery",
+  "mfg_outcome_usecase": "Predictive Maintenance & Asset Health"
 }

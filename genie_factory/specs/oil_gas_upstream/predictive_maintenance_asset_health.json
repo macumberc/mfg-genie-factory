@@ -972,5 +972,7 @@
         "WHERE rnk = 1"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Upstream",
+  "mfg_outcome_usecase": "Predictive Maintenance & Asset Health"
 }

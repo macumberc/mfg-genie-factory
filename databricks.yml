@@ -22,9 +22,10 @@ targets:
     run_as:
       user_name: chad.macumber@databricks.com
 
-  # Phase-1 deployment to the manufacturing demo workspace. Same 7-subindustry
-  # corpus as `prod`, but targets the `manufacturing` Unity Catalog instead of
-  # the workspace default catalog.
+  # Phase-1 deployment to the manufacturing demo workspace. Pinned to the
+  # original 7-subindustry corpus (overrides the all-88 `prod` default below)
+  # and targets the `manufacturing` Unity Catalog instead of the workspace
+  # default catalog.
   mfg_industry_prod:
     mode: production
     workspace:
@@ -39,6 +40,7 @@ targets:
               notebook_task:
                 base_parameters:
                   catalog: "manufacturing"
+                  subindustries: "logistics,machinery,chemicals_materials,oil_gas_upstream,oil_gas_midstream,oil_gas_refining,oil_gas_integrated"
 
 resources:
   jobs:
@@ -74,11 +76,16 @@ resources:
               # end_date intentionally empty — engine rolls with CURRENT_DATE.
               end_date: ""
               # subindustries: comma-separated slugs to restrict the refresh.
-              # Empty = refresh all 88 specs. The 7-slug list below covers
-              # Oil & Gas (all 4 variants), Machinery, Logistics, and
-              # Chemicals & Materials — the phase-1 launch corpus for
-              # fe-vm-logistics-demos. Phase-2 will widen this list.
-              subindustries: "logistics,machinery,chemicals_materials,oil_gas_upstream,oil_gas_midstream,oil_gas_refining,oil_gas_integrated"
+              # Empty = refresh all 88 specs (the prod / fe-vm-logistics-demos
+              # default). The mfg_industry_prod target overrides this to the
+              # phase-1 7-slug corpus.
+              subindustries: ""
+              # teardown_first: "true" drops every managed schema + deletes
+              # every managed Genie space BEFORE redeploying (a clean wipe).
+              # Default "false" — the monthly cron relies on idempotent
+              # CREATE-OR-REPLACE and does not need a destructive wipe. Set to
+              # "true" only for an intentional fresh redeploy.
+              teardown_first: "false"
               # catalog: empty = engine resolves via current_catalog() fallback.
               # Targets can override to pin a specific catalog (see mfg_industry_prod).
               catalog: ""

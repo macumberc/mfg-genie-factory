@@ -1016,5 +1016,7 @@
         "ORDER BY a.avg_capa_closure_rate DESC"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Chemicals & Materials",
+  "mfg_outcome_usecase": "Quality Event Root Cause Analysis"
 }

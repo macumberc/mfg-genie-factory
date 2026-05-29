@@ -427,6 +427,27 @@ def deploy(
     all_warnings.extend(column_comment_warnings)
     all_warnings.extend(description_warnings)
 
+    # 9b. Apply corporate-taxonomy tags + record sidecar mapping (best-effort).
+    # Done before ownership transfer so the deploying principal still holds the
+    # privileges SET TAGS needs. See genie_factory/tagging.py.
+    try:
+        from .tagging import apply_tags_and_record
+
+        tag_info = apply_tags_and_record(
+            spark,
+            domain_spec,
+            fqn=ns.fqn,
+            catalog=ns.catalog,
+            schema_name=ns.schema,
+            table_names=list(tables.keys()),
+            space_id=getattr(genie, "space_id", None),
+            space_title=getattr(genie, "title", None) or domain_spec.space_title,
+        )
+        all_warnings.extend(tag_info.get("warnings", []))
+    except Exception as exc:  # noqa: BLE001 — tagging must never fail a deploy
+        _logger.warning("Taxonomy tagging / mapping failed for %s: %s", ns.fqn, exc)
+        all_warnings.append({"category": "tagging", "name": ns.fqn, "error": str(exc)})
+
     # 10. Transfer ownership to deployer (done last so SP can create all objects first)
     if deployer_email:
         esc_owner = deployer_email.replace("`", "``")

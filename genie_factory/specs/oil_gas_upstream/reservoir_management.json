@@ -980,5 +980,7 @@
         "ORDER BY avg_opex_per_boe ASC"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Upstream",
+  "mfg_outcome_usecase": "Production Monitoring"
 }

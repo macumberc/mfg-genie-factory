@@ -910,5 +910,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Downstream & Refining",
+  "mfg_outcome_usecase": "Quality Event Root Cause Analysis"
 }

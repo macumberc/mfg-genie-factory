@@ -866,5 +866,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Midstream",
+  "mfg_outcome_usecase": "Scenario Planning & Business Simulation"
 }

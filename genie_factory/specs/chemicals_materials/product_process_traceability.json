@@ -1029,5 +1029,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Chemicals & Materials",
+  "mfg_outcome_usecase": "Product & Process Traceability"
 }

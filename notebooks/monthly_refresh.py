@@ -29,6 +29,7 @@
 
 # COMMAND ----------
 
+import json
 import logging
 import os
 
@@ -81,13 +82,41 @@ try:
 except Exception:
     pass
 
+# Optional: "true" wipes every managed schema + Genie space (scoped to the same
+# `subindustries` filter) BEFORE redeploying. Default off — the monthly cron is
+# idempotent and does not need a destructive wipe; set "true" only for an
+# intentional fresh redeploy.
+teardown_first = False
+try:
+    teardown_first = dbutils.widgets.get("teardown_first").strip().lower() == "true"  # noqa: F821
+except Exception:
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     datefmt="%H:%M:%S",
 )
 
-from genie_factory.refresh import refresh_all
+from genie_factory.refresh import refresh_all, teardown_all
+
+# Optional clean wipe before redeploy. Uses the same `subindustries` scope so a
+# subset wipe stays scoped. A WorkspaceClient is needed to delete Genie spaces.
+if teardown_first:
+    from databricks.sdk import WorkspaceClient
+
+    logging.getLogger("genie_factory").info(
+        "teardown_first=true — wiping managed schemas + Genie spaces before redeploy"
+    )
+    teardown_manifest = teardown_all(  # noqa: F821
+        concurrency=concurrency,
+        spark=spark,  # noqa: F821
+        subindustries=subindustries,
+        workspace_client=WorkspaceClient(),
+    )
+    print("TEARDOWN:", json.dumps(  # noqa: F821
+        {k: teardown_manifest.get(k) for k in ("total", "success", "error")},
+    ))
 
 # `spark` is auto-injected in Databricks notebook environments; pass it
 # explicitly because SparkSession.getActiveSession() is thread-local and

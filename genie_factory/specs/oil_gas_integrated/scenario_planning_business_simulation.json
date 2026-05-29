@@ -927,5 +927,7 @@
         "WHERE rnk = 1"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Oil & Gas Integrated",
+  "mfg_outcome_usecase": "Scenario Planning & Business Simulation"
 }

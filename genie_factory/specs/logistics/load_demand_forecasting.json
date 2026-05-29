@@ -974,5 +974,7 @@
         "LIMIT 10"
       ]
     }
-  ]
+  ],
+  "mfg_subindustry": "Logistics",
+  "mfg_outcome_usecase": "Demand Forecasting"
 }

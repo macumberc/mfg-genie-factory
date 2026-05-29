@@ -99,6 +99,13 @@ class DomainSpec:
     sql_snippets: SQLSnippets
     benchmarks: list[BenchmarkSpec]
 
+    # Corporate taxonomy tags applied to the deployed schema/tables and recorded
+    # in the sidecar mapping table (see genie_factory/tagging.py). Default ""
+    # so older specs deserialize cleanly; populated by `python -m
+    # genie_factory.tagging --populate-specs`.
+    mfg_subindustry: str = ""
+    mfg_outcome_usecase: str = ""
+
     def to_dict(self) -> dict:
         """Serialize to a plain dict suitable for JSON storage."""
         return asdict(self)
@@ -131,6 +138,8 @@ class DomainSpec:
             example_sqls=[ExampleSQL(**e) for e in d["example_sqls"]],
             sql_snippets=SQLSnippets(**d["sql_snippets"]),
             benchmarks=[BenchmarkSpec(**b) for b in d["benchmarks"]],
+            mfg_subindustry=d.get("mfg_subindustry", ""),
+            mfg_outcome_usecase=d.get("mfg_outcome_usecase", ""),
         )
 
 
