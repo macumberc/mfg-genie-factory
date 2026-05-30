@@ -140,6 +140,7 @@ def deploy(
     workspace_client: Any = None,
     deployer_email: Optional[str] = None,
     domain_spec: Optional[Any] = None,
+    replace_genie_space: bool = True,
     # LLM-only params — ignored when domain_spec is provided
     company_name: Optional[str] = None,
     business_context: Optional[str] = None,
@@ -404,6 +405,7 @@ def deploy(
                 spark, domain_spec, ns.fqn, resolved_wh, ns.username,
                 excluded_views=set(mv_failed),
                 workspace_client=workspace_client,
+                replace=replace_genie_space,
             )
             genie_payload_for_retry = None  # Success — no need to retain payload
         except Exception as exc:

@@ -92,6 +92,17 @@ try:
 except Exception:
     pass
 
+# Optional: "true" delete-and-recreates each Genie space (new space_id every
+# run, dropping its tags/ACLs). Default "false" — preserve each space's
+# space_id and only refresh its backing tables/views, so tags and ACLs persist
+# across monthly cycles. Set "true" only when a spec changed and the space
+# itself must be rebuilt to pick up new questions/instructions/columns.
+replace_spaces = False
+try:
+    replace_spaces = dbutils.widgets.get("replace_spaces").strip().lower() == "true"  # noqa: F821
+except Exception:
+    pass
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -126,6 +137,7 @@ manifest = refresh_all(  # noqa: F821
     spark=spark,  # noqa: F821
     subindustries=subindustries,
     catalog=catalog,
+    replace_spaces=replace_spaces,
 )
 
 # COMMAND ----------

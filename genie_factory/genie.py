@@ -238,15 +238,23 @@ def create_or_replace_genie_space(
     username: str,
     excluded_views: Optional[set[str]] = None,
     workspace_client: Any = None,
+    replace: bool = True,
 ) -> GenieSpaceResult:
-    """Delete any prior managed spaces, then create a fresh space.
+    """Provision the managed Genie space for a deploy.
 
-    Ordering: delete-first so that the new space's title doesn't collide
-    with the old one — Databricks appends a `` YYYY-MM-DD HH:MM:SS`` suffix
-    to any new title that duplicates an existing space. The tradeoff is
-    that if the subsequent create fails, the old space is gone for that
-    refresh cycle; the monthly_refresh job is idempotent and will recreate
-    it on the next run.
+    ``replace=True`` (default): delete any prior managed space, then create a
+    fresh one. Delete-first avoids the `` YYYY-MM-DD HH:MM:SS`` suffix
+    Databricks appends to a title that duplicates an existing space. Tradeoff:
+    a new ``space_id`` each time, so per-space ACLs/tags must be re-applied.
+
+    ``replace=False`` (preserve): if a managed space already exists for this
+    title, keep it as-is (stable ``space_id``) and return it — the surrounding
+    deploy still CREATE-OR-REPLACEs the backing tables/views, so the preserved
+    space simply serves refreshed data. Only when none exists is a space
+    created. Use this for the monthly data refresh so space_ids (and their
+    tags/ACLs) survive across cycles. Note: a preserved space does NOT pick up
+    spec changes (new questions/instructions/columns) — run with
+    ``replace=True`` to rebuild when the spec itself changed.
     """
 
     ws = workspace_client or _default_workspace_client()
@@ -254,6 +262,27 @@ def create_or_replace_genie_space(
     # 1. Find existing managed spaces that would collide on title.
     final_title = f"{domain_spec.industry} - {domain_spec.space_title}"
     existing = find_managed_spaces(spark, fqn, final_title, workspace_client=ws)
+
+    # 1b. Preserve mode: keep the existing space (stable space_id); the deploy
+    # has already refreshed the backing tables/views it points at.
+    if not replace and existing:
+        keep = existing[0]
+        space_id = keep.get("space_id")
+        host = ws.config.host.rstrip("/")
+        leftover = [s.get("space_id") for s in existing[1:] if s.get("space_id")]
+        if leftover:
+            _logger.warning(
+                "Preserve mode: %d duplicate managed spaces for %r; keeping %s, "
+                "leaving %s untouched", len(leftover), final_title, space_id, leftover,
+            )
+        return GenieSpaceResult(
+            status="preserved",
+            requested=True,
+            warehouse_id=warehouse_id,
+            title=keep.get("title", final_title),
+            space_id=space_id,
+            url=f"{host}/genie/rooms/{space_id}?isDbOne=true&utm_source=databricks-one",
+        )
 
     # 2. Delete them FIRST so the new POST gets the clean title.
     replaced_ids: list[str] = []
