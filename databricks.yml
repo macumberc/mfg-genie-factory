@@ -86,12 +86,6 @@ resources:
               # CREATE-OR-REPLACE and does not need a destructive wipe. Set to
               # "true" only for an intentional fresh redeploy.
               teardown_first: "false"
-              # replace_spaces: "false" (default) preserves each Genie space's
-              # space_id and only refreshes its backing tables/views, so tags
-              # and ACLs persist month to month. Set "true" to delete-and-
-              # recreate spaces (new space_ids) when a spec changed and the
-              # room must be rebuilt to pick up new questions/instructions.
-              replace_spaces: "false"
               # catalog: empty = engine resolves via current_catalog() fallback.
               # Targets can override to pin a specific catalog (see mfg_industry_prod).
               catalog: ""

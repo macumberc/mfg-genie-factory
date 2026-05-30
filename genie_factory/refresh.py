@@ -68,26 +68,19 @@ def _all_use_case_pairs(
     return pairs
 
 
-def _deploy_one(
-    sub: str,
-    label: str,
-    spark: Any = None,
-    catalog: str | None = None,
-    replace_spaces: bool = False,
-) -> dict[str, Any]:
+def _deploy_one(sub: str, label: str, spark: Any = None, catalog: str | None = None) -> dict[str, Any]:
     """Run a single deploy. Catches all errors so one bad spec doesn't
     abort the whole refresh. ``spark`` is captured on the orchestrator
     thread and passed in because ``SparkSession.getActiveSession()`` is
     thread-local on Databricks runtimes and returns None in worker threads.
 
-    ``replace_spaces=False`` (default) preserves an existing Genie space's
-    ``space_id`` and only refreshes the backing data; pass True to rebuild the
-    space (e.g. after a spec change).
+    Genie spaces are preserve-only: an existing space's ``space_id`` is kept
+    and only the backing tables/views are refreshed.
     """
     from .notebook import deploy_use_case
 
     started = time.time()
-    overrides: dict[str, Any] = {"replace_genie_space": replace_spaces}
+    overrides: dict[str, Any] = {}
     if spark is not None:
         overrides["spark"] = spark
     if catalog:
@@ -269,7 +262,6 @@ def refresh_all(
     spark: Any = None,
     subindustries: list[str] | None = None,
     catalog: str | None = None,
-    replace_spaces: bool = False,
 ) -> dict[str, Any]:
     """Refresh every spec in parallel (bounded by ``concurrency``).
 
@@ -277,10 +269,10 @@ def refresh_all(
     Writes the manifest to ``out_path`` (defaults to
     ``/tmp/genie_factory_refresh_<UTC timestamp>.json``).
 
-    ``replace_spaces=False`` (default) preserves each existing Genie space's
-    ``space_id`` and only refreshes its backing tables/views — so tags and
-    ACLs survive across monthly cycles. Pass True to delete-and-recreate the
-    spaces (needed to pick up spec changes), at the cost of new space_ids.
+    Genie spaces are preserve-only: each existing space's ``space_id`` is kept
+    and only its backing tables/views are refreshed, so tags and ACLs survive
+    across monthly cycles. To rebuild a space after a spec change, wipe it
+    first (the ``teardown_first`` path) — the next refresh then creates it.
 
     ``spark`` must be supplied when invoked from a Databricks notebook —
     pass the global ``spark`` from the calling cell. ``SparkSession.
@@ -309,7 +301,7 @@ def refresh_all(
 
     results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = {pool.submit(_deploy_one, sub, label, spark, catalog, replace_spaces): (sub, label) for sub, label in pairs}
+        futures = {pool.submit(_deploy_one, sub, label, spark, catalog): (sub, label) for sub, label in pairs}
         for fut in as_completed(futures):
             r = fut.result()
             results.append(r)

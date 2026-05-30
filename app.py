@@ -7,7 +7,7 @@ import os
 
 # Auto-grant CAN_MANAGE to the workspace's admin group on every Genie space
 # the app deploys. The library reads this env var inside
-# create_or_replace_genie_space and PATCHes the ACL after creation. If the
+# create_or_preserve_genie_space and PATCHes the ACL after creation. If the
 # group does not exist in the deployed workspace, the grant logs a warning
 # and continues — deploy itself is unaffected.
 os.environ.setdefault("GENIE_FACTORY_ADMIN_GROUPS", "genie-factory-admins")

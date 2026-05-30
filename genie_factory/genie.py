@@ -230,7 +230,7 @@ def resolve_warehouse_id(
     return candidate.get("id"), None
 
 
-def create_or_replace_genie_space(
+def create_or_preserve_genie_space(
     spark,
     domain_spec: Any,
     fqn: str,
@@ -238,41 +238,38 @@ def create_or_replace_genie_space(
     username: str,
     excluded_views: Optional[set[str]] = None,
     workspace_client: Any = None,
-    replace: bool = True,
 ) -> GenieSpaceResult:
-    """Provision the managed Genie space for a deploy.
+    """Provision the managed Genie space for a deploy — preserve-only.
 
-    ``replace=True`` (default): delete any prior managed space, then create a
-    fresh one. Delete-first avoids the `` YYYY-MM-DD HH:MM:SS`` suffix
-    Databricks appends to a title that duplicates an existing space. Tradeoff:
-    a new ``space_id`` each time, so per-space ACLs/tags must be re-applied.
+    If a managed space already exists for this title, keep it as-is (stable
+    ``space_id``) and return it; the surrounding deploy still
+    CREATE-OR-REPLACEs the backing tables/views, so the preserved space simply
+    serves refreshed data. Only when none exists is a space created. There is
+    no delete-and-recreate path: space_ids never change on refresh, so their
+    tags and ACLs persist across cycles.
 
-    ``replace=False`` (preserve): if a managed space already exists for this
-    title, keep it as-is (stable ``space_id``) and return it — the surrounding
-    deploy still CREATE-OR-REPLACEs the backing tables/views, so the preserved
-    space simply serves refreshed data. Only when none exists is a space
-    created. Use this for the monthly data refresh so space_ids (and their
-    tags/ACLs) survive across cycles. Note: a preserved space does NOT pick up
-    spec changes (new questions/instructions/columns) — run with
-    ``replace=True`` to rebuild when the spec itself changed.
+    Note: a preserved space does NOT pick up spec changes (new questions/
+    instructions/columns). To rebuild after a spec change, first delete the
+    space (e.g. the monthly_refresh ``teardown_first`` wipe), then deploy —
+    with none present, this creates a fresh one.
     """
 
     ws = workspace_client or _default_workspace_client()
 
-    # 1. Find existing managed spaces that would collide on title.
+    # 1. Find existing managed spaces for this title.
     final_title = f"{domain_spec.industry} - {domain_spec.space_title}"
     existing = find_managed_spaces(spark, fqn, final_title, workspace_client=ws)
 
-    # 1b. Preserve mode: keep the existing space (stable space_id); the deploy
-    # has already refreshed the backing tables/views it points at.
-    if not replace and existing:
+    # 2. Preserve: keep the existing space (stable space_id). The deploy has
+    # already refreshed the backing tables/views it points at.
+    if existing:
         keep = existing[0]
         space_id = keep.get("space_id")
         host = ws.config.host.rstrip("/")
         leftover = [s.get("space_id") for s in existing[1:] if s.get("space_id")]
         if leftover:
             _logger.warning(
-                "Preserve mode: %d duplicate managed spaces for %r; keeping %s, "
+                "Preserve: %d duplicate managed spaces for %r; keeping %s, "
                 "leaving %s untouched", len(leftover), final_title, space_id, leftover,
             )
         return GenieSpaceResult(
@@ -284,57 +281,33 @@ def create_or_replace_genie_space(
             url=f"{host}/genie/rooms/{space_id}?isDbOne=true&utm_source=databricks-one",
         )
 
-    # 2. Delete them FIRST so the new POST gets the clean title.
-    replaced_ids: list[str] = []
-    for space in existing:
-        old_id = space.get("space_id")
-        if not old_id:
-            continue
-        try:
-            delete_genie_space(spark, old_id, workspace_client=ws)
-            replaced_ids.append(old_id)
-            _logger.info("Deleted prior managed Genie space %s before re-create", old_id)
-        except Exception as exc:
-            _logger.warning(
-                "Failed to delete old Genie space %s: %s", old_id, exc
-            )
-
-    # 3. Build payload and create new space.
+    # 3. None exists — create a fresh space.
     payload = build_genie_payload(
         domain_spec, fqn, warehouse_id, username, excluded_views=excluded_views
     )
-    try:
-        created = _api_request(
-            ws,
-            "POST",
-            "/api/2.0/genie/spaces",
-            payload=payload,
-            expected_statuses=(200, 201),
-        )
-    except Exception:
-        if replaced_ids:
-            _logger.error(
-                "Genie space create FAILED after deleting prior spaces %s — "
-                "next monthly refresh will recreate.", replaced_ids,
-            )
-        raise
+    created = _api_request(
+        ws,
+        "POST",
+        "/api/2.0/genie/spaces",
+        payload=payload,
+        expected_statuses=(200, 201),
+    )
     space_id = created["space_id"]
     host = ws.config.host.rstrip("/")
 
     # 3b. Best-effort: grant configured admin groups CAN_MANAGE on the new
-    # space so manageability survives across monthly refreshes (each refresh
-    # creates a new space_id, dropping prior ACLs).
+    # space. With preserve-only refresh, space_id is stable, so this grant
+    # persists and is only applied on first creation.
     _grant_configured_admin_groups(ws, space_id)
 
     return GenieSpaceResult(
-        status="replaced" if replaced_ids else "created",
+        status="created",
         requested=True,
         warehouse_id=warehouse_id,
         title=payload["title"],
         parent_path=payload["parent_path"],
         space_id=space_id,
         url=f"{host}/genie/rooms/{space_id}?isDbOne=true&utm_source=databricks-one",
-        replaced_space_ids=replaced_ids,
     )
 
 
