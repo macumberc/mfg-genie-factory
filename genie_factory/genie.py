@@ -230,6 +230,36 @@ def resolve_warehouse_id(
     return candidate.get("id"), None
 
 
+def _find_space_id_by_title(
+    spark,
+    fqn: str,
+    title: str,
+    ws: Any,
+    attempts: int = 3,
+    delay: float = 2.0,
+) -> Optional[str]:
+    """Return the space_id of a managed space matching ``title``, or None.
+
+    Retries a few times because a just-created space can lag the workspace
+    listing by a second or two (eventual consistency). Used to recover an
+    orphan-created space after a transient create error.
+    """
+    import time
+
+    for attempt in range(attempts):
+        try:
+            found = find_managed_spaces(spark, fqn, title, workspace_client=ws)
+        except Exception:  # noqa: BLE001 — recovery is best-effort
+            found = []
+        for s in found:
+            sid = s.get("space_id")
+            if sid:
+                return sid
+        if attempt < attempts - 1:
+            time.sleep(delay)
+    return None
+
+
 def create_or_preserve_genie_space(
     spark,
     domain_spec: Any,
@@ -282,17 +312,51 @@ def create_or_preserve_genie_space(
         )
 
     # 3. None exists — create a fresh space.
+    #
+    # A transient failure (e.g. 429/timeout under the 5-qpm Genie API cap) can
+    # raise client-side AFTER the space was actually created server-side — or the
+    # POST can return 2xx without a space_id in the body. Either way, losing the
+    # id orphans a created space: the deploy treats Genie creation as failed,
+    # skips tagging, and records an empty space_id in space_tag_mapping (see
+    # CLAUDE.md). So on POST error or a missing id, re-query by title to recover
+    # the orphan's id before giving up.
     payload = build_genie_payload(
         domain_spec, fqn, warehouse_id, username, excluded_views=excluded_views
     )
-    created = _api_request(
-        ws,
-        "POST",
-        "/api/2.0/genie/spaces",
-        payload=payload,
-        expected_statuses=(200, 201),
-    )
-    space_id = created["space_id"]
+    recovered = False
+    try:
+        created = _api_request(
+            ws,
+            "POST",
+            "/api/2.0/genie/spaces",
+            payload=payload,
+            expected_statuses=(200, 201),
+        )
+        space_id = (created or {}).get("space_id")
+    except Exception as exc:  # noqa: BLE001 — recover an orphan-created space if possible
+        space_id = _find_space_id_by_title(spark, fqn, final_title, ws)
+        if not space_id:
+            raise
+        recovered = True
+        _logger.warning(
+            "Genie create POST raised (%s) but space %r exists server-side; "
+            "recovered space_id=%s", exc, final_title, space_id,
+        )
+
+    if not space_id:
+        # 2xx but no id in body — same title re-query recovery path.
+        space_id = _find_space_id_by_title(spark, fqn, final_title, ws)
+        if not space_id:
+            raise RuntimeError(
+                f"Genie create for {final_title!r} returned no space_id and none "
+                f"found on re-query"
+            )
+        recovered = True
+        _logger.warning(
+            "Genie create returned no space_id; recovered %r space_id=%s",
+            final_title, space_id,
+        )
+
     host = ws.config.host.rstrip("/")
 
     # 3b. Best-effort: grant configured admin groups CAN_MANAGE on the new
@@ -308,6 +372,7 @@ def create_or_preserve_genie_space(
         parent_path=payload["parent_path"],
         space_id=space_id,
         url=f"{host}/genie/rooms/{space_id}?isDbOne=true&utm_source=databricks-one",
+        reason="recovered after transient create error" if recovered else None,
     )
 
 
