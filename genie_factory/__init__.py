@@ -449,6 +449,26 @@ def deploy(
         _logger.warning("Taxonomy tagging / mapping failed for %s: %s", ns.fqn, exc)
         all_warnings.append({"category": "tagging", "name": ns.fqn, "error": str(exc)})
 
+    # 9c. Record the rendered markdown demo script into the demo_scripts tracking
+    # table (best-effort). Done before ownership transfer so the deploying
+    # principal still holds write privileges. See genie_factory/demo_tracking.py.
+    try:
+        from .demo_tracking import record_demo_script
+
+        demo_info = record_demo_script(
+            spark,
+            domain_spec,
+            fqn=ns.fqn,
+            catalog=ns.catalog,
+            schema_name=ns.schema,
+            space_id=getattr(genie, "space_id", None),
+            space_title=getattr(genie, "title", None) or domain_spec.space_title,
+        )
+        all_warnings.extend(demo_info.get("warnings", []))
+    except Exception as exc:  # noqa: BLE001 — demo-script recording must never fail a deploy
+        _logger.warning("Demo-script recording failed for %s: %s", ns.fqn, exc)
+        all_warnings.append({"category": "demo_script", "name": ns.fqn, "error": str(exc)})
+
     # 10. Transfer ownership to deployer (done last so SP can create all objects first)
     if deployer_email:
         esc_owner = deployer_email.replace("`", "``")
