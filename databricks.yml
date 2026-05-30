@@ -14,6 +14,10 @@ bundle:
   name: genie-factory-monthly-refresh
 
 targets:
+  # Logistics-demos deployment. Scoped to the Oil & Gas (upstream, midstream,
+  # refining, integrated), Chemicals & Materials, Machinery, and Logistics
+  # subindustries (41 Genie spaces) and pinned to the `logistics_demos_catalog`
+  # Unity Catalog instead of the workspace default.
   prod:
     mode: production
     default: true
@@ -21,6 +25,15 @@ targets:
       host: https://fevm-logistics-demos.cloud.databricks.com
     run_as:
       user_name: chad.macumber@databricks.com
+    resources:
+      jobs:
+        monthly_refresh:
+          tasks:
+            - task_key: refresh
+              notebook_task:
+                base_parameters:
+                  catalog: "logistics_demos_catalog"
+                  subindustries: "logistics,machinery,chemicals_materials,oil_gas_upstream,oil_gas_midstream,oil_gas_refining,oil_gas_integrated"
 
   # Phase-1 deployment to the manufacturing demo workspace. Pinned to the
   # original 7-subindustry corpus (overrides the all-88 `prod` default below)
@@ -76,9 +89,9 @@ resources:
               # end_date intentionally empty — engine rolls with CURRENT_DATE.
               end_date: ""
               # subindustries: comma-separated slugs to restrict the refresh.
-              # Empty = refresh all 88 specs (the prod / fe-vm-logistics-demos
-              # default). The mfg_industry_prod target overrides this to the
-              # phase-1 7-slug corpus.
+              # Empty here = the all-88 base default; both the prod
+              # (logistics-demos) and mfg_industry_prod targets override this
+              # to their own scoped subindustry corpus.
               subindustries: ""
               # teardown_first: "true" drops every managed schema + deletes
               # every managed Genie space BEFORE redeploying (a clean wipe).
