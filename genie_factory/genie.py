@@ -364,6 +364,13 @@ def create_or_preserve_genie_space(
     # persists and is only applied on first creation.
     _grant_configured_admin_groups(ws, space_id)
 
+    # 3c. Best-effort: grant the all-workspace-users group CAN_RUN so any user
+    # can ask questions in the space (the API's CAN_RUN == the "Can use" UI
+    # label). CAN_RUN alone is not enough to query — the asking user also needs
+    # SELECT on the backing schema (granted in deploy()) and access to a SQL
+    # warehouse (environment-level, outside this library's control).
+    _grant_configured_user_groups(ws, space_id)
+
     return GenieSpaceResult(
         status="created",
         requested=True,
@@ -462,6 +469,32 @@ def _grant_configured_admin_groups(ws: Any, space_id: str) -> None:
     except Exception as exc:
         _logger.warning(
             "Failed to grant Genie space permissions on %s: %s", space_id, exc
+        )
+
+
+def _grant_configured_user_groups(ws: Any, space_id: str) -> None:
+    """PATCH CAN_RUN for each group named in GENIE_FACTORY_USER_GROUPS.
+
+    Comma-separated env var; defaults to ``"users"`` (the all-workspace-users
+    group) so every deploy makes the space usable by all workspace users out of
+    the box. Set the var to ``""`` to skip. Failures are logged, never raised.
+    """
+    raw = os.environ.get("GENIE_FACTORY_USER_GROUPS", "users").strip()
+    if not raw:
+        return
+    groups = [g.strip() for g in raw.split(",") if g.strip()]
+    if not groups:
+        return
+    try:
+        grant_space_permissions(
+            ws,
+            space_id,
+            [{"group_name": g, "permission_level": "CAN_RUN"} for g in groups],
+        )
+    except Exception as exc:
+        _logger.warning(
+            "Failed to grant Genie space CAN_RUN to user groups on %s: %s",
+            space_id, exc,
         )
 
 

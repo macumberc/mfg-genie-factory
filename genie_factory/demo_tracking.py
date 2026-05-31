@@ -27,6 +27,7 @@ import argparse
 import json
 import logging
 import os
+import re
 from datetime import datetime, timezone
 from typing import Any, Optional
 
@@ -118,7 +119,12 @@ def write_demo_script_row(
     )
     data = Row(*[row.get(c) for c in _COLUMNS])
     df = spark.createDataFrame([data], schema=struct)
-    view = "_gf_demo_scripts_upsert"
+    # Temp views are session-global, NOT thread-local. Under a concurrent
+    # refresh (refresh_all at concurrency>1) a fixed view name lets one worker's
+    # createOrReplaceTempView clobber another's before its INSERT runs, which
+    # both drops rows and duplicates others. Key the view name on the (unique
+    # per worker) schema_fqn so concurrent deploys never share a view.
+    view = "_gf_demo_scripts_upsert_" + re.sub(r"[^0-9a-zA-Z]", "_", schema_fqn)
     df.createOrReplaceTempView(view)
 
     col_list = ", ".join(_COLUMNS)

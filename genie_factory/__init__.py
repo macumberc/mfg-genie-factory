@@ -20,6 +20,7 @@ from .results import DeploymentResult, GenieSpaceResult
 from .validators import catalog_exists, current_catalog, resolve_namespace, sql_string
 
 import logging
+import os
 
 _logger = logging.getLogger("genie_factory")
 _logger.addHandler(logging.NullHandler())
@@ -321,6 +322,22 @@ def deploy(
             _logger.info("Granted schema access to deployer: %s", deployer_email)
         except Exception as exc:
             _logger.warning("Failed to grant deployer schema access (non-blocking): %s", exc)
+
+    # 4c. Grant the all-users group(s) USE SCHEMA + SELECT so anyone can query
+    # the demo via its Genie space (Genie runs queries as the asking user, so
+    # the space's CAN_RUN grant is not enough without UC data access). Granting
+    # at the SCHEMA level cascades to all current and future tables + metric
+    # views and survives ownership transfer + monthly refresh. Defaults to
+    # `account users`; set GENIE_FACTORY_DATA_GRANT_GROUPS="" to skip.
+    raw_data_groups = os.environ.get("GENIE_FACTORY_DATA_GRANT_GROUPS", "account users").strip()
+    for grp in (g.strip() for g in raw_data_groups.split(",") if g.strip()):
+        try:
+            esc_grp = grp.replace("`", "``")
+            spark.sql(f"GRANT USE SCHEMA ON SCHEMA {ns.fqn} TO `{esc_grp}`")
+            spark.sql(f"GRANT SELECT ON SCHEMA {ns.fqn} TO `{esc_grp}`")
+            _logger.info("Granted schema USE+SELECT to user group: %s", grp)
+        except Exception as exc:
+            _logger.warning("Failed to grant schema access to %s (non-blocking): %s", grp, exc)
 
     # 5. Build and execute CTAS statements
     _progress("Creating tables...", "&#8942;")

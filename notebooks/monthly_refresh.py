@@ -59,6 +59,27 @@ try:
 except Exception:
     pass
 
+# Make every deployed space usable by all workspace users out of the box:
+# CAN_RUN on the Genie space for the workspace `users` group, and USE SCHEMA +
+# SELECT on the backing schema for the account-level `account users` group
+# (Genie runs queries as the asking user, so both the space grant AND the UC
+# data grant are required). These have safe defaults baked into the library;
+# the job params `user_groups` / `data_grant_groups` override (set to "" to
+# disable). NOTE: users also need CAN_USE on a SQL warehouse — that is an
+# environment-level grant a workspace admin must apply; the library can't.
+try:
+    user_groups = dbutils.widgets.get("user_groups")  # noqa: F821
+    if user_groups:
+        os.environ["GENIE_FACTORY_USER_GROUPS"] = user_groups
+except Exception:
+    pass
+try:
+    data_grant_groups = dbutils.widgets.get("data_grant_groups")  # noqa: F821
+    if data_grant_groups:
+        os.environ["GENIE_FACTORY_DATA_GRANT_GROUPS"] = data_grant_groups
+except Exception:
+    pass
+
 # Optional: restrict the refresh to a comma-separated list of subindustry
 # slugs (e.g. "logistics,machinery,oil_gas_upstream"). Empty / unset → all 88.
 # Lets a workspace that only deployed a subset stay scoped to that subset on
