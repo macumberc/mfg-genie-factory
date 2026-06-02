@@ -20,7 +20,7 @@ and queried, via two complementary mechanisms:
 
 Two tag keys are emitted:
   * ``mfg_subindustry``      — one of the 20 allowed subindustry values
-  * ``mfg_outcome_usecase``  — one of the 20 allowed outcome/use-case values
+  * ``mfg_outcome_usecase``  — one of the 25 allowed outcome/use-case values
 
 The per-spec values live on the spec JSON (``DomainSpec.mfg_subindustry`` /
 ``.mfg_outcome_usecase``), populated by ``--populate-specs`` below. ``deploy()``
@@ -79,13 +79,22 @@ ALLOWED_OUTCOMES = {
     "Scenario Planning & Business Simulation", "Dynamic Pricing",
     "Feedstock, Formulation, & Recipe Control",
     "Incident & Field Service Assistant", "Sustainability & Circular Economy",
+    # Added from manual taxonomy corrections applied on the mfg-industry-prod
+    # deployment — refined the best-fit "(loose)" buckets into specific use cases.
+    "Working Capital & Cash Flow Optimization", "Expense & Spend Intelligence",
+    "Capital Investment Simulation", "Commodity & Energy Trading",
+    "Regulation Compliance, & External Reporting",
 }
 
 # Map the repo's ``industry`` strings onto the allowed subindustry vocabulary.
-# Identity for all but the one rename; anything not listed passes through
+# Identity for all but the entries below; anything not listed passes through
 # unchanged (and is validated against ALLOWED_SUBINDUSTRIES at populate time).
 SUBINDUSTRY_TAG_MAP = {
-    "Oil & Gas Refining": "Oil & Gas Downstream & Refining",
+    "Oil & Gas Refining": "Oil & Gas Downstream & Refining",  # vocabulary rename
+    # Reclassification applied on the mfg-industry-prod deployment: the three
+    # upstream demos are tagged under the Integrated subindustry (their titles
+    # keep the "Oil & Gas Upstream" branding via the spec ``industry`` field).
+    "Oil & Gas Upstream": "Oil & Gas Integrated",
 }
 
 # Best-fit map of every spec's outcome use case onto the allowed vocabulary,
@@ -149,44 +158,44 @@ OUTCOME_USECASE_MAP: dict[str, dict[str, str]] = {
         "asset_health": "Predictive Maintenance & Asset Health",
         "demand_forecasting": "Demand Forecasting",
         "field_service_assistant": "Incident & Field Service Assistant",
-        "financial_analytics_reporting": "Operations Resource Efficiency",  # (loose)
+        "financial_analytics_reporting": "Working Capital & Cash Flow Optimization",
         "machining_process_defect_detection": "Defect Detection",
         "manufacturing_resource_planning": "Supply & Materials Planning",
         "production_monitoring": "Production Monitoring",
         "quality_event_root_cause_analysis": "Quality Event Root Cause Analysis",
         "spare_part_inventory_optimization": "Inventory Optimization",
-        "spend_intelligence": "Supply & Materials Planning",  # (loose)
-        "working_capital_cash_flow_optimization": "Operations Resource Efficiency",  # (loose)
+        "spend_intelligence": "Expense & Spend Intelligence",
+        "working_capital_cash_flow_optimization": "Working Capital & Cash Flow Optimization",
     },
     "mining": {
         "haul_vehicle_asset_health": "Predictive Maintenance & Asset Health",
         "production_monitoring_control_center": "Production Monitoring",
     },
     "oil_gas_integrated": {
-        "capital_investment_simulation": "Scenario Planning & Business Simulation",
-        "financial_analytics_reporting": "Operations Resource Efficiency",  # (loose)
+        "capital_investment_simulation": "Capital Investment Simulation",
+        "financial_analytics_reporting": "Expense & Spend Intelligence",
         "predictive_maintenance_asset_health": "Predictive Maintenance & Asset Health",
         "production_monitoring_control_center": "Production Monitoring",
         "scenario_planning_business_simulation": "Scenario Planning & Business Simulation",
-        "working_capital_cash_flow_optimization": "Operations Resource Efficiency",  # (loose)
+        "working_capital_cash_flow_optimization": "Working Capital & Cash Flow Optimization",
     },
     "oil_gas_midstream": {
-        "automated_reporting_of_carbon_intensity": "Sustainability & Circular Economy",
-        "energy_trading": "Dynamic Pricing",  # (loose)
-        "financial_analytics_reporting": "Operations Resource Efficiency",  # (loose)
+        "automated_reporting_of_carbon_intensity": "Operations Resource Efficiency",
+        "energy_trading": "Commodity & Energy Trading",
+        "financial_analytics_reporting": "Regulation Compliance, & External Reporting",
         "logistics_optimization": "Distribution & Logistics Optimization",
-        "regulation_compliance": "Sustainability & Circular Economy",  # (loose)
+        "regulation_compliance": "Regulation Compliance, & External Reporting",
         "scenario_planning_business_simulation": "Scenario Planning & Business Simulation",
-        "spend_intelligence": "Supply & Materials Planning",  # (loose)
-        "working_capital_cash_flow_optimization": "Operations Resource Efficiency",  # (loose)
+        "spend_intelligence": "Expense & Spend Intelligence",
+        "working_capital_cash_flow_optimization": "Working Capital & Cash Flow Optimization",
     },
     "oil_gas_refining": {
-        "energy_use_monitoring_heat": "Operations Resource Efficiency",
-        "financial_analytics_reporting": "Operations Resource Efficiency",  # (loose)
+        "energy_use_monitoring_heat": "Production Monitoring",
+        "financial_analytics_reporting": "Expense & Spend Intelligence",
         "predictive_maintenance_asset_health": "Predictive Maintenance & Asset Health",
         "production_monitoring": "Production Monitoring",
         "quality_event_root_cause_analysis": "Quality Event Root Cause Analysis",
-        "working_capital_cash_flow_optimization": "Operations Resource Efficiency",  # (loose)
+        "working_capital_cash_flow_optimization": "Working Capital & Cash Flow Optimization",
     },
     "oil_gas_upstream": {
         "predictive_maintenance_asset_health": "Predictive Maintenance & Asset Health",
