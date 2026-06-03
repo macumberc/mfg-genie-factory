@@ -263,41 +263,27 @@ def _esc(value: str) -> str:
 
 
 # --------------------------------------------------------------------------- #
-# #1 — Unity Catalog tags
+# #1 — Genie space tags (entity-tag-assignments API)
+#
+# NOTE: We intentionally tag ONLY the Genie space — not the backing schema,
+# tables, metric views, or columns. Earlier versions stamped UC governed tags
+# on the schema + every table via ``apply_uc_tags()``; that function was removed
+# to keep the data objects untagged. Tag taxonomy now lives solely on the space
+# (here) and in the sidecar mapping table (#2).
 # --------------------------------------------------------------------------- #
 
-def apply_uc_tags(
-    spark: Any,
-    fqn: str,
-    table_names: list[str],
+def assign_space_tags(
+    workspace_client: Any,
+    space_id: str,
     tags: dict[str, str],
 ) -> list[dict[str, str]]:
-    """Best-effort ``SET TAGS`` on the schema and each table.
+    """Assign tags to a Genie space via the entity-tag-assignments API.
 
-    Returns a list of warning dicts for any statement that failed (e.g. blocked
-    by a governed-tag policy). Never raises.
+    Idempotent upsert per tag: ``POST /api/2.0/entity-tag-assignments`` to
+    create, falling back to ``PATCH .../{entity_type}/{id}/tags/{key}`` to
+    update when the tag already exists. Best-effort — returns warnings, never
+    raises. Free-form values are accepted (no governed-tag policy required).
     """
-    warnings: list[dict[str, str]] = []
-    if not tags:
-        return warnings
-
-    set_clause = ", ".join(f"'{_esc(k)}' = '{_esc(v)}'" for k, v in tags.items())
-
-    targets = [("SCHEMA", fqn)] + [("TABLE", f"{fqn}.{t}") for t in table_names]
-    for obj_type, obj_name in targets:
-        try:
-            spark.sql(f"ALTER {obj_type} {obj_name} SET TAGS ({set_clause})")
-        except Exception as exc:  # noqa: BLE001 — best-effort; surface as warning
-            _logger.warning("SET TAGS on %s %s failed: %s", obj_type, obj_name, exc)
-            warnings.append(
-                {"category": "uc_tag", "name": obj_name, "error": str(exc)}
-            )
-    return warnings
-
-
-# --------------------------------------------------------------------------- #
-# #1b — Genie space tags (entity-tag-assignments API)
-# --------------------------------------------------------------------------- #
 
 def assign_space_tags(
     workspace_client: Any,
@@ -434,19 +420,20 @@ def apply_tags_and_record(
     space_title: Optional[str] = None,
     workspace_client: Any = None,
 ) -> dict[str, Any]:
-    """Apply tags (#1 UC schema/tables, #1b Genie space) and upsert the sidecar
-    mapping row (#2).
+    """Tag the Genie space (#1) and upsert the sidecar mapping row (#2).
 
-    Best-effort and self-contained: collects warnings, never raises, so a tag
-    failure cannot abort a deploy.
+    Only the Genie space is tagged — the backing schema, tables, metric views,
+    and columns are deliberately left untagged. Best-effort and self-contained:
+    collects warnings, never raises, so a tag failure cannot abort a deploy.
+
+    ``table_names`` is retained for signature stability / sidecar context but is
+    no longer used for tagging.
     """
     warnings: list[dict[str, str]] = []
     tags = resolve_tags(domain_spec)
 
-    # #1 Unity Catalog tags on schema + tables.
-    warnings.extend(apply_uc_tags(spark, fqn, table_names, tags))
-
-    # #1b Genie space tags (entity-tag-assignments API).
+    # #1 Genie space tags (entity-tag-assignments API). Data objects are NOT
+    # tagged — taxonomy lives on the space and in the sidecar mapping table.
     if space_id:
         warnings.extend(assign_space_tags(workspace_client, space_id, tags))
 
@@ -576,7 +563,10 @@ def tag_existing_spaces(
         tags = title_map.get(title) or title_map.get(_TIMESTAMP_SUFFIX_RE.sub("", title))
         if not tags:
             # Skip non-GF spaces silently; report GF-looking ones that miss.
-            if (space.get("description", "") or "").lstrip().startswith("**Subindustry:**"):
+            _desc = (space.get("description", "") or "").lstrip()
+            # GF-managed spaces start with "**Scenario:**" (current format) or
+            # "**Subindustry:**" (legacy format pre-2026-06 description rewrite).
+            if _desc.startswith("**Scenario:**") or _desc.startswith("**Subindustry:**"):
                 unmatched.append(title)
             continue
         space_id = space.get("space_id")

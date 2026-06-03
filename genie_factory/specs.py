@@ -11,6 +11,33 @@ from .generator import DomainSpec
 
 _SPECS_DIR = Path(__file__).parent / "specs"
 
+# The universal warm-up question that opens every demo's question arc. It works
+# for any space and gets the room comfortable with Genie before the bespoke
+# composition + payoff questions.
+DEMO_OPENER_QUESTION = (
+    "Showcase the different visualization options with interesting aspects "
+    "of the dataset"
+)
+
+
+def render_space_description(scenario: str, questions: list[str]) -> str:
+    """Render a Genie space description in the standard Scenario/Questions format.
+
+    ``scenario`` is a 2-3 sentence, second-person narrative that puts the SA in
+    the operator's seat and ends in a provocative question. ``questions`` are
+    the demo questions in arc order (typically opener -> composition -> payoff);
+    each is annotated with ``(agent)`` in the rendered prose to cue the demoer
+    to run it in agent / deep-research mode.
+
+    The annotation lives only in this prose. The clickable starter chips
+    (``sample_questions``) carry the same questions *without* the suffix, since
+    chip text is sent to Genie verbatim as a query.
+    """
+    lines = [f"**Scenario:** {scenario.strip()}", "", "**Questions:**", ""]
+    for i, q in enumerate(questions, start=1):
+        lines.append(f"{i}. {q.strip()} (agent)")
+    return "\n".join(lines)
+
 
 def _slugify(name: str) -> str:
     """Convert a display name to a filesystem-safe slug."""

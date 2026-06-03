@@ -204,7 +204,19 @@ def _bullets(text: str) -> list[str]:
 
 
 def _narrative(desc: str) -> str:
-    """Paragraph between '**Use case:** ...' and '**Key KPIs**'."""
+    """The space's framing paragraph.
+
+    Current spec format: the '**Scenario:**' paragraph (up to '**Questions:**').
+    Legacy format: the company paragraph between '**Use case:** ...' and
+    '**Key KPIs**'. Tries the current format first, then falls back.
+    """
+    m = re.search(
+        r"\*\*Scenario:\*\*\s*(.*?)(?=\n\s*\*\*Questions:\*\*|\Z)",
+        desc,
+        re.DOTALL,
+    )
+    if m and m.group(1).strip():
+        return m.group(1).strip()
     m = re.search(
         r"\*\*Use case:\*\*[^\n]*\n\n(.*?)(?=\n\*\*Key KPIs\*\*)",
         desc,
@@ -384,18 +396,19 @@ def _kpi_short(k: str) -> str:
 
 
 def _at_a_glance(p: ParsedSpec) -> list[str]:
-    kpi_inline = ", ".join(_kpi_short(k) for k in p.kpis[:6])
-    return [
+    n_q = len(p.sample_questions) or 3
+    lines = [
         f"# {p.company} — Demo Script",
         "",
         f"**Space:** {p.industry} — {p.title}",
-        "**Runtime:** ~15 minutes • 7 questions",
+        f"**Runtime:** ~{max(5, n_q * 3)} minutes • {n_q} questions",
         "**Audience:** Operations leadership + the practitioners on their team",
-        f"**KPIs touched:** {kpi_inline}",
-        "",
-        "---",
-        "",
     ]
+    if p.kpis:
+        kpi_inline = ", ".join(_kpi_short(k) for k in p.kpis[:6])
+        lines.append(f"**KPIs touched:** {kpi_inline}")
+    lines += ["", "---", ""]
+    return lines
 
 
 def _checklist(p: ParsedSpec) -> list[str]:
@@ -426,6 +439,8 @@ def _scenario(p: ParsedSpec) -> list[str]:
 
 
 def _kpi_card(p: ParsedSpec) -> list[str]:
+    if not p.kpis:
+        return []
     lines = ["## Key KPIs in scope", ""]
     for k in p.kpis:
         lines.append(f"- {k}")
@@ -451,11 +466,18 @@ def _acronym_glossary(p: ParsedSpec) -> list[str]:
 
 
 def _distribute_questions(qs: list[str]) -> list[list[str]]:
-    """Split into 3 acts (2 / 3 / 2). Falls back gracefully on <7 questions."""
-    qs = list(qs)[:7]
-    while len(qs) < 7:
-        qs.append(qs[-1] if qs else "Show overall performance by category.")
-    return [qs[:2], qs[2:5], qs[5:7]]
+    """Split questions across 3 acts without padding/duplication.
+
+    Legacy 7-question specs map to 2 / 3 / 2. Current 3-question specs map to
+    1 / 1 / 1. Fewer than 3 questions leaves trailing acts empty.
+    """
+    qs = list(qs)
+    if len(qs) >= 7:
+        return [qs[:2], qs[2:5], qs[5:7]]
+    acts: list[list[str]] = [[], [], []]
+    for i, q in enumerate(qs):
+        acts[min(i, 2)].append(q)
+    return acts
 
 
 def _act(act_no: int, title: str, persona: str, jtbd: str, questions: list[str], anchor: bool = False) -> list[str]:
