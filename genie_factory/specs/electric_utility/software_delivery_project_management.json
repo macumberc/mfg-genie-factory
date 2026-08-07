@@ -85,7 +85,7 @@
           "sql_type": "INT",
           "comment": "1 if the issue was resolved at time of log, 0 otherwise",
           "is_dimension": false,
-          "generation_expr": "CAST(CASE WHEN {alt_status_noise} < 0.18 THEN 1 ELSE 0 END AS INT)"
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise3} < 0.18 THEN 1 ELSE 0 END AS INT)"
         }
       ],
       "seasonal_patterns": {},
@@ -293,7 +293,7 @@
           "sql_type": "INT",
           "comment": "1 if this issue is flagged as a blocker, 0 otherwise",
           "is_dimension": false,
-          "generation_expr": "CAST(CASE WHEN {alt_status_noise} < 0.14 THEN 1 ELSE 0 END AS INT)"
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise4} < 0.14 THEN 1 ELSE 0 END AS INT)"
         },
         {
           "name": "days_in_status",
@@ -512,7 +512,7 @@
         {
           "name": "velocity",
           "sql_type": "DOUBLE",
-          "comment": "Sprint velocity as completed/committed points ratio (percentage)",
+          "comment": "Sprint velocity index (percentage; trends seasonally, not a literal quotient of the completed/committed columns)",
           "is_dimension": false,
           "generation_expr": "ROUND((15.0 + ({qty_noise2} * 40.0)) / (20.0 + (({qty_noise} * {seasonal_mult}) * 40.0)) * 100.0, 1)",
           "seasonal_amplitude": 0.15
@@ -789,7 +789,7 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports software delivery portfolio tracking and sprint execution for Meridian Grid's utility technology programs. Stakeholders include delivery leads, scrum masters, and program managers. The portfolio spans 7 programs: Grid Modernization (GRID), AMI Rollout (AMI), Outage Management System (OMS), DERMS, Customer Portal (PORTAL), SCADA Upgrade (SCADA), and EV Charging Network (EVSE). Issues are managed in JIRA; worklogs capture engineer time; snapshots track daily issue state; velocity table rolls up monthly sprint performance.\n\nMETRIC DEFINITIONS\n- velocity = completed_points / committed_points (as a percentage in sprint_velocity_monthly)\n- blocker = is_blocker = 1 in jira_issue_snapshots\n- high-risk blocker = is_blocker = 1 AND risk_level = 'High' in jira_issue_snapshots\n- cycle time = avg_cycle_time_days in sprint_velocity_monthly (issue start to done)\n- 'stuck' = high days_in_status in jira_issue_snapshots (issues with days_in_status > 14 are considered stuck)\n- story hours = hours logged on issues where issue_type = 'Story'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - jira_worklogs_metrics (source: jira_worklogs) — dims: work_date, project, epic, issue_type, assignee, team; measures: worklog_count, total_hours_logged, story_hours, resolved_issue_count, distinct_issue_count, distinct_assignee_count.\n  - jira_issue_snapshots_metrics (source: jira_issue_snapshots) — dims: snapshot_date, project, epic, sprint, assignee, status, priority, risk_level; measures: open_issue_count, blocker_count, high_risk_blocker_count, avg_days_in_status, max_days_in_status, total_story_points.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For 'Top X' requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly when needing columns not in metric views (e.g. days_in_status, story_points, sprint_velocity_monthly columns).\n- Assignees are stored as full names; map a bare first name to the full name (e.g. 'Bob' -> 'Bob Chen', 'Priya' -> 'Priya Nair').\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports software delivery portfolio tracking and sprint execution for Meridian Grid's utility technology programs. Stakeholders include delivery leads, scrum masters, and program managers. The portfolio spans 7 programs: Grid Modernization (GRID), AMI Rollout (AMI), Outage Management System (OMS), DERMS, Customer Portal (PORTAL), SCADA Upgrade (SCADA), and EV Charging Network (EVSE). Issues are managed in JIRA; worklogs capture engineer time; snapshots track daily issue state; velocity table rolls up monthly sprint performance.\n\nMETRIC DEFINITIONS\n- velocity = sprint velocity percentage KPI in sprint_velocity_monthly (trends seasonally; use committed_points and completed_points separately for burndown and commitment analysis)\n- blocker = is_blocker = 1 in jira_issue_snapshots\n- high-risk blocker = is_blocker = 1 AND risk_level = 'High' in jira_issue_snapshots\n- cycle time = avg_cycle_time_days in sprint_velocity_monthly (issue start to done)\n- 'stuck' = high days_in_status in jira_issue_snapshots (issues with days_in_status > 14 are considered stuck)\n- story hours = hours logged on issues where issue_type = 'Story'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - jira_worklogs_metrics (source: jira_worklogs) — dims: work_date, project, epic, issue_type, assignee, team; measures: worklog_count, total_hours_logged, story_hours, resolved_issue_count, distinct_issue_count, distinct_assignee_count.\n  - jira_issue_snapshots_metrics (source: jira_issue_snapshots) — dims: snapshot_date, project, epic, sprint, assignee, status, priority, risk_level; measures: open_issue_count, blocker_count, high_risk_blocker_count, avg_days_in_status, max_days_in_status, total_story_points.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For 'Top X' requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly when needing columns not in metric views (e.g. days_in_status, story_points, sprint_velocity_monthly columns).\n- Assignees are stored as full names; map a bare first name to the full name (e.g. 'Bob' -> 'Bob Chen', 'Priya' -> 'Priya Nair').\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Showcase the different visualization options with interesting aspects of the dataset",
     "What are the open blockers flagged High risk by project and epic, and how many days has each been stuck in its current status?",
