@@ -85,7 +85,7 @@
           "sql_type": "INT",
           "comment": "1 if the issue was resolved at time of log, 0 otherwise",
           "is_dimension": false,
-          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.18 THEN 1 ELSE 0 END AS INT)"
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise} < 0.18 THEN 1 ELSE 0 END AS INT)"
         }
       ],
       "seasonal_patterns": {},
@@ -293,7 +293,7 @@
           "sql_type": "INT",
           "comment": "1 if this issue is flagged as a blocker, 0 otherwise",
           "is_dimension": false,
-          "generation_expr": "CAST(CASE WHEN {status_noise} < 0.14 THEN 1 ELSE 0 END AS INT)"
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise} < 0.14 THEN 1 ELSE 0 END AS INT)"
         },
         {
           "name": "days_in_status",
@@ -980,10 +980,10 @@
     {
       "question": "What is the monthly trend in features deployed?",
       "sql_lines": [
-        "SELECT report_month, SUM(features_deployed) AS total_features_deployed",
+        "SELECT DATE_TRUNC('month', report_month) AS month, SUM(features_deployed) AS total_features_deployed",
         "FROM {fqn}.sprint_velocity_monthly",
         "GROUP BY report_month",
-        "ORDER BY report_month"
+        "ORDER BY month"
       ]
     },
     {
