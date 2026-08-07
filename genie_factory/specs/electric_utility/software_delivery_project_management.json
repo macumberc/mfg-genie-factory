@@ -1,0 +1,1048 @@
+{
+  "company_name": "Meridian Grid",
+  "industry": "Electric Utility",
+  "use_case": "Software delivery portfolio tracking, sprint execution, and blocker/risk management across utility technology programs",
+  "space_title": "Meridian Grid - Software Delivery Project Management 🗂️",
+  "space_description": "**Scenario:** You run software delivery at Meridian Grid, where the Grid Modernization and AMI Rollout programs are both mid-sprint and the PUC-facing commitments don't move. Blockers are piling up on a handful of epics, tickets are aging in review, and your next steering readout is tomorrow. Where do you focus to protect the sprint?\n\n**Questions:**\n\n1. Showcase the different visualization options with interesting aspects of the dataset (agent)\n2. What are the open blockers flagged High risk by project and epic, and how many days has each been stuck in its current status? (agent)\n3. Which epics have the most high-risk blockers and the longest average time-in-status, and how does that compare to their sprint velocity? (agent)",
+  "schema_basename": "utility_project_management",
+  "tables": [
+    {
+      "table_name": "jira_worklogs",
+      "description": "Individual work-log entries by engineer across JIRA issues, capturing hours logged, issue type, team, and resolution status.",
+      "columns": [
+        {
+          "name": "worklog_id",
+          "sql_type": "STRING",
+          "comment": "Unique worklog entry identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('WL-', LPAD(CAST({id_seq} AS STRING), 7, '0'))"
+        },
+        {
+          "name": "work_date",
+          "sql_type": "DATE",
+          "comment": "Date the work was logged",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "issue_key",
+          "sql_type": "STRING",
+          "comment": "JIRA issue key (e.g. GRID-1001, AMI-2012)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project",
+          "sql_type": "STRING",
+          "comment": "Project name: Grid Modernization, AMI Rollout, Outage Management System, DERMS, Customer Portal, SCADA Upgrade, EV Charging Network",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "epic",
+          "sql_type": "STRING",
+          "comment": "Epic grouping issues within the project (e.g. Smart Grid Infrastructure, Meter Deployment Pipeline)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "assignee",
+          "sql_type": "STRING",
+          "comment": "Full name of engineer who logged the work (e.g. Bob Chen, Priya Nair, Lena Kowalski)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "issue_type",
+          "sql_type": "STRING",
+          "comment": "JIRA issue type: Story, Bug, Task, Feature, Sub-task, Epic",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.42 THEN 'Story' WHEN {status_noise} < 0.60 THEN 'Bug' WHEN {status_noise} < 0.74 THEN 'Task' WHEN {status_noise} < 0.86 THEN 'Feature' WHEN {status_noise} < 0.94 THEN 'Sub-task' ELSE 'Epic' END"
+        },
+        {
+          "name": "team",
+          "sql_type": "STRING",
+          "comment": "Engineering team: Platform, Data, Field Systems, Customer Apps, SRE",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.24 THEN 'Platform' WHEN {alt_status_noise} < 0.44 THEN 'Data' WHEN {alt_status_noise} < 0.62 THEN 'Field Systems' WHEN {alt_status_noise} < 0.82 THEN 'Customer Apps' ELSE 'SRE' END"
+        },
+        {
+          "name": "hours_logged",
+          "sql_type": "DOUBLE",
+          "comment": "Hours logged on the issue for this entry (0.5–8.0 hrs)",
+          "is_dimension": false,
+          "generation_expr": "ROUND(0.5 + ({qty_noise} * 7.5), 2)"
+        },
+        {
+          "name": "status_at_log",
+          "sql_type": "STRING",
+          "comment": "Issue status at the time of the worklog: In Progress, In Review, To Do, Done, Blocked",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.30 THEN 'In Progress' WHEN {alt_status_noise2} < 0.55 THEN 'In Review' WHEN {alt_status_noise2} < 0.75 THEN 'To Do' WHEN {alt_status_noise2} < 0.90 THEN 'Done' ELSE 'Blocked' END"
+        },
+        {
+          "name": "is_resolved",
+          "sql_type": "INT",
+          "comment": "1 if the issue was resolved at time of log, 0 otherwise",
+          "is_dimension": false,
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise3} < 0.18 THEN 1 ELSE 0 END AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "category_distribution": {},
+      "entity_dimension": "transaction",
+      "dimension_values": [
+        {
+          "issue_key": "GRID-1001",
+          "project": "Grid Modernization",
+          "epic": "Smart Grid Infrastructure",
+          "assignee": "Bob Chen"
+        },
+        {
+          "issue_key": "GRID-1045",
+          "project": "Grid Modernization",
+          "epic": "Substation Automation",
+          "assignee": "Priya Nair"
+        },
+        {
+          "issue_key": "GRID-1087",
+          "project": "Grid Modernization",
+          "epic": "Feeder Monitoring",
+          "assignee": "Lena Kowalski"
+        },
+        {
+          "issue_key": "AMI-2012",
+          "project": "AMI Rollout",
+          "epic": "Meter Deployment Pipeline",
+          "assignee": "James Okonkwo"
+        },
+        {
+          "issue_key": "AMI-2034",
+          "project": "AMI Rollout",
+          "epic": "HAN Integration",
+          "assignee": "Sofia Reyes"
+        },
+        {
+          "issue_key": "AMI-2056",
+          "project": "AMI Rollout",
+          "epic": "MDM Platform",
+          "assignee": "Wei Zhang"
+        },
+        {
+          "issue_key": "OMS-3018",
+          "project": "Outage Management System",
+          "epic": "ADMS Integration",
+          "assignee": "Tariq Hassan"
+        },
+        {
+          "issue_key": "OMS-3041",
+          "project": "Outage Management System",
+          "epic": "Crew Mobile App",
+          "assignee": "Maria Garcia"
+        },
+        {
+          "issue_key": "DERMS-4007",
+          "project": "DERMS",
+          "epic": "DER Forecasting Engine",
+          "assignee": "David Kim"
+        },
+        {
+          "issue_key": "DERMS-4022",
+          "project": "DERMS",
+          "epic": "EV Fleet Dispatch",
+          "assignee": "Aisha Patel"
+        },
+        {
+          "issue_key": "PORTAL-5009",
+          "project": "Customer Portal",
+          "epic": "Outage Notification API",
+          "assignee": "Chris Nguyen"
+        },
+        {
+          "issue_key": "PORTAL-5031",
+          "project": "Customer Portal",
+          "epic": "Self-Service Billing",
+          "assignee": "Rachel Torres"
+        },
+        {
+          "issue_key": "PORTAL-5054",
+          "project": "Customer Portal",
+          "epic": "Energy Insights Dashboard",
+          "assignee": "Sam Park"
+        },
+        {
+          "issue_key": "SCADA-6014",
+          "project": "SCADA Upgrade",
+          "epic": "Protocol Migration DNP3",
+          "assignee": "Elena Ivanova"
+        },
+        {
+          "issue_key": "SCADA-6033",
+          "project": "SCADA Upgrade",
+          "epic": "Historian Migration",
+          "assignee": "Marcus Brown"
+        },
+        {
+          "issue_key": "SCADA-6051",
+          "project": "SCADA Upgrade",
+          "epic": "Cybersecurity Hardening",
+          "assignee": "Bob Chen"
+        },
+        {
+          "issue_key": "EVSE-7008",
+          "project": "EV Charging Network",
+          "epic": "OCPP 2.0 Compliance",
+          "assignee": "Priya Nair"
+        },
+        {
+          "issue_key": "EVSE-7024",
+          "project": "EV Charging Network",
+          "epic": "Demand Response Integration",
+          "assignee": "Lena Kowalski"
+        },
+        {
+          "issue_key": "EVSE-7039",
+          "project": "EV Charging Network",
+          "epic": "Fleet Billing API",
+          "assignee": "James Okonkwo"
+        },
+        {
+          "issue_key": "GRID-1120",
+          "project": "Grid Modernization",
+          "epic": "Load Forecasting ML",
+          "assignee": "Sofia Reyes"
+        }
+      ]
+    },
+    {
+      "table_name": "jira_issue_snapshots",
+      "description": "Daily snapshot of JIRA issue status, priority, risk level, and age-in-status for open issues across all programs.",
+      "columns": [
+        {
+          "name": "snapshot_id",
+          "sql_type": "STRING",
+          "comment": "Unique snapshot record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('IS-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.issue_key) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "snapshot_date",
+          "sql_type": "DATE",
+          "comment": "Date this snapshot was taken",
+          "is_dimension": false,
+          "generation_expr": "d.dt"
+        },
+        {
+          "name": "issue_key",
+          "sql_type": "STRING",
+          "comment": "JIRA issue key (e.g. GRID-1001, AMI-2012, OMS-3018)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "project",
+          "sql_type": "STRING",
+          "comment": "Project name: Grid Modernization, AMI Rollout, Outage Management System, DERMS, Customer Portal, SCADA Upgrade, EV Charging Network",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "epic",
+          "sql_type": "STRING",
+          "comment": "Epic grouping issues within the project",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "sprint",
+          "sql_type": "STRING",
+          "comment": "Active sprint for the issue (e.g. GRID Sprint 24, AMI Sprint 18)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "assignee",
+          "sql_type": "STRING",
+          "comment": "Full name of engineer assigned to the issue (e.g. Bob Chen, Priya Nair)",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "status",
+          "sql_type": "STRING",
+          "comment": "Issue status: Backlog, To Do, In Progress, In Review, Blocked, Done",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {status_noise} < 0.20 THEN 'Backlog' WHEN {status_noise} < 0.36 THEN 'To Do' WHEN {status_noise} < 0.60 THEN 'In Progress' WHEN {status_noise} < 0.74 THEN 'In Review' WHEN {status_noise} < 0.86 THEN 'Blocked' ELSE 'Done' END"
+        },
+        {
+          "name": "priority",
+          "sql_type": "STRING",
+          "comment": "Issue priority: Highest, High, Medium, Low",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {alt_status_noise} < 0.12 THEN 'Highest' WHEN {alt_status_noise} < 0.38 THEN 'High' WHEN {alt_status_noise} < 0.75 THEN 'Medium' ELSE 'Low' END"
+        },
+        {
+          "name": "risk_level",
+          "sql_type": "STRING",
+          "comment": "Risk level: High, Medium, Low",
+          "is_dimension": false,
+          "generation_expr": "CASE WHEN {alt_status_noise2} < 0.22 THEN 'High' WHEN {alt_status_noise2} < 0.55 THEN 'Medium' ELSE 'Low' END"
+        },
+        {
+          "name": "is_blocker",
+          "sql_type": "INT",
+          "comment": "1 if this issue is flagged as a blocker, 0 otherwise",
+          "is_dimension": false,
+          "generation_expr": "CAST(CASE WHEN {alt_status_noise4} < 0.14 THEN 1 ELSE 0 END AS INT)"
+        },
+        {
+          "name": "days_in_status",
+          "sql_type": "INT",
+          "comment": "Number of days the issue has been in its current status",
+          "is_dimension": false,
+          "generation_expr": "CAST(1 + FLOOR({qty_noise} * 44) AS INT)"
+        },
+        {
+          "name": "story_points",
+          "sql_type": "INT",
+          "comment": "Story points estimated for the issue (Fibonacci: 1,2,3,5,8,13)",
+          "is_dimension": false,
+          "generation_expr": "CAST(ELEMENT_AT(ARRAY(1,2,3,5,8,13), 1 + CAST(FLOOR({qty_noise2} * 6) AS INT)) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "category_distribution": {},
+      "entity_dimension": "snapshot",
+      "dimension_values": [
+        {
+          "issue_key": "GRID-1001",
+          "project": "Grid Modernization",
+          "epic": "Smart Grid Infrastructure",
+          "sprint": "GRID Sprint 24",
+          "assignee": "Bob Chen"
+        },
+        {
+          "issue_key": "GRID-1045",
+          "project": "Grid Modernization",
+          "epic": "Substation Automation",
+          "sprint": "GRID Sprint 24",
+          "assignee": "Priya Nair"
+        },
+        {
+          "issue_key": "GRID-1087",
+          "project": "Grid Modernization",
+          "epic": "Feeder Monitoring",
+          "sprint": "GRID Sprint 24",
+          "assignee": "Lena Kowalski"
+        },
+        {
+          "issue_key": "AMI-2012",
+          "project": "AMI Rollout",
+          "epic": "Meter Deployment Pipeline",
+          "sprint": "AMI Sprint 18",
+          "assignee": "James Okonkwo"
+        },
+        {
+          "issue_key": "AMI-2034",
+          "project": "AMI Rollout",
+          "epic": "HAN Integration",
+          "sprint": "AMI Sprint 18",
+          "assignee": "Sofia Reyes"
+        },
+        {
+          "issue_key": "AMI-2056",
+          "project": "AMI Rollout",
+          "epic": "MDM Platform",
+          "sprint": "AMI Sprint 18",
+          "assignee": "Wei Zhang"
+        },
+        {
+          "issue_key": "OMS-3018",
+          "project": "Outage Management System",
+          "epic": "ADMS Integration",
+          "sprint": "OMS Sprint 12",
+          "assignee": "Tariq Hassan"
+        },
+        {
+          "issue_key": "OMS-3041",
+          "project": "Outage Management System",
+          "epic": "Crew Mobile App",
+          "sprint": "OMS Sprint 12",
+          "assignee": "Maria Garcia"
+        },
+        {
+          "issue_key": "DERMS-4007",
+          "project": "DERMS",
+          "epic": "DER Forecasting Engine",
+          "sprint": "DERMS Sprint 9",
+          "assignee": "David Kim"
+        },
+        {
+          "issue_key": "DERMS-4022",
+          "project": "DERMS",
+          "epic": "EV Fleet Dispatch",
+          "sprint": "DERMS Sprint 9",
+          "assignee": "Aisha Patel"
+        },
+        {
+          "issue_key": "PORTAL-5009",
+          "project": "Customer Portal",
+          "epic": "Outage Notification API",
+          "sprint": "PORTAL Sprint 21",
+          "assignee": "Chris Nguyen"
+        },
+        {
+          "issue_key": "PORTAL-5031",
+          "project": "Customer Portal",
+          "epic": "Self-Service Billing",
+          "sprint": "PORTAL Sprint 21",
+          "assignee": "Rachel Torres"
+        },
+        {
+          "issue_key": "PORTAL-5054",
+          "project": "Customer Portal",
+          "epic": "Energy Insights Dashboard",
+          "sprint": "PORTAL Sprint 21",
+          "assignee": "Sam Park"
+        },
+        {
+          "issue_key": "SCADA-6014",
+          "project": "SCADA Upgrade",
+          "epic": "Protocol Migration DNP3",
+          "sprint": "SCADA Sprint 7",
+          "assignee": "Elena Ivanova"
+        },
+        {
+          "issue_key": "SCADA-6033",
+          "project": "SCADA Upgrade",
+          "epic": "Historian Migration",
+          "sprint": "SCADA Sprint 7",
+          "assignee": "Marcus Brown"
+        },
+        {
+          "issue_key": "SCADA-6051",
+          "project": "SCADA Upgrade",
+          "epic": "Cybersecurity Hardening",
+          "sprint": "SCADA Sprint 7",
+          "assignee": "Bob Chen"
+        },
+        {
+          "issue_key": "EVSE-7008",
+          "project": "EV Charging Network",
+          "epic": "OCPP 2.0 Compliance",
+          "sprint": "EVSE Sprint 5",
+          "assignee": "Priya Nair"
+        },
+        {
+          "issue_key": "EVSE-7024",
+          "project": "EV Charging Network",
+          "epic": "Demand Response Integration",
+          "sprint": "EVSE Sprint 5",
+          "assignee": "Lena Kowalski"
+        },
+        {
+          "issue_key": "EVSE-7039",
+          "project": "EV Charging Network",
+          "epic": "Fleet Billing API",
+          "sprint": "EVSE Sprint 5",
+          "assignee": "James Okonkwo"
+        },
+        {
+          "issue_key": "GRID-1120",
+          "project": "Grid Modernization",
+          "epic": "Load Forecasting ML",
+          "sprint": "GRID Sprint 24",
+          "assignee": "Sofia Reyes"
+        }
+      ]
+    },
+    {
+      "table_name": "sprint_velocity_monthly",
+      "description": "Monthly sprint velocity rollup by project, sprint, and team — committed vs completed story points, features deployed, bugs closed, cycle time, and blocker count.",
+      "columns": [
+        {
+          "name": "record_id",
+          "sql_type": "STRING",
+          "comment": "Unique monthly velocity record identifier",
+          "is_dimension": false,
+          "generation_expr": "CONCAT('SV-', LPAD(CAST(ROW_NUMBER() OVER (ORDER BY d.dt, e.sprint) AS STRING), 7, '0'))"
+        },
+        {
+          "name": "report_month",
+          "sql_type": "DATE",
+          "comment": "First day of the report month",
+          "is_dimension": false,
+          "generation_expr": "DATE_TRUNC('month', d.dt)"
+        },
+        {
+          "name": "project",
+          "sql_type": "STRING",
+          "comment": "Project name: Grid Modernization, AMI Rollout, Outage Management System, DERMS, Customer Portal, SCADA Upgrade, EV Charging Network",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "sprint",
+          "sql_type": "STRING",
+          "comment": "Sprint name for the velocity record",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "team",
+          "sql_type": "STRING",
+          "comment": "Engineering team: Platform, Data, Field Systems, Customer Apps, SRE",
+          "is_dimension": true,
+          "generation_expr": ""
+        },
+        {
+          "name": "committed_points",
+          "sql_type": "INT",
+          "comment": "Story points committed at sprint planning",
+          "is_dimension": false,
+          "generation_expr": "CAST(20 + FLOOR({qty_noise} * 40) AS INT)"
+        },
+        {
+          "name": "completed_points",
+          "sql_type": "INT",
+          "comment": "Story points completed at sprint close",
+          "is_dimension": false,
+          "generation_expr": "CAST(15 + FLOOR({qty_noise2} * 40) AS INT)"
+        },
+        {
+          "name": "velocity",
+          "sql_type": "DOUBLE",
+          "comment": "Sprint velocity index (percentage; trends seasonally, not a literal quotient of the completed/committed columns)",
+          "is_dimension": false,
+          "generation_expr": "ROUND((15.0 + ({qty_noise2} * 40.0)) / (20.0 + (({qty_noise} * {seasonal_mult}) * 40.0)) * 100.0, 1)",
+          "seasonal_amplitude": 0.15
+        },
+        {
+          "name": "features_deployed",
+          "sql_type": "INT",
+          "comment": "Number of features deployed to production this sprint",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR(({qty_noise} * {seasonal_mult}) * 6) AS INT)",
+          "seasonal_amplitude": 0.15
+        },
+        {
+          "name": "bugs_closed",
+          "sql_type": "INT",
+          "comment": "Number of bugs closed this sprint",
+          "is_dimension": false,
+          "generation_expr": "CAST(2 + FLOOR({qty_noise2} * 18) AS INT)"
+        },
+        {
+          "name": "avg_cycle_time_days",
+          "sql_type": "DOUBLE",
+          "comment": "Average cycle time from issue start to done in days",
+          "is_dimension": false,
+          "generation_expr": "ROUND(3.0 + (({qty_noise} * {seasonal_mult}) * 12.0), 1)",
+          "seasonal_amplitude": 0.15
+        },
+        {
+          "name": "blocker_count",
+          "sql_type": "INT",
+          "comment": "Number of blockers opened during the sprint",
+          "is_dimension": false,
+          "generation_expr": "CAST(FLOOR({status_noise} * 6) AS INT)"
+        }
+      ],
+      "seasonal_patterns": {},
+      "category_distribution": {},
+      "entity_dimension": "forecast",
+      "dimension_values": [
+        {
+          "project": "Grid Modernization",
+          "sprint": "GRID Sprint 24",
+          "team": "Platform"
+        },
+        {
+          "project": "Grid Modernization",
+          "sprint": "GRID Sprint 23",
+          "team": "Data"
+        },
+        {
+          "project": "Grid Modernization",
+          "sprint": "GRID Sprint 22",
+          "team": "Field Systems"
+        },
+        {
+          "project": "AMI Rollout",
+          "sprint": "AMI Sprint 18",
+          "team": "Platform"
+        },
+        {
+          "project": "AMI Rollout",
+          "sprint": "AMI Sprint 17",
+          "team": "Data"
+        },
+        {
+          "project": "AMI Rollout",
+          "sprint": "AMI Sprint 16",
+          "team": "Customer Apps"
+        },
+        {
+          "project": "Outage Management System",
+          "sprint": "OMS Sprint 12",
+          "team": "Field Systems"
+        },
+        {
+          "project": "Outage Management System",
+          "sprint": "OMS Sprint 11",
+          "team": "Platform"
+        },
+        {
+          "project": "DERMS",
+          "sprint": "DERMS Sprint 9",
+          "team": "Data"
+        },
+        {
+          "project": "DERMS",
+          "sprint": "DERMS Sprint 8",
+          "team": "Platform"
+        },
+        {
+          "project": "Customer Portal",
+          "sprint": "PORTAL Sprint 21",
+          "team": "Customer Apps"
+        },
+        {
+          "project": "Customer Portal",
+          "sprint": "PORTAL Sprint 20",
+          "team": "SRE"
+        },
+        {
+          "project": "Customer Portal",
+          "sprint": "PORTAL Sprint 19",
+          "team": "Customer Apps"
+        },
+        {
+          "project": "SCADA Upgrade",
+          "sprint": "SCADA Sprint 7",
+          "team": "Field Systems"
+        },
+        {
+          "project": "SCADA Upgrade",
+          "sprint": "SCADA Sprint 6",
+          "team": "SRE"
+        },
+        {
+          "project": "SCADA Upgrade",
+          "sprint": "SCADA Sprint 5",
+          "team": "Platform"
+        },
+        {
+          "project": "EV Charging Network",
+          "sprint": "EVSE Sprint 5",
+          "team": "Data"
+        },
+        {
+          "project": "EV Charging Network",
+          "sprint": "EVSE Sprint 4",
+          "team": "Customer Apps"
+        },
+        {
+          "project": "EV Charging Network",
+          "sprint": "EVSE Sprint 3",
+          "team": "Field Systems"
+        },
+        {
+          "project": "Grid Modernization",
+          "sprint": "GRID Sprint 21",
+          "team": "SRE"
+        }
+      ]
+    }
+  ],
+  "metric_views": [
+    {
+      "view_name": "jira_worklogs_metrics",
+      "source_table": "jira_worklogs",
+      "dimensions": [
+        {
+          "name": "work_date",
+          "expr": "work_date"
+        },
+        {
+          "name": "project",
+          "expr": "project"
+        },
+        {
+          "name": "epic",
+          "expr": "epic"
+        },
+        {
+          "name": "issue_type",
+          "expr": "issue_type"
+        },
+        {
+          "name": "assignee",
+          "expr": "assignee"
+        },
+        {
+          "name": "team",
+          "expr": "team"
+        }
+      ],
+      "measures": [
+        {
+          "name": "worklog_count",
+          "expr": "COUNT(worklog_id)",
+          "comment": "Total worklog entries"
+        },
+        {
+          "name": "total_hours_logged",
+          "expr": "SUM(hours_logged)",
+          "comment": "Total hours logged"
+        },
+        {
+          "name": "story_hours",
+          "expr": "SUM(CASE WHEN issue_type = 'Story' THEN hours_logged ELSE 0 END)",
+          "comment": "Hours logged on Story issues"
+        },
+        {
+          "name": "resolved_issue_count",
+          "expr": "SUM(is_resolved)",
+          "comment": "Count of resolved issues at log time"
+        },
+        {
+          "name": "distinct_issue_count",
+          "expr": "COUNT(DISTINCT issue_key)",
+          "comment": "Distinct issues worked on"
+        },
+        {
+          "name": "distinct_assignee_count",
+          "expr": "COUNT(DISTINCT assignee)",
+          "comment": "Distinct assignees who logged work"
+        }
+      ]
+    },
+    {
+      "view_name": "jira_issue_snapshots_metrics",
+      "source_table": "jira_issue_snapshots",
+      "dimensions": [
+        {
+          "name": "snapshot_date",
+          "expr": "snapshot_date"
+        },
+        {
+          "name": "project",
+          "expr": "project"
+        },
+        {
+          "name": "epic",
+          "expr": "epic"
+        },
+        {
+          "name": "sprint",
+          "expr": "sprint"
+        },
+        {
+          "name": "assignee",
+          "expr": "assignee"
+        },
+        {
+          "name": "status",
+          "expr": "status"
+        },
+        {
+          "name": "priority",
+          "expr": "priority"
+        },
+        {
+          "name": "risk_level",
+          "expr": "risk_level"
+        }
+      ],
+      "measures": [
+        {
+          "name": "open_issue_count",
+          "expr": "COUNT(DISTINCT issue_key)",
+          "comment": "Distinct open issues"
+        },
+        {
+          "name": "blocker_count",
+          "expr": "SUM(is_blocker)",
+          "comment": "Total blocker issues"
+        },
+        {
+          "name": "high_risk_blocker_count",
+          "expr": "SUM(CASE WHEN is_blocker = 1 AND risk_level = 'High' THEN 1 ELSE 0 END)",
+          "comment": "Blockers with High risk level"
+        },
+        {
+          "name": "avg_days_in_status",
+          "expr": "AVG(days_in_status)",
+          "comment": "Average days an issue has been in its current status"
+        },
+        {
+          "name": "max_days_in_status",
+          "expr": "MAX(days_in_status)",
+          "comment": "Maximum days any issue has been in its current status"
+        },
+        {
+          "name": "total_story_points",
+          "expr": "SUM(story_points)",
+          "comment": "Total story points in scope"
+        }
+      ]
+    }
+  ],
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports software delivery portfolio tracking and sprint execution for Meridian Grid's utility technology programs. Stakeholders include delivery leads, scrum masters, and program managers. The portfolio spans 7 programs: Grid Modernization (GRID), AMI Rollout (AMI), Outage Management System (OMS), DERMS, Customer Portal (PORTAL), SCADA Upgrade (SCADA), and EV Charging Network (EVSE). Issues are managed in JIRA; worklogs capture engineer time; snapshots track daily issue state; velocity table rolls up monthly sprint performance.\n\nMETRIC DEFINITIONS\n- velocity = sprint velocity percentage KPI in sprint_velocity_monthly (trends seasonally; use committed_points and completed_points separately for burndown and commitment analysis)\n- blocker = is_blocker = 1 in jira_issue_snapshots\n- high-risk blocker = is_blocker = 1 AND risk_level = 'High' in jira_issue_snapshots\n- cycle time = avg_cycle_time_days in sprint_velocity_monthly (issue start to done)\n- 'stuck' = high days_in_status in jira_issue_snapshots (issues with days_in_status > 14 are considered stuck)\n- story hours = hours logged on issues where issue_type = 'Story'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - jira_worklogs_metrics (source: jira_worklogs) — dims: work_date, project, epic, issue_type, assignee, team; measures: worklog_count, total_hours_logged, story_hours, resolved_issue_count, distinct_issue_count, distinct_assignee_count.\n  - jira_issue_snapshots_metrics (source: jira_issue_snapshots) — dims: snapshot_date, project, epic, sprint, assignee, status, priority, risk_level; measures: open_issue_count, blocker_count, high_risk_blocker_count, avg_days_in_status, max_days_in_status, total_story_points.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For 'Top X' requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly when needing columns not in metric views (e.g. days_in_status, story_points, sprint_velocity_monthly columns).\n- Assignees are stored as full names; map a bare first name to the full name (e.g. 'Bob' -> 'Bob Chen', 'Priya' -> 'Priya Nair').\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "sample_questions": [
+    "Showcase the different visualization options with interesting aspects of the dataset",
+    "What are the open blockers flagged High risk by project and epic, and how many days has each been stuck in its current status?",
+    "Which epics have the most high-risk blockers and the longest average time-in-status, and how does that compare to their sprint velocity?"
+  ],
+  "example_sqls": [
+    {
+      "question": "What is the monthly trend in total hours logged?",
+      "sql_lines": [
+        "SELECT DATE_TRUNC('month', work_date) AS month, MEASURE(total_hours_logged) AS total_hours_logged",
+        "FROM {fqn}.jira_worklogs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY month"
+      ]
+    },
+    {
+      "question": "How many high-risk blockers are there by project?",
+      "sql_lines": [
+        "SELECT project, MEASURE(high_risk_blocker_count) AS high_risk_blocker_count",
+        "FROM {fqn}.jira_issue_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY high_risk_blocker_count DESC"
+      ]
+    },
+    {
+      "question": "What is the total hours logged by team?",
+      "sql_lines": [
+        "SELECT team, MEASURE(total_hours_logged) AS total_hours_logged",
+        "FROM {fqn}.jira_worklogs_metrics",
+        "GROUP BY ALL",
+        "ORDER BY total_hours_logged DESC"
+      ]
+    },
+    {
+      "question": "What is the average time issues spend in their current status by project?",
+      "sql_lines": [
+        "SELECT project, MEASURE(avg_days_in_status) AS avg_days_in_status",
+        "FROM {fqn}.jira_issue_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY avg_days_in_status DESC"
+      ]
+    },
+    {
+      "question": "How many hours has each engineer logged on Story issues?",
+      "sql_lines": [
+        "SELECT assignee, SUM(hours_logged) AS total_story_hours",
+        "FROM {fqn}.jira_worklogs",
+        "WHERE issue_type = 'Story'",
+        "GROUP BY assignee",
+        "ORDER BY total_story_hours DESC"
+      ]
+    },
+    {
+      "question": "Which open blockers have been stuck in their current status the longest?",
+      "sql_lines": [
+        "SELECT issue_key, project, epic, assignee, status, days_in_status",
+        "FROM {fqn}.jira_issue_snapshots",
+        "WHERE is_blocker = 1",
+        "ORDER BY days_in_status DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "What is the average sprint velocity and cycle time by project?",
+      "sql_lines": [
+        "SELECT project, AVG(velocity) AS avg_velocity_pct, AVG(avg_cycle_time_days) AS avg_cycle_time_days",
+        "FROM {fqn}.sprint_velocity_monthly",
+        "GROUP BY project",
+        "ORDER BY avg_velocity_pct DESC"
+      ]
+    }
+  ],
+  "sql_snippets": {
+    "filters": [
+      {
+        "display_name": "high-risk blockers",
+        "sql": "jira_issue_snapshots.is_blocker = 1 AND jira_issue_snapshots.risk_level = 'High'",
+        "synonyms": [
+          "blocked high risk",
+          "critical blockers",
+          "high priority blockers"
+        ],
+        "instruction": "Use when filtering for high-risk blocker issues in jira_issue_snapshots."
+      },
+      {
+        "display_name": "story issues",
+        "sql": "jira_worklogs.issue_type = 'Story'",
+        "synonyms": [
+          "stories",
+          "user stories",
+          "story tickets"
+        ],
+        "instruction": "Use when filtering worklogs to Story issue type only."
+      },
+      {
+        "display_name": "stuck issues",
+        "sql": "jira_issue_snapshots.days_in_status > 14",
+        "synonyms": [
+          "aging issues",
+          "stale issues",
+          "long-running",
+          "overdue"
+        ],
+        "instruction": "Use when identifying issues that have been in their current status for more than 14 days."
+      }
+    ],
+    "expressions": [
+      {
+        "display_name": "worklog month",
+        "alias": "worklog_month",
+        "sql": "DATE_TRUNC('month', jira_worklogs.work_date)",
+        "synonyms": [
+          "month of log",
+          "monthly work",
+          "log month"
+        ]
+      },
+      {
+        "display_name": "sprint completion pct",
+        "alias": "sprint_completion_pct",
+        "sql": "sprint_velocity_monthly.completed_points / sprint_velocity_monthly.committed_points * 100",
+        "synonyms": [
+          "completion rate",
+          "sprint throughput",
+          "delivery rate"
+        ]
+      },
+      {
+        "display_name": "cycle time bucket",
+        "alias": "cycle_time_bucket",
+        "sql": "CASE WHEN sprint_velocity_monthly.avg_cycle_time_days <= 5 THEN 'Fast (<= 5d)' WHEN sprint_velocity_monthly.avg_cycle_time_days <= 10 THEN 'Normal (6-10d)' WHEN sprint_velocity_monthly.avg_cycle_time_days <= 15 THEN 'Slow (11-15d)' ELSE 'Very Slow (>15d)' END",
+        "synonyms": [
+          "cycle time category",
+          "speed tier",
+          "delivery speed"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "display_name": "total hours logged",
+        "alias": "total_hours_logged",
+        "sql": "SUM(jira_worklogs.hours_logged)",
+        "synonyms": [
+          "hours worked",
+          "logged hours",
+          "engineer hours",
+          "time logged"
+        ],
+        "instruction": "Use to aggregate total hours logged from jira_worklogs."
+      },
+      {
+        "display_name": "high-risk blocker count",
+        "alias": "high_risk_blocker_count",
+        "sql": "SUM(CASE WHEN jira_issue_snapshots.is_blocker = 1 AND jira_issue_snapshots.risk_level = 'High' THEN 1 ELSE 0 END)",
+        "synonyms": [
+          "critical blockers",
+          "high risk blockers",
+          "blocker risk"
+        ],
+        "instruction": "Counts blockers where risk_level is High from jira_issue_snapshots."
+      },
+      {
+        "display_name": "average days in status",
+        "alias": "avg_days_in_status",
+        "sql": "AVG(jira_issue_snapshots.days_in_status)",
+        "synonyms": [
+          "avg time in status",
+          "average age",
+          "mean days stuck"
+        ],
+        "instruction": "Average number of days issues have been in their current status."
+      },
+      {
+        "display_name": "features deployed",
+        "alias": "features_deployed",
+        "sql": "SUM(sprint_velocity_monthly.features_deployed)",
+        "synonyms": [
+          "deployments",
+          "shipped features",
+          "production releases"
+        ],
+        "instruction": "Total features deployed to production from sprint_velocity_monthly."
+      }
+    ]
+  },
+  "benchmarks": [
+    {
+      "question": "What is the monthly trend in features deployed?",
+      "sql_lines": [
+        "SELECT DATE_TRUNC('month', report_month) AS month, SUM(features_deployed) AS total_features_deployed",
+        "FROM {fqn}.sprint_velocity_monthly",
+        "GROUP BY report_month",
+        "ORDER BY month"
+      ]
+    },
+    {
+      "question": "How many high-risk blockers are open by project and epic?",
+      "sql_lines": [
+        "SELECT project, epic, MEASURE(high_risk_blocker_count) AS high_risk_blocker_count",
+        "FROM {fqn}.jira_issue_snapshots_metrics",
+        "GROUP BY ALL",
+        "ORDER BY high_risk_blocker_count DESC"
+      ]
+    },
+    {
+      "question": "What are the Top 10 issues with the most days stuck in their current status?",
+      "sql_lines": [
+        "SELECT issue_key, project, epic, assignee, status, days_in_status",
+        "FROM {fqn}.jira_issue_snapshots",
+        "ORDER BY days_in_status DESC",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "question": "How many features were deployed in the last quarter by project?",
+      "sql_lines": [
+        "SELECT project, SUM(features_deployed) AS total_features_deployed",
+        "FROM {fqn}.sprint_velocity_monthly",
+        "WHERE report_month >= DATE_TRUNC('quarter', ADD_MONTHS(CURRENT_DATE(), -3))",
+        "GROUP BY project",
+        "ORDER BY total_features_deployed DESC"
+      ]
+    },
+    {
+      "question": "What are the committed versus completed story points for each sprint?",
+      "sql_lines": [
+        "SELECT project, sprint, SUM(committed_points) AS committed_points, SUM(completed_points) AS completed_points",
+        "FROM {fqn}.sprint_velocity_monthly",
+        "GROUP BY project, sprint",
+        "ORDER BY project, sprint"
+      ]
+    },
+    {
+      "question": "How many hours has Bob Chen logged on Story issues in the last 14 days?",
+      "sql_lines": [
+        "SELECT assignee, MEASURE(story_hours) AS story_hours",
+        "FROM {fqn}.jira_worklogs_metrics",
+        "WHERE assignee = 'Bob Chen' AND work_date >= DATE_SUB(CURRENT_DATE(), 14)",
+        "GROUP BY ALL"
+      ]
+    },
+    {
+      "question": "What is the status breakdown of issues for the Grid Modernization project?",
+      "sql_lines": [
+        "SELECT status, COUNT(DISTINCT issue_key) AS issue_count",
+        "FROM {fqn}.jira_issue_snapshots",
+        "WHERE project = 'Grid Modernization'",
+        "GROUP BY status",
+        "ORDER BY issue_count DESC"
+      ]
+    }
+  ],
+  "mfg_subindustry": "Electric Utility",
+  "mfg_outcome_usecase": "Software Delivery & Project Management"
+}

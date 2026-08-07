@@ -31,6 +31,10 @@ scripts/*
 test_results_*.json
 benchmark_baseline_*.jsonl
 benchmark_baseline_*_summary.json
+benchmark_*.jsonl
+benchmark_*.md
+benchmark_*.json
+benchmark_*.log
 
 # Pytest
 .pytest_cache/
