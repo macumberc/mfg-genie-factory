@@ -102,6 +102,7 @@ USE_CASES: dict[str, list[dict[str, str | int]]] = {
         {"label": "Grid Management & Energy Mix", "use_case": "Grid management, energy mix optimization, and load balancing analytics", "importance": 10},
         {"label": "Demand Forecasting", "use_case": "Electric utility demand forecasting and load prediction", "importance": 9},
         {"label": "Outage Response", "use_case": "Outage response management, crew dispatch, and restoration time analytics", "importance": 9},
+        {"label": "Software Delivery Project Management", "use_case": "Software delivery portfolio tracking, sprint execution, and blocker/risk management across utility technology programs", "importance": 8},
     ],
     "Aerospace": [
         {"label": "Predictive Maintenance & Asset Health", "use_case": "Predictive maintenance and asset health for aerospace engines and airframes", "importance": 10},
