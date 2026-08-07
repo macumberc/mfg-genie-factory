@@ -1032,12 +1032,13 @@
       ]
     },
     {
-      "question": "What is the total hours logged by engineering team?",
+      "question": "What is the status breakdown of issues for the Grid Modernization project?",
       "sql_lines": [
-        "SELECT team, MEASURE(total_hours_logged) AS total_hours_logged",
-        "FROM {fqn}.jira_worklogs_metrics",
-        "GROUP BY ALL",
-        "ORDER BY total_hours_logged DESC"
+        "SELECT status, COUNT(DISTINCT issue_key) AS issue_count",
+        "FROM {fqn}.jira_issue_snapshots",
+        "WHERE project = 'Grid Modernization'",
+        "GROUP BY status",
+        "ORDER BY issue_count DESC"
       ]
     }
   ],
