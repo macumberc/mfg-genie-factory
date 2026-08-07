@@ -84,6 +84,8 @@ ALLOWED_OUTCOMES = {
     "Working Capital & Cash Flow Optimization", "Expense & Spend Intelligence",
     "Capital Investment Simulation", "Commodity & Energy Trading",
     "Regulation Compliance, & External Reporting",
+    # Software-delivery / PMO use case (JIRA project-management space).
+    "Software Delivery & Project Management",
 }
 
 # Map the repo's ``industry`` strings onto the allowed subindustry vocabulary.
@@ -137,6 +139,7 @@ OUTCOME_USECASE_MAP: dict[str, dict[str, str]] = {
         "grid_management_energy_mix": "Operations Resource Efficiency",  # (loose)
         "outage_response": "Incident & Field Service Assistant",
         "transformer_asset_health": "Predictive Maintenance & Asset Health",
+        "software_delivery_project_management": "Software Delivery & Project Management",
     },
     "food_beverage": {
         "inventory_optimization": "Inventory Optimization",
