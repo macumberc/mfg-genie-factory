@@ -2,7 +2,7 @@
   "company_name": "Meridian Grid",
   "industry": "Electric Utility",
   "use_case": "Software delivery portfolio tracking, sprint execution, and blocker/risk management across utility technology programs",
-  "space_title": "Meridian Grid - Software Delivery Project Management \ud83d\uddc2\ufe0f",
+  "space_title": "Meridian Grid - Software Delivery Project Management 🗂️",
   "space_description": "**Scenario:** You run software delivery at Meridian Grid, where the Grid Modernization and AMI Rollout programs are both mid-sprint and the PUC-facing commitments don't move. Blockers are piling up on a handful of epics, tickets are aging in review, and your next steering readout is tomorrow. Where do you focus to protect the sprint?\n\n**Questions:**\n\n1. Showcase the different visualization options with interesting aspects of the dataset (agent)\n2. What are the open blockers flagged High risk by project and epic, and how many days has each been stuck in its current status? (agent)\n3. Which epics have the most high-risk blockers and the longest average time-in-status, and how does that compare to their sprint velocity? (agent)",
   "schema_basename": "utility_project_management",
   "tables": [
@@ -69,7 +69,7 @@
         {
           "name": "hours_logged",
           "sql_type": "DOUBLE",
-          "comment": "Hours logged on the issue for this entry (0.5\u20138.0 hrs)",
+          "comment": "Hours logged on the issue for this entry (0.5–8.0 hrs)",
           "is_dimension": false,
           "generation_expr": "ROUND(0.5 + ({qty_noise} * 7.5), 2)"
         },
@@ -458,7 +458,7 @@
     },
     {
       "table_name": "sprint_velocity_monthly",
-      "description": "Monthly sprint velocity rollup by project, sprint, and team \u2014 committed vs completed story points, features deployed, bugs closed, cycle time, and blocker count.",
+      "description": "Monthly sprint velocity rollup by project, sprint, and team — committed vs completed story points, features deployed, bugs closed, cycle time, and blocker count.",
       "columns": [
         {
           "name": "record_id",
@@ -514,7 +514,8 @@
           "sql_type": "DOUBLE",
           "comment": "Sprint velocity as completed/committed points ratio (percentage)",
           "is_dimension": false,
-          "generation_expr": "ROUND((15.0 + ({qty_noise2} * 40.0)) / (20.0 + ({qty_noise} * 40.0)) * 100.0, 1)"
+          "generation_expr": "ROUND((15.0 + ({qty_noise2} * 40.0)) / (20.0 + (({qty_noise} * {seasonal_mult}) * 40.0)) * 100.0, 1)",
+          "seasonal_amplitude": 0.15
         },
         {
           "name": "features_deployed",
@@ -788,7 +789,7 @@
       ]
     }
   ],
-  "genie_instructions": "DOMAIN CONTEXT\nThis space supports software delivery portfolio tracking and sprint execution for Meridian Grid's utility technology programs. Stakeholders include delivery leads, scrum masters, and program managers. The portfolio spans 7 programs: Grid Modernization (GRID), AMI Rollout (AMI), Outage Management System (OMS), DERMS, Customer Portal (PORTAL), SCADA Upgrade (SCADA), and EV Charging Network (EVSE). Issues are managed in JIRA; worklogs capture engineer time; snapshots track daily issue state; velocity table rolls up monthly sprint performance.\n\nMETRIC DEFINITIONS\n- velocity = completed_points / committed_points (as a percentage in sprint_velocity_monthly)\n- blocker = is_blocker = 1 in jira_issue_snapshots\n- high-risk blocker = is_blocker = 1 AND risk_level = 'High' in jira_issue_snapshots\n- cycle time = avg_cycle_time_days in sprint_velocity_monthly (issue start to done)\n- 'stuck' = high days_in_status in jira_issue_snapshots (issues with days_in_status > 14 are considered stuck)\n- story hours = hours logged on issues where issue_type = 'Story'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - jira_worklogs_metrics (source: jira_worklogs) \u2014 dims: work_date, project, epic, issue_type, assignee, team; measures: worklog_count, total_hours_logged, story_hours, resolved_issue_count, distinct_issue_count, distinct_assignee_count.\n  - jira_issue_snapshots_metrics (source: jira_issue_snapshots) \u2014 dims: snapshot_date, project, epic, sprint, assignee, status, priority, risk_level; measures: open_issue_count, blocker_count, high_risk_blocker_count, avg_days_in_status, max_days_in_status, total_story_points.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For 'Top X' requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly when needing columns not in metric views (e.g. days_in_status, story_points, sprint_velocity_monthly columns).\n- Assignees are stored as full names; map a bare first name to the full name (e.g. 'Bob' -> 'Bob Chen', 'Priya' -> 'Priya Nair').\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
+  "genie_instructions": "DOMAIN CONTEXT\nThis space supports software delivery portfolio tracking and sprint execution for Meridian Grid's utility technology programs. Stakeholders include delivery leads, scrum masters, and program managers. The portfolio spans 7 programs: Grid Modernization (GRID), AMI Rollout (AMI), Outage Management System (OMS), DERMS, Customer Portal (PORTAL), SCADA Upgrade (SCADA), and EV Charging Network (EVSE). Issues are managed in JIRA; worklogs capture engineer time; snapshots track daily issue state; velocity table rolls up monthly sprint performance.\n\nMETRIC DEFINITIONS\n- velocity = completed_points / committed_points (as a percentage in sprint_velocity_monthly)\n- blocker = is_blocker = 1 in jira_issue_snapshots\n- high-risk blocker = is_blocker = 1 AND risk_level = 'High' in jira_issue_snapshots\n- cycle time = avg_cycle_time_days in sprint_velocity_monthly (issue start to done)\n- 'stuck' = high days_in_status in jira_issue_snapshots (issues with days_in_status > 14 are considered stuck)\n- story hours = hours logged on issues where issue_type = 'Story'\n\nQUERY GUIDANCE\n- ALWAYS prefer metric views with MEASURE() syntax for aggregations.\n  - jira_worklogs_metrics (source: jira_worklogs) — dims: work_date, project, epic, issue_type, assignee, team; measures: worklog_count, total_hours_logged, story_hours, resolved_issue_count, distinct_issue_count, distinct_assignee_count.\n  - jira_issue_snapshots_metrics (source: jira_issue_snapshots) — dims: snapshot_date, project, epic, sprint, assignee, status, priority, risk_level; measures: open_issue_count, blocker_count, high_risk_blocker_count, avg_days_in_status, max_days_in_status, total_story_points.\n- Use GROUP BY ALL with MEASURE() queries.\n- For monthly trends, always wrap the date in DATE_TRUNC('month', <date_col>).\n- For 'Top X' requests, return LIMIT 10 unless the user specifies otherwise.\n- Query base tables directly when needing columns not in metric views (e.g. days_in_status, story_points, sprint_velocity_monthly columns).\n- Assignees are stored as full names; map a bare first name to the full name (e.g. 'Bob' -> 'Bob Chen', 'Priya' -> 'Priya Nair').\n- When the user's phrasing matches a SQL snippet display name (filters, expressions, or measures), prefer that snippet.",
   "sample_questions": [
     "Showcase the different visualization options with interesting aspects of the dataset",
     "What are the open blockers flagged High risk by project and epic, and how many days has each been stuck in its current status?",
